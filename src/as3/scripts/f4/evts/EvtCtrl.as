@@ -476,6 +476,12 @@ package f4.evts
          _loc14_.unity.move.autof = InitData.autof;
          _loc14_.initAI(_loc12_);
          _loc14_.pilotName = param4;
+         if(param4 != null && (param4 is Array || param4 is String) && param4.indexOf("Captain") != -1)
+         {
+            _loc14_.isCaptain = true;
+            _loc14_.tacticalMode = 0;
+            _loc14_.spawnPoint = new Point(param1,param2);
+         }
          _loc14_.aimode = InitData.AIDATA.ais[param9];
          _loc14_.aimodeNum = param9;
          if(param7)

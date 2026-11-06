@@ -68,6 +68,11 @@ package ui.pages
       public var lostFlashTimer:int = 0;
 
       public var capAlertTxt:TextField;
+      public var tacticalModeTxt:TextField;
+      public var capModeCodeTxt:TextField;
+      public var tacticalModeFade:int = 0;
+      private var _tacticalModeTitles:Array = ["ANCHOR / HOLD","ESCORT / FOLLOW","EVADE / FLEE","SEEK & DESTROY","FIRE SUPPORT","SHIELD / INTERCEPT"];
+      private var _tacticalModeCodes:Array = ["AN","ES","EV","SD","FS","SH"];
       public var capAlertTimer:int = 0;
       public var capThresholdsFired:Array = [false, false, false, false];
 
@@ -134,6 +139,31 @@ package ui.pages
          this.capAlertTxt.y = 48;
          this.capAlertTxt.visible = false;
          param2.addChild(this.capAlertTxt);
+
+          this.tacticalModeTxt = new TextField();
+          this.tacticalModeTxt.autoSize = TextFieldAutoSize.CENTER;
+          this.tacticalModeTxt.selectable = false;
+          this.tacticalModeTxt.mouseEnabled = false;
+          var _ttf:TextFormat = new TextFormat("_sans", 13, 0xFFFF00, true);
+          this.tacticalModeTxt.defaultTextFormat = _ttf;
+          this.tacticalModeTxt.x = 320;
+          this.tacticalModeTxt.y = 420;
+          this.tacticalModeTxt.visible = false;
+          param2.addChild(this.tacticalModeTxt);
+
+          this.capModeCodeTxt = new TextField();
+          this.capModeCodeTxt.autoSize = TextFieldAutoSize.CENTER;
+          this.capModeCodeTxt.selectable = false;
+          this.capModeCodeTxt.mouseEnabled = false;
+          var _cmf:TextFormat = new TextFormat("_sans", 10, 0xFFFF00, true);
+          this.capModeCodeTxt.defaultTextFormat = _cmf;
+          this.capModeCodeTxt.visible = false;
+          if(this.f1)
+          {
+             this.f1.addChild(this.capModeCodeTxt);
+             this.capModeCodeTxt.x = 2;
+             this.capModeCodeTxt.y = 2;
+          }
 
          this.autofireDot = new Shape();
          this.autofireDot.graphics.beginFill(0x000000, 0.7);
@@ -369,6 +399,11 @@ package ui.pages
          initArr();
          this.afterFadeIn();
          _mov.addChildAt(InitData.CORE.renderData.bmp,0);
+         if(this.eventCrtl && this.eventCrtl.gameui && this.eventCrtl.gameui.pf1)
+         {
+            this.capModeCodeTxt.visible = true;
+            this.showTacticalMode(0);
+         }
          _mov.addEventListener(Event.ENTER_FRAME,this.missionLoop);
       }
       
@@ -494,6 +529,49 @@ package ui.pages
          }
          this.lostFlashTimer = 10;
          this.updateLostPartsText();
+      }
+
+      public function showTacticalMode(param1:int) : void
+      {
+         if(param1 < 0 || param1 >= this._tacticalModeTitles.length)
+         {
+            return;
+         }
+         this.tacticalModeTxt.text = "[ " + this._tacticalModeTitles[param1] + " ]";
+         this.tacticalModeTxt.x = 320 - this.tacticalModeTxt.width / 2;
+         this.tacticalModeTxt.visible = true;
+         this.tacticalModeTxt.alpha = 1;
+         this.tacticalModeFade = 45;
+         if(this.capModeCodeTxt)
+         {
+            this.capModeCodeTxt.text = this._tacticalModeCodes[param1];
+            this.capModeCodeTxt.visible = true;
+         }
+      }
+
+      public function updateTacticalModeBadge() : void
+      {
+         if(this.tacticalModeFade > 0)
+         {
+            this.tacticalModeFade--;
+            if(this.tacticalModeFade <= 15)
+            {
+               this.tacticalModeTxt.alpha = this.tacticalModeFade / 15;
+            }
+            if(this.tacticalModeFade == 0)
+            {
+               this.tacticalModeTxt.visible = false;
+            }
+         }
+      }
+
+      public function showNoCaptain() : void
+      {
+         this.tacticalModeTxt.text = "[ NO CAPTAIN! ]";
+         this.tacticalModeTxt.x = 320 - this.tacticalModeTxt.width / 2;
+         this.tacticalModeTxt.visible = true;
+         this.tacticalModeTxt.alpha = 1;
+         this.tacticalModeFade = 45;
       }
 
       public function updateLostPartsText() : void

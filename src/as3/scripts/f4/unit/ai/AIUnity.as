@@ -51,6 +51,12 @@ package f4.unit.ai
       
       public var aimodeNum:int;
       
+      public var isCaptain:Boolean = false;
+      
+      public var tacticalMode:int = 0;
+      
+      public var spawnPoint:Point;
+      
       public var fromDef:Boolean = true;
       
       public var god:Boolean = false;
@@ -713,6 +719,27 @@ package f4.unit.ai
          }
       }
       
+          if(this.isCaptain && this.tacticalMode == 0 && this.spawnPoint)
+          {
+             var _capDx:Number = this.unity.move.point.x - this.spawnPoint.x;
+             var _capDy:Number = this.unity.move.point.y - this.spawnPoint.y;
+             var _capDist:Number = _capDx * _capDx + _capDy * _capDy;
+             this.aim = this.spawnPoint.clone();
+             this.linkUnityTarget(null);
+             var _capHr:Number = (this.unity.move.hitRect.width + this.unity.move.hitRect.height) / 2;
+             _capHr = _capHr * _capHr * this.aimode.bodyRt2;
+             if(_capDist > _capHr)
+             {
+                this.close = this.aimode.bodyFar.x;
+                this.aiPow = this.aimode.bodyFar.y * this._aiLastPowMut;
+             }
+             else
+             {
+                this.close = this.aimode.bodyClose.x;
+                this.aiPow = this.aimode.bodyClose.y;
+             }
+          }
+
       public function chooseAIGun() : void
       {
          var _loc1_:Array = null;
@@ -777,6 +804,10 @@ package f4.unit.ai
       
       public function initAI(param1:Point) : void
       {
+         if(this.isCaptain && this.spawnPoint == null)
+         {
+            this.spawnPoint = param1.clone();
+         }
          this.aimSecond = param1;
          this.aim = this.aimSecond;
          this.unity.linkPartFirst();
