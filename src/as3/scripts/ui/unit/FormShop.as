@@ -15,6 +15,8 @@ package ui.unit
       public var selNumA:int = 10;
       
       public var costMut:Number;
+
+      public var isBuyShop:Boolean = false;
       
       public function FormShop(param1:MovieClip, param2:Array, param3:Number = 1)
       {
@@ -69,7 +71,16 @@ package ui.unit
          (param1.getChildByName("mass") as TextField).text = param2[7] + "";
          (param1.getChildByName("fire") as TextField).text = param2[8].toFixed(2) + "";
          (param1.getChildByName("value") as TextField).text = param2[9] + "";
-         (param1.getChildByName("sel") as TextField).text = (param2[10] == 0 ? "N" : "Y") + "";
+         
+         var _selCount:int = int(param2[10]);
+         if(this.isBuyShop)
+         {
+            (param1.getChildByName("sel") as TextField).text = (_selCount <= 0 ? "N" : "x" + _selCount);
+         }
+         else
+         {
+            (param1.getChildByName("sel") as TextField).text = (_selCount <= 0 ? "N" : "Y");
+         }
       }
       
       public function filter() : void
@@ -153,17 +164,52 @@ package ui.unit
          {
             lastSort = -1;
             now = workArr[param1 + page * pageLen][0];
-            if(workArr[param1 + page * pageLen][this.selNumA] == 0)
+            var _itemRow:Array = workArr[param1 + page * pageLen];
+            var _org:F4DataOrg = linkArr[_itemRow[0]] as F4DataOrg;
+            
+            if(this.isBuyShop)
             {
-               workArr[param1 + page * pageLen][this.selNumA] = 1;
+               if(_org && _org.type == 0)
+               {
+                  if(_itemRow[this.selNumA] == 0)
+                  {
+                     _itemRow[this.selNumA] = 1;
+                  }
+                  else
+                  {
+                     _itemRow[this.selNumA] = 0;
+                  }
+               }
+               else
+               {
+                  var _curQty:int = int(_itemRow[this.selNumA]);
+                  if(_curQty >= 99)
+                  {
+                     _itemRow[this.selNumA] = 0;
+                  }
+                  else
+                  {
+                     _itemRow[this.selNumA] = _curQty + 1;
+                  }
+               }
             }
             else
             {
-               workArr[param1 + page * pageLen][this.selNumA] = 0;
+               if(_itemRow[this.selNumA] == 0)
+               {
+                  _itemRow[this.selNumA] = 1;
+               }
+               else
+               {
+                  _itemRow[this.selNumA] = 0;
+               }
             }
-            (linkArr[workArr[param1 + page * pageLen][0]] as F4DataOrg).sel = workArr[param1 + page * pageLen][this.selNumA];
+            if(_org)
+            {
+               _org.sel = _itemRow[this.selNumA];
+            }
             this.updateForm();
-            return workArr[param1 + page * pageLen];
+            return _itemRow;
          }
          return null;
       }
@@ -183,7 +229,7 @@ package ui.unit
          {
             if(workArr[_loc1_ + pageLen * page])
             {
-               if(workArr[_loc1_ + pageLen * page][this.selNumA] == 1)
+               if(workArr[_loc1_ + pageLen * page][this.selNumA] > 0)
                {
                   form.getChildByName("$form" + _loc1_).transform.colorTransform = new ColorTransform(1,1,1,1,80,80,80);
                }
@@ -206,7 +252,7 @@ package ui.unit
          var _loc4_:Array = [];
          for each(_loc3_ in workArr)
          {
-            if(_loc3_[this.selNumA] == 1)
+            if(_loc3_[this.selNumA] > 0)
             {
                _loc4_.push(_loc3_);
             }
@@ -225,10 +271,31 @@ package ui.unit
                }
             }
             while(_loc4_[_loc5_][0] != linkArr[_loc1_].index);
-            ConfigAndStory.ALLPART.addPartFromShop(_loc1_);
-            if(_loc1_ < linkArr.length && linkArr[_loc1_])
+            
+            var _shopOrg:F4DataOrg = linkArr[_loc1_];
+            var _qty:int = int(_loc4_[_loc5_][this.selNumA]);
+            
+            if(_shopOrg && _shopOrg.type == 0)
             {
-               linkArr[_loc1_].sel = 0;
+               ConfigAndStory.ALLPART.addPartFromShop(_loc1_);
+               linkArr.splice(_loc1_, 1);
+               _loc4_.splice(_loc5_, 1);
+               _loc6_--;
+               _loc5_--;
+               _loc2_--;
+            }
+            else
+            {
+               var _k:int = 0;
+               while(_k < _qty)
+               {
+                  ConfigAndStory.ALLPART.addPartFromShop(_loc1_);
+                  _k++;
+               }
+               if(_loc1_ < linkArr.length && linkArr[_loc1_])
+               {
+                  linkArr[_loc1_].sel = 0;
+               }
             }
          }
          ConfigAndStory.ALLPART.reSortIndex(linkArr);
@@ -255,7 +322,7 @@ package ui.unit
          var _loc1_:F4DataOrg = null;
          for each(_loc1_ in linkArr)
          {
-            if(_loc1_.sel == 1)
+            if(_loc1_ && _loc1_.sel > 0)
             {
                return true;
             }
@@ -269,9 +336,9 @@ package ui.unit
          var _loc1_:int = 0;
          for each(_loc2_ in linkArr)
          {
-            if(_loc2_.sel == 1)
+            if(_loc2_ && _loc2_.sel > 0)
             {
-               _loc1_++;
+               _loc1_ += _loc2_.sel;
             }
          }
          return _loc1_;
