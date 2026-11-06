@@ -64,11 +64,11 @@ package f4.unit.render
          var _loc11_:AIPart = null;
          var _loc12_:int = 0;
          var _loc13_:int = 0;
-         for each(_loc11_ in this.wings)
+         for each(_loc11_ in this.bodys)
          {
             _loc11_.part.render.runRender(param1);
          }
-         for each(_loc11_ in this.bodys)
+         for each(_loc11_ in this.wings)
          {
             _loc11_.part.render.runRender(param1);
          }

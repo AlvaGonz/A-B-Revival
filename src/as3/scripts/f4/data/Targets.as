@@ -277,7 +277,18 @@ package f4.data
                _loc4_.data.hp.x = 1;
             }
          }
-         this.iaCkItem(this.ia1.array,param1);
+         if(param1 && !param1.isDeadA1 && param1.unity)
+         {
+            this.iaCkItem(this.ia1.array,param1);
+         }
+         var _loc10_:AIUnity = null;
+         for each(_loc10_ in this.pfa1.array)
+         {
+            if(_loc10_ && !_loc10_.isDeadA1 && _loc10_.unity)
+            {
+               this.iaCkItem(this.ia1.array,_loc10_);
+            }
+         }
       }
       
       public function runSW() : void
@@ -573,7 +584,7 @@ package f4.data
          var _loc4_:AIPart = null;
          for each(_loc3_ in param1)
          {
-            if(this._rect2.rectIntersects(_loc3_.hit,param2.unity.move.hitRect))
+            if(!_loc3_.isDeadA1 && this._rect2.rectIntersects(_loc3_.hit,param2.unity.move.hitRect))
             {
                for each(_loc4_ in param2.unity.parts)
                {

@@ -75,6 +75,7 @@ package f4.make
                _loc5_.part.partMove.point.x = -_loc6_.xy.y + param2.part.partMove.point.x + _loc6_.partf4.f4dataorg.linkOff.y;
                _loc5_.part.partMove.point.y = _loc6_.xy.x + param2.part.partMove.point.y - _loc6_.partf4.f4dataorg.linkOff.x;
                _loc5_.part.initPartPoint(_loc5_.part.partMove.point.x,_loc5_.part.partMove.point.y);
+               _loc5_.part.partMove.radFace = _loc6_.partf4.f4dataorg.rot / 180 * Math.PI;
                param3.parts.push(_loc5_);
                param2.onLoad.push(_loc5_);
                this.makePartByLink(_loc6_.partf4,_loc5_,param3,param4);
@@ -91,7 +92,7 @@ package f4.make
          var _loc3_:FlyPart = new FlyPart();
          var _loc4_:AIPart = new AIPart(_loc3_);
          _loc4_.hue = param2;
-         var _loc5_:Render = this.makeRenderSec2(param1.mcName + param1.lr + "_" + param2,_loc3_.partMove);
+         var _loc5_:Render = this.makeRenderSec2(param1.mcName + param1.lr + "_" + param1.rot + "_" + param2,_loc3_.partMove);
          var _loc6_:FirePorts = new FirePorts();
          var _loc9_:int = -1;
          var _loc10_:int = param1.firePoints.length / 2;

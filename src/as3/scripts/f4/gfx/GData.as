@@ -85,10 +85,11 @@ package f4.gfx
       {
          var _loc3_:BMPDMCData2 = null;
          var _loc4_:F4DataHole = null;
-         if(!this.mcList[param1.f4dataorg.mcName + param1.f4dataorg.lr + "_" + param2.colorHue])
+         var _key:String = param1.f4dataorg.mcName + param1.f4dataorg.lr + "_" + param1.f4dataorg.rot + "_" + param2.colorHue;
+         if(!this.mcList[_key])
          {
-            _loc3_ = MC2BMPD.mc2bmpd2Single(Attach.attach(param1.f4dataorg.mcName) as MovieClip,param1.f4dataorg.mcName,true,param1.f4dataorg.lr,param2.colorHue);
-            this.mcList[param1.f4dataorg.mcName + param1.f4dataorg.lr + "_" + param2.colorHue] = _loc3_;
+            _loc3_ = MC2BMPD.mc2bmpd2Single(Attach.attach(param1.f4dataorg.mcName) as MovieClip,param1.f4dataorg.mcName,true,param1.f4dataorg.lr,param2.colorHue,true,param1.f4dataorg.rot);
+            this.mcList[_key] = _loc3_;
          }
          for each(_loc4_ in param1.f4dataorg.hole)
          {
