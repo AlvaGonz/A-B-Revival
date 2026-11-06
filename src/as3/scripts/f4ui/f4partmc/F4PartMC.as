@@ -41,6 +41,11 @@ package f4ui.f4partmc
          this.mc.addEventListener(MouseEvent.MOUSE_OUT,this.mouseOut);
       }
       
+      public function isRemovableType(targetType:int) : Boolean
+      {
+         return Boolean(this.f4DataLink) && Boolean(this.f4DataLink.f4dataorg) && this.f4DataLink.f4dataorg.type == targetType && this.f4DataLink.f4dataorg.useAs != 2;
+      }
+      
       override public function mouseOver(param1:MouseEvent) : void
       {
          activePart = this;

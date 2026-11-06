@@ -25,7 +25,7 @@ package ui.unit
             var _loc2_:F4DataLinks = linkArr[param1] as F4DataLinks;
             if(_loc2_)
             {
-               return _loc2_.special || _loc2_.name == "Captain's Ship" || _loc2_.name.indexOf("Captain") != -1;
+               return _loc2_.isCaptainShip();
             }
          }
          return false;

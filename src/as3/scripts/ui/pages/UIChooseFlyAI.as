@@ -285,7 +285,7 @@ package ui.pages
                f4link = this.form.getLink(formNum);
                if(f4link)
                {
-                  if(this.form.isCaptainShip(f4link.index))
+                  if(f4link.isCaptainShip())
                   {
                      this.addDtL(f4link,this.dtLinkS,"showDetail",true);
                      this.form.lightOn(formNum);
@@ -318,7 +318,7 @@ package ui.pages
             f4linkAI = this.form.getLink(formNumAI);
             if(f4linkAI)
             {
-               if(this.form.isCaptainShip(f4linkAI.index))
+               if(f4linkAI.isCaptainShip())
                {
                   return;
                }
@@ -490,6 +490,14 @@ package ui.pages
       public function addAI(param1:int) : void
       {
          var _loc2_:F4DataLinks = null;
+         if(this.f4datax && this.f4datax.plFly && param1 >= 0 && param1 < this.f4datax.plFly.length)
+         {
+            var _capCheck:F4DataLinks = this.f4datax.plFly[param1];
+            if(_capCheck && _capCheck.isCaptainShip())
+            {
+               return;
+            }
+         }
          var _loc3_:F4ShowData = null;
          var _loc4_:Array = null;
          var _loc5_:int = 0;
@@ -650,10 +658,13 @@ package ui.pages
          _loc2_ = 0;
          while(_loc2_ < this.ainum)
          {
-            _loc3_ = this.findBestAI();
-            if(_loc3_ >= 0 && _loc1_[_loc2_] == null)
+            if(_loc1_[_loc2_] == null)
             {
-               this.addAI(this.findBestAI());
+               _loc3_ = this.findBestAI();
+               if(_loc3_ >= 0)
+               {
+                  this.addAI(_loc3_);
+               }
             }
             _loc2_++;
          }

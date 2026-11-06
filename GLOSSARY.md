@@ -12,6 +12,10 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Fire Port / Hardpoint (`FirePort`, `FirePorts`, `FireMode`, `FireSingle`, `FireLoop`)**: Weapon emitter logic defining projectile spawn points, rate of fire, recoil, and cooldowns.
 - **Bullet / Projectile (`F4DataBullet`, `CkBltObj`)**: Projectiles emitted during combat with assigned damage, velocity, and collision boxes.
 - **Shop / Hangar (`UIShop`, `UIRepair`, `UIMakePlayer`)**: UI and state management handling player assembly, repairs, part purchases, and hangar fleet customization.
+- **Infinite Stock (`shopPart`)**: Inventory model for repeatable components (weapons, wings, engines) that never deplete upon purchase, cloning bought items directly into `plPart`.
+- **Finite Body Stock (`type == 0`, `Body`)**: Finite inventory rule for ship hulls/chassis, requiring discrete unit counts in `shopPart` that decrement upon purchase and restore upon sale.
+- **Purchase Stack (`Sel.`, `xN`)**: Staged quantity multiplier for a single shop item in `FormShop`, represented as `x1`, `x2`, etc., scaling total transaction cost and resulting in N cloned parts added on checkout (`ACCEPT`).
+- **Shop Reconciliation (`reconcileShopStock`)**: Routine synchronizing `shopPart` against `GIFT[0..STORY]`, deduplicating redundant infinite stock entries and backfilling missing historical unlocks in existing save files.
 - **Mission / Director (`MissionData`, `Director`, `LevelData`, `LevelBase`)**: Campaign wave definitions, enemy spawn scripting, objective evaluation, and reward payouts.
 
 ## Tooling Vocabulary

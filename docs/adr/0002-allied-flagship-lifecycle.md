@@ -22,3 +22,4 @@ This permitted players to assign the Captain's Ship to a generic AI wingman slot
 - Prevents duplicate Captain ships and behavioral desynchronization in combat.
 - Preserves full player agency to customize and upgrade the allied flagship in the Factory.
 - Establishes a clear domain separation between Player Craft, AI Wingmen, and Allied Flagships.
+

@@ -201,19 +201,19 @@ package ui.pages
       {
          if(this.btnClearWeapons)
          {
-            var wCount:int = this.countPartsByType(3);
+            var wCount:int = this.countPartsByType(F4DataOrg.TYPE_GUN);
             this.btnClearWeapons.alpha = wCount > 0 ? 1.0 : 0.35;
             this.btnClearWeapons.mouseEnabled = wCount > 0;
          }
          if(this.btnClearWings)
          {
-            var wingCount:int = this.countPartsByType(1);
+            var wingCount:int = this.countPartsByType(F4DataOrg.TYPE_WING);
             this.btnClearWings.alpha = wingCount > 0 ? 1.0 : 0.35;
             this.btnClearWings.mouseEnabled = wingCount > 0;
          }
          if(this.btnClearEngines)
          {
-            var engCount:int = this.countPartsByType(2);
+            var engCount:int = this.countPartsByType(F4DataOrg.TYPE_ENGINE);
             this.btnClearEngines.alpha = engCount > 0 ? 1.0 : 0.35;
             this.btnClearEngines.mouseEnabled = engCount > 0;
          }
@@ -221,7 +221,7 @@ package ui.pages
       
       public function onClearWeaponsClick(param1:MouseEvent) : void
       {
-         var count:int = this.countPartsByType(3);
+         var count:int = this.countPartsByType(F4DataOrg.TYPE_GUN);
          if(count == 0)
          {
             return;
@@ -236,7 +236,7 @@ package ui.pages
       
       public function onClearWingsClick(param1:MouseEvent) : void
       {
-         var count:int = this.countPartsByType(1);
+         var count:int = this.countPartsByType(F4DataOrg.TYPE_WING);
          if(count == 0)
          {
             return;
@@ -251,7 +251,7 @@ package ui.pages
       
       public function onClearEnginesClick(param1:MouseEvent) : void
       {
-         var count:int = this.countPartsByType(2);
+         var count:int = this.countPartsByType(F4DataOrg.TYPE_ENGINE);
          if(count == 0)
          {
             return;
@@ -270,12 +270,9 @@ package ui.pages
          var _loc1_:F4PartMC = null;
          for each(_loc1_ in this.f4datax.plMc)
          {
-            if(_loc1_.f4DataLink && _loc1_.f4DataLink.f4dataorg && _loc1_.f4DataLink.f4dataorg.type == param1)
+            if(_loc1_.isRemovableType(param1))
             {
-               if(_loc1_.f4DataLink.f4dataorg.useAs != 2)
-               {
-                  count++;
-               }
+               count++;
             }
          }
          return count;
@@ -288,12 +285,9 @@ package ui.pages
          var _loc1_:F4PartMC = null;
          for each(_loc1_ in this.f4datax.plMc)
          {
-            if(_loc1_.f4DataLink && _loc1_.f4DataLink.f4dataorg && _loc1_.f4DataLink.f4dataorg.type == param1)
+            if(_loc1_.isRemovableType(param1))
             {
-               if(_loc1_.f4DataLink.f4dataorg.useAs != 2)
-               {
-                  targets.push(_loc1_);
-               }
+               targets.push(_loc1_);
             }
          }
          for each(_loc1_ in targets)
@@ -318,17 +312,17 @@ package ui.pages
       
       public function cleanWeapons() : void
       {
-         this.cleanPartsByType(3);
+         this.cleanPartsByType(F4DataOrg.TYPE_GUN);
       }
       
       public function cleanWings() : void
       {
-         this.cleanPartsByType(1);
+         this.cleanPartsByType(F4DataOrg.TYPE_WING);
       }
       
       public function cleanEngines() : void
       {
-         this.cleanPartsByType(2);
+         this.cleanPartsByType(F4DataOrg.TYPE_ENGINE);
       }
       
       public function initWingHint() : void
