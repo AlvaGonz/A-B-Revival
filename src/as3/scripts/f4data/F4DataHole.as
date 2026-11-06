@@ -25,21 +25,7 @@ package f4data
       
       public function canWing() : Boolean
       {
-         if(this.parentOrg && (this.parentOrg.type == 0 || this.parentOrg.type == 1))
-         {
-            return true;
-         }
-         var _loc1_:int = int(this.type.length);
-         var _loc2_:int = 0;
-         while(_loc2_ < _loc1_)
-         {
-            if(this.type[_loc2_] == 1)
-            {
-               return true;
-            }
-            _loc2_++;
-         }
-         return false;
+         return true;
       }
       
       public function readFromObj(param1:Object) : void
@@ -60,49 +46,31 @@ package f4data
       
       public function acceptable(param1:F4DataLinks) : int
       {
-         var _loc2_:* = undefined;
-         if(this.lr != param1.f4dataorg.lr && this.lr != 2 && param1.f4dataorg.lr != 2)
+         if(!param1 || !param1.f4dataorg)
          {
-            return 1;
+            return 2;
          }
-         if(param1.f4dataorg.type == 1)
+         return this.acceptableOrg(param1.f4dataorg);
+      }
+      
+      public function acceptableOrg(param1:F4DataOrg) : int
+      {
+         if(!param1)
+         {
+            return 2;
+         }
+         if(param1.type == 1)
          {
             if(this.getCurrentWings(param1) >= 10)
             {
                return 2;
             }
-            if(this.parentOrg && (this.parentOrg.type == 0 || this.parentOrg.type == 1))
-            {
-               return 0;
-            }
+            return 0;
          }
-         for each(_loc2_ in this.type)
-         {
-            if(param1.f4dataorg.type == _loc2_)
-            {
-               return 0;
-            }
-         }
-         return 2;
-      }
-      
-      public function acceptableOrg(param1:F4DataOrg) : int
-      {
          var _loc2_:* = undefined;
          if(this.lr != param1.lr && this.lr != 2 && param1.lr != 2)
          {
             return 1;
-         }
-         if(param1.type == 1)
-         {
-            if(this.getCurrentWings() >= 10)
-            {
-               return 2;
-            }
-            if(this.parentOrg && (this.parentOrg.type == 0 || this.parentOrg.type == 1))
-            {
-               return 0;
-            }
          }
          for each(_loc2_ in this.type)
          {
@@ -114,15 +82,26 @@ package f4data
          return 2;
       }
       
-      private function getCurrentWings(param1:F4DataLinks = null) : int
+      public function getCurrentWings(excludeOrg:F4DataOrg = null) : int
       {
-         if(param1 && param1.parentPart)
+         var _cnt:int = 0;
+         if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plMc && ConfigAndStory.ALLPART.plMc.length > 0)
          {
-            return param1.parentPart.getRoot().countWings();
-         }
-         if(this.partf4)
-         {
-            return this.partf4.getRoot().countWings();
+            for each(var _mc:* in ConfigAndStory.ALLPART.plMc)
+            {
+               if(_mc && _mc.f4DataLink && _mc.f4DataLink.f4dataorg)
+               {
+                  if(excludeOrg && _mc.f4DataLink.f4dataorg == excludeOrg)
+                  {
+                     continue;
+                  }
+                  if(_mc.f4DataLink.f4dataorg.type == 1)
+                  {
+                     _cnt++;
+                  }
+               }
+            }
+            return _cnt;
          }
          if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plFly)
          {

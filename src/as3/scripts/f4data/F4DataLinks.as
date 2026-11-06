@@ -104,6 +104,7 @@ package f4data
             _loc6_.f4dataorg.useAs = param2["use"][_loc7_];
             (param1.f4dataorg.hole[_loc7_] as F4DataHole).partf4 = _loc6_;
             _loc6_.atHole = param1.f4dataorg.hole[_loc7_] as F4DataHole;
+            _loc6_.parentPart = param1;
             if(param2["hole" + _loc7_])
             {
                this.f4LinkLA(_loc6_,param2["hole" + _loc7_],param3,param4,param5);
