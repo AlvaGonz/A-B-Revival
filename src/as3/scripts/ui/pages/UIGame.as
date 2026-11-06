@@ -399,10 +399,12 @@ package ui.pages
          initArr();
          this.afterFadeIn();
          _mov.addChildAt(InitData.CORE.renderData.bmp,0);
-         if(this.eventCrtl && this.eventCrtl.gameui && this.eventCrtl.gameui.pf1)
+         this.tacticalModeFade = 0;
+         this.tacticalModeTxt.visible = false;
+         if(this.pf1 && this.pf1.isCaptain)
          {
+            this.capModeCodeTxt.text = this._tacticalModeCodes[AIUnity.MODE_ANCHOR];
             this.capModeCodeTxt.visible = true;
-            this.showTacticalMode(0);
          }
          _mov.addEventListener(Event.ENTER_FRAME,this.missionLoop);
       }
@@ -507,6 +509,7 @@ package ui.pages
          this.updateCaptainAlerts();
          this.updateCriticalDistress();
          this.updateAutofireReticle();
+         this.updateTacticalModeBadge();
       }
 
       public function recordLostPart(param1:int) : void
@@ -551,6 +554,11 @@ package ui.pages
 
       public function updateTacticalModeBadge() : void
       {
+         if(this.pf1 && this.pf1.isCaptain && !this.capModeCodeTxt.visible)
+         {
+            this.capModeCodeTxt.text = this._tacticalModeCodes[AIUnity.MODE_ANCHOR];
+            this.capModeCodeTxt.visible = true;
+         }
          if(this.tacticalModeFade > 0)
          {
             this.tacticalModeFade--;
