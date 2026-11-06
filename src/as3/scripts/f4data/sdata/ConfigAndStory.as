@@ -50,6 +50,8 @@ package f4data.sdata
       
       public static var SOData:SharedObject;
       
+      public static var AUTOSAVE:Boolean = true;
+      
       public static const GIFT:Array = [];
       
       public static const MAP1:int = 35;
@@ -206,6 +208,10 @@ package f4data.sdata
          {
             CONFIG = SO.data["config"];
             TIMEALL = SO.data["time"];
+            if(SO.data["autosave"] != null)
+            {
+               AUTOSAVE = Boolean(SO.data["autosave"]);
+            }
          }
          else
          {
@@ -219,7 +225,19 @@ package f4data.sdata
          CKTIME = getTimer();
          SO.data["config"] = CONFIG.concat();
          SO.data["time"] = TIMEALL;
+         SO.data["autosave"] = AUTOSAVE;
          SO.flush();
+      }
+      
+      public static function autoSaveMission() : Boolean
+      {
+         if(!AUTOSAVE)
+         {
+            return false;
+         }
+         saveData();
+         save();
+         return true;
       }
       
       public static function loadData() : void

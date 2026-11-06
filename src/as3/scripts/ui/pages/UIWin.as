@@ -5,7 +5,10 @@ package ui.pages
    import flash.display.DisplayObjectContainer;
    import flash.display.MovieClip;
    import flash.events.Event;
+   import flash.filters.GlowFilter;
    import flash.text.TextField;
+   import flash.text.TextFieldAutoSize;
+   import flash.text.TextFormat;
    import fullshit.ctrl2.SoundUnit2;
    import fullshit.tool.Attach;
    import mochi.as3.MochiEvents;
@@ -22,6 +25,8 @@ package ui.pages
       public var tempMoney:Number = 0;
       
       public var repaired:Boolean = false;
+      
+      public var txtAutosaveStatus:TextField;
       
       private var _adLock:Boolean;
       
@@ -46,6 +51,7 @@ package ui.pages
          InitData.SOUNDC2.addSound(_loc7_,int.MAX_VALUE,0.01,InitData.SOUNDC2.nowVol);
          super(param1,param2,param3,param4,param5);
          ConfigAndStory.MONEY += ConfigAndStory.ALLPART.levelMoney;
+         ConfigAndStory.autoSaveMission();
          _mov.addEventListener(Event.ENTER_FRAME,this.missionLoop);
          if(!VeryOutShitABC.NOADS && !VeryOutShitABC.VGPLAY && (ConfigAndStory.STORY + 1) % 4 == 0)
          {
@@ -146,21 +152,39 @@ package ui.pages
          InitData.CORE.repair.deadFalse();
          ConfigAndStory.MONEY = this.lastMoney;
          MakeUI.makeChoose(this,_sp,_ui);
-         ConfigAndStory.saveData();
-         ConfigAndStory.save();
+         if(ConfigAndStory.AUTOSAVE)
+         {
+            ConfigAndStory.saveData();
+            ConfigAndStory.save();
+         }
          removeSelf();
       }
       
       public function nextGame() : void
       {
          MakeUI.makeChoose(this,_sp,_ui);
-         ConfigAndStory.saveData();
-         ConfigAndStory.save();
+         if(ConfigAndStory.AUTOSAVE)
+         {
+            ConfigAndStory.saveData();
+            ConfigAndStory.save();
+         }
       }
       
       public function initTxt(param1:MovieClip) : void
       {
          (param1.getChildByName("txtBattle") as TextField).text = "BATTLE-" + (ConfigAndStory.STORY + 1);
+         this.txtAutosaveStatus = new TextField();
+         this.txtAutosaveStatus.name = "txtAutosaveStatus";
+         var tfAuto:TextFormat = new TextFormat("Arial", 11, ConfigAndStory.AUTOSAVE ? 0x44ff88 : 0x8899aa, true);
+         this.txtAutosaveStatus.defaultTextFormat = tfAuto;
+         this.txtAutosaveStatus.text = ConfigAndStory.AUTOSAVE ? "[Autosaved]" : "[Autosave: OFF]";
+         this.txtAutosaveStatus.autoSize = TextFieldAutoSize.LEFT;
+         this.txtAutosaveStatus.selectable = false;
+         this.txtAutosaveStatus.mouseEnabled = false;
+         this.txtAutosaveStatus.filters = [new GlowFilter(0x000000, 0.8, 3, 3, 2, 1)];
+         this.txtAutosaveStatus.x = 410;
+         this.txtAutosaveStatus.y = 106;
+         param1.addChild(this.txtAutosaveStatus);
          if(ConfigAndStory.noNext())
          {
             (param1.getChildByName("txtItem2") as TextField).text = "Parts: " + ConfigAndStory.ALLPART.repairPart.length;

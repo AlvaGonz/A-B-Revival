@@ -36,6 +36,7 @@ package ui.pages
          }
          super(param1,param2,param3,param4,param5);
          ConfigAndStory.MONEY += ConfigAndStory.ALLPART.levelMoney;
+         ConfigAndStory.autoSaveMission();
          MochiEvents.trackEvent("all_win",ConfigAndStory.STORY);
       }
       
@@ -83,8 +84,11 @@ package ui.pages
       public function nextGame() : void
       {
          MakeUI.makeChoose(this,_sp,_ui);
-         ConfigAndStory.saveData();
-         ConfigAndStory.save();
+         if(ConfigAndStory.AUTOSAVE)
+         {
+            ConfigAndStory.saveData();
+            ConfigAndStory.save();
+         }
       }
       
       public function retry() : void
@@ -92,8 +96,11 @@ package ui.pages
          InitData.CORE.repair.deadFalse();
          ConfigAndStory.MONEY = this.lastMoney;
          MakeUI.makeChoose(this,_sp,_ui);
-         ConfigAndStory.saveData();
-         ConfigAndStory.save();
+         if(ConfigAndStory.AUTOSAVE)
+         {
+            ConfigAndStory.saveData();
+            ConfigAndStory.save();
+         }
          removeSelf();
       }
    }
