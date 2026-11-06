@@ -22,7 +22,7 @@ package f4data
       
       public var colorHue:int;
       
-      public var special:Boolean = false;
+      public var special:Boolean = false; // Flagship protection flag
       
       public function isCaptainShip() : Boolean
       {

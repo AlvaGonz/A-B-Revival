@@ -439,7 +439,7 @@ package f4data.sdata
          var _loc6_:int = 0;
          while(_loc6_ < 35)
          {
-            GIFT[_loc6_] = [_loc1_,_loc1_ + 1,_loc2_,_loc2_,_loc2_,_loc2_,_loc3_,_loc3_,_loc3_,_loc3_,_loc4_,_loc5_];
+            GIFT[_loc6_] = [_loc1_,_loc1_ + 1,_loc2_,_loc3_,_loc4_,_loc5_];
             _loc1_ += 2;
             _loc3_++;
             _loc4_++;
@@ -451,9 +451,6 @@ package f4data.sdata
             else
             {
                (GIFT[_loc6_] as Array).push(_loc2_ + 1);
-               (GIFT[_loc6_] as Array).push(_loc2_ + 1);
-               (GIFT[_loc6_] as Array).push(_loc2_ + 1);
-               (GIFT[_loc6_] as Array).push(_loc2_ + 1);
                _loc2_ += 2;
             }
             _loc6_++;
@@ -463,9 +460,6 @@ package f4data.sdata
          _loc8_ = 133 + 35 - 1;
          while(_loc8_ < 173)
          {
-            _loc7_.push(_loc8_);
-            _loc7_.push(_loc8_);
-            _loc7_.push(_loc8_);
             _loc7_.push(_loc8_);
             _loc8_++;
          }
@@ -484,9 +478,6 @@ package f4data.sdata
          _loc8_ = 71 + 53 - 1;
          while(_loc8_ < 133)
          {
-            _loc7_.push(_loc8_);
-            _loc7_.push(_loc8_);
-            _loc7_.push(_loc8_);
             _loc7_.push(_loc8_);
             _loc8_++;
          }

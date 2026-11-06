@@ -8,10 +8,13 @@ set OUT_SWF="%~dp0..\game\a&b_space_mod.swf"
 set SCRIPTS="%~dp0..\src\as3\scripts"
 
 %FFDEC% -importScript %IN_SWF% %OUT_SWF% %SCRIPTS%
+set BUILD_ERR=%ERRORLEVEL%
 
-if %ERRORLEVEL% EQU 0 (
+if %BUILD_ERR% EQU 0 (
     echo Build SUCCESS: %OUT_SWF% created!
+    exit /b 0
 ) else (
-    echo Build FAILED with error code %ERRORLEVEL%.
+    echo Build FAILED with error code %BUILD_ERR%.
+    exit /b %BUILD_ERR%
 )
 

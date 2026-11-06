@@ -33,7 +33,9 @@ package ui.pages
       {
          this.f4datax = param1;
          this.form1 = new FormShop(param3.getChildByName("form1") as MovieClip,param1.shopPart);
+         this.form1.isBuyShop = true;
          this.form2 = new FormShop(param3.getChildByName("form2") as MovieClip,param1.plPart,InitData.SELL);
+         this.form2.isBuyShop = false;
          this.form1.initsortMC();
          this.form2.initsortMC();
          this.form2.offNew();
@@ -106,7 +108,9 @@ package ui.pages
       
       override public function afterFadeIn() : void
       {
+         this.f4datax.reconcileShopStock();
          this.tempMoney = 0;
+         this.updateTxt();
          this.updateAccept();
          this.form1.filterX(4);
          this.form1.initsortMC();
@@ -192,12 +196,8 @@ package ui.pages
          }
          else if(_loc2_ == "invert")
          {
-            _loc7_ = _loc4_.selInvert();
-            if(_loc7_ != 0)
-            {
-               this.tempMoney += _loc7_;
-               this.updateTxt();
-            }
+            _loc4_.selInvert();
+            this.updateTotalCost();
             this.updateAccept();
          }
          else if(_loc2_ == "fly")
@@ -242,26 +242,7 @@ package ui.pages
             _loc9_ = _loc4_.getLink(_loc6_);
             if(_loc9_)
             {
-               if(_loc9_[10] == 1)
-               {
-                  _loc10_ = int(_loc9_[9]);
-               }
-               else
-               {
-                  _loc10_ = -_loc9_[9];
-               }
-               if(_loc10_ != 0)
-               {
-                  if(_loc4_ == this.form1)
-                  {
-                     this.tempMoney -= _loc10_;
-                  }
-                  else
-                  {
-                     this.tempMoney += _loc10_;
-                  }
-                  this.updateTxt();
-               }
+               this.updateTotalCost();
                this.updateAccept();
             }
          }
@@ -402,6 +383,28 @@ package ui.pages
          {
             (_mov.getChildByName("txtNow") as TextField).text = this.tempMoney + " G";
          }
+      }
+      
+      public function updateTotalCost() : void
+      {
+         var _total:int = 0;
+         var _item:Array = null;
+         for each(_item in this.form1.workArr)
+         {
+            if(_item && int(_item[this.form1.selNumA]) > 0)
+            {
+               _total -= int(_item[9]) * int(_item[this.form1.selNumA]);
+            }
+         }
+         for each(_item in this.form2.workArr)
+         {
+            if(_item && int(_item[this.form2.selNumA]) > 0)
+            {
+               _total += int(_item[9]);
+            }
+         }
+         this.tempMoney = _total;
+         this.updateTxt();
       }
       
       public function addDt(param1:F4DataOrg, param2:int, param3:Number) : void
