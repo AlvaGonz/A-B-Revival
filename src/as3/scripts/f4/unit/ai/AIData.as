@@ -1,0 +1,135 @@
+package f4.unit.ai
+{
+   public class AIData
+   {
+      
+      public var ais:Array;
+      
+      public function AIData()
+      {
+         super();
+         this.ais = [];
+         var _loc1_:AIRunMode = new AIRunMode();
+         _loc1_.frameEx = 18;
+         _loc1_.strong1.x = 0.81;
+         _loc1_.strong1.y = 1;
+         _loc1_.strong1.width = 1;
+         _loc1_.strong2.x = 0.04;
+         _loc1_.strong2.y = 1;
+         _loc1_.strong2.width = 0.075;
+         _loc1_.strong3.x = 3;
+         _loc1_.strong3.y = 1;
+         _loc1_.weak1.x = 1;
+         _loc1_.weak1.y = 1;
+         _loc1_.weak1.width = 0.8;
+         _loc1_.weak2.x = 0.09;
+         _loc1_.weak2.y = 1;
+         _loc1_.weak2.width = 0.03;
+         _loc1_.weak3.x = 3;
+         _loc1_.weak3.y = 1;
+         _loc1_.bodyRt2 = 3;
+         _loc1_.bodyFar.x = 1;
+         _loc1_.bodyFar.y = 1;
+         _loc1_.bodyClose.x = 2;
+         _loc1_.bodyClose.y = 0.2;
+         this.ais.push(_loc1_);
+         _loc1_ = new AIRunMode();
+         _loc1_.frameEx = 18;
+         _loc1_.strong1.x = 0.81;
+         _loc1_.strong1.y = 1;
+         _loc1_.strong1.width = 1;
+         _loc1_.strong2.x = 0.16;
+         _loc1_.strong2.y = 1;
+         _loc1_.strong2.width = 1;
+         _loc1_.strong3.x = 3;
+         _loc1_.strong3.y = 1;
+         _loc1_.weak1.x = 1;
+         _loc1_.weak1.y = 1;
+         _loc1_.weak1.width = 1;
+         _loc1_.weak2.x = 0.09;
+         _loc1_.weak2.y = 1;
+         _loc1_.weak2.width = 1;
+         _loc1_.weak3.x = 3;
+         _loc1_.weak3.y = 1;
+         _loc1_.bodyRt2 = 3;
+         _loc1_.bodyFar.x = 1;
+         _loc1_.bodyFar.y = 1;
+         _loc1_.bodyClose.x = 3;
+         _loc1_.bodyClose.y = 1;
+         this.ais.push(_loc1_);
+         _loc1_ = new AIRunMode();
+         _loc1_.frameEx = 18;
+         _loc1_.strong1.x = 0.5;
+         _loc1_.strong1.y = 1;
+         _loc1_.strong1.width = 1;
+         _loc1_.strong2.x = 0.2;
+         _loc1_.strong2.y = 2;
+         _loc1_.strong2.width = 1;
+         _loc1_.strong3.x = 3;
+         _loc1_.strong3.y = 1;
+         _loc1_.weak1.x = 1;
+         _loc1_.weak1.y = 1;
+         _loc1_.weak1.width = 1;
+         _loc1_.weak2.x = 0.6;
+         _loc1_.weak2.y = 2;
+         _loc1_.weak2.width = 1;
+         _loc1_.weak3.x = 1;
+         _loc1_.weak3.y = 1;
+         _loc1_.bodyRt2 = 3;
+         _loc1_.bodyFar.x = 1;
+         _loc1_.bodyFar.y = 1;
+         _loc1_.bodyClose.x = 2;
+         _loc1_.bodyClose.y = 1;
+         this.ais.push(_loc1_);
+         _loc1_ = new AIRunMode();
+         _loc1_.frameEx = 18;
+         _loc1_.strong1.x = 0.5;
+         _loc1_.strong1.y = 1;
+         _loc1_.strong1.width = 1;
+         _loc1_.strong2.x = 0.2;
+         _loc1_.strong2.y = 2;
+         _loc1_.strong2.width = 1;
+         _loc1_.strong3.x = 3;
+         _loc1_.strong3.y = 1;
+         _loc1_.weak1.x = 1;
+         _loc1_.weak1.y = 1;
+         _loc1_.weak1.width = 1;
+         _loc1_.weak2.x = 0.6;
+         _loc1_.weak2.y = 2;
+         _loc1_.weak2.width = 1;
+         _loc1_.weak3.x = 1;
+         _loc1_.weak3.y = 1;
+         _loc1_.bodyRt2 = 1.25;
+         _loc1_.bodyFar.x = 1;
+         _loc1_.bodyFar.y = 1;
+         _loc1_.bodyClose.x = 2;
+         _loc1_.bodyClose.y = 1;
+         this.ais.push(_loc1_);
+         _loc1_ = new AIRunMode();
+         _loc1_.frameEx = 20;
+         _loc1_.strong1.x = 1;
+         _loc1_.strong1.y = 1;
+         _loc1_.strong1.width = 0;
+         _loc1_.strong2.x = 0.36;
+         _loc1_.strong2.y = 1;
+         _loc1_.strong2.width = 0;
+         _loc1_.strong3.x = 1;
+         _loc1_.strong3.y = 0;
+         _loc1_.weak1.x = 1;
+         _loc1_.weak1.y = 1;
+         _loc1_.weak1.width = 0;
+         _loc1_.weak2.x = 0.64;
+         _loc1_.weak2.y = 1;
+         _loc1_.weak2.width = 0;
+         _loc1_.weak3.x = 1;
+         _loc1_.weak3.y = 0;
+         _loc1_.bodyRt2 = 1.25;
+         _loc1_.bodyFar.x = 1;
+         _loc1_.bodyFar.y = 0;
+         _loc1_.bodyClose.x = 2;
+         _loc1_.bodyClose.y = 0;
+         this.ais.push(_loc1_);
+      }
+   }
+}
+
