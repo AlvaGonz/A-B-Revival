@@ -8,6 +8,9 @@ Desktop.ini
 *.bak
 *~
 
+# Generated mod binaries
+game/*_mod.swf
+
 # Graphify machine-local caches
 graphify-out/.graphify_python
 graphify-out/.graphify_root
