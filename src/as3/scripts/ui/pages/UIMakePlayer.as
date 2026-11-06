@@ -436,6 +436,7 @@ package ui.pages
          ShowPart.cleanDt(_mov.getChildByName("dt") as MovieClip);
          this.dtOrg = null;
          this.hidePoints();
+         this.updateClearButtons();
       }
       
       public function addDtL(param1:F4DataLinks) : void
@@ -826,6 +827,7 @@ package ui.pages
          this.showFlys(false);
          this.showFlyEdit(true);
          this.nowedit = true;
+         this.updateClearButtons();
       }
       
       public function showFlys(param1:Boolean) : void
@@ -1155,6 +1157,10 @@ package ui.pages
             if(!this.nowedit)
             {
                this.updateNew();
+            }
+            else
+            {
+               this.updateClearButtons();
             }
             InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
          }
