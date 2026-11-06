@@ -1,5 +1,6 @@
 package f4data
 {
+   import f4data.sdata.ConfigAndStory;
    import flash.geom.Point;
    
    public class F4DataHole
@@ -24,6 +25,10 @@ package f4data
       
       public function canWing() : Boolean
       {
+         if(this.parentOrg && (this.parentOrg.type == 0 || this.parentOrg.type == 1))
+         {
+            return true;
+         }
          var _loc1_:int = int(this.type.length);
          var _loc2_:int = 0;
          while(_loc2_ < _loc1_)
@@ -60,6 +65,17 @@ package f4data
          {
             return 1;
          }
+         if(param1.f4dataorg.type == 1)
+         {
+            if(this.getCurrentWings(param1) >= 10)
+            {
+               return 2;
+            }
+            if(this.parentOrg && (this.parentOrg.type == 0 || this.parentOrg.type == 1))
+            {
+               return 0;
+            }
+         }
          for each(_loc2_ in this.type)
          {
             if(param1.f4dataorg.type == _loc2_)
@@ -77,6 +93,17 @@ package f4data
          {
             return 1;
          }
+         if(param1.type == 1)
+         {
+            if(this.getCurrentWings() >= 10)
+            {
+               return 2;
+            }
+            if(this.parentOrg && (this.parentOrg.type == 0 || this.parentOrg.type == 1))
+            {
+               return 0;
+            }
+         }
          for each(_loc2_ in this.type)
          {
             if(param1.type == _loc2_)
@@ -85,6 +112,27 @@ package f4data
             }
          }
          return 2;
+      }
+      
+      private function getCurrentWings(param1:F4DataLinks = null) : int
+      {
+         if(param1 && param1.parentPart)
+         {
+            return param1.parentPart.getRoot().countWings();
+         }
+         if(this.partf4)
+         {
+            return this.partf4.getRoot().countWings();
+         }
+         if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plFly)
+         {
+            var _pl:F4DataLinks = ConfigAndStory.ALLPART.plFly[ConfigAndStory.PLAYER] as F4DataLinks;
+            if(_pl)
+            {
+               return _pl.countWings();
+            }
+         }
+         return 0;
       }
       
       public function strToType(param1:String) : void
