@@ -4,6 +4,9 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 
 ## Core Entities
 - **Ship / Craft (`SimpleFly`, `FlyBase`, `FlyData`)**: The player's or enemy's spacecraft instance, composed of attached modular components.
+- **Player Craft (`PlayerCraft`, `ConfigAndStory.PLAYER`)**: The primary spacecraft directly piloted and controlled by the player during combat.
+- **AI Wingman (`WingmanCraft`, `AI_P`, `ConfigAndStory.AI`)**: Generic allied craft deployed from available player hangar crafts into tactical wingman formation slots (`0..4`).
+- **Allied Flagship / Captain's Ship (`CaptainShip`, `special == true`)**: A unique, non-duplicable allied capital craft piloted by Captain Tom during story missions. Customizable and armable by the player in the Factory (`UIMakePlayer`), but strictly barred from Player control and generic AI wingman slots in `UIChooseFlyAI`.
 - **Part / Module (`FlyPart`, `F4PartMC`, `BaseMovePart`)**: A discrete physical component attached to a ship chassis, such as wings, weapons, thrusters, or armor plating.
 - **Attachment Point / Slot (`F4DataHole`, `F4DataLinks`)**: Coordinate-anchored socket on a chassis where parts can be connected.
 - **Fire Port / Hardpoint (`FirePort`, `FirePorts`, `FireMode`, `FireSingle`, `FireLoop`)**: Weapon emitter logic defining projectile spawn points, rate of fire, recoil, and cooldowns.

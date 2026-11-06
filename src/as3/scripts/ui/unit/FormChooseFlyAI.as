@@ -3,7 +3,10 @@ package ui.unit
    import f4data.F4DataLinks;
    import f4data.sdata.ConfigAndStory;
    import flash.display.MovieClip;
+   import flash.filters.GlowFilter;
    import flash.text.TextField;
+   import flash.text.TextFormat;
+   import flash.text.TextFormatAlign;
    import ui.base.FormBase;
    
    public class FormChooseFlyAI extends FormBase
@@ -13,6 +16,19 @@ package ui.unit
       {
          line = 4;
          super(param1,param2);
+      }
+      
+      public function isCaptainShip(param1:int) : Boolean
+      {
+         if(linkArr && param1 >= 0 && param1 < linkArr.length && linkArr[param1])
+         {
+            var _loc2_:F4DataLinks = linkArr[param1] as F4DataLinks;
+            if(_loc2_)
+            {
+               return _loc2_.special || _loc2_.name == "Captain's Ship" || _loc2_.name.indexOf("Captain") != -1;
+            }
+         }
+         return false;
       }
       
       override public function f4linkToArray(param1:*) : Array
@@ -42,6 +58,10 @@ package ui.unit
       
       public function ckAIShow(param1:int) : Boolean
       {
+         if(this.isCaptainShip(param1))
+         {
+            return false;
+         }
          var _loc2_:int = 0;
          while(_loc2_ < ConfigAndStory.AI.length)
          {
@@ -62,6 +82,8 @@ package ui.unit
       {
          var _loc1_:int = 0;
          var _loc2_:MovieClip = null;
+         var _loc3_:int = 0;
+         var _badge:TextField = null;
          _loc1_ = 0;
          while(_loc1_ < pageLen)
          {
@@ -75,18 +97,60 @@ package ui.unit
             if(workArr[_loc1_ + pageLen * page])
             {
                this.updateForm1(_loc2_,workArr[_loc1_ + pageLen * page]);
-               if(this.ckAIShow(workArr[_loc1_ + pageLen * page][0]))
+               _loc3_ = int(workArr[_loc1_ + pageLen * page][0]);
+               _badge = _loc2_.getChildByName("txtCaptainBadge") as TextField;
+               if(this.isCaptainShip(_loc3_))
                {
-                  _loc2_.getChildByName("$bai").visible = true;
+                  _loc2_.getChildByName("$bai").visible = false;
+                  if(!_badge)
+                  {
+                     _badge = new TextField();
+                     _badge.name = "txtCaptainBadge";
+                     var _tf:TextFormat = new TextFormat("Arial", 10, 0x66ccff, true);
+                     _tf.align = TextFormatAlign.CENTER;
+                     _badge.defaultTextFormat = _tf;
+                     _badge.text = "[CAPTAIN]";
+                     var _bai:MovieClip = _loc2_.getChildByName("$bai") as MovieClip;
+                     if(_bai)
+                     {
+                        _badge.x = _bai.x;
+                        _badge.y = _bai.y + 2;
+                        _badge.width = _bai.width;
+                        _badge.height = _bai.height;
+                     }
+                     _badge.selectable = false;
+                     _badge.mouseEnabled = false;
+                     _badge.filters = [new GlowFilter(0x003366, 0.8, 3, 3, 2, 1)];
+                     _loc2_.addChild(_badge);
+                  }
+                  _badge.visible = true;
+                  (_loc2_.getChildByName("player") as TextField).text = "-";
+                  (_loc2_.getChildByName("ai") as TextField).text = "ALLY";
                }
                else
                {
-                  _loc2_.getChildByName("$bai").visible = false;
+                  if(_badge)
+                  {
+                     _badge.visible = false;
+                  }
+                  if(this.ckAIShow(_loc3_))
+                  {
+                     _loc2_.getChildByName("$bai").visible = true;
+                  }
+                  else
+                  {
+                     _loc2_.getChildByName("$bai").visible = false;
+                  }
                }
             }
             else
             {
                _loc2_.getChildByName("$bai").visible = false;
+               _badge = _loc2_.getChildByName("txtCaptainBadge") as TextField;
+               if(_badge)
+               {
+                  _badge.visible = false;
+               }
             }
             _loc1_++;
          }

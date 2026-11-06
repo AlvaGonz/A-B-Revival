@@ -42,6 +42,23 @@ package ui.pages
       public function UIChooseFlyAI(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
          ConfigAndStory.checkCaptainShip();
+         var _capFly:F4DataLinks = ConfigAndStory.getCaptainFly();
+         if(_capFly)
+         {
+            if(ConfigAndStory.PLAYER == _capFly.index)
+            {
+               ConfigAndStory.PLAYER = 0;
+            }
+            var _aiSlot:int = 0;
+            while(_aiSlot < ConfigAndStory.AI.length)
+            {
+               if(ConfigAndStory.AI[_aiSlot] == _capFly.index)
+               {
+                  ConfigAndStory.AI[_aiSlot] = null;
+               }
+               _aiSlot++;
+            }
+         }
          param3.getChildByName("lv").visible = false;
          (param3.getChildByName("txtbt") as TextField).text = "BATTLE-" + (ConfigAndStory.STORY + 1);
          this.f4datax = param1;
@@ -268,6 +285,13 @@ package ui.pages
                f4link = this.form.getLink(formNum);
                if(f4link)
                {
+                  if(this.form.isCaptainShip(f4link.index))
+                  {
+                     this.addDtL(f4link,this.dtLinkS,"showDetail",true);
+                     this.form.lightOn(formNum);
+                     InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
+                     return;
+                  }
                   this.tempPlayerNum = formNum;
                   plNum = int(this.form.workArr[this.tempPlayerNum + this.form.page * this.form.pageLen][0]);
                   if(this.ckAIUseAI(plNum) == -1)
@@ -294,6 +318,10 @@ package ui.pages
             f4linkAI = this.form.getLink(formNumAI);
             if(f4linkAI)
             {
+               if(this.form.isCaptainShip(f4linkAI.index))
+               {
+                  return;
+               }
                this.addAI(f4linkAI.index);
                this.form.updateAI();
                this.addDtL(f4linkAI,this.dtLinkS,"showDetail",true);
@@ -437,6 +465,10 @@ package ui.pages
       
       public function ckAIUse(param1:int) : Boolean
       {
+         if(this.form && this.form.isCaptainShip(param1))
+         {
+            return true;
+         }
          var _loc3_:int = 0;
          var _loc2_:Array = ConfigAndStory.AI;
          if(ConfigAndStory.PLAYER == param1)
