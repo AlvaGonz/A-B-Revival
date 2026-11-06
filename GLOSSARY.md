@@ -16,6 +16,10 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Finite Body Stock (`type == 0`, `Body`)**: Finite inventory rule for ship hulls/chassis, requiring discrete unit counts in `shopPart` that decrement upon purchase and restore upon sale.
 - **Purchase Stack (`Sel.`, `xN`)**: Staged quantity multiplier for a single shop item in `FormShop`, represented as `x1`, `x2`, etc., scaling total transaction cost and resulting in N cloned parts added on checkout (`ACCEPT`).
 - **Shop Reconciliation (`reconcileShopStock`)**: Routine synchronizing `shopPart` against `GIFT[0..STORY]`, deduplicating redundant infinite stock entries and backfilling missing historical unlocks in existing save files.
+- **Battle Damage Telemetry (`UIGame`, `AIUnity`)**: Combat HUD subsystem displaying cumulative lost craft components (Guns, Wings, Engines, Modules) anchored above the player lifebar.
+- **Ally Health Threshold Alert (`UIGame.checkCaptainHealthAlerts`)**: Tactical HUD notification broadcasting warnings when Captain Tom's total health bar drops past 70%, 50%, 30%, and 10%.
+- **Critical Portrait State (`UIGame.updatePortraitCriticalEffects`)**: Visual distress feedback (pulsing red tint and impact jitter) applied to Michael and Captain Tom portrait frames when total health is at or below 30%.
+- **Autofire Reticle Indicator (`OpOneCore.autoFire`, `UIGame`)**: Continuous weapon discharge mode toggled by key 'X', rendered as a mouse-anchored green circular indicator when active.
 - **Mission / Director (`MissionData`, `Director`, `LevelData`, `LevelBase`)**: Campaign wave definitions, enemy spawn scripting, objective evaluation, and reward payouts.
 
 ## Tooling Vocabulary

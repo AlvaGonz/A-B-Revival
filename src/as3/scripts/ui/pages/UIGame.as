@@ -9,9 +9,14 @@ package ui.pages
    import flash.display.Bitmap;
    import flash.display.DisplayObjectContainer;
    import flash.display.MovieClip;
+   import flash.display.Shape;
    import flash.events.Event;
+   import flash.geom.ColorTransform;
    import flash.text.TextField;
+   import flash.text.TextFieldAutoSize;
+   import flash.text.TextFormat;
    import flash.ui.Mouse;
+   import flash.utils.getTimer;
    import fullshit.ctrl2.SoundUnit2;
    import fullshit.tool.Attach;
    import ui.UICtrl;
@@ -54,6 +59,28 @@ package ui.pages
       public var pf1:AIUnity;
       
       public var pf2:AIUnity;
+
+      public var lostPartsTxt:TextField;
+      public var lostGun:int = 0;
+      public var lostWing:int = 0;
+      public var lostEng:int = 0;
+      public var lostMod:int = 0;
+      public var lostFlashTimer:int = 0;
+
+      public var capAlertTxt:TextField;
+      public var capAlertTimer:int = 0;
+      public var capThresholdsFired:Array = [false, false, false, false];
+
+      public var origMFaceX:Number = NaN;
+      public var origMFaceY:Number = NaN;
+      public var origCFaceX:Number = NaN;
+      public var origCFaceY:Number = NaN;
+      public var lastPlayerHp:Number = -1;
+      public var lastCapHp:Number = -1;
+      public var playerShakeTimer:int = 0;
+      public var capShakeTimer:int = 0;
+
+      public var autofireDot:Shape;
       
       public function UIGame(param1:DisplayObjectContainer, param2:MovieClip, param3:String, param4:UICtrl, param5:UIBase = null)
       {
@@ -86,6 +113,37 @@ package ui.pages
          this.dirs = param2.getChildByName("dir") as MovieClip;
          this.km = param2.getChildByName("km") as MovieClip;
          this.moneyTxt = param2.getChildByName("money") as TextField;
+
+         this.lostPartsTxt = new TextField();
+         this.lostPartsTxt.autoSize = TextFieldAutoSize.LEFT;
+         this.lostPartsTxt.selectable = false;
+         this.lostPartsTxt.mouseEnabled = false;
+         var _ltf:TextFormat = new TextFormat("_sans", 11, 0xFF5555, true);
+         this.lostPartsTxt.defaultTextFormat = _ltf;
+         this.lostPartsTxt.x = this.lifeBar.x;
+         this.lostPartsTxt.y = this.lifeBar.y - 18;
+         param2.addChild(this.lostPartsTxt);
+
+         this.capAlertTxt = new TextField();
+         this.capAlertTxt.autoSize = TextFieldAutoSize.CENTER;
+         this.capAlertTxt.selectable = false;
+         this.capAlertTxt.mouseEnabled = false;
+         var _ctf:TextFormat = new TextFormat("_sans", 13, 0xFFFF00, true);
+         this.capAlertTxt.defaultTextFormat = _ctf;
+         this.capAlertTxt.x = 400;
+         this.capAlertTxt.y = 48;
+         this.capAlertTxt.visible = false;
+         param2.addChild(this.capAlertTxt);
+
+         this.autofireDot = new Shape();
+         this.autofireDot.graphics.beginFill(0x000000, 0.7);
+         this.autofireDot.graphics.drawCircle(12, 12, 4);
+         this.autofireDot.graphics.endFill();
+         this.autofireDot.graphics.beginFill(0x00FF44, 1);
+         this.autofireDot.graphics.drawCircle(12, 12, 3);
+         this.autofireDot.graphics.endFill();
+         this.autofireDot.visible = false;
+         this.mouse.addChild(this.autofireDot);
          this.km.gotoAndStop(1);
          this.f1.visible = false;
          this.f2.visible = false;
@@ -410,6 +468,252 @@ package ui.pages
          (this.dirs.getChildByName("txtTime") as TextField).text = this.eventCrtl.nowTime;
          this.mouse.x += (_mov.mouseX - this.mouse.x) * 0.33;
          this.mouse.y += (_mov.mouseY - this.mouse.y) * 0.33;
+         this.updateDamageTelemetry();
+         this.updateCaptainAlerts();
+         this.updateCriticalDistress();
+         this.updateAutofireReticle();
+      }
+
+      public function recordLostPart(param1:int) : void
+      {
+         if(param1 == 1)
+         {
+            this.lostWing++;
+         }
+         else if(param1 == 2)
+         {
+            this.lostEng++;
+         }
+         else if(param1 == 3)
+         {
+            this.lostGun++;
+         }
+         else if(param1 >= 4)
+         {
+            this.lostMod++;
+         }
+         this.lostFlashTimer = 10;
+         this.updateLostPartsText();
+      }
+
+      public function updateLostPartsText() : void
+      {
+         if(!this.lostPartsTxt)
+         {
+            return;
+         }
+         var _parts:Array = [];
+         if(this.lostGun > 0)
+         {
+            _parts.push("[Gun x" + this.lostGun + "]");
+         }
+         if(this.lostWing > 0)
+         {
+            _parts.push("[Wing x" + this.lostWing + "]");
+         }
+         if(this.lostEng > 0)
+         {
+            _parts.push("[Engine x" + this.lostEng + "]");
+         }
+         if(this.lostMod > 0)
+         {
+            _parts.push("[Module x" + this.lostMod + "]");
+         }
+         if(_parts.length > 0)
+         {
+            this.lostPartsTxt.text = "LOST: " + _parts.join(" ");
+         }
+         else
+         {
+            this.lostPartsTxt.text = "";
+         }
+      }
+
+      public function triggerCaptainAlert(param1:String, param2:uint) : void
+      {
+         if(!this.capAlertTxt)
+         {
+            return;
+         }
+         this.capAlertTxt.text = param1;
+         this.capAlertTxt.textColor = param2;
+         this.capAlertTxt.x = 400 - this.capAlertTxt.width / 2;
+         this.capAlertTimer = 72;
+         this.capAlertTxt.visible = true;
+         this.capAlertTxt.alpha = 1;
+         InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13], 0.35);
+      }
+
+      public function updateDamageTelemetry() : void
+      {
+         if(!this.lostPartsTxt)
+         {
+            return;
+         }
+         if(this.lostFlashTimer > 0)
+         {
+            this.lostFlashTimer--;
+            this.lostPartsTxt.textColor = 0xFFFFFF;
+         }
+         else
+         {
+            this.lostPartsTxt.textColor = 0xFF5555;
+         }
+      }
+
+      public function updateCaptainAlerts() : void
+      {
+         if(Boolean(this.pf1) && Boolean(this.pf1.unity) && Boolean(this.pf1.unity.udata) && this.pf1.unity.udata.hp.y > 0)
+         {
+            var _capPct:Number = (this.pf1.unity.udata.hp.x / this.pf1.unity.udata.hp.y) * 100;
+            if(_capPct <= 10 && !this.capThresholdsFired[3])
+            {
+               this.triggerCaptainAlert("[ EMERGENCY: CAPTAIN TOM FAILING - 10%! ]", 0xFF2222);
+               this.capThresholdsFired[3] = true;
+               this.capThresholdsFired[2] = true;
+               this.capThresholdsFired[1] = true;
+               this.capThresholdsFired[0] = true;
+            }
+            else if(_capPct <= 30 && !this.capThresholdsFired[2])
+            {
+               this.triggerCaptainAlert("[ WARNING: CAPTAIN TOM CRITICAL - 30% ]", 0xFF6600);
+               this.capThresholdsFired[2] = true;
+               this.capThresholdsFired[1] = true;
+               this.capThresholdsFired[0] = true;
+            }
+            else if(_capPct <= 50 && !this.capThresholdsFired[1])
+            {
+               this.triggerCaptainAlert("[ CAPTAIN TOM: 50% HEALTH ]", 0xFFFF00);
+               this.capThresholdsFired[1] = true;
+               this.capThresholdsFired[0] = true;
+            }
+            else if(_capPct <= 70 && !this.capThresholdsFired[0])
+            {
+               this.triggerCaptainAlert("[ CAPTAIN TOM: 70% HEALTH ]", 0x66FF66);
+               this.capThresholdsFired[0] = true;
+            }
+            else if(_capPct > 70)
+            {
+               this.capThresholdsFired[0] = false;
+               this.capThresholdsFired[1] = false;
+               this.capThresholdsFired[2] = false;
+               this.capThresholdsFired[3] = false;
+            }
+         }
+         if(this.capAlertTimer > 0)
+         {
+            this.capAlertTimer--;
+            this.capAlertTxt.visible = true;
+            if(this.capAlertTimer < 20)
+            {
+               this.capAlertTxt.alpha = this.capAlertTimer / 20;
+            }
+            else
+            {
+               this.capAlertTxt.alpha = 1;
+            }
+         }
+         else if(this.capAlertTxt)
+         {
+            this.capAlertTxt.visible = false;
+         }
+      }
+
+      public function updateCriticalDistress() : void
+      {
+         var _pulse:Number = (Math.sin(getTimer() * 0.008) + 1) * 0.5;
+         
+         if(Boolean(this.core) && Boolean(this.core.playerFly) && Boolean(this.core.playerFly.unity) && Boolean(this.core.playerFly.unity.udata) && this.core.playerFly.unity.udata.hp.y > 0)
+         {
+            var _mFace:MovieClip = this.lifeBar.getChildByName("face") as MovieClip;
+            if(_mFace)
+            {
+               if(isNaN(this.origMFaceX))
+               {
+                  this.origMFaceX = _mFace.x;
+                  this.origMFaceY = _mFace.y;
+               }
+               var _curHp:Number = this.core.playerFly.unity.udata.hp.x;
+               var _mPct:Number = (_curHp / this.core.playerFly.unity.udata.hp.y) * 100;
+               
+               if(_mPct <= 30)
+               {
+                  _mFace.transform.colorTransform = new ColorTransform(1, 1 - _pulse * 0.55, 1 - _pulse * 0.55, 1, _pulse * 100, 0, 0);
+                  if(this.lastPlayerHp >= 0 && _curHp < this.lastPlayerHp)
+                  {
+                     this.playerShakeTimer = 6;
+                  }
+                  if(this.playerShakeTimer > 0)
+                  {
+                     this.playerShakeTimer--;
+                     _mFace.x = this.origMFaceX + (Math.random() * 4 - 2);
+                     _mFace.y = this.origMFaceY + (Math.random() * 4 - 2);
+                  }
+                  else
+                  {
+                     _mFace.x = this.origMFaceX;
+                     _mFace.y = this.origMFaceY;
+                  }
+               }
+               else
+               {
+                  _mFace.transform.colorTransform = new ColorTransform();
+                  _mFace.x = this.origMFaceX;
+                  _mFace.y = this.origMFaceY;
+               }
+               this.lastPlayerHp = _curHp;
+            }
+         }
+         
+         if(Boolean(this.pf1) && Boolean(this.pf1.unity) && Boolean(this.pf1.unity.udata) && this.pf1.unity.udata.hp.y > 0 && Boolean(this.f1) && this.f1.visible)
+         {
+            var _cFace:MovieClip = this.f1.getChildByName("face") as MovieClip;
+            if(_cFace)
+            {
+               if(isNaN(this.origCFaceX))
+               {
+                  this.origCFaceX = _cFace.x;
+                  this.origCFaceY = _cFace.y;
+               }
+               var _curCapHp:Number = this.pf1.unity.udata.hp.x;
+               var _cPct:Number = (_curCapHp / this.pf1.unity.udata.hp.y) * 100;
+               
+               if(_cPct <= 30)
+               {
+                  _cFace.transform.colorTransform = new ColorTransform(1, 1 - _pulse * 0.55, 1 - _pulse * 0.55, 1, _pulse * 100, 0, 0);
+                  if(this.lastCapHp >= 0 && _curCapHp < this.lastCapHp)
+                  {
+                     this.capShakeTimer = 6;
+                  }
+                  if(this.capShakeTimer > 0)
+                  {
+                     this.capShakeTimer--;
+                     _cFace.x = this.origCFaceX + (Math.random() * 4 - 2);
+                     _cFace.y = this.origCFaceY + (Math.random() * 4 - 2);
+                  }
+                  else
+                  {
+                     _cFace.x = this.origCFaceX;
+                     _cFace.y = this.origCFaceY;
+                  }
+               }
+               else
+               {
+                  _cFace.transform.colorTransform = new ColorTransform();
+                  _cFace.x = this.origCFaceX;
+                  _cFace.y = this.origCFaceY;
+               }
+               this.lastCapHp = _curCapHp;
+            }
+         }
+      }
+
+      public function updateAutofireReticle() : void
+      {
+         if(Boolean(this.autofireDot) && Boolean(this.core))
+         {
+            this.autofireDot.visible = this.core.autoFire;
+         }
       }
       
       override public function act(param1:BtnBase) : void

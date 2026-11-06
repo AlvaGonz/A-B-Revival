@@ -326,6 +326,14 @@ package f4.unit.ai
                      ConfigAndStory.ALLPART.repairPart.push(_loc1_.org);
                   }
                }
+               if(this == InitData.CORE.playerFly && Boolean(_loc1_.org) && _loc1_.org.type != 0)
+               {
+                  if(Boolean(targets) && Boolean(targets.evts) && Boolean(targets.evts.gameui))
+                  {
+                     targets.evts.gameui.recordLostPart(_loc1_.org.type);
+                  }
+                  InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13], 0.35);
+               }
                if(!this.unity.friend)
                {
                   if(Math.random() < 0.1)
