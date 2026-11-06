@@ -8,3 +8,4 @@ if %ERRORLEVEL% EQU 0 (
     echo Failed to configure core.hooksPath.
     exit /b %ERRORLEVEL%
 )
+

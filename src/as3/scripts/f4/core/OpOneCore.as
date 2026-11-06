@@ -32,6 +32,8 @@ package f4.core
       public var pause:Boolean = false;
       
       public var over:Boolean = true;
+
+      public var autoFire:Boolean = false;
       
       public var levelData:LevelData;
       
@@ -93,6 +95,10 @@ package f4.core
          var _loc4_:Number = NaN;
          if(!this.playerFly.isDeadA1)
          {
+            if(this._key.isKeyDownOnce("X") || this._key.isKeyDownOnce("x"))
+            {
+               this.autoFire = !this.autoFire;
+            }
             if(this.playerFly.aiPowMut > 1)
             {
                this.renderData.sm.ctNum += this.playerFly.aiPow * 0.03;
@@ -122,7 +128,7 @@ package f4.core
                   this.playerFly.aiPow = 0;
                   this.targets.evts.gameui.mouseMove(false,_loc3_);
                }
-               _loc2_ = this._mouse.mouseIsDown;
+               _loc2_ = this.autoFire || this._mouse.mouseIsDown;
                this.playerFly.runUnity(!_loc2_);
                this.targets.evts.gameui.mouseFire(_loc2_);
                if(!this.levelStartChangeCtrl || this._key.isKeyDownOnce("Q"))
@@ -193,7 +199,7 @@ package f4.core
                }
                this.playerFly.aiPow = this.playerKeyTw[0];
                this.playerFly.unity.move.radFace += this.playerKeyTw[1] + this.playerKeyTw[2];
-               _loc2_ = this._mouse.mouseIsDown;
+               _loc2_ = this.autoFire || this._mouse.mouseIsDown;
                this.playerFly.runUnityKey(!_loc2_);
                this.targets.evts.gameui.mouseFire(_loc2_);
                if(this._key.isKeyDownOnce("Q"))
@@ -206,7 +212,7 @@ package f4.core
             else if(this.playerCtrlMode == 2)
             {
                this.playerFly.aiPow = 0;
-               _loc2_ = this._mouse.mouseIsDown;
+               _loc2_ = this.autoFire || this._mouse.mouseIsDown;
                this.playerFly.runUnityKey(!_loc2_);
                this.targets.evts.gameui.mouseFire(_loc2_);
             }

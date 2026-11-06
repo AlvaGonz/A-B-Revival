@@ -15,7 +15,16 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Infinite Stock (`shopPart`)**: Inventory model for repeatable components (weapons, wings, engines) that never deplete upon purchase, cloning bought items directly into `plPart`.
 - **Finite Body Stock (`type == 0`, `Body`)**: Finite inventory rule for ship hulls/chassis, requiring discrete unit counts in `shopPart` that decrement upon purchase and restore upon sale.
 - **Purchase Stack (`Sel.`, `xN`)**: Staged quantity multiplier for a single shop item in `FormShop`, represented as `x1`, `x2`, etc., scaling total transaction cost and resulting in N cloned parts added on checkout (`ACCEPT`).
+- **Hold-to-Stack Auto-Repeat (`FormShop`, `UIShop`)**: Rapid acceleration mechanism that continuously increments the purchase stack while the player holds the mouse button down on an item row, eliminating repetitive clicking.
 - **Shop Reconciliation (`reconcileShopStock`)**: Routine synchronizing `shopPart` against `GIFT[0..STORY]`, deduplicating redundant infinite stock entries and backfilling missing historical unlocks in existing save files.
+- **Battle Damage Telemetry (`UIGame`, `AIUnity`)**: Combat HUD subsystem displaying cumulative lost craft components (Guns, Wings, Engines, Modules) anchored above the player lifebar.
+- **Ally Health Threshold Alert (`UIGame.checkCaptainHealthAlerts`)**: Tactical HUD notification broadcasting warnings when Captain Tom's total health bar drops past 70%, 50%, 30%, and 10%.
+- **Critical Portrait State (`UIGame.updatePortraitCriticalEffects`)**: Visual distress feedback (pulsing red tint and impact jitter) applied to Michael and Captain Tom portrait frames when total health is at or below 30%.
+- **Autofire Reticle Indicator (`OpOneCore.autoFire`, `UIGame`)**: Continuous weapon discharge mode toggled by key 'X', rendered as a mouse-anchored green circular indicator when active.
+- **Combat Camera Distance (`RenderData.setCameraDistance`, `ConfigAndStory.CONFIG[6]`)**: Viewport scale state determining the battlefield field-of-view (FOV) rendered onto the 640x480 stage: Short (1.0x / 640x480), Medium (1.3x / 832x624), and Far (1.5x / 960x720).
+- **Camera Viewport Scaling (`Cam.rect`, `RenderData.bmp.scaleX/Y`)**: Dynamic buffer resizing in `RenderData` that reallocates canvas bitmap buffers to match the active distance FOV while mapping mouse aim coordinates via inverse scale factors.
+- **Camera Distance HUD Badge (`UIGame.showCameraDistanceAlert`)**: Ephemeral combat HUD text indicator displaying the newly selected camera distance upon pressing key 'C', auto-fading after 1.5 seconds.
+- **Companion Heal Priority Navigation (`AIUnity`, `Targets.ia1`)**: Tactical AI behavior where friendly wingmen detect dropped repair items (`data[0] == "life"`) on the battlefield, making navigation to the pickup coordinates their primary steering goal while simultaneously engaging hostile craft in weapon range.
 - **Mission / Director (`MissionData`, `Director`, `LevelData`, `LevelBase`)**: Campaign wave definitions, enemy spawn scripting, objective evaluation, and reward payouts.
 
 ## Tooling Vocabulary

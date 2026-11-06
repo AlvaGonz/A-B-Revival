@@ -65,3 +65,48 @@ before planning or implementing changes:
   - `docs/agents/issue-tracker.md`: Operating issues and wayfinding maps.
   - `docs/agents/triage-labels.md`: Canonical issue triage roles.
 
+## Engineering Workflow Lifecycle
+This repository strictly follows the visual workflow defined in `assets/matt-pocock-workflow.png`:
+
+```mermaid
+flowchart TD
+    Setup["1 hora / inicio: setup-matt-pocock-skills"] --> Config["Configura tracker, arbol de triage y docs"]
+    Config --> Ask["ask-matt"]
+    
+    Shaping["Shaping: propuesta abierta"] --> ShapeTools["wayfinder / prototype / research"]
+    
+    Ask --> Grill["grill-with-docs"]
+    ShapeTools --> Grill
+    
+    Grill --> Consensus["Grilling: preguntas y consenso"]
+    Consensus --> Domain["Si nuevo: GLOSSARY.md y ADR"]
+    Domain --> Spec["to-spec (Spec publicado en issue tracker)"]
+    Spec --> Tickets["to-tickets (Lista de tickets con blocking edges)"]
+    
+    Tickets --> Complexity{"Verificar complejidad"}
+    Complexity -->|"Caso complejo"| Subagents["Subagentes en paralelo / ticket-worker"]
+    Complexity -->|"Ticket por ticket"| Impl["implement"]
+    
+    Bug["Bug difícil y regresión"] --> Diag["diagnosing-bugs"]
+    Diag --> BugLoop["Feedback loop: rojo -> hipótesis -> radicado -> fixer green -> regression test"]
+    BugLoop --> TDD
+    
+    Impl --> TDD["tdd: Red-green-refactor por vertical slice"]
+    Subagents --> Review["code-review"]
+    TDD --> Review
+    
+    Review --> DualReview["Parallel Review: Check de normas (CODING_STANDARDS) + Check de spec (verifica spec/issue)"]
+    DualReview --> Approved{"¿Aprobado?"}
+    Approved -->|"No"| Demolish["Demolish diff -> Re-enter TDD"]
+    Demolish --> TDD
+    Approved -->|"Si"| Commit["Commit en rama / squash / rebase a main"]
+    Commit --> PR["pr: Rellenar checks, asegurar trazabilidad de spec/tickets, testing -> PR / entrega"]
+```
+
+> [!IMPORTANT]
+> **NO IMPLEMENTATION PLAN ARTIFACTS**:
+> The issue tracker (GitHub Issues) is the canonical and exclusive home for specs and tracer-bullet tickets.
+> Agents MUST NEVER generate `implementation-plan.md` or `task-list.md` artifacts.
+> Proceed directly from `/to-tickets` into ticket execution (`/implement` or `ticket-worker`) following the diagram above.
+
+

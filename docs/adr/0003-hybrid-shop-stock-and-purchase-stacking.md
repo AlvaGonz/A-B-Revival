@@ -18,6 +18,7 @@ With the introduction of infinite stock for unlocked parts in the shop (`UIShop`
    - **Finite Stock Bodies (`type == 0`)**: Ship chassis/hulls possess strictly finite stock (1 unit per unlocked model). Purchasing a `Body` removes it from `shopPart` into `plPart`. Selling a `Body` returns it to `shopPart`. Stacking `Body` items beyond available stock (1) is barred.
 2. **Purchase Stacking UI (`FormShop`)**:
    - In `FormShop` (table `form1`), clicking a row increments its purchase stack (`sel`: `0 -> 1 -> 2 -> ... -> 99 -> 0`).
+   - Holding down the mouse button over an item row activates rapid auto-increment acceleration (initial hold delay ~300ms, ramping to fast repeat intervals), preventing repetitive click fatigue.
    - The `Sel.` column renders the staged quantity: `N` for 0, `x1`, `x2`, etc.
    - Total transaction cost (`Cost=`) computes dynamically as `sum(unit_price * quantity)`.
    - On `ACCEPT`, the checkout loop clones `quantity` copies of each stacked item into `plPart`.
