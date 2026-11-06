@@ -32,13 +32,8 @@ fi
 
 # 2. Run Recompilation verification
 echo "[pre-commit] Running SWF recompilation verification..."
-if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || -n "$COMSPEC" ]]; then
-    cmd.exe /c "scripts\\recompile.bat"
-    BUILD_STATUS=$?
-else
-    sh scripts/recompile.sh
-    BUILD_STATUS=$?
-fi
+python scripts/recompile.py
+BUILD_STATUS=$?
 
 if [ $BUILD_STATUS -ne 0 ]; then
     echo ""
