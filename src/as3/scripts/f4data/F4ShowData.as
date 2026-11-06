@@ -53,8 +53,8 @@ package f4data
          this.spWing = new Sprite();
          this.spBody = new Sprite();
          this.spOth = new Sprite();
-         this.sp.addChild(this.spWing);
          this.sp.addChild(this.spBody);
+         this.sp.addChild(this.spWing);
          this.sp.addChild(this.spOth);
          this.sp.mouseEnabled = false;
          this.sp.mouseChildren = false;

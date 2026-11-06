@@ -58,7 +58,7 @@ package f4.gfx.bmpdmc
          return new BMPDMCData1(_loc3_,_loc7_,_loc10_,param2);
       }
       
-      public static function mc2bmpd2Single(param1:MovieClip, param2:String, param3:Boolean, param4:int, param5:int, param6:Boolean = true) : BMPDMCData2
+      public static function mc2bmpd2Single(param1:MovieClip, param2:String, param3:Boolean, param4:int, param5:int, param6:Boolean = true, param7:int = 0) : BMPDMCData2
       {
          var _loc9_:int = 0;
          var _loc11_:DisplayObject = null;
@@ -104,6 +104,10 @@ package f4.gfx.bmpdmc
          if(param4 == 1)
          {
             _loc7_.scaleX = -1;
+         }
+         if(param7 != 0)
+         {
+            _loc7_.rotation = param7;
          }
          if(!param3)
          {

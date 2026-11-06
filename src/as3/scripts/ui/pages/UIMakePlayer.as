@@ -83,8 +83,8 @@ package ui.pages
          this.ui_wing = new Sprite();
          this.ui_body = new Sprite();
          this.ui_other = new Sprite();
-         this.uix.addChild(this.ui_wing);
          this.uix.addChild(this.ui_body);
+         this.uix.addChild(this.ui_wing);
          this.uix.addChild(this.ui_other);
          var _loc7_:MovieClip = (_mov.getChildByName("showFly") as MovieClip).getChildByName("pic") as MovieClip;
          this.uix.x = _loc7_.x;
@@ -980,6 +980,10 @@ package ui.pages
                      _loc3_.partf4 = param1.f4DataLink;
                      param1.f4DataLink.atHole = _loc3_;
                      param1.f4DataLink.parentPart = _loc2_.f4DataLink;
+                     if(param1.f4DataLink.f4dataorg.type == 1 && _loc3_.lr != 2)
+                     {
+                        param1.setLR(_loc3_.lr);
+                     }
                      param1.allFinalMove(param1);
                      return true;
                   }

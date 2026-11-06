@@ -13,6 +13,8 @@ package f4data
       
       public var lr:int = 0;
       
+      public var rot:int = 0;
+      
       public var deadAct:String = "dead";
       
       public var maxhp:int = 0;
@@ -75,6 +77,7 @@ package f4data
          this.name = param1["name"];
          this.mcName = param1["mcName"];
          this.lr = param1["lr"];
+         this.rot = param1["rot"] != null ? int(param1["rot"]) : 0;
          this.deadAct = param1["deadAct"];
          this.maxhp = param1["maxhp"];
          this.powFly = param1["powFly"];
@@ -114,6 +117,7 @@ package f4data
          _loc1_["name"] = this.name;
          _loc1_["mcName"] = this.mcName;
          _loc1_["lr"] = this.lr;
+         _loc1_["rot"] = this.rot;
          _loc1_["deadAct"] = this.deadAct;
          _loc1_["maxhp"] = this.maxhp;
          _loc1_["powFly"] = this.powFly;

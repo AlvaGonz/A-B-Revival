@@ -111,6 +111,10 @@ package f4data
             _loc6_.scaleX = -1;
             _loc7_ = -1;
          }
+         if(param3 && param3.rot != 0)
+         {
+            _loc6_.rotation = param3.rot;
+         }
          param2.addChild(_loc6_);
          var _loc8_:F4PartMC = new F4PartMC(_loc6_,param4);
          _loc8_.f4DataLink.f4dataorg = param3;
