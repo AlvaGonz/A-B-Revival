@@ -22,6 +22,7 @@ package ui.unit
          var _loc3_:Array = [];
          _loc3_.push(_loc2_.index);
          _loc3_.push(_loc2_.name);
+         _loc3_.push(_loc2_.special || _loc2_.name == "Captain's Ship" || _loc2_.name.indexOf("Captain") != -1);
          return _loc3_;
       }
       
@@ -39,11 +40,19 @@ package ui.unit
          while(_loc1_ < pageLen)
          {
             _loc2_ = form.getChildByName("$form" + _loc1_) as MovieClip;
-            if(workArr[_loc1_ + pageLen * page])
+            var _item:Array = workArr[_loc1_ + pageLen * page];
+            if(_item)
             {
-               this.updateForm1(_loc2_,workArr[_loc1_ + pageLen * page]);
+               this.updateForm1(_loc2_,_item);
                _loc2_.getChildByName("$edit").visible = true;
-               _loc2_.getChildByName("$break").visible = true;
+               if(_item[2] == true)
+               {
+                  _loc2_.getChildByName("$break").visible = false;
+               }
+               else
+               {
+                  _loc2_.getChildByName("$break").visible = true;
+               }
             }
             else
             {
@@ -67,6 +76,11 @@ package ui.unit
          var _loc1_:* = undefined;
          if(this.selToDel >= 0)
          {
+            var _toDel:F4DataLinks = linkArr[this.selToDel] as F4DataLinks;
+            if(_toDel && (_toDel.special || _toDel.name == "Captain's Ship" || _toDel.name.indexOf("Captain") != -1))
+            {
+               return;
+            }
             delete linkArr[this.selToDel];
             workArr.length = 0;
             for each(_loc1_ in linkArr)

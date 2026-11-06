@@ -8,6 +8,7 @@ package f4data.cpx
    import f4data.F4DataOrg;
    import f4data.MC2F4Data;
    import f4data.movie.MovieIndex;
+   import f4data.sdata.ConfigAndStory;
    import f4data.talk.TalkIndex;
    import flash.display.MovieClip;
    import flash.geom.Point;
@@ -392,6 +393,7 @@ package f4data.cpx
             _loc8_.readFromObj(_loc2_["fly"][_loc4_],this.plPart,null,null);
             this.plFly[_loc8_.index] = _loc8_;
          }
+         ConfigAndStory.checkCaptainShip();
       }
       
       public function saveSO() : ByteArray

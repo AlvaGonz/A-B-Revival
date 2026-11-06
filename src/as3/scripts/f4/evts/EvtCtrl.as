@@ -448,7 +448,18 @@ package f4.evts
          }
          if(!param10)
          {
-            _loc13_ = ConfigAndStory.ALLPART.defFly[param6];
+            if(Boolean(param4) && param4.indexOf("Captain") != -1)
+            {
+               _loc13_ = ConfigAndStory.getCaptainFly();
+               if(!_loc13_)
+               {
+                  _loc13_ = ConfigAndStory.ALLPART.defFly[param6];
+               }
+            }
+            else
+            {
+               _loc13_ = ConfigAndStory.ALLPART.defFly[param6];
+            }
          }
          else if(param6 == -1)
          {

@@ -137,6 +137,45 @@ package f4data.sdata
          return true;
       }
       
+      public static function getCaptainFly() : F4DataLinks
+      {
+         var _loc1_:F4DataLinks = null;
+         if(!ALLPART || !ALLPART.plFly)
+         {
+            return null;
+         }
+         for each(_loc1_ in ALLPART.plFly)
+         {
+            if(_loc1_ && (_loc1_.special || _loc1_.name == "Captain's Ship" || _loc1_.name.indexOf("Captain") != -1))
+            {
+               return _loc1_;
+            }
+         }
+         return null;
+      }
+      
+      public static function checkCaptainShip() : void
+      {
+         var _loc1_:F4DataLinks = null;
+         var _loc2_:F4DataLinks = null;
+         if(STORY >= 3 && Boolean(ALLPART) && Boolean(ALLPART.plFly) && Boolean(ALLPART.defFly) && Boolean(ALLPART.defFly[76]))
+         {
+            if(getCaptainFly() != null)
+            {
+               return;
+            }
+            _loc1_ = ALLPART.defFly[76] as F4DataLinks;
+            if(_loc1_)
+            {
+               _loc2_ = _loc1_.clone(ALLPART.plPart,ALLPART.defFire,ALLPART.defBullet);
+               _loc2_.name = "Captain's Ship";
+               _loc2_.special = true;
+               _loc2_.index = ALLPART.plFly.length;
+               ALLPART.plFly.push(_loc2_);
+            }
+         }
+      }
+      
       public static function ckAI() : void
       {
          var _loc2_:F4DataLinks = null;
