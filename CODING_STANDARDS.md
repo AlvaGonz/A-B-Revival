@@ -56,3 +56,4 @@ All code reviews evaluate against Fowler's 12 baseline code smells:
 - *Message Chains*: Navigation hidden behind delegating methods.
 - *Middle Man*: Pointless 1-line forwarding delegates removed.
 - *Refused Bequest*: Favor composition over empty subclass inheritance.
+
