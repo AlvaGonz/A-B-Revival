@@ -107,7 +107,7 @@ package ui.unit
          var _loc1_:Array = ConfigAndStory.AI;
          var _loc2_:int = 0;
          var _loc3_:int = 0;
-         var _loc4_:int = 5;
+         var _loc4_:int = 20;
          var _loc5_:int = int(workArr.length);
          _loc2_ = 0;
          while(_loc2_ < _loc5_)

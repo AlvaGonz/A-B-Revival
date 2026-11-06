@@ -111,7 +111,7 @@ package f4.unit.parts
                param1.parentPart = null;
             }
             _loc3_ = 0;
-            while(_loc3_ < 5)
+            while(_loc3_ < 20)
             {
                if(ConfigAndStory.AI[_loc3_] == param1.index)
                {

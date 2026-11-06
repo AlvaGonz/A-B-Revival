@@ -37,7 +37,7 @@ package ui.pages
       
       public var tempPlayerNum:int = -1;
       
-      public var ainum:int = 5;
+      public var ainum:int = 20;
       
       public function UIChooseFlyAI(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
@@ -469,7 +469,11 @@ package ui.pages
                if(_loc4_[_loc5_] == null)
                {
                   _loc4_[_loc5_] = param1;
-                  ((_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (_loc5_ + 1)) as TextField).text = _loc3_.cls;
+                  var _txtFld1:TextField = (_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (_loc5_ + 1)) as TextField;
+                  if(_txtFld1)
+                  {
+                     _txtFld1.text = _loc3_.cls;
+                  }
                   this.ais[_loc5_] = param1;
                   InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
                   _loc6_ = true;
@@ -500,7 +504,11 @@ package ui.pages
                _loc4_.initData();
                _loc5_ = ConfigAndStory.AI;
                _loc5_[param1] = _loc2_;
-               ((_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (param1 + 1)) as TextField).text = _loc4_.cls;
+               var _txtFld2:TextField = (_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (param1 + 1)) as TextField;
+               if(_txtFld2)
+               {
+                  _txtFld2.text = _loc4_.cls;
+               }
                this.addDtL(_loc3_,this.dtLinkS,"showDetail",true);
                InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
             }
@@ -511,7 +519,11 @@ package ui.pages
       {
          var _loc2_:F4DataLinks = null;
          ConfigAndStory.AI[param1] = null;
-         ((_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (param1 + 1)) as TextField).text = "-";
+         var _txtFld3:TextField = (_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (param1 + 1)) as TextField;
+         if(_txtFld3)
+         {
+            _txtFld3.text = "-";
+         }
          if(this.ais[param1] != null)
          {
             _loc2_ = this.f4datax.plFly[this.ais[param1]];

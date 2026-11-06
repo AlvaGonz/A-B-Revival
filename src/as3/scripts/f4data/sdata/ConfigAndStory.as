@@ -150,7 +150,7 @@ package f4data.sdata
             }
          }
          var _loc1_:int = 0;
-         while(_loc1_ < 5)
+         while(_loc1_ < 20)
          {
             if(AI[_loc1_] == PLAYER || !ALLPART.plFly[AI[_loc1_]])
             {

@@ -150,7 +150,7 @@ package ui.unit
             (param2.getChildByName("txtTurn") as TextField).text = param1.turn.toFixed(1) + "";
             _loc10_ = false;
             _loc11_ = 0;
-            while(_loc11_ < 5)
+            while(_loc11_ < 20)
             {
                if(ConfigAndStory.AI[_loc11_] == param1.link.index)
                {
