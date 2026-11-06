@@ -1,7 +1,9 @@
 package f4data.sdata
 {
    import f4.data.InitData;
+   import f4data.F4DataHole;
    import f4data.F4DataLinks;
+   import f4data.F4DataOrg;
    import f4data.cpx.F4DataCPX;
    import flash.events.Event;
    import flash.net.SharedObject;
@@ -156,10 +158,57 @@ package f4data.sdata
          return null;
       }
       
+      private static function cloneFlyTree(param1:F4DataLinks) : F4DataLinks
+      {
+         var _loc2_:F4DataOrg = null;
+         var _loc3_:F4DataLinks = null;
+         var _loc4_:int = 0;
+         var _loc5_:int = 0;
+         var _loc6_:F4DataHole = null;
+         var _loc7_:F4DataHole = null;
+         var _loc8_:F4DataLinks = null;
+         if(!param1 || !param1.f4dataorg)
+         {
+            return null;
+         }
+         _loc2_ = param1.f4dataorg.clone(ALLPART.defFire,ALLPART.defBullet);
+         _loc2_.index = ALLPART.plPart.length;
+         ALLPART.plPart.push(_loc2_);
+         _loc3_ = new F4DataLinks();
+         _loc3_.f4dataorg = _loc2_;
+         _loc3_.name = param1.name;
+         _loc3_.colorHue = param1.colorHue;
+         _loc3_.special = param1.special;
+         if(Boolean(param1.f4dataorg.hole) && Boolean(_loc2_.hole))
+         {
+            _loc4_ = int(param1.f4dataorg.hole.length);
+            _loc5_ = 0;
+            while(_loc5_ < _loc4_)
+            {
+               _loc6_ = param1.f4dataorg.hole[_loc5_] as F4DataHole;
+               _loc7_ = _loc2_.hole[_loc5_] as F4DataHole;
+               if(Boolean(_loc6_) && Boolean(_loc6_.partf4) && Boolean(_loc7_))
+               {
+                  _loc8_ = cloneFlyTree(_loc6_.partf4);
+                  if(_loc8_)
+                  {
+                     _loc7_.partf4 = _loc8_;
+                     _loc8_.atHole = _loc7_;
+                     _loc8_.parentPart = _loc3_;
+                  }
+               }
+               _loc5_++;
+            }
+         }
+         return _loc3_;
+      }
+      
       public static function checkCaptainShip() : void
       {
          var _loc1_:F4DataLinks = null;
          var _loc2_:F4DataLinks = null;
+         var _loc3_:int = 0;
+         var _loc4_:F4DataLinks = null;
          if(STORY >= 3 && Boolean(ALLPART) && Boolean(ALLPART.plFly) && Boolean(ALLPART.defFly) && Boolean(ALLPART.defFly[76]))
          {
             if(getCaptainFly() != null)
@@ -169,11 +218,23 @@ package f4data.sdata
             _loc1_ = ALLPART.defFly[76] as F4DataLinks;
             if(_loc1_)
             {
-               _loc2_ = _loc1_.clone(ALLPART.plPart,ALLPART.defFire,ALLPART.defBullet);
-               _loc2_.name = "Captain's Ship";
-               _loc2_.special = true;
-               _loc2_.index = ALLPART.plFly.length;
-               ALLPART.plFly.push(_loc2_);
+               _loc2_ = cloneFlyTree(_loc1_);
+               if(_loc2_)
+               {
+                  _loc2_.name = "Captain's Ship";
+                  _loc2_.special = true;
+                  _loc3_ = 0;
+                  for each(_loc4_ in ALLPART.plFly)
+                  {
+                     if(_loc4_ && _loc4_.index >= _loc3_)
+                     {
+                        _loc3_ = _loc4_.index + 1;
+                     }
+                  }
+                  _loc2_.index = _loc3_;
+                  ALLPART.plFly[_loc3_] = _loc2_;
+                  saveData();
+               }
             }
          }
       }
@@ -253,6 +314,7 @@ package f4data.sdata
             AIGAME = SOData.data["aigame"];
             HOWTOPLAY = SOData.data["how"];
             SHOWTEXTMENU = SOData.data["menu"];
+            checkCaptainShip();
          }
          else
          {

@@ -448,7 +448,7 @@ package f4.evts
          }
          if(!param10)
          {
-            if(Boolean(param4) && param4.indexOf("Captain") != -1)
+            if(param4 != null && (param4 is Array || param4 is String) && param4.indexOf("Captain") != -1)
             {
                _loc13_ = ConfigAndStory.getCaptainFly();
                if(!_loc13_)

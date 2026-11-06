@@ -393,7 +393,6 @@ package f4data.cpx
             _loc8_.readFromObj(_loc2_["fly"][_loc4_],this.plPart,null,null);
             this.plFly[_loc8_.index] = _loc8_;
          }
-         ConfigAndStory.checkCaptainShip();
       }
       
       public function saveSO() : ByteArray
