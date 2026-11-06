@@ -23,5 +23,33 @@ Canonical five-role triage labels (`needs-triage`, `needs-info`, `ready-for-agen
 ### Domain docs
 Single-context domain model with `GLOSSARY.md` and `docs/adr/`. See `docs/agents/domain.md`.
 
-### Knowledge Graph
-Knowledge graph generated via `/graphify`. Run `graphify update .` to sync after code changes.
+### Codebase navigation (`graphify`)
+
+A persistent knowledge graph exists at `graphify-out/` (`graph.json`,
+`GRAPH_REPORT.md`). Whenever you need context on architecture, module
+boundaries, dependencies, or data flows:
+
+- **Query the graph first**: Run `/graphify query "<question>"` (or CLI `graphify query "<question>"`)
+  instead of grepping raw files. Use `graphify explain "<concept>"` for nodes and
+  `graphify path "<A>" "<B>"` for connection paths. These return scoped subgraphs.
+- **Broad overview**: Read `graphify-out/GRAPH_REPORT.md` for God nodes,
+  community clusters, and cross-cutting connections.
+- **Surgical reads only**: Read raw files only after graphify or docs have
+  oriented you, or to edit/debug specific lines. Never read files one by one to
+  explore structure. Include this graphify-first rule in every subagent prompt
+  involving codebase exploration.
+- **Keep graph fresh**: After modifying code or adding documentation, run
+  `graphify update .` (or `/graphify --update`) to keep the graph current.
+
+### Project documentation (`docs/` & `CONTEXT.md`)
+
+Consult existing documentation whenever you need domain or project context
+before planning or implementing changes:
+
+- **`docs/adr/`**: Architecture Decision Records. Surface conflicts explicitly
+  if an approach contradicts an ADR.
+- **`docs/agents/`**: Operational guides for agent workflows:
+  - `docs/agents/domain.md`: How to consume domain documentation.
+  - `docs/agents/issue-tracker.md`: Operating issues and wayfinding maps.
+  - `docs/agents/triage-labels.md`: Canonical issue triage roles.
+

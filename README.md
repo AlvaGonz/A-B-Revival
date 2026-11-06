@@ -35,3 +35,4 @@ To launch the game locally:
 run-game.bat
 ```
 *(Runs with Flashpoint Infinity's standalone Flash Player 32)*.
+

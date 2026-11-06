@@ -19,3 +19,4 @@ We will use Architecture Decision Records (ADRs) as documented in `docs/adr/`. E
 ## Consequences
 - Every significant architectural and engine modification is auditable by both humans and agents.
 - Agents can navigate past decisions without guessing historical intent.
+

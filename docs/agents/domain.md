@@ -8,3 +8,4 @@ This repository uses a single-context domain documentation layout:
 ## Guidelines for Agents
 - When encountering ambiguous terminology or introducing new concepts, consult and update `GLOSSARY.md`.
 - Keep terms sharp, concise, and aligned with the game mechanics and decompiled ActionScript engine architecture.
+

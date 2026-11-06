@@ -30,3 +30,4 @@ scripts\export-assets.bat
 
 ### 3. `run-game.bat` (Root)
 Launches the game directly in standalone Flash Player 32.
+

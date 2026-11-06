@@ -24,3 +24,4 @@ gh issue view <number>
 - Child tickets carry one of `wayfinder:task`, `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`.
 - Claims: assign issue to self (`gh issue edit <number> --add-assignee "@me"`).
 - Closing: `gh issue close <number> --comment "<resolution summary>"`.
+
