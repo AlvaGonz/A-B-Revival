@@ -42,6 +42,23 @@ package ui.pages
       public function UIChooseFlyAI(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
          ConfigAndStory.checkCaptainShip();
+         var _capFly:F4DataLinks = ConfigAndStory.getCaptainFly();
+         if(_capFly)
+         {
+            if(ConfigAndStory.PLAYER == _capFly.index)
+            {
+               ConfigAndStory.PLAYER = 0;
+            }
+            var _aiSlot:int = 0;
+            while(_aiSlot < ConfigAndStory.AI.length)
+            {
+               if(ConfigAndStory.AI[_aiSlot] == _capFly.index)
+               {
+                  ConfigAndStory.AI[_aiSlot] = null;
+               }
+               _aiSlot++;
+            }
+         }
          param3.getChildByName("lv").visible = false;
          (param3.getChildByName("txtbt") as TextField).text = "BATTLE-" + (ConfigAndStory.STORY + 1);
          this.f4datax = param1;
@@ -268,6 +285,13 @@ package ui.pages
                f4link = this.form.getLink(formNum);
                if(f4link)
                {
+                  if(f4link.isCaptainShip())
+                  {
+                     this.addDtL(f4link,this.dtLinkS,"showDetail",true);
+                     this.form.lightOn(formNum);
+                     InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
+                     return;
+                  }
                   this.tempPlayerNum = formNum;
                   plNum = int(this.form.workArr[this.tempPlayerNum + this.form.page * this.form.pageLen][0]);
                   if(this.ckAIUseAI(plNum) == -1)
@@ -294,6 +318,10 @@ package ui.pages
             f4linkAI = this.form.getLink(formNumAI);
             if(f4linkAI)
             {
+               if(f4linkAI.isCaptainShip())
+               {
+                  return;
+               }
                this.addAI(f4linkAI.index);
                this.form.updateAI();
                this.addDtL(f4linkAI,this.dtLinkS,"showDetail",true);
@@ -437,6 +465,10 @@ package ui.pages
       
       public function ckAIUse(param1:int) : Boolean
       {
+         if(this.form && this.form.isCaptainShip(param1))
+         {
+            return true;
+         }
          var _loc3_:int = 0;
          var _loc2_:Array = ConfigAndStory.AI;
          if(ConfigAndStory.PLAYER == param1)
@@ -458,6 +490,14 @@ package ui.pages
       public function addAI(param1:int) : void
       {
          var _loc2_:F4DataLinks = null;
+         if(this.f4datax && this.f4datax.plFly && param1 >= 0 && param1 < this.f4datax.plFly.length)
+         {
+            var _capCheck:F4DataLinks = this.f4datax.plFly[param1];
+            if(_capCheck && _capCheck.isCaptainShip())
+            {
+               return;
+            }
+         }
          var _loc3_:F4ShowData = null;
          var _loc4_:Array = null;
          var _loc5_:int = 0;
@@ -618,10 +658,13 @@ package ui.pages
          _loc2_ = 0;
          while(_loc2_ < this.ainum)
          {
-            _loc3_ = this.findBestAI();
-            if(_loc3_ >= 0 && _loc1_[_loc2_] == null)
+            if(_loc1_[_loc2_] == null)
             {
-               this.addAI(this.findBestAI());
+               _loc3_ = this.findBestAI();
+               if(_loc3_ >= 0)
+               {
+                  this.addAI(_loc3_);
+               }
             }
             _loc2_++;
          }

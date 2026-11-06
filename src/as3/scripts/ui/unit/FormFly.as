@@ -22,7 +22,7 @@ package ui.unit
          var _loc3_:Array = [];
          _loc3_.push(_loc2_.index);
          _loc3_.push(_loc2_.name);
-         _loc3_.push(_loc2_.special || _loc2_.name == "Captain's Ship" || _loc2_.name.indexOf("Captain") != -1);
+         _loc3_.push(_loc2_.isSpecialProtected);
          return _loc3_;
       }
       
@@ -77,7 +77,7 @@ package ui.unit
          if(this.selToDel >= 0)
          {
             var _toDel:F4DataLinks = linkArr[this.selToDel] as F4DataLinks;
-            if(_toDel && (_toDel.special || _toDel.name == "Captain's Ship" || _toDel.name.indexOf("Captain") != -1))
+            if(_toDel && _toDel.isSpecialProtected)
             {
                return;
             }

@@ -5,6 +5,14 @@ package f4data
    public class F4DataOrg
    {
       
+      public static const TYPE_BODY:int = 0;
+      
+      public static const TYPE_WING:int = 1;
+      
+      public static const TYPE_ENGINE:int = 2;
+      
+      public static const TYPE_GUN:int = 3;
+      
       public var type:int = 0;
       
       public var name:String = "name";

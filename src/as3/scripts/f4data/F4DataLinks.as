@@ -24,6 +24,16 @@ package f4data
       
       public var special:Boolean = false;
       
+      public function isCaptainShip() : Boolean
+      {
+         return this.special || this.name == "Captain's Ship" || (Boolean(this.name) && this.name.indexOf("Captain") != -1);
+      }
+      
+      public function get isSpecialProtected() : Boolean
+      {
+         return this.isCaptainShip();
+      }
+      
       public function F4DataLinks()
       {
          super();

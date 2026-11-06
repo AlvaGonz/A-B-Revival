@@ -150,7 +150,7 @@ package f4data.sdata
          }
          for each(_loc1_ in ALLPART.plFly)
          {
-            if(_loc1_ && (_loc1_.special || _loc1_.name == "Captain's Ship" || _loc1_.name.indexOf("Captain") != -1))
+            if(_loc1_ && _loc1_.isCaptainShip())
             {
                return _loc1_;
             }
