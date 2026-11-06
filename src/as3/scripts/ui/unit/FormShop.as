@@ -226,11 +226,10 @@ package ui.unit
             }
             while(_loc4_[_loc5_][0] != linkArr[_loc1_].index);
             ConfigAndStory.ALLPART.addPartFromShop(_loc1_);
-            linkArr.splice(_loc1_,1);
-            _loc4_.splice(_loc5_,1);
-            _loc6_--;
-            _loc5_--;
-            _loc2_--;
+            if(_loc1_ < linkArr.length && linkArr[_loc1_])
+            {
+               linkArr[_loc1_].sel = 0;
+            }
          }
          ConfigAndStory.ALLPART.reSortIndex(linkArr);
          this.filterX(this.filx);

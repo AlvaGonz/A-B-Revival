@@ -231,12 +231,19 @@ package f4data.cpx
       
       public function addPartFromShop(param1:int) : void
       {
-         var _loc2_:F4DataOrg = this.shopPart[param1];
+         var _shopItem:F4DataOrg = this.shopPart[param1];
+         if(!_shopItem)
+         {
+            return;
+         }
+         var _loc2_:F4DataOrg = _shopItem.clone(this.defFire,this.defBullet);
          _loc2_.index = this.plPart.length;
          _loc2_.snew = false;
          _loc2_.sel = 0;
          _loc2_.dead = false;
+         _loc2_.useAs = 0;
          this.plPart.push(_loc2_);
+         _shopItem.sel = 0;
       }
       
       public function addPartFromRepair(param1:int) : void
