@@ -41,6 +41,7 @@ package ui.pages
       
       public function UIChooseFlyAI(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
+         ConfigAndStory.checkCaptainShip();
          param3.getChildByName("lv").visible = false;
          (param3.getChildByName("txtbt") as TextField).text = "BATTLE-" + (ConfigAndStory.STORY + 1);
          this.f4datax = param1;
@@ -360,6 +361,11 @@ package ui.pages
          if(ConfigAndStory.noNext())
          {
             InitData.CORE.repair.flys.push(this.f4datax.plFly[ConfigAndStory.PLAYER]);
+         }
+         var _capFly:F4DataLinks = ConfigAndStory.getCaptainFly();
+         if(_capFly)
+         {
+            InitData.CORE.repair.flys.push(_capFly);
          }
          if(ConfigAndStory.STORY != 49)
          {

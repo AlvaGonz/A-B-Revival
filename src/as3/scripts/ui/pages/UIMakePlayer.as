@@ -15,7 +15,10 @@ package ui.pages
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.Event;
+   import flash.filters.GlowFilter;
    import flash.text.TextField;
+   import flash.text.TextFieldAutoSize;
+   import flash.text.TextFormat;
    import fullshit.tool.Attach;
    import mochi.as3.MochiEvents;
    import ui.UICtrl;
@@ -65,8 +68,11 @@ package ui.pages
       
       public var tempZoom:Number = 1;
       
+      public var txtWingHint:TextField;
+      
       public function UIMakePlayer(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
+         ConfigAndStory.checkCaptainShip();
          this.f4datax = param1;
          this.form = new FormPlayerPart(param3.getChildByName("formPart") as MovieClip,param1.plPart);
          this.formFly = new FormFly(param3.getChildByName("formFly") as MovieClip,param1.plFly);
@@ -93,6 +99,37 @@ package ui.pages
          this.uix.mask = _loc7_;
          this.undoList = [];
          this.undoShow();
+         this.initWingHint();
+      }
+      
+      public function initWingHint() : void
+      {
+         var _showFly:MovieClip = _mov.getChildByName("showFly") as MovieClip;
+         if(!_showFly)
+         {
+            return;
+         }
+         this.txtWingHint = new TextField();
+         this.txtWingHint.name = "txtWingHint";
+         var _tf:TextFormat = new TextFormat("Arial", 11, 0x66ccff, true);
+         this.txtWingHint.defaultTextFormat = _tf;
+         this.txtWingHint.text = "[R] Rotate Wing   |   [F] Flip Wing";
+         this.txtWingHint.autoSize = TextFieldAutoSize.LEFT;
+         this.txtWingHint.selectable = false;
+         this.txtWingHint.mouseEnabled = false;
+         this.txtWingHint.filters = [new GlowFilter(0x000000, 0.9, 4, 4, 3, 1)];
+         var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
+         if(_pic)
+         {
+            this.txtWingHint.x = _pic.x + 8;
+            this.txtWingHint.y = _pic.y + _pic.height - 24;
+         }
+         else
+         {
+            this.txtWingHint.x = 10;
+            this.txtWingHint.y = 230;
+         }
+         _showFly.addChild(this.txtWingHint);
       }
       
       override public function afterFadeIn() : void
@@ -583,6 +620,10 @@ package ui.pages
          _mov.getChildByName("showDetail").visible = param1;
          this.uix.mouseChildren = !param1;
          this.uix.mouseEnabled = !param1;
+         if(this.txtWingHint)
+         {
+            this.txtWingHint.visible = !param1;
+         }
          if(param1)
          {
             (_mov.getChildByName("txtNew") as TextField).text = "";

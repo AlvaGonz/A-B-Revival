@@ -22,6 +22,8 @@ package f4data
       
       public var colorHue:int;
       
+      public var special:Boolean = false;
+      
       public function F4DataLinks()
       {
          super();
@@ -49,6 +51,7 @@ package f4data
          this.f4dataorg = param2[param1["self"]];
          this.index = param1["index"];
          this.name = param1["name"];
+         this.special = param1["special"] == true;
          if(Boolean(param3) && Boolean(param4))
          {
             this.f4dataorg = this.f4dataorg.clone(param3,param4);
@@ -62,6 +65,7 @@ package f4data
          var _loc1_:Object = this.f4LinkSA(this);
          _loc1_["index"] = this.index;
          _loc1_["name"] = this.name;
+         _loc1_["special"] = this.special;
          _loc1_["self"] = this.f4dataorg.index;
          _loc1_["useAs"] = this.f4dataorg.useAs;
          return _loc1_;

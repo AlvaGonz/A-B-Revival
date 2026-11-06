@@ -1,6 +1,7 @@
 package ui.make
 {
    import f4.data.InitData;
+   import f4data.F4DataLinks;
    import f4data.sdata.ConfigAndStory;
    import flash.display.DisplayObjectContainer;
    import flash.display.MovieClip;
@@ -52,6 +53,11 @@ package ui.make
          if(ConfigAndStory.noNext())
          {
             InitData.CORE.repair.flys.push(ConfigAndStory.ALLPART.plFly[ConfigAndStory.PLAYER]);
+         }
+         var _capFly:F4DataLinks = ConfigAndStory.getCaptainFly();
+         if(_capFly)
+         {
+            InitData.CORE.repair.flys.push(_capFly);
          }
          if(ConfigAndStory.STORY != 49)
          {
