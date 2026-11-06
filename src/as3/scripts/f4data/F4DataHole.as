@@ -13,6 +13,8 @@ package f4data
       
       public var partf4:F4DataLinks;
       
+      public var parentOrg:F4DataOrg;
+      
       public function F4DataHole()
       {
          super();

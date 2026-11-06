@@ -48,6 +48,7 @@ package f4data
                _loc8_ = parseInt(_loc6_.substring(0,_loc6_.indexOf("_")));
                _loc7_ = _loc6_.substring(_loc6_.indexOf("_") + 1);
                _loc12_ = new F4DataHole();
+               _loc12_.parentOrg = param2;
                _loc12_.strToType(_loc7_);
                _loc12_.lr = _loc8_;
                if(param2.lr == 1 && _loc8_ == 0)

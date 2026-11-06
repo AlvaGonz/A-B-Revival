@@ -91,6 +91,7 @@ package f4data
             {
                _loc5_ = new F4DataHole();
                _loc5_.readFromObj(param1["holedata"][_loc6_]);
+               _loc5_.parentOrg = this;
                this.hole[_loc6_] = _loc5_;
             }
             this.sel = param1["sel"];

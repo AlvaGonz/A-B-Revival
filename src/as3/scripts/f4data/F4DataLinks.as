@@ -117,6 +117,36 @@ package f4data
          _loc4_.readFromObj(this.writeObj(),param1,param2,param3);
          return _loc4_;
       }
+      
+      public function getRoot() : F4DataLinks
+      {
+         var _cur:F4DataLinks = this;
+         while(_cur.parentPart)
+         {
+            _cur = _cur.parentPart;
+         }
+         return _cur;
+      }
+      
+      public function countWings() : int
+      {
+         var _cnt:int = 0;
+         if(this.f4dataorg && this.f4dataorg.type == 1)
+         {
+            _cnt++;
+         }
+         if(this.f4dataorg && this.f4dataorg.hole)
+         {
+            for each(var _h:F4DataHole in this.f4dataorg.hole)
+            {
+               if(_h && _h.partf4)
+               {
+                  _cnt += _h.partf4.countWings();
+               }
+            }
+         }
+         return _cnt;
+      }
    }
 }
 
