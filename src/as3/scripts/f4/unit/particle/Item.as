@@ -80,12 +80,23 @@ package f4.unit.particle
          }
          else if(this.data[0] == "life")
          {
-            param1.unity.autoHP = 0.009;
-            param1.unity.autoHT += 36;
+            if(param1 && param1.unity)
+            {
+               param1.unity.autoHP = 0.009;
+               param1.unity.autoHT += 36;
+            }
+            if(InitData.CORE && InitData.CORE.playerFly && InitData.CORE.playerFly.unity)
+            {
+               InitData.CORE.playerFly.unity.autoHP = 0.0075;
+               InitData.CORE.playerFly.unity.autoHT += 36;
+            }
             for each(_loc6_ in _loc5_.pfa1.array)
             {
-               _loc6_.unity.autoHP = 0.0075;
-               _loc6_.unity.autoHT += 36;
+               if(_loc6_ && _loc6_.unity)
+               {
+                  _loc6_.unity.autoHP = 0.0075;
+                  _loc6_.unity.autoHT += 36;
+               }
             }
             _loc4_ = 10;
             _loc3_ = 1.4;
