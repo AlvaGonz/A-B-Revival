@@ -15,10 +15,12 @@ package ui.pages
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.Event;
+   import flash.events.MouseEvent;
    import flash.filters.GlowFilter;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
+   import flash.text.TextFormatAlign;
    import fullshit.tool.Attach;
    import mochi.as3.MochiEvents;
    import ui.UICtrl;
@@ -70,6 +72,12 @@ package ui.pages
       
       public var txtWingHint:TextField;
       
+      public var btnClearWeapons:Sprite;
+      
+      public var btnClearWings:Sprite;
+      
+      public var btnClearEngines:Sprite;
+      
       public function UIMakePlayer(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
          ConfigAndStory.checkCaptainShip();
@@ -100,6 +108,227 @@ package ui.pages
          this.undoList = [];
          this.undoShow();
          this.initWingHint();
+         this.initClearButtons();
+      }
+      
+      public function initClearButtons() : void
+      {
+         var formMc:MovieClip = this.form.form;
+         if(!formMc)
+         {
+            return;
+         }
+         this.btnClearWeapons = this.createCyberBtn("CLR GUNS", 282, -24, this.onClearWeaponsClick);
+         this.btnClearWings = this.createCyberBtn("CLR WINGS", 338, -24, this.onClearWingsClick);
+         this.btnClearEngines = this.createCyberBtn("CLR ENGS", 394, -24, this.onClearEnginesClick);
+         
+         formMc.addChild(this.btnClearWeapons);
+         formMc.addChild(this.btnClearWings);
+         formMc.addChild(this.btnClearEngines);
+         
+         this.updateClearButtons();
+      }
+      
+      private function createCyberBtn(label:String, xPos:Number, yPos:Number, onClick:Function) : Sprite
+      {
+         var btn:Sprite = new Sprite();
+         btn.x = xPos;
+         btn.y = yPos;
+         btn.buttonMode = true;
+         btn.useHandCursor = true;
+         btn.mouseChildren = false;
+
+         var w:Number = 52;
+         var h:Number = 19;
+
+         var drawBtn:Function = function(hover:Boolean, down:Boolean):void
+         {
+            btn.graphics.clear();
+            var bgColor:uint = down ? 0x0a1824 : (hover ? 0x1a3854 : 0x0f2233);
+            var borderColor:uint = hover ? 0x66ccff : 0x2d5a7b;
+            var borderAlpha:Number = hover ? 1.0 : 0.7;
+            btn.graphics.lineStyle(1, borderColor, borderAlpha, true);
+            btn.graphics.beginFill(bgColor, 0.9);
+            btn.graphics.drawRoundRect(0, 0, w, h, 4, 4);
+            btn.graphics.endFill();
+         };
+
+         drawBtn(false, false);
+
+         var txt:TextField = new TextField();
+         var tf:TextFormat = new TextFormat("Arial", 9, 0x88ddff, true);
+         tf.align = TextFormatAlign.CENTER;
+         txt.defaultTextFormat = tf;
+         txt.text = label;
+         txt.width = w;
+         txt.height = h;
+         txt.y = 2;
+         txt.selectable = false;
+         txt.mouseEnabled = false;
+         txt.filters = [new GlowFilter(0x003366, 0.8, 3, 3, 2, 1)];
+         btn.addChild(txt);
+
+         btn.addEventListener(MouseEvent.MOUSE_OVER, function(e:MouseEvent):void
+         {
+            drawBtn(true, false);
+            txt.textColor = 0xffffff;
+            btn.filters = [new GlowFilter(0x00ccff, 0.6, 4, 4, 2, 1)];
+         });
+
+         btn.addEventListener(MouseEvent.MOUSE_OUT, function(e:MouseEvent):void
+         {
+            drawBtn(false, false);
+            txt.textColor = 0x88ddff;
+            btn.filters = [];
+         });
+
+         btn.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent):void
+         {
+            drawBtn(true, true);
+         });
+
+         btn.addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent):void
+         {
+            drawBtn(true, false);
+         });
+
+         btn.addEventListener(MouseEvent.CLICK, onClick);
+
+         return btn;
+      }
+      
+      public function updateClearButtons() : void
+      {
+         if(this.btnClearWeapons)
+         {
+            var wCount:int = this.countPartsByType(3);
+            this.btnClearWeapons.alpha = wCount > 0 ? 1.0 : 0.35;
+            this.btnClearWeapons.mouseEnabled = wCount > 0;
+         }
+         if(this.btnClearWings)
+         {
+            var wingCount:int = this.countPartsByType(1);
+            this.btnClearWings.alpha = wingCount > 0 ? 1.0 : 0.35;
+            this.btnClearWings.mouseEnabled = wingCount > 0;
+         }
+         if(this.btnClearEngines)
+         {
+            var engCount:int = this.countPartsByType(2);
+            this.btnClearEngines.alpha = engCount > 0 ? 1.0 : 0.35;
+            this.btnClearEngines.mouseEnabled = engCount > 0;
+         }
+      }
+      
+      public function onClearWeaponsClick(param1:MouseEvent) : void
+      {
+         var count:int = this.countPartsByType(3);
+         if(count == 0)
+         {
+            return;
+         }
+         new UIReally(this.cleanWeaponsYes, null, null, "Clear Weapons?", "\nStrip all " + count + " weapons to inventory?", _sp, Attach.attach("UI_Really") as MovieClip, "UI_Really", _ui, this);
+      }
+      
+      public function cleanWeaponsYes() : void
+      {
+         this.cleanWeapons();
+      }
+      
+      public function onClearWingsClick(param1:MouseEvent) : void
+      {
+         var count:int = this.countPartsByType(1);
+         if(count == 0)
+         {
+            return;
+         }
+         new UIReally(this.cleanWingsYes, null, null, "Clear Wings?", "\nStrip all wings and attached gear to inventory?", _sp, Attach.attach("UI_Really") as MovieClip, "UI_Really", _ui, this);
+      }
+      
+      public function cleanWingsYes() : void
+      {
+         this.cleanWings();
+      }
+      
+      public function onClearEnginesClick(param1:MouseEvent) : void
+      {
+         var count:int = this.countPartsByType(2);
+         if(count == 0)
+         {
+            return;
+         }
+         new UIReally(this.cleanEnginesYes, null, null, "Clear Engines?", "\nStrip all " + count + " thrusters to inventory?", _sp, Attach.attach("UI_Really") as MovieClip, "UI_Really", _ui, this);
+      }
+      
+      public function cleanEnginesYes() : void
+      {
+         this.cleanEngines();
+      }
+      
+      public function countPartsByType(param1:int) : int
+      {
+         var count:int = 0;
+         var _loc1_:F4PartMC = null;
+         for each(_loc1_ in this.f4datax.plMc)
+         {
+            if(_loc1_.f4DataLink && _loc1_.f4DataLink.f4dataorg && _loc1_.f4DataLink.f4dataorg.type == param1)
+            {
+               if(_loc1_.f4DataLink.f4dataorg.useAs != 2)
+               {
+                  count++;
+               }
+            }
+         }
+         return count;
+      }
+      
+      public function cleanPartsByType(param1:int) : int
+      {
+         var count:int = 0;
+         var targets:Array = [];
+         var _loc1_:F4PartMC = null;
+         for each(_loc1_ in this.f4datax.plMc)
+         {
+            if(_loc1_.f4DataLink && _loc1_.f4DataLink.f4dataorg && _loc1_.f4DataLink.f4dataorg.type == param1)
+            {
+               if(_loc1_.f4DataLink.f4dataorg.useAs != 2)
+               {
+                  targets.push(_loc1_);
+               }
+            }
+         }
+         for each(_loc1_ in targets)
+         {
+            if(this.f4datax.plMc.indexOf(_loc1_) != -1)
+            {
+               _loc1_.looseLink();
+               _loc1_.removeAll(_loc1_, true);
+               count++;
+            }
+         }
+         if(count > 0)
+         {
+            this.form.updatePages();
+            this.form.filterX(this.form.filx);
+            this.updateNew();
+            this.cleanDt();
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[18]);
+         }
+         return count;
+      }
+      
+      public function cleanWeapons() : void
+      {
+         this.cleanPartsByType(3);
+      }
+      
+      public function cleanWings() : void
+      {
+         this.cleanPartsByType(1);
+      }
+      
+      public function cleanEngines() : void
+      {
+         this.cleanPartsByType(2);
       }
       
       public function initWingHint() : void
@@ -207,6 +436,7 @@ package ui.pages
          ShowPart.cleanDt(_mov.getChildByName("dt") as MovieClip);
          this.dtOrg = null;
          this.hidePoints();
+         this.updateClearButtons();
       }
       
       public function addDtL(param1:F4DataLinks) : void
@@ -597,6 +827,7 @@ package ui.pages
          this.showFlys(false);
          this.showFlyEdit(true);
          this.nowedit = true;
+         this.updateClearButtons();
       }
       
       public function showFlys(param1:Boolean) : void
@@ -790,6 +1021,7 @@ package ui.pages
             enableBtn("new");
             enableBtn("add");
          }
+         this.updateClearButtons();
       }
       
       public function cleanMCNotBack() : void
@@ -925,6 +1157,10 @@ package ui.pages
             if(!this.nowedit)
             {
                this.updateNew();
+            }
+            else
+            {
+               this.updateClearButtons();
             }
             InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
          }
@@ -1148,6 +1384,7 @@ package ui.pages
          }
          this.undoList[0] = param1;
          this.undoShow();
+         this.updateNew();
       }
       
       public function undoSortAfterUse(param1:int) : void
