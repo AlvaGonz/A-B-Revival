@@ -82,6 +82,10 @@ package f4.gfx
       
       public var bmp:Bitmap;
       
+      private var _bulletFadeFrames:int = 0;
+      private var _partFadeFrames:int = 0;
+      private var _minimapFilterTick:int = 0;
+      
       public function RenderData()
       {
          super();
@@ -230,21 +234,46 @@ package f4.gfx
       public function render(param1:AIUnity) : void
       {
          this.camCtrl();
-         this.BMPDBLTFX.colorTransform(this.fxrect,this.fxctblt);
+         var hasBullets:Boolean = this._targets != null && ((this._targets.pba1 != null && this._targets.pba1.num > 0) || (this._targets.eba1 != null && this._targets.eba1.num > 0));
+         var hasParts:Boolean = this._targets != null && ((this._targets.pa1 != null && this._targets.pa1.num > 0) || (this._targets.deadParta1 != null && this._targets.deadParta1.num > 0));
+
+         if(hasBullets)
+         {
+            this._bulletFadeFrames = 8;
+         }
+         if(hasParts)
+         {
+            this._partFadeFrames = 8;
+         }
+
+         if(this._bulletFadeFrames > 0)
+         {
+            this.BMPDBLTFX.colorTransform(this.fxrect,this.fxctblt);
+         }
          this.BMPDFX.colorTransform(this.fxrect,this.fxct);
          this.drawbg.runBG();
          this._targets.renderPart();
-         this.BMPD.colorTransform(this.rect,this.ct);
+         if(this._partFadeFrames > 0)
+         {
+            this.BMPD.colorTransform(this.rect,this.ct);
+            this._partFadeFrames--;
+         }
          this.BMPDFX.applyFilter(this.BMPDFX,this.fxrect,this.point,this.blur);
-         this.BMPDBLTFX.applyFilter(this.BMPDBLTFX,this.fxrect,this.point,this.blur);
+         if(this._bulletFadeFrames > 0)
+         {
+            this.BMPDBLTFX.applyFilter(this.BMPDBLTFX,this.fxrect,this.point,this.blur);
+         }
          this._targets.runRender(param1);
          this._targets.renderBlt();
-         this.BMPDFX.applyFilter(this.BMPDFX,this.fxrect,this.point,this.blur);
          this.CANVAS.lock();
          this.CANVAS.copyPixels(this.BMPDBG,this.rect,this.point);
          this.CANVAS.draw(this.BMPDFX,this.MTX2X);
          this.CANVAS.copyPixels(this.BMPD,this.rect,this.point,null,null,true);
-         this.CANVAS.draw(this.BMPDBLTFX,this.MTX2X);
+         if(this._bulletFadeFrames > 0)
+         {
+            this.CANVAS.draw(this.BMPDBLTFX,this.MTX2X);
+            this._bulletFadeFrames--;
+         }
          if(this.sms)
          {
             this.sm.process();
@@ -253,7 +282,10 @@ package f4.gfx
          this.MINIMAP.lock();
          this.MINIMAP.colorTransform(this.maprect,this.fxctmap);
          this._targets.drawMiniMap(param1);
-         this.MINIMAP.applyFilter(this.MINIMAP,this.maprect,this.point,this.blur);
+         if(++this._minimapFilterTick % 2 == 0)
+         {
+            this.MINIMAP.applyFilter(this.MINIMAP,this.maprect,this.point,this.blur);
+         }
          this.MINIMAP.unlock();
       }
    }
