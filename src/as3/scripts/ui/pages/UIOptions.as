@@ -126,26 +126,6 @@ package ui.pages
       public function okFunc() : void
       {
          ConfigAndStory.CONFIG = this.config;
-         if(this.config[2] == 1)
-         {
-            ConfigAndStory.RESOLUTION = ConfigAndStory.RES_1080;
-         }
-         else
-         {
-            ConfigAndStory.RESOLUTION = ConfigAndStory.RES_720;
-         }
-         if(this.config[0] == 0 && this.config[1] == 0)
-         {
-            ConfigAndStory.QUALITY = ConfigAndStory.QUALITY_LOW;
-         }
-         else if(this.config[0] == 1 && this.config[1] == 1)
-         {
-            ConfigAndStory.QUALITY = ConfigAndStory.QUALITY_HIGH;
-         }
-         else
-         {
-            ConfigAndStory.QUALITY = ConfigAndStory.QUALITY_MEDIUM;
-         }
          ConfigAndStory.makeChange();
          removeSelf();
          MochiEvents.trackEvent("change_option");

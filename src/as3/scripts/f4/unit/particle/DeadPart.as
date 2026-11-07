@@ -140,7 +140,6 @@ package f4.unit.particle
          _loc5_ = this.part.part.partMove.hitRect.x + Math.random() * this.part.part.partMove.hitRect.width;
          _loc6_ = this.part.part.partMove.hitRect.y + Math.random() * this.part.part.partMove.hitRect.height;
          this.part.part.partMove.point.x = this.part.part.partMove.point.y = -1000000;
-         this.part = null;
       }
    }
 }

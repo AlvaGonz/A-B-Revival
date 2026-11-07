@@ -34,11 +34,7 @@ package fullshit
          mouseCtrl = new MouseCtrl(stage);
          w = 640;
          h = 480;
-         if(stage)
-         {
-            stage.frameRate = 60;
-         }
-         fps = stage ? stage.frameRate : 60;
+         fps = stage.frameRate;
          STAGE = stage;
          this.hideright();
       }
