@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 cd /d "%~dp0\.."
 
 echo ===============================================================================
-echo             A&B REVIVAL - ADOBE AIR DESKTOP / MOBILE RUNTIME LAUNCHER
+echo             A^&B REVIVAL - ADOBE AIR DESKTOP / MOBILE RUNTIME LAUNCHER
 echo ===============================================================================
 
 set "AIR_DESCRIPTOR=src\air\application.xml"
@@ -27,21 +27,23 @@ if !errorlevel! equ 0 (
         set "ADL_CMD=C:\AIRSDK\bin\adl.exe"
     ) else if exist "C:\AdobeAIRSDK\bin\adl.exe" (
         set "ADL_CMD=C:\AdobeAIRSDK\bin\adl.exe"
+    ) else if exist "C:\Dev\AIRSDK\bin\adl.exe" (
+        set "ADL_CMD=C:\Dev\AIRSDK\bin\adl.exe"
     )
 )
 
 if not defined ADL_CMD (
-    echo [NOTE] Adobe AIR SDK (adl.exe) was not found in PATH or standard directories.
+    echo [NOTE] Adobe AIR SDK ^(adl.exe^) was not found in PATH or standard directories.
     echo.
-    echo To run A&B Revival natively via HARMAN Adobe AIR:
-    echo 1. Download the free HARMAN AIR SDK from:
+    echo To run A^&B Revival natively via HARMAN Adobe AIR:
+    echo 1. Download the free HARMAN AIR SDK for Windows from:
     echo    https://airsdk.harman.com/download
-    echo 2. Extract to C:\AIRSDK (or add its \bin folder to your PATH environment variable).
+    echo 2. Extract to C:\AIRSDK ^(or C:\Dev\AIRSDK, or add its \bin folder to PATH^).
     echo 3. Re-run this script!
     echo.
     echo Falling back to Flash Player Standalone Debugger...
-    if exist "bin\flashplayer11_9r900_152_win_sa_debug.exe" (
-        start "" "bin\flashplayer11_9r900_152_win_sa_debug.exe" "!TARGET_SWF!"
+    if exist "C:\Dev\Flashpoint Infinity 14.0.3\FPSoftware\Flash\flashplayer11_9r900_152_win_sa_debug.exe" (
+        start "" "C:\Dev\Flashpoint Infinity 14.0.3\FPSoftware\Flash\flashplayer11_9r900_152_win_sa_debug.exe" "!TARGET_SWF!"
     ) else (
         start "" "!TARGET_SWF!"
     )
