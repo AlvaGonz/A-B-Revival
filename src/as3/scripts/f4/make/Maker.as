@@ -199,7 +199,8 @@ package f4.make
       public function makeItem(param1:Number, param2:Number, param3:Array) : void
       {
          var _loc4_:int = 0;
-         if(param3[0] == "fuel")
+         // money/part drops must outlive the battle so the victory sweep can credit them
+         if(param3[0] == "fuel" || param3[0] == "money" || param3[0] == "part")
          {
             _loc4_ = int.MAX_VALUE;
          }
