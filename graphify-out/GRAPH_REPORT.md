@@ -1,17 +1,17 @@
 # Graph Report - A&B revival  (2026-11-06)
 
 ## Corpus Check
-- 178 files · ~68,222 words
+- 178 files · ~69,003 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 19 file(s) not represented in the graph (top: .bin 12, .bat 4, (none) 2)
 
 ## Summary
-- 2590 nodes · 3280 edges · 340 communities (65 shown, 275 thin omitted)
+- 2600 nodes · 3292 edges · 338 communities (67 shown, 271 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 97 edges (avg confidence: 0.89)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `177fc181`
+- Built from commit: `4b3e05e0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,7 +26,7 @@
 - F4DataCPX
 - MochiAd.as
 - RGBHSLHSV.as
-- act
+- cleanDt
 - Spec: Clear Weapons Button in Factory Shipbuilder
 - ConfigAndStory
 - MochiInventory.as
@@ -42,10 +42,10 @@
 - SoundUnit32
 - Unity
 - Director
-- Fly4UI
+- as3/scripts/Fly4UI.as
 - MouseCtrl
 - UIWin.as
-- Core Entities
+- act
 - F4ShowData
 - BresenhamLine
 - UIOptions.as
@@ -65,7 +65,6 @@
 - SimpleFly
 - Render
 - TRender
-- F4DataOrg
 - KeyCtrl
 - MochiDigits.as
 - BtnBase
@@ -272,7 +271,6 @@
 - ticket-3.md
 - updateNew
 - undoShow
-- as3/scripts/f4/unit/fire/FireLoop.as
 - ticket_29_body.md
 - as3_search.py
 - pr_tooling_body.md
@@ -298,25 +296,25 @@
 10. `act()` - 18 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Core Entities` --references--> `FireLoop()`  [INFERRED]
-  GLOSSARY.md → src/as3/scripts/f4/unit/fire/FireLoop.as
-- `Core Entities` --references--> `AIUnity`  [INFERRED]
-  GLOSSARY.md → src/as3/scripts/f4/unit/ai/AIUnity.as
-- `Context` --references--> `acceptableOrg()`  [INFERRED]
-  docs/adr/0007-hull-category-wing-capacity.md → src/as3/scripts/f4data/F4DataHole.as
-- `Decision` --references--> `acceptableOrg()`  [INFERRED]
-  docs/adr/0007-hull-category-wing-capacity.md → src/as3/scripts/f4data/F4DataHole.as
+- `Core Entities` --references--> `F4DataHole()`  [INFERRED]
+  GLOSSARY.md → src/as3/scripts/f4data/F4DataHole.as
 - `Decision` --references--> `UIMakePlayer()`  [INFERRED]
   docs/adr/0002-allied-flagship-lifecycle.md → src/as3/scripts/ui/pages/UIMakePlayer.as
+- `Core Entities` --references--> `UIMakePlayer()`  [INFERRED]
+  GLOSSARY.md → src/as3/scripts/ui/pages/UIMakePlayer.as
+- `Testing Decisions` --references--> `cleanPartsByType()`  [INFERRED]
+  scratch/spec_body.md → src/as3/scripts/ui/pages/UIMakePlayer.as
+- `Core Entities` --references--> `initWingsInDtTemp()`  [INFERRED]
+  GLOSSARY.md → src/as3/scripts/ui/pages/UIMakePlayer.as
 
 ## Import Cycles
 - None detected.
 
-## Communities (340 total, 275 thin omitted)
+## Communities (338 total, 271 thin omitted)
 
 ### Community 0 - "as3/scripts/ui/pages/UIMakePlayer.as"
-Cohesion: 0.10
-Nodes (21): addBtnL(), addDtL(), addPart(), afterFadeIn(), afterTalk(), autoPlug(), countPartsByType(), createCyberBtn() (+13 more)
+Cohesion: 0.12
+Nodes (12): addBtnL(), addDtL(), afterFadeIn(), afterTalk(), countPartsByType(), onClearEnginesClick(), onClearWeaponsClick(), onClearWingsClick() (+4 more)
 
 ### Community 1 - "EvtCtrl"
 Cohesion: 0.11
@@ -334,6 +332,10 @@ Nodes (7): afterFadeIn(), alphaRunStart(), initArr(), removeAll(), removeBtnL(),
 Cohesion: 0.11
 Nodes (21): Decision, act(), addAI(), addDtL(), afterFadeIn(), afterTalk(), changeAI2PlayerYes(), ckAIUse() (+13 more)
 
+### Community 6 - "AIUnity"
+Cohesion: 0.06
+Nodes (11): Core Entities, Glossary: A&B Revival (Assembly & Battle Space), Tooling Vocabulary, AIUnity, FireLoop(), FireSingle(), FlyBase, FlyPart (+3 more)
+
 ### Community 7 - "F4DataCPX"
 Cohesion: 0.10
 Nodes (8): Further Notes, Implementation Decisions, Out of Scope, Problem Statement, Solution, Testing Decisions, User Stories, F4DataCPX
@@ -346,9 +348,9 @@ Nodes (7): _allowDomains(), createEmptyMovieClip(), doOnEnterFrame(), load(), sh
 Cohesion: 0.14
 Nodes (8): changeRGB(), colorBack(), colorIn01(), HSL2RGB(), RGB2H(), RGB2HSL(), RGB2HSV(), RGBHSLHSV()
 
-### Community 10 - "act"
-Cohesion: 0.18
-Nodes (17): act(), addDt(), addFlyYes(), addToFly(), autoZoom(), changeOrgDt(), cleanDt(), cleanDtL() (+9 more)
+### Community 10 - "cleanDt"
+Cohesion: 0.32
+Nodes (8): addFlyYes(), addToFly(), cleanDt(), cleanMCNotBack(), leaveNormal(), leaveYes(), mergeFlyLeaveYes(), removeSelf()
 
 ### Community 11 - "Spec: Clear Weapons Button in Factory Shipbuilder"
 Cohesion: 0.22
@@ -358,13 +360,17 @@ Nodes (8): Further Notes, Implementation Decisions, Out of Scope, Problem Statem
 Cohesion: 0.19
 Nodes (6): disTo(), EPoint(), get(), makeDis(), rotTo(), scale()
 
+### Community 29 - "as3/scripts/Fly4UI.as"
+Cohesion: 0.20
+Nodes (11): allLoaded(), countDisplayObjects(), dataCop(), defCop(), loop(), lvCop(), soundCop(), startLoadXML() (+3 more)
+
 ### Community 31 - "UIWin.as"
 Cohesion: 0.24
 Nodes (5): act(), addBtnL(), nextGame(), removeBtnL(), toNext()
 
-### Community 32 - "Core Entities"
-Cohesion: 0.09
-Nodes (17): Decision, Core Entities, Glossary: A&B Revival (Assembly & Battle Space), Tooling Vocabulary, FireSingle(), FlyBase, FlyPart, FlyData (+9 more)
+### Community 32 - "act"
+Cohesion: 0.19
+Nodes (13): act(), addDt(), addPart(), autoPlug(), autoZoom(), changeOrgDt(), cleanDtL(), hidePoints() (+5 more)
 
 ### Community 36 - "UIOptions.as"
 Cohesion: 0.36
@@ -419,8 +425,8 @@ Cohesion: 0.33
 Nodes (5): 6. Captain Ship Tactical AI Modes (E hotkey), Consequences, Context, Decision, Status
 
 ### Community 100 - "as3/scripts/f4data/F4DataHole.as"
-Cohesion: 0.18
-Nodes (7): 7. Hull Category Wing Capacity & Assembly HUD Counter, Consequences, Context, Status, acceptable(), acceptableOrg(), getCurrentWings()
+Cohesion: 0.13
+Nodes (13): 7. Hull Category Wing Capacity & Assembly HUD Counter, Consequences, Context, Decision, Status, acceptable(), acceptableOrg(), F4DataHole() (+5 more)
 
 ### Community 101 - "Agent skills"
 Cohesion: 0.18
@@ -531,8 +537,8 @@ Cohesion: 0.40
 Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 
 ### Community 319 - "updateNew"
-Cohesion: 0.39
-Nodes (8): cleanMC(), editYes(), mergeFlyYes(), newYes(), removeYes(), showFlyEdit(), showFlys(), updateNew()
+Cohesion: 0.22
+Nodes (15): cleanMC(), createCyberBtn(), editYes(), initClearButtons(), initWingHint(), mergeFlyYes(), newYes(), removeYes() (+7 more)
 
 ### Community 320 - "undoShow"
 Cohesion: 0.40
@@ -556,7 +562,7 @@ Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 
 ### Community 338 - "as3/scripts/ui/pages/UIGame.as"
 Cohesion: 0.06
-Nodes (44): uiName(), act(), addBtnL(), afterFadeIn(), drawOneStart(), missionLoop(), recordLostPart(), removeBtnL() (+36 more)
+Nodes (45): uiName(), act(), addBtnL(), afterFadeIn(), drawOneStart(), missionLoop(), recordLostPart(), removeBtnL() (+37 more)
 
 ### Community 339 - "spec-combat-telemetry.md"
 Cohesion: 0.25
@@ -575,21 +581,21 @@ Cohesion: 0.40
 Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 
 ## Knowledge Gaps
-- **275 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **271 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `UIMakePlayer()` connect `Core Entities` to `as3/scripts/ui/pages/UIMakePlayer.as`, `undoShow`, `UIChooseFlyAI.as`, `act`, `updateNew`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **Why does `uiName()` connect `as3/scripts/ui/pages/UIGame.as` to `act`, `as3/scripts/ui/pages/UIMakePlayer.as`, `as3/scripts/ui/pages/UIRepair.as`, `updateNew`?**
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Should `as3/scripts/ui/pages/UIMakePlayer.as` be split into smaller, more focused modules?**
-  _Cohesion score 0.0989247311827957 - nodes in this community are weakly interconnected._
-- **Why does `Decision` connect `UIChooseFlyAI.as` to `Core Entities`, `EvtCtrl`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+  _Cohesion score 0.12121212121212122 - nodes in this community are weakly interconnected._
+- **Why does `UIMakePlayer()` connect `updateNew` to `as3/scripts/ui/pages/UIMakePlayer.as`, `undoShow`, `as3/scripts/f4data/F4DataHole.as`, `UIChooseFlyAI.as`, `AIUnity`?**
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Should `EvtCtrl` be split into smaller, more focused modules?**
   _Cohesion score 0.10952380952380952 - nodes in this community are weakly interconnected._
-- **Why does `uiName()` connect `as3/scripts/ui/pages/UIGame.as` to `as3/scripts/ui/pages/UIMakePlayer.as`, `act`, `as3/scripts/ui/pages/UIRepair.as`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
+- **Why does `Decision` connect `UIChooseFlyAI.as` to `EvtCtrl`, `updateNew`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Should `MochiServices.as` be split into smaller, more focused modules?**
   _Cohesion score 0.10967741935483871 - nodes in this community are weakly interconnected._
 - **Should `as3/scripts/ui/pages/UIRepair.as` be split into smaller, more focused modules?**
