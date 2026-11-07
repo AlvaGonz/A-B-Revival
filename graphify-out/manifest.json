@@ -6,16 +6,16 @@
     "semantic_hash": ""
   },
   "src/as3/scripts/Fly4UI.as": {
-    "mtime": 1794022811.6095264,
-    "seen": 1794022957.6698816,
-    "ast_hash": "0d9ac0a910dfb431af377c7f6cf4fed7",
+    "mtime": 1794024220.8348808,
+    "seen": 1794024579.688697,
+    "ast_hash": "09c715f217cc01a36226be78c544cf05",
     "semantic_hash": "",
     "language": "language=.ts"
   },
   "src/as3/scripts/VeryOutShitABC.as": {
-    "mtime": 1794022638.2724228,
-    "seen": 1794022957.6698892,
-    "ast_hash": "3438d8472b3aad6eada94cf32ac7cf5e",
+    "mtime": 1794023871.8876178,
+    "seen": 1794024579.6887045,
+    "ast_hash": "f17b016182b68d1486e3ed21f452a214",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -153,9 +153,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/data/Targets.as": {
-    "mtime": 1794022450.8233683,
-    "seen": 1794022957.6700044,
-    "ast_hash": "8c0ac32240a0eebf061a5bf3d6b7f44b",
+    "mtime": 1794024490.0888486,
+    "seen": 1794024579.6888142,
+    "ast_hash": "f0f15d3723fcebd4117ed5d238773604",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -391,16 +391,16 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/particle/DeadPart.as": {
-    "mtime": 1794022451.0591407,
-    "seen": 1794022957.6702676,
-    "ast_hash": "2207efb3434d6e2ade4230d0ec772af5",
+    "mtime": 1794023465.5770502,
+    "seen": 1794024579.688993,
+    "ast_hash": "f4a01080ea268d9183c70a1d5a78b947",
     "semantic_hash": "",
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/particle/Item.as": {
-    "mtime": 1794022548.5106115,
-    "seen": 1794022957.670273,
-    "ast_hash": "69da0514495483851059f16436fa615d",
+    "mtime": 1794023473.232937,
+    "seen": 1794024579.6889987,
+    "ast_hash": "62bb1b794e8c8d36ac9e067881259cd3",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -559,9 +559,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/F4DataLinks.as": {
-    "mtime": 1793980704.18461,
-    "seen": 1793997166.7718837,
-    "ast_hash": "a034a7a9820f8336ec1983b46d543c3d",
+    "mtime": 1794024043.6586506,
+    "seen": 1794024579.6891227,
+    "ast_hash": "17dd24dc64322f9b37e92758a423963f",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -608,8 +608,8 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/sdata/ConfigAndStory.as": {
-    "mtime": 1794022783.9108036,
-    "seen": 1794022957.6704543,
+    "mtime": 1794023021.013765,
+    "seen": 1794024579.6891594,
     "ast_hash": "2599f7eda797ccaf39595959278d4216",
     "semantic_hash": "",
     "language": "language=.ts"
@@ -790,9 +790,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/mochi/as3/MochiAd.as": {
-    "mtime": 1793924463.7352734,
-    "seen": 1793924520.0689492,
-    "ast_hash": "9b18b9dd1332f4d8103ef02230fe3a8e",
+    "mtime": 1794023880.9575522,
+    "seen": 1794024579.6892917,
+    "ast_hash": "debf28036bb70050bc71319e61d02525",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -818,9 +818,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/mochi/as3/MochiEvents.as": {
-    "mtime": 1793924463.4057696,
-    "seen": 1793924520.0689883,
-    "ast_hash": "9122db25fdc687c8e1dba8c63dbd750a",
+    "mtime": 1794023898.2790391,
+    "seen": 1794024579.6893122,
+    "ast_hash": "587ed00e3426062d8c0d9eeac04afa08",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -832,9 +832,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/mochi/as3/MochiServices.as": {
-    "mtime": 1793924463.6092813,
-    "seen": 1793924520.0690076,
-    "ast_hash": "ffd90bee5b819156c4d6953c92a591fc",
+    "mtime": 1794023888.8980868,
+    "seen": 1794024579.689322,
+    "ast_hash": "a2fe6c1825adb301cd062a4ef494d901",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -965,9 +965,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIMakePlayer.as": {
-    "mtime": 1794022451.3748949,
-    "seen": 1794022957.6707299,
-    "ast_hash": "404eb43a24929cf23c033f6be49fadf3",
+    "mtime": 1794024060.903043,
+    "seen": 1794024579.6894195,
+    "ast_hash": "06822f149d0a030453f9441ff1e20bd0",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1000,8 +1000,8 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIOptions.as": {
-    "mtime": 1794022823.052431,
-    "seen": 1794022957.6707566,
+    "mtime": 1794023021.0178275,
+    "seen": 1794024579.689445,
     "ast_hash": "950ad1c47f6b80904ea59de4268c5a33",
     "semantic_hash": "",
     "language": "language=.ts"
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "GLOSSARY.md": {
-    "mtime": 1794022918.187977,
-    "seen": 1794022957.6708422,
-    "ast_hash": "402daa263c8167abbb3e5d99cc75643f",
+    "mtime": 1794023780.1471772,
+    "seen": 1794024579.6895316,
+    "ast_hash": "eb3d8000dcb3083d7ecdeacf6cb4dd58",
     "semantic_hash": ""
   },
   "docs/adr/0001-record-architecture-decisions.md": {
@@ -1242,9 +1242,15 @@
     "semantic_hash": ""
   },
   "docs/adr/0008-60fps-resolution-modernization-and-leak-prevention.md": {
-    "mtime": 1794022906.6674194,
-    "seen": 1794022957.6708887,
-    "ast_hash": "7930973aa6db0f1f267d6f4c479c0341",
+    "mtime": 1794023601.0058267,
+    "seen": 1794024579.6895797,
+    "ast_hash": "13e6363e58f364f597f7e869708fc7ea",
+    "semantic_hash": ""
+  },
+  "docs/adr/0009-monolith-decomposition-and-domain-seams.md": {
+    "mtime": 1794023838.2913055,
+    "seen": 1794024579.6895854,
+    "ast_hash": "64dcdf0ef649f381501552925e59a08f",
     "semantic_hash": ""
   }
 }
