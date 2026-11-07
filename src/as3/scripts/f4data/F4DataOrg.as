@@ -5,6 +5,24 @@ package f4data
    public class F4DataOrg
    {
       
+      public static const TYPE_BODY:int = 0;
+      
+      public static const TYPE_WING:int = 1;
+      
+      public static const TYPE_ENGINE:int = 2;
+      
+      public static const TYPE_GUN:int = 3;
+      
+      public static const WING_CAP_SMALL:int = 4;
+      
+      public static const WING_CAP_MEDIUM:int = 6;
+      
+      public static const WING_CAP_LARGE:int = 8;
+      
+      public static const WING_CAP_MEGA:int = 12;
+      
+      public static const WING_CAP_LEGACY:int = 10;
+      
       public var type:int = 0;
       
       public var name:String = "name";
@@ -12,6 +30,8 @@ package f4data
       public var mcName:String = "mcname";
       
       public var lr:int = 0;
+      
+      public var rot:int = 0;
       
       public var deadAct:String = "dead";
       
@@ -75,6 +95,7 @@ package f4data
          this.name = param1["name"];
          this.mcName = param1["mcName"];
          this.lr = param1["lr"];
+         this.rot = param1["rot"] != null ? int(param1["rot"]) : 0;
          this.deadAct = param1["deadAct"];
          this.maxhp = param1["maxhp"];
          this.powFly = param1["powFly"];
@@ -114,6 +135,7 @@ package f4data
          _loc1_["name"] = this.name;
          _loc1_["mcName"] = this.mcName;
          _loc1_["lr"] = this.lr;
+         _loc1_["rot"] = this.rot;
          _loc1_["deadAct"] = this.deadAct;
          _loc1_["maxhp"] = this.maxhp;
          _loc1_["powFly"] = this.powFly;
@@ -180,6 +202,67 @@ package f4data
             _loc5_ *= 0.11;
          }
          this.cost = Math.ceil((_loc1_ + _loc4_ * (_loc5_ * _loc6_) / 8) * _loc7_ * 0.0065);
+      }
+      
+      public static function wingCategoryForHull(param1:F4DataOrg) : String
+      {
+         if(!param1 || !param1.name)
+         {
+            return "Unknown";
+         }
+         if(param1.name.indexOf("B.Small") == 0)
+         {
+            return "Small";
+         }
+         // B.Med++ hulls do not match "B.Medium"
+         if(param1.name.indexOf("B.Med") == 0)
+         {
+            return "Medium";
+         }
+         if(param1.name.indexOf("B.Large") == 0)
+         {
+            return "Large";
+         }
+         if(param1.name.indexOf("B.Mega") == 0)
+         {
+            return "Mega";
+         }
+         return "Unknown";
+      }
+      
+      public static function maxWingsForHull(param1:F4DataOrg) : int
+      {
+         var _loc2_:String = wingCategoryForHull(param1);
+         if(_loc2_ == "Small")
+         {
+            return WING_CAP_SMALL;
+         }
+         if(_loc2_ == "Medium")
+         {
+            return WING_CAP_MEDIUM;
+         }
+         if(_loc2_ == "Large")
+         {
+            return WING_CAP_LARGE;
+         }
+         if(_loc2_ == "Mega")
+         {
+            return WING_CAP_MEGA;
+         }
+         return WING_CAP_LEGACY;
+      }
+      
+      public function getEffectiveRange() : Number
+      {
+         if(this.type != TYPE_GUN || this.firePoints == null || this.firePoints.length == 0 || this.bullet == null || this.fire == null)
+         {
+            return 0;
+         }
+         var _v0:Number = this.fire.spdS + this.fire.spdAdd * this.fire.fireNum * 0.5;
+         var _acc:Number = this.fire.accS + this.fire.accAdd * this.fire.fireNum * 0.5;
+         var _t:Number = this.bullet.life;
+         var _range:Number = _v0 * _t + 0.5 * _acc * _t * _t;
+         return _range > 0 ? _range : 0;
       }
    }
 }

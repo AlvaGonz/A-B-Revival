@@ -7,6 +7,7 @@ package f4.data
    import f4.gfx.RenderData;
    import f4.make.Maker;
    import f4.unit.ai.AIData;
+   import f4data.sdata.ConfigAndStory;
    import flash.display.Sprite;
    import flash.display.Stage;
    import flash.net.URLRequest;
@@ -86,6 +87,10 @@ package f4.data
          RENDERDATA = new RenderData();
          MAKER = new Maker();
          GDATA = new GData();
+         if(ConfigAndStory.ALLPART)
+         {
+            GDATA.initStage3DAtlas(ConfigAndStory.ALLPART);
+         }
          CORE = new OpOneCore();
          BLUR = new RenderBlur();
          AIDATA = new AIData();

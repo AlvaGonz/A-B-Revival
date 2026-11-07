@@ -37,6 +37,7 @@ package ui.pages
          }
          super(param1,param2,param3,param4,param5);
          ConfigAndStory.MONEY += ConfigAndStory.ALLPART.levelMoney;
+         ConfigAndStory.autoSaveMission();
          _mov.addEventListener(Event.ENTER_FRAME,this.missionLoop);
       }
       
@@ -113,8 +114,11 @@ package ui.pages
       public function nextGame() : void
       {
          MakeUI.makeChoose(this,_sp,_ui);
-         ConfigAndStory.saveData();
-         ConfigAndStory.save();
+         if(ConfigAndStory.AUTOSAVE)
+         {
+            ConfigAndStory.saveData();
+            ConfigAndStory.save();
+         }
       }
       
       public function initTxt(param1:MovieClip) : void

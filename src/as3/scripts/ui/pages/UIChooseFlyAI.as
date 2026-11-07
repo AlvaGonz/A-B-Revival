@@ -6,9 +6,13 @@ package ui.pages
    import f4data.MC2F4Data;
    import f4data.cpx.F4DataCPX;
    import f4data.sdata.ConfigAndStory;
+   import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
    import flash.display.MovieClip;
+   import flash.display.Sprite;
+   import flash.events.MouseEvent;
    import flash.text.TextField;
+   import flash.text.TextFormatAlign;
    import fullshit.ctrl2.SoundUnit2;
    import fullshit.tool.Attach;
    import mochi.as3.MochiEvents;
@@ -39,8 +43,49 @@ package ui.pages
       
       public var ainum:int = 20;
       
+      private static const ROLE_SHORT_NAMES:Array = ["ANC", "ESC", "EVD", "HNT", "SUP", "SHD"];
+      
+      private static const ROLE_FULL_NAMES:Array = [
+         "HOLD / ANCHOR",
+         "ESCORT",
+         "EVADE",
+         "SEEK / HUNT",
+         "FIRE SUPPORT",
+         "SHIELD"
+      ];
+      
+      private var _slotContainers:Array;
+      
+      private var _roleLabels:Array;
+      
+      private var _leaderLabels:Array;
+      
+      private var _dropdownPopup:Sprite;
+      
+      private var _activeDropdownSlot:int = -1;
+      
       public function UIChooseFlyAI(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
+         ConfigAndStory.checkCaptainShip();
+         var _capFly:F4DataLinks = ConfigAndStory.getCaptainFly();
+         if(_capFly)
+         {
+            if(ConfigAndStory.PLAYER == _capFly.index)
+            {
+               ConfigAndStory.PLAYER = 0;
+            }
+            var _aiSlot:int = 0;
+            var _cLen:int = ConfigAndStory.COMPANIONS ? ConfigAndStory.COMPANIONS.length : 0;
+            while(_aiSlot < _cLen)
+            {
+               var _cSlotItem:Object = ConfigAndStory.COMPANIONS[_aiSlot] as Object;
+               if(_cSlotItem && _cSlotItem.craftIndex == _capFly.index)
+               {
+                  ConfigAndStory.COMPANIONS[_aiSlot] = null;
+               }
+               _aiSlot++;
+            }
+         }
          param3.getChildByName("lv").visible = false;
          (param3.getChildByName("txtbt") as TextField).text = "BATTLE-" + (ConfigAndStory.STORY + 1);
          this.f4datax = param1;
@@ -61,6 +106,7 @@ package ui.pages
          this.ais = [];
          this.aiXnum = (_mov.getChildByName("form") as MovieClip).getChildByName("$choosesort3").x;
          this.fillAI();
+         this.initCompanionUI();
          var _loc7_:F4DataLinks = ConfigAndStory.ALLPART.plFly[ConfigAndStory.PLAYER];
          if(_loc7_)
          {
@@ -112,6 +158,12 @@ package ui.pages
          {
             (_mov.getChildByName("lock1") as MovieClip).gotoAndPlay(1);
             (_mov.getChildByName("lock2") as MovieClip).gotoAndPlay(1);
+            if(!ConfigAndStory.TIP_COMPANION_UNLOCK)
+            {
+               ConfigAndStory.TIP_COMPANION_UNLOCK = true;
+               ConfigAndStory.saveData();
+               new UIReally(null,null,null,"AI Companions Unlocked","\nAI companion deployment is now active!\nAssign ships to your wingmen and set their pre-battle roles (Escort, Hunt, Shield, etc.).\nCommand them in combat using the Tactical HUD.",_sp,Attach.attach("UI_Really") as MovieClip,"UI_Really",_ui,this);
+            }
          }
          if(ConfigAndStory.STORY == 1)
          {
@@ -138,6 +190,7 @@ package ui.pages
       
       override public function removeSelf() : UIBase
       {
+         this.closeRoleDropdown();
          super.removeSelf();
          return _last;
       }
@@ -168,9 +221,10 @@ package ui.pages
          else if(param1.charAt(0) == "a")
          {
             _loc2_ = parseInt(param1.substr(1)) - 1;
-            if(ConfigAndStory.AI[_loc2_])
+            var _compHover:Object = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as Object : null;
+            if(_compHover && _compHover.craftIndex >= 0)
             {
-               _loc4_ = int(ConfigAndStory.AI[_loc2_]);
+               _loc4_ = _compHover.craftIndex;
                _loc3_ = this.f4datax.plFly[_loc4_];
                if(_loc3_)
                {
@@ -267,6 +321,13 @@ package ui.pages
                f4link = this.form.getLink(formNum);
                if(f4link)
                {
+                  if(f4link.isCaptainShip())
+                  {
+                     this.addDtL(f4link,this.dtLinkS,"showDetail",true);
+                     this.form.lightOn(formNum);
+                     InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
+                     return;
+                  }
                   this.tempPlayerNum = formNum;
                   plNum = int(this.form.workArr[this.tempPlayerNum + this.form.page * this.form.pageLen][0]);
                   if(this.ckAIUseAI(plNum) == -1)
@@ -293,6 +354,10 @@ package ui.pages
             f4linkAI = this.form.getLink(formNumAI);
             if(f4linkAI)
             {
+               if(f4linkAI.isCaptainShip())
+               {
+                  return;
+               }
                this.addAI(f4linkAI.index);
                this.form.updateAI();
                this.addDtL(f4linkAI,this.dtLinkS,"showDetail",true);
@@ -301,7 +366,8 @@ package ui.pages
          else if(btnStr.charAt(0) == "a")
          {
             aiNum = parseInt(btnStr.substr(1)) - 1;
-            if(ConfigAndStory.AI[aiNum] == null)
+            var _compAct:Object = ConfigAndStory.COMPANIONS && aiNum < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[aiNum] as Object : null;
+            if(_compAct == null || _compAct.craftIndex < 0)
             {
                this.reAI(aiNum);
             }
@@ -335,6 +401,7 @@ package ui.pages
             this.addDtL(_loc1_,this.dtLinkF,"showFly",false);
             this.findAIUse();
             this.fillAI();
+            this.updateCompanionUI();
             InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
             this.form.updateAI();
             this.addDtL(_loc1_,this.dtLinkS,"showDetail",true);
@@ -361,16 +428,23 @@ package ui.pages
          {
             InitData.CORE.repair.flys.push(this.f4datax.plFly[ConfigAndStory.PLAYER]);
          }
+         var _capFly:F4DataLinks = ConfigAndStory.getCaptainFly();
+         if(_capFly)
+         {
+            InitData.CORE.repair.flys.push(_capFly);
+         }
          if(ConfigAndStory.STORY != 49)
          {
             i = 0;
-            while(i < ConfigAndStory.AI.length)
+            var _compReadyLen:int = ConfigAndStory.COMPANIONS ? ConfigAndStory.COMPANIONS.length : 0;
+            while(i < _compReadyLen)
             {
-               if(ConfigAndStory.AI[i] != null)
+               var _cReady:Object = ConfigAndStory.COMPANIONS[i] as Object;
+               if(_cReady != null && _cReady.craftIndex >= 0)
                {
                   aiNums++;
-                  InitData.CORE.levelData.afa.push(this.f4datax.plFly[ConfigAndStory.AI[i]]);
-                  InitData.CORE.repair.flys.push(this.f4datax.plFly[ConfigAndStory.AI[i]]);
+                  InitData.CORE.levelData.afa.push(this.f4datax.plFly[_cReady.craftIndex]);
+                  InitData.CORE.repair.flys.push(this.f4datax.plFly[_cReady.craftIndex]);
                }
                i++;
             }
@@ -415,12 +489,15 @@ package ui.pages
       
       public function ckAIUseAI(param1:int) : int
       {
+         if(!ConfigAndStory.COMPANIONS)
+         {
+            return -1;
+         }
          var _loc3_:int = 0;
-         var _loc2_:Array = ConfigAndStory.AI;
-         _loc3_ = 0;
          while(_loc3_ < this.ainum)
          {
-            if(_loc2_[_loc3_] == param1)
+            var _c:Object = _loc3_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc3_] as Object : null;
+            if(_c != null && _c.craftIndex == param1)
             {
                return _loc3_;
             }
@@ -431,16 +508,23 @@ package ui.pages
       
       public function ckAIUse(param1:int) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = ConfigAndStory.AI;
+         if(this.form && this.form.isCaptainShip(param1))
+         {
+            return true;
+         }
          if(ConfigAndStory.PLAYER == param1)
          {
             return true;
          }
-         _loc3_ = 0;
+         if(!ConfigAndStory.COMPANIONS)
+         {
+            return false;
+         }
+         var _loc3_:int = 0;
          while(_loc3_ < this.ainum)
          {
-            if(_loc2_[_loc3_] == param1)
+            var _c:Object = _loc3_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc3_] as Object : null;
+            if(_c != null && _c.craftIndex == param1)
             {
                return true;
             }
@@ -452,6 +536,14 @@ package ui.pages
       public function addAI(param1:int) : void
       {
          var _loc2_:F4DataLinks = null;
+         if(this.f4datax && this.f4datax.plFly && param1 >= 0 && param1 < this.f4datax.plFly.length)
+         {
+            var _capCheck:F4DataLinks = this.f4datax.plFly[param1];
+            if(_capCheck && _capCheck.isCaptainShip())
+            {
+               return;
+            }
+         }
          var _loc3_:F4ShowData = null;
          var _loc4_:Array = null;
          var _loc5_:int = 0;
@@ -461,20 +553,23 @@ package ui.pages
             _loc2_ = this.f4datax.plFly[param1];
             _loc3_ = new F4ShowData(_loc2_);
             _loc3_.initData();
-            _loc4_ = ConfigAndStory.AI;
             _loc6_ = false;
             _loc5_ = 0;
             while(_loc5_ < this.ainum)
             {
-               if(_loc4_[_loc5_] == null)
+               var _cAdd:Object = ConfigAndStory.COMPANIONS && _loc5_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc5_] as Object : null;
+               if(_cAdd == null || _cAdd.craftIndex < 0)
                {
-                  _loc4_[_loc5_] = param1;
-                  var _txtFld1:TextField = (_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (_loc5_ + 1)) as TextField;
+                  var _existingComp:Object = this.getOrCreateCompanion(_loc5_);
+                  _existingComp.craftIndex = param1;
+                  var _aipad1:MovieClip = _mov.getChildByName("aipad") as MovieClip;
+                  var _txtFld1:TextField = _aipad1 ? _aipad1.getChildByName("$a" + (_loc5_ + 1)) as TextField : null;
                   if(_txtFld1)
                   {
                      _txtFld1.text = _loc3_.cls;
                   }
                   this.ais[_loc5_] = param1;
+                  this.updateCompanionUI();
                   InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
                   _loc6_ = true;
                   break;
@@ -502,13 +597,15 @@ package ui.pages
                _loc3_ = this.f4datax.plFly[_loc2_];
                _loc4_ = new F4ShowData(_loc3_);
                _loc4_.initData();
-               _loc5_ = ConfigAndStory.AI;
-               _loc5_[param1] = _loc2_;
-               var _txtFld2:TextField = (_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (param1 + 1)) as TextField;
+               var _existingReComp:Object = this.getOrCreateCompanion(param1);
+               _existingReComp.craftIndex = _loc2_;
+               var _aipad2:MovieClip = _mov.getChildByName("aipad") as MovieClip;
+               var _txtFld2:TextField = _aipad2 ? _aipad2.getChildByName("$a" + (param1 + 1)) as TextField : null;
                if(_txtFld2)
                {
                   _txtFld2.text = _loc4_.cls;
                }
+               this.updateCompanionUI();
                this.addDtL(_loc3_,this.dtLinkS,"showDetail",true);
                InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
             }
@@ -518,8 +615,14 @@ package ui.pages
       public function delAI(param1:int) : void
       {
          var _loc2_:F4DataLinks = null;
-         ConfigAndStory.AI[param1] = null;
-         var _txtFld3:TextField = (_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (param1 + 1)) as TextField;
+         if(ConfigAndStory.COMPANIONS && param1 < ConfigAndStory.COMPANIONS.length)
+         {
+            ConfigAndStory.COMPANIONS[param1] = null;
+         }
+         this.closeRoleDropdown();
+         this.updateCompanionUI();
+         var _aipad3:MovieClip = _mov.getChildByName("aipad") as MovieClip;
+         var _txtFld3:TextField = _aipad3 ? _aipad3.getChildByName("$a" + (param1 + 1)) as TextField : null;
          if(_txtFld3)
          {
             _txtFld3.text = "-";
@@ -534,13 +637,13 @@ package ui.pages
       public function findAIUse() : void
       {
          var _loc2_:int = 0;
-         var _loc1_:Array = ConfigAndStory.AI;
          _loc2_ = 0;
          while(_loc2_ < this.ainum)
          {
-            if(_loc1_[_loc2_] != null && _loc1_[_loc2_] == ConfigAndStory.PLAYER)
+            var _cUse:Object = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as Object : null;
+            if(_cUse != null && _cUse.craftIndex == ConfigAndStory.PLAYER)
             {
-               _loc1_[_loc2_] = null;
+               ConfigAndStory.COMPANIONS[_loc2_] = null;
             }
             _loc2_++;
          }
@@ -550,25 +653,44 @@ package ui.pages
       {
          var _loc2_:F4DataLinks = null;
          var _loc4_:int = 0;
-         var _loc1_:Array = ConfigAndStory.AI;
          var _loc3_:F4ShowData = new F4ShowData(_loc2_);
+         var _aipad:MovieClip = _mov.getChildByName("aipad") as MovieClip;
          _loc4_ = 0;
          while(_loc4_ < this.ainum)
          {
-            if(_loc1_[_loc4_] != null)
+            var _txtFld:TextField = _aipad ? _aipad.getChildByName("$a" + (_loc4_ + 1)) as TextField : null;
+            var _cFill:Object = ConfigAndStory.COMPANIONS && _loc4_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc4_] as Object : null;
+            if(_cFill != null && _cFill.craftIndex >= 0 && this.f4datax != null && this.f4datax.plFly != null)
             {
-               _loc2_ = this.f4datax.plFly[_loc1_[_loc4_]];
-               _loc3_.link = _loc2_;
-               _loc3_.initData();
-               ((_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (_loc4_ + 1)) as TextField).text = _loc3_.cls;
-               this.ais[_loc4_] = _loc1_[_loc4_];
+               _loc2_ = this.f4datax.plFly[_cFill.craftIndex];
+               if(_loc2_ != null)
+               {
+                  _loc3_.link = _loc2_;
+                  _loc3_.initData();
+                  if(_txtFld != null)
+                  {
+                     _txtFld.text = _loc3_.cls;
+                  }
+                  this.ais[_loc4_] = _cFill.craftIndex;
+               }
+               else
+               {
+                  if(_txtFld != null)
+                  {
+                     _txtFld.text = "-";
+                  }
+               }
             }
             else
             {
-               ((_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (_loc4_ + 1)) as TextField).text = "-";
+               if(_txtFld != null)
+               {
+                  _txtFld.text = "-";
+               }
             }
             _loc4_++;
          }
+         this.updateCompanionUI();
       }
       
       public function resetAI() : void
@@ -608,18 +730,333 @@ package ui.pages
       {
          var _loc2_:int = 0;
          var _loc3_:int = 0;
-         var _loc1_:Array = ConfigAndStory.AI;
          _loc2_ = 0;
-         while(_loc2_ < this.ainum)
+         while(_loc2_ < 5)
          {
-            _loc3_ = this.findBestAI();
-            if(_loc3_ >= 0 && _loc1_[_loc2_] == null)
+            var _cBest:Object = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as Object : null;
+            if(_cBest == null || _cBest.craftIndex < 0)
             {
-               this.addAI(this.findBestAI());
+               _loc3_ = this.findBestAI();
+               if(_loc3_ >= 0)
+               {
+                  this.addAI(_loc3_);
+               }
             }
             _loc2_++;
          }
       }
+
+      private function onMovClicked(param1:MouseEvent) : void
+      {
+         if(!this._dropdownPopup)
+         {
+            return;
+         }
+         var _target:DisplayObject = param1.target as DisplayObject;
+         if(!_target)
+         {
+            return;
+         }
+         if(this._dropdownPopup.contains(_target))
+         {
+            return;
+         }
+         var _i:int = 0;
+         while(_i < 5)
+         {
+            var _cCont:Sprite = this._slotContainers ? this._slotContainers[_i] as Sprite : null;
+            if(_cCont && _cCont.contains(_target))
+            {
+               return;
+            }
+            _i++;
+         }
+         this.closeRoleDropdown();
+      }
+
+      private function getOrCreateCompanion(param1:int) : Object
+      {
+         if(!ConfigAndStory.COMPANIONS)
+         {
+            ConfigAndStory.COMPANIONS = [];
+         }
+         var _comp:Object = param1 < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[param1] as Object : null;
+         if(!_comp)
+         {
+            _comp = ConfigAndStory.makeCompanionAssignment(-1, ConfigAndStory.ROLE_ESCORT, ConfigAndStory.LEADER_MICHAEL);
+            ConfigAndStory.COMPANIONS[param1] = _comp;
+         }
+         return _comp;
+      }
+
+      private function initCompanionUI() : void
+      {
+         var _aipad:MovieClip = _mov.getChildByName("aipad") as MovieClip;
+         if(!_aipad)
+         {
+            return;
+         }
+         this._slotContainers = [];
+         this._roleLabels = [];
+         this._leaderLabels = [];
+         
+         var _slotX:Array = [-24, 2, 28, 54, 80];
+         var _i:int = 0;
+         while(_i < 5)
+         {
+            var _cCont:Sprite = new Sprite();
+            _cCont.name = "compSlot_" + _i;
+            _cCont.x = _slotX[_i];
+            _cCont.y = 26;
+            
+            // Role Button
+            var _btnRole:Sprite = new Sprite();
+            _btnRole.name = "btnRole_" + _i;
+            _btnRole.buttonMode = true;
+            _btnRole.graphics.beginFill(0x081524, 0.95);
+            _btnRole.graphics.lineStyle(1, 0x0099cc, 0.8);
+            _btnRole.graphics.drawRoundRect(0, 0, 22, 11, 2, 2);
+            _btnRole.graphics.endFill();
+            
+            var _txtR:TextField = new TextField();
+            _txtR.x = 0;
+            _txtR.y = -1;
+            _txtR.width = 22;
+            _txtR.height = 11;
+            _txtR.selectable = false;
+            _txtR.mouseEnabled = false;
+            UIBase.applyFormat(_txtR, UIBase.FONT_BODY, 8, UIBase.COLOR_ACCENT_CYAN, true, TextFormatAlign.CENTER);
+            _txtR.text = "ESC";
+            _btnRole.addChild(_txtR);
+            _btnRole.addEventListener(MouseEvent.CLICK, this.createRoleBtnClickHandler(_i));
+            _cCont.addChild(_btnRole);
+            this._roleLabels[_i] = _txtR;
+            
+            // Leader Toggle Button
+            var _btnLead:Sprite = new Sprite();
+            _btnLead.name = "btnLead_" + _i;
+            _btnLead.y = 13;
+            _btnLead.buttonMode = true;
+            _btnLead.graphics.beginFill(0x0a1c14, 0.95);
+            _btnLead.graphics.lineStyle(1, 0x33cc66, 0.8);
+            _btnLead.graphics.drawRoundRect(0, 0, 22, 11, 2, 2);
+            _btnLead.graphics.endFill();
+            
+            var _txtL:TextField = new TextField();
+            _txtL.x = 0;
+            _txtL.y = -1;
+            _txtL.width = 22;
+            _txtL.height = 11;
+            _txtL.selectable = false;
+            _txtL.mouseEnabled = false;
+            UIBase.applyFormat(_txtL, UIBase.FONT_BODY, 8, UIBase.COLOR_SUCCESS, true, TextFormatAlign.CENTER);
+            _txtL.text = "[M]";
+            _btnLead.addChild(_txtL);
+            _btnLead.addEventListener(MouseEvent.CLICK, this.createLeaderClickHandler(_i));
+            _cCont.addChild(_btnLead);
+            this._leaderLabels[_i] = _txtL;
+            
+            _aipad.addChild(_cCont);
+            this._slotContainers[_i] = _cCont;
+            _i++;
+         }
+         _mov.addEventListener(MouseEvent.CLICK, this.onMovClicked);
+         this.updateCompanionUI();
+      }
+
+      private function updateCompanionUI() : void
+      {
+         if(!this._slotContainers)
+         {
+            return;
+         }
+         var _hasCaptain:Boolean = ConfigAndStory.getCaptainFly() != null;
+         var _i:int = 0;
+         while(_i < 5)
+         {
+            var _cCont:Sprite = this._slotContainers[_i] as Sprite;
+            if(_cCont)
+            {
+               var _hasCraft:Boolean = ConfigAndStory.COMPANIONS && _i < ConfigAndStory.COMPANIONS.length && ConfigAndStory.COMPANIONS[_i] != null && ConfigAndStory.COMPANIONS[_i].craftIndex >= 0;
+               if(!_hasCraft)
+               {
+                  _cCont.visible = false;
+               }
+               else
+               {
+                  _cCont.visible = true;
+                  var _comp:Object = this.getOrCreateCompanion(_i);
+                  var _roleIdx:int = _comp.role >= 0 && _comp.role <= 5 ? _comp.role : ConfigAndStory.ROLE_ESCORT;
+                  var _rTxt:TextField = this._roleLabels[_i] as TextField;
+                  if(_rTxt)
+                  {
+                     _rTxt.text = ROLE_SHORT_NAMES[_roleIdx];
+                  }
+                  var _lTxt:TextField = this._leaderLabels[_i] as TextField;
+                  if(_lTxt)
+                  {
+                     if(_comp.leader == ConfigAndStory.LEADER_CAPTAIN && _hasCaptain)
+                     {
+                        _lTxt.text = "[C]";
+                        _lTxt.textColor = 0xffcc00;
+                     }
+                     else
+                     {
+                        _comp.leader = ConfigAndStory.LEADER_MICHAEL;
+                        _lTxt.text = "[M]";
+                        _lTxt.textColor = 0x33ccff;
+                     }
+                  }
+               }
+            }
+            _i++;
+         }
+      }
+
+      private function createRoleBtnClickHandler(param1:int) : Function
+      {
+         var slot:int = param1;
+         return function(param2:MouseEvent):void
+         {
+            param2.stopPropagation();
+            if(_activeDropdownSlot == slot)
+            {
+               closeRoleDropdown();
+            }
+            else
+            {
+               var _btnSp:Sprite = param2.currentTarget as Sprite;
+               showRoleDropdown(slot, _btnSp.parent.x - 25, _btnSp.parent.y);
+            }
+         };
+      }
+
+      private function showRoleDropdown(param1:int, param2:Number, param3:Number) : void
+      {
+         this.closeRoleDropdown();
+         this._activeDropdownSlot = param1;
+         var _aipad:MovieClip = _mov.getChildByName("aipad") as MovieClip;
+         if(!_aipad)
+         {
+            return;
+         }
+         this._dropdownPopup = new Sprite();
+         this._dropdownPopup.x = param2 < -25 ? -25 : param2;
+         this._dropdownPopup.y = param3 + 14;
+         
+         this._dropdownPopup.graphics.beginFill(0x06111f, 0.98);
+         this._dropdownPopup.graphics.lineStyle(1, 0x00ccff, 0.9);
+         this._dropdownPopup.graphics.drawRoundRect(0, 0, 80, 6 * 14 + 4, 4, 4);
+         this._dropdownPopup.graphics.endFill();
+         
+         var _k:int = 0;
+         while(_k < 6)
+         {
+            var _item:Sprite = new Sprite();
+            _item.name = "roleOpt_" + _k;
+            _item.y = 2 + _k * 14;
+            _item.buttonMode = true;
+            _item.mouseChildren = false;
+            
+            _item.graphics.beginFill(0x000000, 0.01);
+            _item.graphics.drawRect(2, 0, 76, 13);
+            _item.graphics.endFill();
+            
+            var _optTxt:TextField = new TextField();
+            _optTxt.x = 4;
+            _optTxt.y = 0;
+            _optTxt.width = 72;
+            _optTxt.height = 13;
+            _optTxt.selectable = false;
+            _optTxt.mouseEnabled = false;
+            UIBase.applyFormat(_optTxt, UIBase.FONT_BODY, 8, UIBase.COLOR_SYSTEM_LIGHT, false, TextFormatAlign.LEFT);
+            _optTxt.text = ROLE_SHORT_NAMES[_k] + " " + ROLE_FULL_NAMES[_k];
+            _item.addChild(_optTxt);
+            
+            _item.addEventListener(MouseEvent.MOUSE_OVER, function(param2:MouseEvent):void
+            {
+               var _sp:Sprite = param2.currentTarget as Sprite;
+               _sp.graphics.clear();
+               _sp.graphics.beginFill(0x004466, 0.9);
+               _sp.graphics.drawRect(2, 0, 76, 13);
+               _sp.graphics.endFill();
+            });
+            _item.addEventListener(MouseEvent.MOUSE_OUT, function(param2:MouseEvent):void
+            {
+               var _sp:Sprite = param2.currentTarget as Sprite;
+               _sp.graphics.clear();
+               _sp.graphics.beginFill(0x000000, 0.01);
+               _sp.graphics.drawRect(2, 0, 76, 13);
+               _sp.graphics.endFill();
+            });
+            _item.addEventListener(MouseEvent.CLICK, this.createRoleSelectHandler(param1, _k));
+            
+            this._dropdownPopup.addChild(_item);
+            _k++;
+         }
+         
+         _aipad.addChild(this._dropdownPopup);
+      }
+
+      private function createRoleSelectHandler(param1:int, param2:int) : Function
+      {
+         var slot:int = param1;
+         var rIdx:int = param2;
+         return function(param3:MouseEvent):void
+         {
+            param3.stopPropagation();
+            var _comp:Object = getOrCreateCompanion(slot);
+            _comp.role = rIdx;
+            ConfigAndStory.saveData();
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
+            closeRoleDropdown();
+            updateCompanionUI();
+         };
+      }
+
+      private function closeRoleDropdown() : void
+      {
+         if(this._dropdownPopup)
+         {
+            if(this._dropdownPopup.parent)
+            {
+               this._dropdownPopup.parent.removeChild(this._dropdownPopup);
+            }
+            this._dropdownPopup = null;
+         }
+         this._activeDropdownSlot = -1;
+      }
+
+      private function createLeaderClickHandler(param1:int) : Function
+      {
+         var slot:int = param1;
+         return function(param2:MouseEvent):void
+         {
+            param2.stopPropagation();
+            closeRoleDropdown();
+            var _comp:Object = getOrCreateCompanion(slot);
+            var _capFly:F4DataLinks = ConfigAndStory.getCaptainFly();
+            if(!_capFly)
+            {
+               _comp.leader = ConfigAndStory.LEADER_MICHAEL;
+               InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[18]);
+            }
+            else
+            {
+               if(_comp.leader == ConfigAndStory.LEADER_MICHAEL)
+               {
+                  _comp.leader = ConfigAndStory.LEADER_CAPTAIN;
+               }
+               else
+               {
+                  _comp.leader = ConfigAndStory.LEADER_MICHAEL;
+               }
+               InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
+            }
+            ConfigAndStory.saveData();
+            updateCompanionUI();
+         };
+      }
+
    }
 }
-

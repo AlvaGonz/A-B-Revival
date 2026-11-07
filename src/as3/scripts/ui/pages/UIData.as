@@ -1,10 +1,21 @@
 package ui.pages
 {
+   import f4.data.InitData;
    import f4data.sdata.ConfigAndStory;
+   import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
+   import flash.display.GradientType;
+   import flash.display.Graphics;
    import flash.display.MovieClip;
+   import flash.display.Sprite;
    import flash.events.Event;
+   import flash.events.MouseEvent;
+   import flash.filters.GlowFilter;
+   import flash.geom.Matrix;
    import flash.net.FileReference;
+   import flash.text.TextField;
+   import flash.text.TextFormat;
+   import flash.text.TextFormatAlign;
    import fullshit.tool.Attach;
    import fullshit.tool.SaveLoad;
    import mochi.as3.MochiEvents;
@@ -17,10 +28,136 @@ package ui.pages
       
       public var sl:SaveLoad;
       
+      public var btnAutosave:Sprite;
+      
+      public var txtAutosave:TextField;
+      
+      public var isHovered:Boolean = false;
+      
       public function UIData(param1:DisplayObjectContainer, param2:MovieClip, param3:String, param4:UICtrl, param5:UIBase = null)
       {
+         this.createAutosaveBtn(param2);
          super(param1,param2,param3,param4,param5);
          this.sl = new SaveLoad("anb",this.loaded);
+      }
+      
+      private function createAutosaveBtn(param1:MovieClip) : void
+      {
+         var _back:DisplayObject = param1.getChildByName("$back");
+         if(_back)
+         {
+            _back.y = 322;
+         }
+         
+         this.btnAutosave = new Sprite();
+         this.btnAutosave.buttonMode = true;
+         this.btnAutosave.useHandCursor = true;
+         this.btnAutosave.x = 321;
+         this.btnAutosave.y = 287.85;
+         
+         this.txtAutosave = new TextField();
+         this.txtAutosave.width = 132;
+         this.txtAutosave.height = 20;
+         this.txtAutosave.x = -66;
+         this.txtAutosave.y = -10;
+         this.txtAutosave.selectable = false;
+         this.txtAutosave.mouseEnabled = false;
+         UIBase.applyFormat(this.txtAutosave, UIBase.FONT_BODY, 12, UIBase.COLOR_WHITE, true, TextFormatAlign.CENTER);
+         UIBase.applyGlow(this.txtAutosave, 0x000000, 0.8, 3, 2);
+         
+         this.btnAutosave.addChild(this.txtAutosave);
+         this.updateAutosaveUI();
+         
+         this.btnAutosave.addEventListener(MouseEvent.CLICK, this.onAutosaveClick);
+         this.btnAutosave.addEventListener(MouseEvent.ROLL_OVER, this.onAutosaveOver);
+         this.btnAutosave.addEventListener(MouseEvent.ROLL_OUT, this.onAutosaveOut);
+         
+         param1.addChild(this.btnAutosave);
+      }
+      
+      public function updateAutosaveUI() : void
+      {
+         if(!this.btnAutosave)
+         {
+            return;
+         }
+         var g:Graphics = this.btnAutosave.graphics;
+         g.clear();
+         
+         var isOn:Boolean = ConfigAndStory.AUTOSAVE;
+         var textColor:uint = 0;
+         
+         g.beginFill(0x08080a, 1.0);
+         
+         if(this.isHovered)
+         {
+            g.lineStyle(1.0, 0x95e0f2, 1.0);
+            textColor = 0xffffff;
+         }
+         else if(isOn)
+         {
+            var onMat:Matrix = new Matrix();
+            onMat.createGradientBox(132, 28, 0, -65, -14);
+            g.lineStyle(1.0);
+            g.lineGradientStyle(GradientType.LINEAR, [0x22cc77, 0x55ffaa, 0x22cc77], [0.3, 0.85, 0.3], [0, 128, 255], onMat);
+            textColor = 0x44ff88;
+         }
+         else
+         {
+            var offMat:Matrix = new Matrix();
+            offMat.createGradientBox(132, 28, 0, -65, -14);
+            g.lineStyle(1.0);
+            g.lineGradientStyle(GradientType.LINEAR, [0xffffff, 0xabbfdc, 0xffffff], [0.0, 0.4, 0.0], [0, 133, 255], offMat);
+            textColor = 0x5f707e;
+         }
+         
+         g.moveTo(66.5, -7.15);
+         g.lineTo(66.5, 7.25);
+         g.lineTo(59.15, 13.5);
+         g.lineTo(-57.15, 13.5);
+         g.lineTo(-64.5, 7.25);
+         g.lineTo(-64.5, -7.15);
+         g.lineTo(-57.15, -13.5);
+         g.lineTo(59.15, -13.5);
+         g.lineTo(66.5, -7.15);
+         g.endFill();
+         
+         if(this.txtAutosave)
+         {
+            this.txtAutosave.textColor = textColor;
+            this.txtAutosave.text = isOn ? "AUTOSAVE: ON" : "AUTOSAVE: OFF";
+         }
+      }
+      
+      private function onAutosaveClick(e:MouseEvent) : void
+      {
+         InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[19], 1);
+         ConfigAndStory.AUTOSAVE = !ConfigAndStory.AUTOSAVE;
+         ConfigAndStory.save();
+         this.updateAutosaveUI();
+      }
+      
+      private function onAutosaveOver(e:MouseEvent) : void
+      {
+         this.isHovered = true;
+         this.updateAutosaveUI();
+      }
+      
+      private function onAutosaveOut(e:MouseEvent) : void
+      {
+         this.isHovered = false;
+         this.updateAutosaveUI();
+      }
+      
+      override public function removeSelf() : UIBase
+      {
+         if(this.btnAutosave)
+         {
+            this.btnAutosave.removeEventListener(MouseEvent.CLICK, this.onAutosaveClick);
+            this.btnAutosave.removeEventListener(MouseEvent.ROLL_OVER, this.onAutosaveOver);
+            this.btnAutosave.removeEventListener(MouseEvent.ROLL_OUT, this.onAutosaveOut);
+         }
+         return super.removeSelf();
       }
       
       private function loaded(param1:Event) : void
@@ -72,4 +209,3 @@ package ui.pages
       }
    }
 }
-

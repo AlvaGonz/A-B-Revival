@@ -73,8 +73,17 @@ package ui.unit
          (param2.getChildByName("nameSelf") as TextField).text = param1.name;
          (param2.getChildByName("hp") as TextField).text = param1.maxhp + "";
          (param2.getChildByName("fire") as TextField).text = _loc15_.toFixed(2);
-         (param2.getChildByName("turn") as TextField).text = (param1.turnFly * (180 / Math.PI)).toFixed(1);
-         (param2.getChildByName("pow") as TextField).text = param1.powFly.toFixed(1);
+         if(param1.type == F4DataOrg.TYPE_GUN)
+         {
+            var _effectiveRange:Number = param1.getEffectiveRange();
+            (param2.getChildByName("pow") as TextField).text = int(_effectiveRange) + "";
+            (param2.getChildByName("turn") as TextField).text = "-";
+         }
+         else
+         {
+            (param2.getChildByName("turn") as TextField).text = (param1.turnFly * (180 / Math.PI)).toFixed(1);
+            (param2.getChildByName("pow") as TextField).text = param1.powFly.toFixed(1);
+         }
          (param2.getChildByName("mass") as TextField).text = param1.mass + "";
          _loc4_.addChild(_loc5_);
       }
@@ -152,10 +161,14 @@ package ui.unit
             _loc11_ = 0;
             while(_loc11_ < 20)
             {
-               if(ConfigAndStory.AI[_loc11_] == param1.link.index)
+               if(ConfigAndStory.COMPANIONS && _loc11_ < ConfigAndStory.COMPANIONS.length && ConfigAndStory.COMPANIONS[_loc11_] != null)
                {
-                  _loc10_ = true;
-                  break;
+                  var _partComp:Object = ConfigAndStory.COMPANIONS[_loc11_];
+                  if(_partComp && _partComp.craftIndex == param1.link.index)
+                  {
+                     _loc10_ = true;
+                     break;
+                  }
                }
                _loc11_++;
             }

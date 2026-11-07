@@ -8,11 +8,18 @@ package f4ui.f4partmc
    import flash.display.MovieClip;
    import flash.events.Event;
    import flash.events.MouseEvent;
+   import flash.filters.BitmapFilterQuality;
+   import flash.filters.GlowFilter;
+   import fullshit.AbsMain;
    import ui.pages.UIMakePlayer;
    import ui.unit.FormPlayerPart;
    
    public class F4PartMC extends BaseMovePart
    {
+      
+      public static const SNAP_DIST_SQ:Number = 1296; // 36px snap radius (was 50/3 ~= 16.6px)
+      
+      public static var activePart:F4PartMC = null;
       
       public var f4DataLink:F4DataLinks;
       
@@ -35,11 +42,63 @@ package f4ui.f4partmc
          this.f4DataLink.f4mc = this;
          this.lock = param2;
          this.alpharun = false;
+         this.mc.addEventListener(MouseEvent.MOUSE_OUT,this.mouseOut);
+      }
+      
+      public function setSelected(selected:Boolean) : void
+      {
+         if(selected)
+         {
+            this.mc.filters = [new GlowFilter(0x00e5ff, 1, 8, 8, 3, BitmapFilterQuality.HIGH)];
+         }
+         else
+         {
+            this.mc.filters = [];
+         }
+      }
+      
+      public static function selectPart(param1:F4PartMC) : void
+      {
+         if(activePart && activePart != param1)
+         {
+            activePart.setSelected(false);
+         }
+         activePart = param1;
+         if(activePart)
+         {
+            activePart.setSelected(true);
+            if(activePart.undo)
+            {
+               activePart.undo.updateTouchPartControls();
+            }
+         }
+         else if(UIMakePlayer.currentInstance)
+         {
+            UIMakePlayer.currentInstance.updateTouchPartControls();
+         }
+      }
+
+      public function isRemovableType(targetType:int) : Boolean
+      {
+         return Boolean(this.f4DataLink) && Boolean(this.f4DataLink.f4dataorg) && this.f4DataLink.f4dataorg.type == targetType && this.f4DataLink.f4dataorg.useAs != 2;
+      }
+      
+      public function isRootChassis() : Boolean
+      {
+         return Boolean(this.f4DataLink) && this.f4DataLink.isRootChassis();
       }
       
       override public function mouseOver(param1:MouseEvent) : void
       {
-         mc.dispatchEvent(new OrgEvent("Org",this.f4DataLink.f4dataorg,true));
+         if(!activePart || !follow)
+         {
+            mc.dispatchEvent(new OrgEvent("Org",this.f4DataLink.f4dataorg,true));
+         }
+      }
+      
+      public function mouseOut(param1:MouseEvent) : void
+      {
+         // Keep activePart selected so on-screen touch and cyber buttons can operate on it
       }
       
       override public function stageClick(param1:MouseEvent) : void
@@ -53,11 +112,17 @@ package f4ui.f4partmc
             this.changePartAlpha(this,1);
             this.alpharun = false;
             this.hidePoints();
+            if(activePart == this)
+            {
+               this.setSelected(true);
+            }
          }
       }
       
       override public function mouseClick(param1:MouseEvent) : void
       {
+         param1.stopPropagation();
+         selectPart(this);
          if(!this.lock && !follow)
          {
             follow = true;
@@ -73,6 +138,17 @@ package f4ui.f4partmc
          if(!this.lock && follow)
          {
             this.mc2Mouse();
+         }
+         if(activePart == this || (!this.lock && follow))
+         {
+            if(AbsMain.keyCtrl && (AbsMain.keyCtrl.isKeyDownOnce("R") || AbsMain.keyCtrl.isKeyDownOnce("r")))
+            {
+               this.rotateCW();
+            }
+            if(AbsMain.keyCtrl && (AbsMain.keyCtrl.isKeyDownOnce("F") || AbsMain.keyCtrl.isKeyDownOnce("f")))
+            {
+               this.setLR(this.f4DataLink.f4dataorg.lr == 1 ? 0 : 1);
+            }
          }
          if(this.alpharun)
          {
@@ -123,6 +199,10 @@ package f4ui.f4partmc
       public function removeAllNotBack(param1:F4PartMC, param2:Boolean = true) : void
       {
          var _loc4_:F4DataHole = null;
+         if(activePart == param1)
+         {
+            selectPart(null);
+         }
          param1.mc.addEventListener(MouseEvent.MOUSE_OVER,this.mouseOver);
          param1.stage.removeEventListener(MouseEvent.MOUSE_UP,this.stageClick);
          param1.mc.removeEventListener(MouseEvent.MOUSE_DOWN,this.mouseClick);
@@ -146,6 +226,10 @@ package f4ui.f4partmc
       public function removeAll(param1:F4PartMC, param2:Boolean = true) : void
       {
          var _loc4_:F4DataHole = null;
+         if(activePart == param1)
+         {
+            selectPart(null);
+         }
          param1.stage.removeEventListener(MouseEvent.MOUSE_UP,this.stageClick);
          param1.mc.removeEventListener(MouseEvent.MOUSE_DOWN,this.mouseClick);
          param1.mc.removeEventListener(Event.ENTER_FRAME,this.loop);
@@ -182,6 +266,10 @@ package f4ui.f4partmc
       public function removeAllNoFly(param1:F4PartMC, param2:Boolean = true) : void
       {
          var _loc4_:F4DataHole = null;
+         if(activePart == param1)
+         {
+            selectPart(null);
+         }
          param1.stage.removeEventListener(MouseEvent.MOUSE_UP,this.stageClick);
          param1.mc.removeEventListener(MouseEvent.MOUSE_DOWN,this.mouseClick);
          param1.mc.removeEventListener(Event.ENTER_FRAME,this.loop);
@@ -241,7 +329,7 @@ package f4ui.f4partmc
                }
             }
          }
-         if(_loc4_ > 50 / 3 * 50 / 3)
+         if(_loc4_ > SNAP_DIST_SQ)
          {
             InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[18]);
             this.removeAll(this);
@@ -257,9 +345,85 @@ package f4ui.f4partmc
             _loc5_.partf4 = this.f4DataLink;
             this.f4DataLink.atHole = _loc5_;
             this.f4DataLink.parentPart = _loc6_.f4DataLink;
+            if(this.f4DataLink.f4dataorg.type == 1 && _loc5_.lr != 2)
+            {
+               this.setLR(_loc5_.lr);
+            }
             this.allFinalMove(this);
             InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
          }
+      }
+      
+      public function setLR(param1:int) : void
+      {
+         var _loc2_:F4DataHole = null;
+         var _loc3_:int = 0;
+         if(!this.f4DataLink || !this.f4DataLink.f4dataorg)
+         {
+            return;
+         }
+         if(this.f4DataLink.f4dataorg.lr != param1)
+         {
+            this.f4DataLink.f4dataorg.lr = param1;
+            this.mc.scaleX = (param1 == 1 ? -1 : 1);
+            this.f4DataLink.f4dataorg.linkOff.x = -this.f4DataLink.f4dataorg.linkOff.x;
+            for each(_loc2_ in this.f4DataLink.f4dataorg.hole)
+            {
+               _loc2_.xy.x = -_loc2_.xy.x;
+               if(_loc2_.lr == 0)
+               {
+                  _loc2_.lr = 1;
+               }
+               else if(_loc2_.lr == 1)
+               {
+                  _loc2_.lr = 0;
+               }
+            }
+            _loc3_ = 0;
+            while(_loc3_ < this.f4DataLink.f4dataorg.firePoints.length)
+            {
+               this.f4DataLink.f4dataorg.firePoints[_loc3_] = -this.f4DataLink.f4dataorg.firePoints[_loc3_];
+               _loc3_ += 2;
+            }
+            this.reLinkParent();
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
+         }
+      }
+      
+      public function rotateCW() : void
+      {
+         var _loc1_:Number = NaN;
+         var _loc2_:Number = NaN;
+         var _loc3_:F4DataHole = null;
+         var _loc4_:int = 0;
+         if(!this.f4DataLink || !this.f4DataLink.f4dataorg)
+         {
+            return;
+         }
+         this.f4DataLink.f4dataorg.rot = (this.f4DataLink.f4dataorg.rot + 90) % 360;
+         this.mc.rotation = (this.mc.rotation + 90) % 360;
+         _loc1_ = this.f4DataLink.f4dataorg.linkOff.x;
+         _loc2_ = this.f4DataLink.f4dataorg.linkOff.y;
+         this.f4DataLink.f4dataorg.linkOff.x = -_loc2_;
+         this.f4DataLink.f4dataorg.linkOff.y = _loc1_;
+         for each(_loc3_ in this.f4DataLink.f4dataorg.hole)
+         {
+            _loc1_ = _loc3_.xy.x;
+            _loc2_ = _loc3_.xy.y;
+            _loc3_.xy.x = -_loc2_;
+            _loc3_.xy.y = _loc1_;
+         }
+         _loc4_ = 0;
+         while(_loc4_ < this.f4DataLink.f4dataorg.firePoints.length)
+         {
+            _loc1_ = this.f4DataLink.f4dataorg.firePoints[_loc4_];
+            _loc2_ = this.f4DataLink.f4dataorg.firePoints[_loc4_ + 1];
+            this.f4DataLink.f4dataorg.firePoints[_loc4_] = -_loc2_;
+            this.f4DataLink.f4dataorg.firePoints[_loc4_ + 1] = _loc1_;
+            _loc4_ += 2;
+         }
+         this.reLinkParent();
+         InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
       }
       
       public function looseLink() : void
@@ -357,14 +521,16 @@ package f4ui.f4partmc
                }
             }
          }
-         if(_loc6_ > 50 / 3 * 50 / 3)
+         if(_loc6_ > SNAP_DIST_SQ)
          {
-            this.changePartAlpha(param1,0.3);
+            this.changePartAlpha(param1,0.35);
+            param1.mc.filters = [new GlowFilter(0xff4444, 0.8, 8, 8, 2, BitmapFilterQuality.HIGH)];
          }
          else if(_loc7_ >= 0)
          {
             this.showHole(_loc7_,_loc8_.mc);
-            this.changePartAlpha(param1,0.75);
+            this.changePartAlpha(param1,0.85);
+            param1.mc.filters = [new GlowFilter(0x00ff88, 1, 10, 10, 3, BitmapFilterQuality.HIGH)];
          }
       }
       

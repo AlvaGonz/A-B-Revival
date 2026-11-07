@@ -6,7 +6,9 @@ package ui.pages
    import f4data.sdata.ConfigAndStory;
    import flash.display.DisplayObjectContainer;
    import flash.display.MovieClip;
+   import flash.events.TimerEvent;
    import flash.text.TextField;
+   import flash.utils.Timer;
    import fullshit.tool.Attach;
    import mochi.as3.MochiEvents;
    import ui.UICtrl;
@@ -29,11 +31,19 @@ package ui.pages
       
       public var dtOrg:F4DataOrg;
       
+      private var _holdTimer:Timer;
+      
+      private var _holdRow:int = -1;
+      
+      private var _holdTicks:int = 0;
+      
       public function UIShop(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
          this.f4datax = param1;
          this.form1 = new FormShop(param3.getChildByName("form1") as MovieClip,param1.shopPart);
+         this.form1.isBuyShop = true;
          this.form2 = new FormShop(param3.getChildByName("form2") as MovieClip,param1.plPart,InitData.SELL);
+         this.form2.isBuyShop = false;
          this.form1.initsortMC();
          this.form2.initsortMC();
          this.form2.offNew();
@@ -67,7 +77,61 @@ package ui.pages
          }
          if(param1.indexOf("form") != -1)
          {
+            this.stopHold();
             _loc3_.disableLight();
+         }
+      }
+      
+      override public function downAct(param1:String) : void
+      {
+         super.downAct(param1);
+         this.stopHold();
+         if(param1.indexOf("form") == -1 || _sp.mouseY >= 240)
+         {
+            return;
+         }
+         var _loc2_:int = parseInt(param1.substr(4));
+         var _loc3_:F4DataOrg = this.form1.getOrg(_loc2_);
+         if(!_loc3_ || _loc3_.type == 0)
+         {
+            return;
+         }
+         this._holdRow = _loc2_;
+         this._holdTicks = 0;
+         if(!this._holdTimer)
+         {
+            this._holdTimer = new Timer(50);
+            this._holdTimer.addEventListener(TimerEvent.TIMER,this.onHoldTick);
+         }
+         this._holdTimer.start();
+      }
+      
+      private function onHoldTick(param1:TimerEvent) : void
+      {
+         if(this._holdRow < 0)
+         {
+            this.stopHold();
+            return;
+         }
+         ++this._holdTicks;
+         if(this._holdTicks < 6 || (this._holdTicks < 16 && this._holdTicks % 2 != 0))
+         {
+            return;
+         }
+         if(this.form1.getLink(this._holdRow))
+         {
+            this.updateTotalCost();
+            this.updateAccept();
+         }
+      }
+      
+      private function stopHold() : void
+      {
+         this._holdRow = -1;
+         this._holdTicks = 0;
+         if(this._holdTimer)
+         {
+            this._holdTimer.stop();
          }
       }
       
@@ -106,7 +170,9 @@ package ui.pages
       
       override public function afterFadeIn() : void
       {
+         this.f4datax.reconcileShopStock();
          this.tempMoney = 0;
+         this.updateTxt();
          this.updateAccept();
          this.form1.filterX(4);
          this.form1.initsortMC();
@@ -138,6 +204,7 @@ package ui.pages
       
       override public function removeSelf() : UIBase
       {
+         this.stopHold();
          super.removeSelf();
          return _last;
       }
@@ -152,6 +219,7 @@ package ui.pages
          var _loc9_:Array = null;
          var _loc10_:int = 0;
          var _loc2_:String = param1.name;
+         this.stopHold();
          var _loc3_:Boolean = _sp.mouseY < 240;
          if(_loc3_)
          {
@@ -192,12 +260,8 @@ package ui.pages
          }
          else if(_loc2_ == "invert")
          {
-            _loc7_ = _loc4_.selInvert();
-            if(_loc7_ != 0)
-            {
-               this.tempMoney += _loc7_;
-               this.updateTxt();
-            }
+            _loc4_.selInvert();
+            this.updateTotalCost();
             this.updateAccept();
          }
          else if(_loc2_ == "fly")
@@ -242,26 +306,7 @@ package ui.pages
             _loc9_ = _loc4_.getLink(_loc6_);
             if(_loc9_)
             {
-               if(_loc9_[10] == 1)
-               {
-                  _loc10_ = int(_loc9_[9]);
-               }
-               else
-               {
-                  _loc10_ = -_loc9_[9];
-               }
-               if(_loc10_ != 0)
-               {
-                  if(_loc4_ == this.form1)
-                  {
-                     this.tempMoney -= _loc10_;
-                  }
-                  else
-                  {
-                     this.tempMoney += _loc10_;
-                  }
-                  this.updateTxt();
-               }
+               this.updateTotalCost();
                this.updateAccept();
             }
          }
@@ -402,6 +447,28 @@ package ui.pages
          {
             (_mov.getChildByName("txtNow") as TextField).text = this.tempMoney + " G";
          }
+      }
+      
+      public function updateTotalCost() : void
+      {
+         var _total:int = 0;
+         var _item:Array = null;
+         for each(_item in this.form1.workArr)
+         {
+            if(_item && int(_item[this.form1.selNumA]) > 0)
+            {
+               _total -= int(_item[9]) * int(_item[this.form1.selNumA]);
+            }
+         }
+         for each(_item in this.form2.workArr)
+         {
+            if(_item && int(_item[this.form2.selNumA]) > 0)
+            {
+               _total += int(_item[9]);
+            }
+         }
+         this.tempMoney = _total;
+         this.updateTxt();
       }
       
       public function addDt(param1:F4DataOrg, param2:int, param3:Number) : void

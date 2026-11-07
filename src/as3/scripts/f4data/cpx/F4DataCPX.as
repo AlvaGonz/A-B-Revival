@@ -8,6 +8,7 @@ package f4data.cpx
    import f4data.F4DataOrg;
    import f4data.MC2F4Data;
    import f4data.movie.MovieIndex;
+   import f4data.sdata.ConfigAndStory;
    import f4data.talk.TalkIndex;
    import flash.display.MovieClip;
    import flash.geom.Point;
@@ -230,12 +231,19 @@ package f4data.cpx
       
       public function addPartFromShop(param1:int) : void
       {
-         var _loc2_:F4DataOrg = this.shopPart[param1];
+         var _shopItem:F4DataOrg = this.shopPart[param1];
+         if(!_shopItem)
+         {
+            return;
+         }
+         var _loc2_:F4DataOrg = _shopItem.clone(this.defFire,this.defBullet);
          _loc2_.index = this.plPart.length;
          _loc2_.snew = false;
          _loc2_.sel = 0;
          _loc2_.dead = false;
+         _loc2_.useAs = 0;
          this.plPart.push(_loc2_);
+         _shopItem.sel = 0;
       }
       
       public function addPartFromRepair(param1:int) : void
@@ -248,10 +256,135 @@ package f4data.cpx
       public function addPartToShopFromPlayer(param1:int) : void
       {
          var _loc2_:F4DataOrg = this.plPart[param1];
-         _loc2_.index = this.shopPart.length;
-         _loc2_.sel = 0;
-         _loc2_.dead = false;
-         this.shopPart.push(_loc2_);
+         if(!_loc2_)
+         {
+            return;
+         }
+         if(_loc2_.type == 0)
+         {
+            _loc2_.index = this.shopPart.length;
+            _loc2_.sel = 0;
+            _loc2_.dead = false;
+            this.shopPart.push(_loc2_);
+         }
+         else
+         {
+            var _found:Boolean = false;
+            var _sp:F4DataOrg = null;
+            for each(_sp in this.shopPart)
+            {
+               if(_sp && _sp.type == _loc2_.type && _sp.name == _loc2_.name && _sp.lr == _loc2_.lr)
+               {
+                  _found = true;
+                  break;
+               }
+            }
+            if(!_found)
+            {
+               _loc2_.index = this.shopPart.length;
+               _loc2_.sel = 0;
+               _loc2_.dead = false;
+               this.shopPart.push(_loc2_);
+            }
+         }
+      }
+
+      public function reconcileShopStock() : void
+      {
+         var _seen:Object = {};
+         var _i:int = 0;
+         var _p:F4DataOrg = null;
+         var _key:String = null;
+         
+         _i = 0;
+         while(_i < this.shopPart.length)
+         {
+            _p = this.shopPart[_i];
+            if(_p)
+            {
+               _key = _p.type + "_" + _p.name + "_" + _p.lr;
+               if(_seen[_key])
+               {
+                  this.shopPart.splice(_i, 1);
+                  _i--;
+               }
+               else
+               {
+                  _seen[_key] = true;
+               }
+            }
+            _i++;
+         }
+         
+         var _maxStory:int = ConfigAndStory.STORY;
+         if(_maxStory > 34)
+         {
+            _maxStory = 34;
+         }
+         var _s:int = 0;
+         var _giftList:Array = null;
+         var _defId:int = 0;
+         var _def:F4DataOrg = null;
+         var _isOwned:Boolean = false;
+         var _pl:F4DataOrg = null;
+         var _fly:F4DataLinks = null;
+         
+         while(_s <= _maxStory)
+         {
+            _giftList = ConfigAndStory.GIFT[_s];
+            if(_giftList)
+            {
+               for each(_defId in _giftList)
+               {
+                  _def = this.defPart[_defId];
+                  if(_def)
+                  {
+                     _key = _def.type + "_" + _def.name + "_" + _def.lr;
+                     if(_def.type != 0)
+                     {
+                        if(!_seen[_key])
+                        {
+                           this.addPartToShop(_defId);
+                           _seen[_key] = true;
+                        }
+                     }
+                     else
+                     {
+                        if(!_seen[_key])
+                        {
+                           _isOwned = false;
+                           for each(_pl in this.plPart)
+                           {
+                              if(_pl && _pl.type == 0 && _pl.name == _def.name)
+                              {
+                                 _isOwned = true;
+                                 break;
+                              }
+                           }
+                           if(!_isOwned)
+                           {
+                              for each(_fly in this.plFly)
+                              {
+                                 if(_fly && _fly.f4dataorg && _fly.f4dataorg.name == _def.name)
+                                 {
+                                    _isOwned = true;
+                                    break;
+                                 }
+                              }
+                           }
+                           if(!_isOwned)
+                           {
+                              this.addPartToShop(_defId);
+                              _seen[_key] = true;
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            _s++;
+         }
+         this.reSortIndex(this.shopPart);
       }
       
       public function addPartToShop(param1:int) : void
@@ -454,6 +587,7 @@ package f4data.cpx
             _loc6_.readFromObj(_loc2_["fly"][_loc4_],this.plPart,null,null);
             this.plFly[_loc6_.index] = _loc6_;
          }
+         this.reconcileShopStock();
       }
       
       public function readDefFlyNow() : void

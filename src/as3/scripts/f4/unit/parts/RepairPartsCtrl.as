@@ -113,10 +113,14 @@ package f4.unit.parts
             _loc3_ = 0;
             while(_loc3_ < 20)
             {
-               if(ConfigAndStory.AI[_loc3_] == param1.index)
+               if(ConfigAndStory.COMPANIONS && _loc3_ < ConfigAndStory.COMPANIONS.length && ConfigAndStory.COMPANIONS[_loc3_] != null)
                {
-                  ConfigAndStory.AI[_loc3_] = null;
-                  delete ConfigAndStory.ALLPART.plFly[param1.index];
+                  var _cAssign:Object = ConfigAndStory.COMPANIONS[_loc3_];
+                  if(_cAssign && _cAssign["craftIndex"] == param1.index)
+                  {
+                     ConfigAndStory.COMPANIONS[_loc3_] = null;
+                     delete ConfigAndStory.ALLPART.plFly[param1.index];
+                  }
                }
                _loc3_++;
             }

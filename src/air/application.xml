@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<application xmlns="http://ns.adobe.com/air/application/33.1">
+    <id>com.vargames.assemblyandbattle</id>
+    <versionNumber>1.1.0</versionNumber>
+    <filename>AssemblyAndBattle</filename>
+    <name>Assembly &amp; Battle: The Story in the Space</name>
+    <description>Assembly and Battle: The Story in the Space - Remastered &amp; Expanded</description>
+    <copyright>(c) 2011 Vargames / (c) 2026 A&amp;B Revival Team</copyright>
+
+    <initialWindow>
+        <title>Assembly &amp; Battle: The Story in the Space</title>
+        <content>a&amp;b_space_mod.swf</content>
+        <visible>true</visible>
+        <width>1920</width>
+        <height>1080</height>
+        <minSize>1280 720</minSize>
+        <aspectRatio>landscape</aspectRatio>
+        <renderMode>direct</renderMode>
+        <autoOrients>true</autoOrients>
+        <fullScreen>false</fullScreen>
+        <resizable>true</resizable>
+    </initialWindow>
+
+    <supportedProfiles>extendedDesktop mobileDevice</supportedProfiles>
+
+    <android>
+        <manifestAdditions><![CDATA[
+            <manifest android:installLocation="auto">
+                <uses-permission android:name="android.permission.INTERNET" />
+                <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+            </manifest>
+        ]]></manifestAdditions>
+    </android>
+
+    <iPhone>
+        <InfoAdditions><![CDATA[
+            <key>UIDeviceFamily</key>
+            <array>
+                <string>1</string>
+                <string>2</string>
+            </array>
+            <key>UIRequiresFullScreen</key>
+            <true/>
+        ]]></InfoAdditions>
+        <requestedDisplayResolution>high</requestedDisplayResolution>
+    </iPhone>
+</application>

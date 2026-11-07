@@ -1,5 +1,10 @@
 # A&B Revival (Assembly & Battle: The Story in the Space)
 
+> [!IMPORTANT]
+> **Fan Tribute & Intellectual Property Notice:**  
+> **A&B Revival** is an unofficial, non-commercial fan modification and game preservation project created out of deep admiration and respect for the cult-classic game *Assembly and Battle: The Story in the Space* by **Vargames** (2011).  
+> **All original intellectual property, game design, code, artwork, characters, sounds, and lore are the sole and exclusive property of Vargames.** The author and contributors of this repository **do not claim ownership** over any original game code or assets. This repository exists strictly for reverse-engineering, decompiled preservation, quality-of-life enhancements, and community modding research. See [LICENSE.md](LICENSE.md) for full details.
+
 Reverse-engineering, decompilation, enhancement, and modding workspace for **Assembly and Battle: The Story in the Space** (A&B Space) by Vargames (2011).
 
 ![Logo](assets/logo.png)
@@ -35,3 +40,24 @@ To launch the game locally:
 run-game.bat
 ```
 *(Runs with Flashpoint Infinity's standalone Flash Player 32)*.
+
+## Development guardrails
+
+Commits touching ActionScript sources are verified by the version-controlled hook in `.githooks/` (enable once per clone):
+
+```cmd
+scripts\install-hooks.bat
+```
+
+1. `scripts/lint_domain_leakage.py --staged` — domain boundary lint (see `CODING_STANDARDS.md`).
+2. `scripts/recompile.bat` — FFDec compilation check; a broken build blocks the commit.
+
+For token-efficient AS3 navigation use `python scripts/as3_search.py symbol|callers|class <name>`. Full tooling reference: `scripts/README.md`.
+
+## Attribution & Legal
+
+- **Original Game Creator & Sole Copyright Owner**: **Vargames** (2011).
+- **Fan Project Scope**: Fan-made modding, decompiled preservation, and performance modernization (Unity 6.6 port at `A&B-U/`).
+- **License**: See [LICENSE.md](LICENSE.md) for full terms. Original assets and IP remain © Vargames; original fan scripts and tooling are provided under the MIT License.
+
+

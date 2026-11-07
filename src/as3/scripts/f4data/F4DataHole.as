@@ -25,21 +25,7 @@ package f4data
       
       public function canWing() : Boolean
       {
-         if(this.parentOrg && (this.parentOrg.type == 0 || this.parentOrg.type == 1))
-         {
-            return true;
-         }
-         var _loc1_:int = int(this.type.length);
-         var _loc2_:int = 0;
-         while(_loc2_ < _loc1_)
-         {
-            if(this.type[_loc2_] == 1)
-            {
-               return true;
-            }
-            _loc2_++;
-         }
-         return false;
+         return true;
       }
       
       public function readFromObj(param1:Object) : void
@@ -60,49 +46,33 @@ package f4data
       
       public function acceptable(param1:F4DataLinks) : int
       {
-         var _loc2_:* = undefined;
-         if(this.lr != param1.f4dataorg.lr && this.lr != 2 && param1.f4dataorg.lr != 2)
+         if(!param1 || !param1.f4dataorg)
          {
-            return 1;
+            return 2;
          }
-         if(param1.f4dataorg.type == 1)
-         {
-            if(this.getCurrentWings(param1) >= 10)
-            {
-               return 2;
-            }
-            if(this.parentOrg && (this.parentOrg.type == 0 || this.parentOrg.type == 1))
-            {
-               return 0;
-            }
-         }
-         for each(_loc2_ in this.type)
-         {
-            if(param1.f4dataorg.type == _loc2_)
-            {
-               return 0;
-            }
-         }
-         return 2;
+         return this.acceptableOrg(param1.f4dataorg);
       }
       
       public function acceptableOrg(param1:F4DataOrg) : int
       {
+         if(!param1)
+         {
+            return 2;
+         }
+         if(param1.type == F4DataOrg.TYPE_WING)
+         {
+            // Already-mounted wings bypass capacity so grandfathered crafts remain editable (#52 story 9)
+            if(!this.isMountedWing(param1) && F4DataHole.countMountedWings(param1) >= F4DataOrg.maxWingsForHull(this.getHullOrg()))
+            {
+               return 2;
+            }
+            // Universal wing attachment: wings attach to any slot bypassing LR restrictions per commit 728337d
+            return 0;
+         }
          var _loc2_:* = undefined;
          if(this.lr != param1.lr && this.lr != 2 && param1.lr != 2)
          {
             return 1;
-         }
-         if(param1.type == 1)
-         {
-            if(this.getCurrentWings() >= 10)
-            {
-               return 2;
-            }
-            if(this.parentOrg && (this.parentOrg.type == 0 || this.parentOrg.type == 1))
-            {
-               return 0;
-            }
          }
          for each(_loc2_ in this.type)
          {
@@ -114,15 +84,31 @@ package f4data
          return 2;
       }
       
-      private function getCurrentWings(param1:F4DataLinks = null) : int
+      public function getCurrentWings(excludeOrg:F4DataOrg = null) : int
       {
-         if(param1 && param1.parentPart)
+         return F4DataHole.countMountedWings(excludeOrg);
+      }
+      
+      public static function countMountedWings(excludeOrg:F4DataOrg = null) : int
+      {
+         var _cnt:int = 0;
+         if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plMc && ConfigAndStory.ALLPART.plMc.length > 0)
          {
-            return param1.parentPart.getRoot().countWings();
-         }
-         if(this.partf4)
-         {
-            return this.partf4.getRoot().countWings();
+            for each(var _mc:* in ConfigAndStory.ALLPART.plMc)
+            {
+               if(_mc && _mc.f4DataLink && _mc.f4DataLink.f4dataorg)
+               {
+                  if(excludeOrg && _mc.f4DataLink.f4dataorg == excludeOrg)
+                  {
+                     continue;
+                  }
+                  if(_mc.f4DataLink.f4dataorg.type == F4DataOrg.TYPE_WING)
+                  {
+                     _cnt++;
+                  }
+               }
+            }
+            return _cnt;
          }
          if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plFly)
          {
@@ -133,6 +119,58 @@ package f4data
             }
          }
          return 0;
+      }
+
+      private function isMountedWing(param1:F4DataOrg) : Boolean
+      {
+         if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plMc)
+         {
+            for each(var _mc:* in ConfigAndStory.ALLPART.plMc)
+            {
+               if(_mc && _mc.f4DataLink && _mc.f4DataLink.f4dataorg == param1)
+               {
+                  return true;
+               }
+            }
+         }
+         return false;
+      }
+
+      public static function getAssemblyHull() : F4DataOrg
+      {
+         if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plMc)
+         {
+            for each(var _mc:* in ConfigAndStory.ALLPART.plMc)
+            {
+               if(_mc && _mc.f4DataLink && _mc.f4DataLink.f4dataorg && _mc.f4DataLink.f4dataorg.type == F4DataOrg.TYPE_BODY)
+               {
+                  return _mc.f4DataLink.f4dataorg;
+               }
+            }
+         }
+         if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plFly)
+         {
+            var _pl:F4DataLinks = ConfigAndStory.ALLPART.plFly[ConfigAndStory.PLAYER] as F4DataLinks;
+            if(_pl && _pl.f4dataorg)
+            {
+               return _pl.f4dataorg;
+            }
+         }
+         return null;
+      }
+
+      private function getHullOrg() : F4DataOrg
+      {
+         if(this.parentOrg && this.parentOrg.type == F4DataOrg.TYPE_BODY)
+         {
+            return this.parentOrg;
+         }
+         var _hull:F4DataOrg = F4DataHole.getAssemblyHull();
+         if(_hull)
+         {
+            return _hull;
+         }
+         return this.parentOrg;
       }
       
       public function strToType(param1:String) : void

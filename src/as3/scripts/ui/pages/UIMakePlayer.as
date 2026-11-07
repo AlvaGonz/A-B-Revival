@@ -12,12 +12,20 @@ package ui.pages
    import f4ui.f4partmc.OrgEvent;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
+   import flash.display.GradientType;
+   import flash.display.Graphics;
    import flash.display.MovieClip;
+   import flash.display.Shape;
    import flash.display.Sprite;
    import flash.events.Event;
+   import flash.events.MouseEvent;
+   import flash.filters.GlowFilter;
+   import flash.geom.Matrix;
    import flash.text.TextField;
+   import flash.text.TextFieldAutoSize;
+   import flash.text.TextFormat;
+   import flash.text.TextFormatAlign;
    import fullshit.tool.Attach;
-   import mochi.as3.MochiEvents;
    import ui.UICtrl;
    import ui.base.BtnBase;
    import ui.base.UIBase;
@@ -65,8 +73,40 @@ package ui.pages
       
       public var tempZoom:Number = 1;
       
+      public var txtWingHint:TextField;
+      
+      public var txtWings:TextField;
+      
+      public var btnClearWeapons:Sprite;
+      
+      public var btnClearWings:Sprite;
+      
+      public var btnClearEngines:Sprite;
+      
+      public static var currentInstance:UIMakePlayer = null;
+      
+      public var touchControlsBar:Sprite;
+      
+      public var btnTouchRotate:Sprite;
+      
+      public var btnTouchFlip:Sprite;
+      
+      public var btnTouchRemove:Sprite;
+      
+      public var btnTouchCenter:Sprite;
+      
+      public var canvasHitArea:Sprite;
+      
+      private var isPanning:Boolean = false;
+      
+      private var panStartX:Number = 0;
+      
+      private var panStartY:Number = 0;
+      
       public function UIMakePlayer(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
+         currentInstance = this;
+         ConfigAndStory.checkCaptainShip();
          this.f4datax = param1;
          this.form = new FormPlayerPart(param3.getChildByName("formPart") as MovieClip,param1.plPart);
          this.formFly = new FormFly(param3.getChildByName("formFly") as MovieClip,param1.plFly);
@@ -83,8 +123,8 @@ package ui.pages
          this.ui_wing = new Sprite();
          this.ui_body = new Sprite();
          this.ui_other = new Sprite();
-         this.uix.addChild(this.ui_wing);
          this.uix.addChild(this.ui_body);
+         this.uix.addChild(this.ui_wing);
          this.uix.addChild(this.ui_other);
          var _loc7_:MovieClip = (_mov.getChildByName("showFly") as MovieClip).getChildByName("pic") as MovieClip;
          this.uix.x = _loc7_.x;
@@ -93,6 +133,548 @@ package ui.pages
          this.uix.mask = _loc7_;
          this.undoList = [];
          this.undoShow();
+         this.initWingHint();
+         this.initWingsInDtTemp();
+         this.initClearButtons();
+         this.initTouchControls();
+         var _stageW:int = InitData.RENDERDATA ? InitData.RENDERDATA.W : 1920;
+         var _stageH:int = InitData.RENDERDATA ? InitData.RENDERDATA.H : 1080;
+         if(_stageW > 640 && _mov != null)
+         {
+            _mov.x = (_stageW - 640) / 2;
+            _mov.y = (_stageH - 480) / 2;
+         }
+      }
+      
+      public function initClearButtons() : void
+      {
+         var formMc:MovieClip = this.form.form;
+         if(!formMc)
+         {
+            return;
+         }
+         this.btnClearWeapons = this.createCyberBtn("CLR GUNS", 282, -24, this.onClearWeaponsClick);
+         this.btnClearWings = this.createCyberBtn("CLR WINGS", 338, -24, this.onClearWingsClick);
+         this.btnClearEngines = this.createCyberBtn("CLR ENGS", 394, -24, this.onClearEnginesClick);
+         
+         formMc.addChild(this.btnClearWeapons);
+         formMc.addChild(this.btnClearWings);
+         formMc.addChild(this.btnClearEngines);
+         
+         this.updateClearButtons();
+      }
+      
+      private function createCyberBtn(label:String, xPos:Number, yPos:Number, onClick:Function, btnW:Number = 52, btnH:Number = 19) : Sprite
+      {
+         var btn:Sprite = new Sprite();
+         btn.x = xPos;
+         btn.y = yPos;
+         btn.buttonMode = true;
+         btn.useHandCursor = true;
+         btn.mouseChildren = false;
+
+         var w:Number = btnW;
+         var h:Number = btnH;
+
+         var drawBtn:Function = function(hover:Boolean, down:Boolean):void
+         {
+            btn.graphics.clear();
+            var bgColor:uint = down ? 0x0a1824 : (hover ? 0x1a3854 : 0x0f2233);
+            var borderColor:uint = hover ? 0x66ccff : 0x2d5a7b;
+            var borderAlpha:Number = hover ? 1.0 : 0.7;
+            btn.graphics.lineStyle(1, borderColor, borderAlpha, true);
+            btn.graphics.beginFill(bgColor, 0.9);
+            btn.graphics.drawRoundRect(0, 0, w, h, 4, 4);
+            btn.graphics.endFill();
+         };
+
+         drawBtn(false, false);
+
+         var txt:TextField = new TextField();
+         var tf:TextFormat = new TextFormat("Arial", 9, 0x88ddff, true);
+         tf.align = TextFormatAlign.CENTER;
+         txt.defaultTextFormat = tf;
+         txt.text = label;
+         txt.width = w;
+         txt.height = h;
+         txt.y = 2;
+         txt.selectable = false;
+         txt.mouseEnabled = false;
+         txt.filters = [new GlowFilter(0x003366, 0.8, 3, 3, 2, 1)];
+         btn.addChild(txt);
+
+         btn.addEventListener(MouseEvent.MOUSE_OVER, function(e:MouseEvent):void
+         {
+            drawBtn(true, false);
+            txt.textColor = 0xffffff;
+            btn.filters = [new GlowFilter(0x00ccff, 0.6, 4, 4, 2, 1)];
+         });
+
+         btn.addEventListener(MouseEvent.MOUSE_OUT, function(e:MouseEvent):void
+         {
+            drawBtn(false, false);
+            txt.textColor = 0x88ddff;
+            btn.filters = [];
+         });
+
+         btn.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent):void
+         {
+            drawBtn(true, true);
+         });
+
+         btn.addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent):void
+         {
+            drawBtn(true, false);
+         });
+
+         btn.addEventListener(MouseEvent.CLICK, onClick);
+
+         return btn;
+      }
+      
+      public function updateClearButtons() : void
+      {
+         if(this.btnClearWeapons)
+         {
+            var wCount:int = this.countPartsByType(F4DataOrg.TYPE_GUN);
+            this.btnClearWeapons.alpha = wCount > 0 ? 1.0 : 0.35;
+            this.btnClearWeapons.mouseEnabled = wCount > 0;
+         }
+         if(this.btnClearWings)
+         {
+            var wingCount:int = this.countPartsByType(F4DataOrg.TYPE_WING);
+            this.btnClearWings.alpha = wingCount > 0 ? 1.0 : 0.35;
+            this.btnClearWings.mouseEnabled = wingCount > 0;
+         }
+         if(this.btnClearEngines)
+         {
+            var engCount:int = this.countPartsByType(F4DataOrg.TYPE_ENGINE);
+            this.btnClearEngines.alpha = engCount > 0 ? 1.0 : 0.35;
+            this.btnClearEngines.mouseEnabled = engCount > 0;
+         }
+      }
+      
+      public function onClearWeaponsClick(param1:MouseEvent) : void
+      {
+         var count:int = this.countPartsByType(F4DataOrg.TYPE_GUN);
+         if(count == 0)
+         {
+            return;
+         }
+         new UIReally(this.cleanWeaponsYes, null, null, "Clear Weapons?", "\nStrip all " + count + " weapons to inventory?", _sp, Attach.attach("UI_Really") as MovieClip, "UI_Really", _ui, this);
+      }
+      
+      public function cleanWeaponsYes() : void
+      {
+         this.cleanWeapons();
+      }
+      
+      public function onClearWingsClick(param1:MouseEvent) : void
+      {
+         var count:int = this.countPartsByType(F4DataOrg.TYPE_WING);
+         if(count == 0)
+         {
+            return;
+         }
+         new UIReally(this.cleanWingsYes, null, null, "Clear Wings?", "\nStrip all wings and attached gear to inventory?", _sp, Attach.attach("UI_Really") as MovieClip, "UI_Really", _ui, this);
+      }
+      
+      public function cleanWingsYes() : void
+      {
+         this.cleanWings();
+      }
+      
+      public function onClearEnginesClick(param1:MouseEvent) : void
+      {
+         var count:int = this.countPartsByType(F4DataOrg.TYPE_ENGINE);
+         if(count == 0)
+         {
+            return;
+         }
+         new UIReally(this.cleanEnginesYes, null, null, "Clear Engines?", "\nStrip all " + count + " thrusters to inventory?", _sp, Attach.attach("UI_Really") as MovieClip, "UI_Really", _ui, this);
+      }
+      
+      public function cleanEnginesYes() : void
+      {
+         this.cleanEngines();
+      }
+      
+      public function countPartsByType(param1:int) : int
+      {
+         var count:int = 0;
+         var _loc1_:F4PartMC = null;
+         for each(_loc1_ in this.f4datax.plMc)
+         {
+            if(_loc1_.isRemovableType(param1))
+            {
+               count++;
+            }
+         }
+         return count;
+      }
+      
+      public function cleanPartsByType(param1:int) : int
+      {
+         var count:int = 0;
+         var targets:Array = [];
+         var _loc1_:F4PartMC = null;
+         for each(_loc1_ in this.f4datax.plMc)
+         {
+            if(_loc1_.isRemovableType(param1))
+            {
+               targets.push(_loc1_);
+            }
+         }
+         for each(_loc1_ in targets)
+         {
+            if(this.f4datax.plMc.indexOf(_loc1_) != -1)
+            {
+               _loc1_.looseLink();
+               _loc1_.removeAll(_loc1_, true);
+               count++;
+            }
+         }
+         if(count > 0)
+         {
+            this.form.updatePages();
+            this.form.filterX(this.form.filx);
+            this.updateNew();
+            this.cleanDt();
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[18]);
+         }
+         return count;
+      }
+      
+      public function cleanWeapons() : void
+      {
+         this.cleanPartsByType(F4DataOrg.TYPE_GUN);
+      }
+      
+      public function cleanWings() : void
+      {
+         this.cleanPartsByType(F4DataOrg.TYPE_WING);
+      }
+      
+      public function cleanEngines() : void
+      {
+         this.cleanPartsByType(F4DataOrg.TYPE_ENGINE);
+      }
+      
+      public function initWingHint() : void
+      {
+         var _showFly:MovieClip = _mov.getChildByName("showFly") as MovieClip;
+         if(!_showFly)
+         {
+            return;
+         }
+         this.txtWingHint = new TextField();
+         this.txtWingHint.name = "txtWingHint";
+         UIBase.applyFormat(this.txtWingHint, UIBase.FONT_BODY, UIBase.SIZE_HUD, UIBase.COLOR_SYSTEM_LIGHT, true, TextFieldAutoSize.LEFT);
+         this.txtWingHint.text = "Tap: Select | Drag: Move | Drag Pan: Canvas";
+         this.txtWingHint.autoSize = TextFieldAutoSize.LEFT;
+         this.txtWingHint.selectable = false;
+         this.txtWingHint.mouseEnabled = false;
+         UIBase.applyGlow(this.txtWingHint, 0x000000, 0.9, 4, 3);
+         var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
+         if(_pic)
+         {
+            this.txtWingHint.x = _pic.x + 6;
+            this.txtWingHint.y = _pic.y + _pic.height - 44;
+         }
+         else
+         {
+            this.txtWingHint.x = 10;
+            this.txtWingHint.y = 210;
+         }
+         _showFly.addChild(this.txtWingHint);
+      }
+      
+      public function initTouchControls() : void
+      {
+         var _showFly:MovieClip = _mov.getChildByName("showFly") as MovieClip;
+         if(!_showFly)
+         {
+            return;
+         }
+         var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
+         if(_pic)
+         {
+            this.canvasHitArea = new Sprite();
+            this.canvasHitArea.graphics.beginFill(0x000000, 0);
+            this.canvasHitArea.graphics.drawRect(_pic.x, _pic.y, _pic.width, _pic.height);
+            this.canvasHitArea.graphics.endFill();
+            _showFly.addChildAt(this.canvasHitArea, _showFly.getChildIndex(this.uix));
+            this.canvasHitArea.addEventListener(MouseEvent.MOUSE_DOWN, this.onCanvasMouseDown);
+         }
+         
+         this.touchControlsBar = new Sprite();
+         var barX:Number = _pic ? _pic.x + 4 : 10;
+         var barY:Number = _pic ? _pic.y + _pic.height - 24 : 232;
+         this.touchControlsBar.x = barX;
+         this.touchControlsBar.y = barY;
+         
+         this.btnTouchRotate = this.createCyberBtn("ROTATE", 0, 0, this.onTouchRotateClick, 56, 20);
+         this.btnTouchFlip = this.createCyberBtn("FLIP", 60, 0, this.onTouchFlipClick, 56, 20);
+         this.btnTouchRemove = this.createCyberBtn("REMOVE", 120, 0, this.onTouchRemoveClick, 58, 20);
+         this.btnTouchCenter = this.createCyberBtn("CENTER", 182, 0, this.onTouchCenterClick, 58, 20);
+         
+         this.touchControlsBar.addChild(this.btnTouchRotate);
+         this.touchControlsBar.addChild(this.btnTouchFlip);
+         this.touchControlsBar.addChild(this.btnTouchRemove);
+         this.touchControlsBar.addChild(this.btnTouchCenter);
+         
+         _showFly.addChild(this.touchControlsBar);
+         this.updateTouchPartControls();
+      }
+      
+      public function updateTouchPartControls() : void
+      {
+         if(!this.btnTouchRotate)
+         {
+            return;
+         }
+         var cur:F4PartMC = F4PartMC.activePart;
+         if(!cur)
+         {
+            this.btnTouchRotate.alpha = 0.35;
+            this.btnTouchFlip.alpha = 0.35;
+            this.btnTouchRemove.alpha = 0.35;
+            return;
+         }
+         this.btnTouchRotate.alpha = 1.0;
+         if(cur.f4DataLink && cur.f4DataLink.f4dataorg && cur.f4DataLink.f4dataorg.type == 1)
+         {
+            this.btnTouchFlip.alpha = 1.0;
+         }
+         else
+         {
+            this.btnTouchFlip.alpha = 0.35;
+         }
+         if(!cur.lock && !cur.isRootChassis())
+         {
+            this.btnTouchRemove.alpha = 1.0;
+         }
+         else
+         {
+            this.btnTouchRemove.alpha = 0.35;
+         }
+      }
+      
+      public function onTouchRotateClick(param1:MouseEvent) : void
+      {
+         if(F4PartMC.activePart)
+         {
+            F4PartMC.activePart.rotateCW();
+         }
+         else
+         {
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13]);
+         }
+      }
+      
+      public function onTouchFlipClick(param1:MouseEvent) : void
+      {
+         if(F4PartMC.activePart && F4PartMC.activePart.f4DataLink && F4PartMC.activePart.f4DataLink.f4dataorg && F4PartMC.activePart.f4DataLink.f4dataorg.type == 1)
+         {
+            F4PartMC.activePart.setLR(F4PartMC.activePart.f4DataLink.f4dataorg.lr == 1 ? 0 : 1);
+         }
+         else
+         {
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13]);
+         }
+      }
+      
+      public function onTouchRemoveClick(param1:MouseEvent) : void
+      {
+         if(F4PartMC.activePart && !F4PartMC.activePart.lock && !F4PartMC.activePart.isRootChassis())
+         {
+            var target:F4PartMC = F4PartMC.activePart;
+            F4PartMC.selectPart(null);
+            target.removeAll(target);
+            if(this.form)
+            {
+               this.form.updatePages();
+               this.form.filterX(this.form.filx);
+            }
+            if(!this.nowedit)
+            {
+               this.updateNew();
+            }
+            else
+            {
+               this.updateClearButtons();
+            }
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[18]);
+         }
+         else
+         {
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13]);
+         }
+      }
+      
+      public function onTouchCenterClick(param1:MouseEvent) : void
+      {
+         var _showFly:MovieClip = _mov.getChildByName("showFly") as MovieClip;
+         if(_showFly)
+         {
+            var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
+            if(_pic)
+            {
+               this.uix.x = _pic.x;
+               this.uix.y = _pic.y;
+            }
+         }
+         this.autoZoom();
+         InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[12]);
+      }
+      
+      private function onCanvasMouseDown(param1:MouseEvent) : void
+      {
+         F4PartMC.selectPart(null);
+         if(stage)
+         {
+            this.isPanning = true;
+            this.panStartX = stage.mouseX - this.uix.x;
+            this.panStartY = stage.mouseY - this.uix.y;
+            stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onCanvasMouseMove);
+            stage.addEventListener(MouseEvent.MOUSE_UP,this.onCanvasMouseUp);
+         }
+      }
+      
+      private function onCanvasMouseMove(param1:MouseEvent) : void
+      {
+         if(this.isPanning && stage)
+         {
+            this.uix.x = stage.mouseX - this.panStartX;
+            this.uix.y = stage.mouseY - this.panStartY;
+         }
+      }
+      
+      private function onCanvasMouseUp(param1:MouseEvent) : void
+      {
+         this.isPanning = false;
+         if(stage)
+         {
+            stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onCanvasMouseMove);
+            stage.removeEventListener(MouseEvent.MOUSE_UP,this.onCanvasMouseUp);
+         }
+      }
+      
+      public function initWingsInDtTemp() : void
+      {
+         var dtTemp:MovieClip = _mov.getChildByName("dtTemp") as MovieClip;
+         if(!dtTemp || dtTemp.getChildByName("txtWings"))
+         {
+            return;
+         }
+         var _i:int = 0;
+         while(_i < dtTemp.numChildren)
+         {
+            var _ch:DisplayObject = dtTemp.getChildAt(_i);
+            if(_ch && (_ch.y >= 60 || _ch.getBounds(dtTemp).y >= 60))
+            {
+               _ch.y += 16.5;
+            }
+            _i++;
+         }
+         dtTemp.scaleY = 0.835;
+         
+         var wingsBg:Shape = new Shape();
+         wingsBg.name = "wingsBg";
+         var mat:Matrix = new Matrix();
+         mat.createGradientBox(105, 16, Math.PI / 2, 0, 64.4);
+         wingsBg.graphics.lineStyle(1, 0x2b3744, 0.7);
+         wingsBg.graphics.beginGradientFill(GradientType.LINEAR, [0x161e28, 0x090c10], [0.95, 0.95], [0, 255], mat);
+         wingsBg.graphics.drawRoundRect(-0.5, 64.4, 105, 15.5, 3, 3);
+         wingsBg.graphics.endFill();
+         dtTemp.addChildAt(wingsBg, 0);
+         
+         var lblWings:TextField = new TextField();
+         lblWings.name = "lblWings";
+         var tfLbl:TextFormat = new TextFormat("Arial", 10, 0xbfbfbf, true);
+         tfLbl.align = TextFormatAlign.RIGHT;
+         lblWings.defaultTextFormat = tfLbl;
+         lblWings.selectable = false;
+         lblWings.mouseEnabled = false;
+         lblWings.text = "Wings";
+         lblWings.x = -2;
+         lblWings.y = 67.8;
+         lblWings.width = 49;
+         lblWings.height = 16;
+         dtTemp.addChild(lblWings);
+         
+         this.txtWings = new TextField();
+         this.txtWings.name = "txtWings";
+         var tfVal:TextFormat = new TextFormat("Arial", 10, 0xbfbfbf, true);
+         tfVal.align = TextFormatAlign.CENTER;
+         this.txtWings.defaultTextFormat = tfVal;
+         this.txtWings.selectable = false;
+         this.txtWings.mouseEnabled = false;
+         this.txtWings.text = "";
+         this.txtWings.x = 53.05;
+         this.txtWings.y = 67.8;
+         this.txtWings.width = 48.5;
+         this.txtWings.height = 16;
+         dtTemp.addChild(this.txtWings);
+         
+         this.updateWingsInDtTemp();
+      }
+      
+      public function updateWingsInDtTemp(param1:F4ShowData = null) : void
+      {
+         if(!this.txtWings)
+         {
+            return;
+         }
+         var _dtTemp:MovieClip = _mov.getChildByName("dtTemp") as MovieClip;
+         var _txtHp:TextField = _dtTemp ? _dtTemp.getChildByName("txtHp") as TextField : null;
+         if(!_txtHp || _txtHp.text == "" || _txtHp.text == "-")
+         {
+            if(this.txtWings.text != "")
+            {
+               this.txtWings.text = "";
+            }
+            return;
+         }
+         var _curWings:int = 0;
+         var _maxWings:int = 0;
+         if(param1)
+         {
+            _curWings = param1.wings;
+            _maxWings = param1.maxWings;
+         }
+         else
+         {
+            var _hull:F4DataOrg = F4DataHole.getAssemblyHull();
+            if(!_hull)
+            {
+               if(this.txtWings.text != "")
+               {
+                  this.txtWings.text = "";
+               }
+               return;
+            }
+            _curWings = F4DataHole.countMountedWings();
+            _maxWings = F4DataOrg.maxWingsForHull(_hull);
+         }
+         var _text:String = _curWings + "/" + _maxWings;
+         if(this.txtWings.text != _text)
+         {
+            this.txtWings.text = _text;
+         }
+         var _color:uint = _curWings >= _maxWings ? 0xffcc00 : 0xbfbfbf;
+         if(_curWings > _maxWings)
+         {
+            _color = 0xff4444;
+         }
+         var _tf:TextFormat = this.txtWings.defaultTextFormat;
+         _tf.align = TextFormatAlign.CENTER;
+         if(_tf.color != _color)
+         {
+            _tf.color = _color;
+            this.txtWings.defaultTextFormat = _tf;
+            this.txtWings.setTextFormat(_tf);
+         }
       }
       
       override public function afterFadeIn() : void
@@ -129,6 +711,16 @@ package ui.pages
       
       override public function removeSelf() : UIBase
       {
+         F4PartMC.selectPart(null);
+         if(stage)
+         {
+            stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onCanvasMouseMove);
+            stage.removeEventListener(MouseEvent.MOUSE_UP,this.onCanvasMouseUp);
+         }
+         if(currentInstance == this)
+         {
+            currentInstance = null;
+         }
          super.removeSelf();
          return _last;
       }
@@ -170,6 +762,7 @@ package ui.pages
          ShowPart.cleanDt(_mov.getChildByName("dt") as MovieClip);
          this.dtOrg = null;
          this.hidePoints();
+         this.updateClearButtons();
       }
       
       public function addDtL(param1:F4DataLinks) : void
@@ -179,8 +772,7 @@ package ui.pages
          if(this.dtLink != param1)
          {
             _loc2_ = _mov.getChildByName("showDetail") as MovieClip;
-            _loc3_ = new F4ShowData(param1,InitData.SELL);
-            _loc3_.initData();
+            _loc3_ = param1.createShowData(InitData.SELL);
             _loc3_.makeFlyClone();
             ShowPart.addFly(_loc3_,_loc2_);
             this.dtLink = param1;
@@ -196,25 +788,25 @@ package ui.pages
       public function cleanDtTemp() : void
       {
          ShowPart.cleanFlyTemp(_mov.getChildByName("dtTemp") as MovieClip);
+         if(this.txtWings)
+         {
+            this.txtWings.text = "";
+         }
       }
       
       public function addDtLTempRun() : void
       {
-         var _loc1_:F4PartMC = null;
-         var _loc2_:MovieClip = null;
-         var _loc3_:F4ShowData = null;
-         ShowPart.cleanFlyTemp(_mov.getChildByName("dtTemp") as MovieClip);
-         for each(_loc1_ in this.f4datax.plMc)
+         var _loc2_:MovieClip = _mov.getChildByName("dtTemp") as MovieClip;
+         var _loc3_:F4ShowData = F4DataLinks.calculateCraftStats(this.f4datax);
+         if(_loc3_)
          {
-            if(_loc1_.f4DataLink.f4dataorg.useAs == 2)
-            {
-               _loc2_ = _mov.getChildByName("dtTemp") as MovieClip;
-               _loc3_ = new F4ShowData(_loc1_.f4DataLink,InitData.SELL);
-               _loc3_.initData();
-               ShowPart.addFlyTemp(_loc3_,_loc2_);
-               break;
-            }
+            ShowPart.addFlyTemp(_loc3_,_loc2_);
          }
+         else
+         {
+            ShowPart.cleanFlyTemp(_loc2_);
+         }
+         this.updateWingsInDtTemp(_loc3_);
       }
       
       private function runzoom() : void
@@ -551,7 +1143,6 @@ package ui.pages
       
       public function editYes() : void
       {
-         MochiEvents.trackEvent("edit_fly");
          this.formFly.form.visible = false;
          this.form.form.visible = true;
          _mov.getChildByName("tmask").visible = false;
@@ -560,6 +1151,17 @@ package ui.pages
          this.showFlys(false);
          this.showFlyEdit(true);
          this.nowedit = true;
+         this.updateClearButtons();
+         if(this.formFly.selToDel >= 0 && this.formFly.selToDel < this.f4datax.plFly.length)
+         {
+            var _editingCraft:F4DataLinks = this.f4datax.plFly[this.formFly.selToDel];
+            if(_editingCraft && _editingCraft.isCaptainShip() && !ConfigAndStory.TIP_CAPTAIN_MOD)
+            {
+               ConfigAndStory.TIP_CAPTAIN_MOD = true;
+               ConfigAndStory.saveData();
+               new UIReally(null,null,null,"Captain\'s Flagship","\nYou are customizing Captain Tom\'s flagship!\nOutfit it with balanced defenses and durable weapons.\nIf the Captain falls in combat, the battle is lost!",_sp,Attach.attach("UI_Really") as MovieClip,"UI_Really",_ui,this);
+            }
+         }
       }
       
       public function showFlys(param1:Boolean) : void
@@ -583,6 +1185,18 @@ package ui.pages
          _mov.getChildByName("showDetail").visible = param1;
          this.uix.mouseChildren = !param1;
          this.uix.mouseEnabled = !param1;
+         if(this.txtWingHint)
+         {
+            this.txtWingHint.visible = !param1;
+         }
+         if(this.touchControlsBar)
+         {
+            this.touchControlsBar.visible = !param1;
+         }
+         if(this.canvasHitArea)
+         {
+            this.canvasHitArea.visible = !param1;
+         }
          if(param1)
          {
             (_mov.getChildByName("txtNew") as TextField).text = "";
@@ -603,7 +1217,6 @@ package ui.pages
       
       public function addFlyYes() : void
       {
-         MochiEvents.trackEvent("add_fly",this.addFlyReal.inputWord);
          this.addToFly(false,this.addFlyReal.inputWord);
          this.addFlyReal = null;
          this.cleanDt();
@@ -618,7 +1231,6 @@ package ui.pages
       
       public function mergeFlyYes() : void
       {
-         MochiEvents.trackEvent("merge_fly",this.mergeFlyReal.inputWord);
          this.addToFly(true,this.mergeFlyReal.inputWord);
          this.mergeFlyReal = null;
          this.showFlys(true);
@@ -653,7 +1265,6 @@ package ui.pages
       public function mergeFlyLeaveYes() : void
       {
          var tempui:UIBase = null;
-         MochiEvents.trackEvent("merge_fly_leave",this.mergeFlyReal.inputWord);
          this.addToFly(true,this.mergeFlyReal.inputWord);
          this.mergeFlyReal = null;
          this.cleanMCNotBack();
@@ -725,7 +1336,6 @@ package ui.pages
       
       public function removeYes() : void
       {
-         MochiEvents.trackEvent("break_fly");
          this.cleanMC();
          this.formFly.deleteNow();
          this.formFly.selToDel = -1;
@@ -749,10 +1359,12 @@ package ui.pages
             enableBtn("new");
             enableBtn("add");
          }
+         this.updateClearButtons();
       }
       
       public function cleanMCNotBack() : void
       {
+         F4PartMC.selectPart(null);
          var _loc1_:F4PartMC = null;
          for each(_loc1_ in this.f4datax.plMc)
          {
@@ -771,6 +1383,7 @@ package ui.pages
       
       public function cleanMC() : void
       {
+         F4PartMC.selectPart(null);
          var _loc1_:F4PartMC = null;
          for each(_loc1_ in this.f4datax.plMc)
          {
@@ -790,6 +1403,7 @@ package ui.pages
       
       public function resetMC() : void
       {
+         F4PartMC.selectPart(null);
          var _loc1_:F4PartMC = null;
          for each(_loc1_ in this.f4datax.plMc)
          {
@@ -880,10 +1494,15 @@ package ui.pages
             _loc5_.undo = this;
             _loc5_.delPartAct = this.cleanDt;
             this.autoPlug(_loc5_);
+            F4PartMC.selectPart(_loc5_);
             this.form.filter();
             if(!this.nowedit)
             {
                this.updateNew();
+            }
+            else
+            {
+               this.updateClearButtons();
             }
             InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
          }
@@ -980,6 +1599,10 @@ package ui.pages
                      _loc3_.partf4 = param1.f4DataLink;
                      param1.f4DataLink.atHole = _loc3_;
                      param1.f4DataLink.parentPart = _loc2_.f4DataLink;
+                     if(param1.f4DataLink.f4dataorg.type == 1 && _loc3_.lr != 2)
+                     {
+                        param1.setLR(_loc3_.lr);
+                     }
                      param1.allFinalMove(param1);
                      return true;
                   }
@@ -1103,6 +1726,7 @@ package ui.pages
          }
          this.undoList[0] = param1;
          this.undoShow();
+         this.updateNew();
       }
       
       public function undoSortAfterUse(param1:int) : void

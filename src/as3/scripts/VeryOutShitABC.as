@@ -8,12 +8,11 @@ package
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
    import flash.net.navigateToURL;
+   import flash.system.LoaderContext;
    import flash.text.TextField;
    import flash.utils.getDefinitionByName;
-   import mochi.as3.MochiAd;
-   import mochi.as3.MochiServices;
    
-   [SWF(width="640", height="480", backgroundColor="#000000", frameRate="36")]
+   [SWF(width="640", height="480", backgroundColor="#000000", frameRate="60")]
    public dynamic class VeryOutShitABC extends MovieClip
    {
       
@@ -46,7 +45,6 @@ package
       private function ckURL() : void
       {
          var _loc2_:String = null;
-         MochiServices.connect("0fbe1356f7457e01",this);
          var _loc1_:String = this.loaderInfo.loaderURL;
          for each(_loc2_ in this.noAdsUrls)
          {
@@ -69,12 +67,7 @@ package
       
       private function readyToAds() : void
       {
-         MochiAd.showPreGameAd({
-            "clip":root,
-            "id":"0fbe1356f7457e01",
-            "res":"640x480",
-            "ad_finished":this.readyToLoading
-         });
+         this.readyToLoading();
       }
       
       private function addToStage(param1:Event) : void
@@ -87,7 +80,9 @@ package
       {
          this.loader = new Loader();
          this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.uiCop);
-         this.loader.loadBytes(new this.loading());
+         var _locContext_:LoaderContext = new LoaderContext();
+         _locContext_.allowCodeImport = true;
+         this.loader.loadBytes(new this.loading(),_locContext_);
       }
       
       private function uiCop(param1:Event) : void

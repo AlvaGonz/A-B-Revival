@@ -1,5 +1,6 @@
 package f4data
 {
+   import f4.data.InitData;
    import f4ui.f4partmc.F4PartMC;
    import flash.geom.Point;
    
@@ -21,6 +22,56 @@ package f4data
       public var name:String = "name";
       
       public var colorHue:int;
+      
+      public var special:Boolean = false; // Flagship protection flag
+      
+      public function isCaptainShip() : Boolean
+      {
+         return this.special || this.name == "Captain's Ship" || (Boolean(this.name) && this.name.indexOf("Captain") != -1);
+      }
+      
+      public function get isSpecialProtected() : Boolean
+      {
+         return this.isCaptainShip();
+      }
+      
+      public function isRootChassis() : Boolean
+      {
+         return Boolean(this.f4dataorg) && this.f4dataorg.useAs == 2;
+      }
+      
+      public function createShowData(param1:Number = 1) : F4ShowData
+      {
+         var _stats:F4ShowData = new F4ShowData(this, param1);
+         _stats.initData();
+         return _stats;
+      }
+      
+      public static function calculateCraftStats(source:*) : F4ShowData
+      {
+         var parts:Array = null;
+         if(source is Array)
+         {
+            parts = source as Array;
+         }
+         else if(source && source.hasOwnProperty("plMc"))
+         {
+            parts = source.plMc as Array;
+         }
+         if(!parts)
+         {
+            return null;
+         }
+         var partMC:F4PartMC = null;
+         for each(partMC in parts)
+         {
+            if(partMC && partMC.isRootChassis())
+            {
+               return partMC.f4DataLink.createShowData(InitData.SELL);
+            }
+         }
+         return null;
+      }
       
       public function F4DataLinks()
       {
@@ -49,6 +100,7 @@ package f4data
          this.f4dataorg = param2[param1["self"]];
          this.index = param1["index"];
          this.name = param1["name"];
+         this.special = param1["special"] == true;
          if(Boolean(param3) && Boolean(param4))
          {
             this.f4dataorg = this.f4dataorg.clone(param3,param4);
@@ -62,6 +114,7 @@ package f4data
          var _loc1_:Object = this.f4LinkSA(this);
          _loc1_["index"] = this.index;
          _loc1_["name"] = this.name;
+         _loc1_["special"] = this.special;
          _loc1_["self"] = this.f4dataorg.index;
          _loc1_["useAs"] = this.f4dataorg.useAs;
          return _loc1_;
@@ -104,6 +157,7 @@ package f4data
             _loc6_.f4dataorg.useAs = param2["use"][_loc7_];
             (param1.f4dataorg.hole[_loc7_] as F4DataHole).partf4 = _loc6_;
             _loc6_.atHole = param1.f4dataorg.hole[_loc7_] as F4DataHole;
+            _loc6_.parentPart = param1;
             if(param2["hole" + _loc7_])
             {
                this.f4LinkLA(_loc6_,param2["hole" + _loc7_],param3,param4,param5);

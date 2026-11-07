@@ -4,6 +4,7 @@ package f4.unit.ai
    import f4.data.sound32.SoundRun1;
    import f4.unit.move.MoveAs;
    import f4.unit.particle.DeadPart;
+   import f4.unit.particle.Item;
    import f4.unit.parts.Unity;
    import f4.unit.render.AIURender;
    import f4.unit.render.Cam;
@@ -50,6 +51,24 @@ package f4.unit.ai
       public var aimode:AIRunMode;
       
       public var aimodeNum:int;
+      
+      public var isCaptain:Boolean = false;
+      
+      public var tacticalMode:int = 0;
+      
+      public var companionRole:int = -1;
+      
+      public var leaderUnity:AIUnity;
+      
+      public var spawnPoint:Point;
+      
+      public static const MODE_ANCHOR:int = 0;
+      public static const MODE_ESCORT:int = 1;
+      public static const MODE_EVADE:int = 2;
+      public static const MODE_SEEK:int = 3;
+      public static const MODE_SUPPORT:int = 4;
+      public static const MODE_SHIELD:int = 5;
+      public static const MODE_COUNT:int = 6;
       
       public var fromDef:Boolean = true;
       
@@ -325,6 +344,14 @@ package f4.unit.ai
                      _loc1_.org.rpindex = ConfigAndStory.ALLPART.repairPart.length;
                      ConfigAndStory.ALLPART.repairPart.push(_loc1_.org);
                   }
+               }
+               if(this == InitData.CORE.playerFly && Boolean(_loc1_.org) && _loc1_.org.type != 0)
+               {
+                  if(Boolean(targets) && Boolean(targets.evts) && Boolean(targets.evts.gameui))
+                  {
+                     targets.evts.gameui.recordLostPart(_loc1_.org.type);
+                  }
+                  InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13], 0.35);
                }
                if(!this.unity.friend)
                {
@@ -702,7 +729,203 @@ package f4.unit.ai
                   this.aiPow = this.aimode.bodyClose.y;
                }
             }
+            var _healDrop:Item = this.unity.friend && !this.isCaptain ? this.findPriorityHealDrop() : null;
+            if(_healDrop)
+            {
+               this.aim = _healDrop.point;
+               this.close = 1;
+               this.aiPow = 1 * this._aiLastPowMut;
+            }
+            else if(this.isCaptain || this.companionRole >= 0)
+            {
+               this.steerTacticalMode(_loc1_);
+            }
          }
+      }
+      
+      private function findPriorityHealDrop() : Item
+      {
+         if(!targets || !targets.ia1 || !targets.pfa1)
+         {
+            return null;
+         }
+         var _heal:Item = null;
+         var _minDistSq:Number = Number.MAX_VALUE;
+         for each(var _item:Item in targets.ia1.array)
+         {
+            if(_item && !_item.isDeadA1 && _item.data && _item.data[0] == "life")
+            {
+               var _dsq:Number = (this.unity.move.point.x - _item.point.x) * (this.unity.move.point.x - _item.point.x) + (this.unity.move.point.y - _item.point.y) * (this.unity.move.point.y - _item.point.y);
+               var _isClosest:Boolean = true;
+               for each(var _comp:AIUnity in targets.pfa1.array)
+               {
+                  if(_comp && !_comp.isDeadA1 && _comp != this && _comp.unity && _comp.unity.move)
+                  {
+                     var _cdsq:Number = (_comp.unity.move.point.x - _item.point.x) * (_comp.unity.move.point.x - _item.point.x) + (_comp.unity.move.point.y - _item.point.y) * (_comp.unity.move.point.y - _item.point.y);
+                     if(_cdsq < _dsq)
+                     {
+                        _isClosest = false;
+                        break;
+                     }
+                  }
+               }
+               if(_isClosest && _dsq < _minDistSq)
+               {
+                  _minDistSq = _dsq;
+                  _heal = _item;
+               }
+            }
+         }
+         return _heal;
+      }
+      
+      private function steerTacticalMode(param1:Array) : void
+      {
+         var _loc2_:AIUnity = this.nearestIn(param1);
+         var _loc3_:AIUnity = this.leaderUnity && !this.leaderUnity.isDeadA1 && this.leaderUnity.unity ? this.leaderUnity : InitData.CORE.playerFly;
+         var _loc4_:Point = null;
+         var _loc5_:Number = NaN;
+         var _loc6_:Number = NaN;
+         var _activeMode:int = this.companionRole >= 0 ? this.companionRole : this.tacticalMode;
+         switch(_activeMode)
+         {
+            case MODE_ESCORT:
+               if(_loc3_)
+               {
+                  _loc4_ = new Point(_loc3_.unity.move.point.x - Math.cos(_loc3_.unity.move.radFace) * 80,_loc3_.unity.move.point.y - Math.sin(_loc3_.unity.move.radFace) * 80);
+                  this.moveToward(_loc4_);
+               }
+               break;
+            case MODE_EVADE:
+               _loc5_ = _loc2_ ? this.distToSq(_loc2_) : Number.MAX_VALUE;
+               if(_loc5_ == 0 || _loc5_ > this.unity.udata.fireRange * this.unity.udata.fireRange)
+               {
+                  this.aim = this.unity.move.point;
+                  this.aiPow = 0;
+                  this.close = 1;
+               }
+               else
+               {
+                  _loc6_ = Math.sqrt(_loc5_);
+                  _loc4_ = new Point(this.unity.move.point.x + (this.unity.move.point.x - _loc2_.unity.move.point.x) / _loc6_ * 200,this.unity.move.point.y + (this.unity.move.point.y - _loc2_.unity.move.point.y) / _loc6_ * 200);
+                  this.moveToward(_loc4_);
+               }
+               break;
+            case MODE_SEEK:
+               if(_loc2_)
+               {
+                  this.linkUnityTarget(_loc2_);
+                  this.moveToward(_loc2_.unity.move.point);
+               }
+               break;
+            case MODE_SUPPORT:
+               _loc3_ = this.supportTarget(param1);
+               if(_loc3_)
+               {
+                  this.linkUnityTarget(_loc3_);
+                  this.moveToward(_loc3_.unity.move.point);
+               }
+               break;
+            case MODE_SHIELD:
+               if(_loc2_ && _loc3_)
+               {
+                  _loc4_ = new Point((_loc3_.unity.move.point.x + _loc2_.unity.move.point.x) * 0.5,(_loc3_.unity.move.point.y + _loc2_.unity.move.point.y) * 0.5);
+                  this.moveToward(_loc4_);
+               }
+               break;
+            default:
+               if(this.spawnPoint)
+               {
+                  this.moveToward(this.spawnPoint);
+               }
+         }
+      }
+      
+      private function moveToward(param1:Point) : void
+      {
+         this.aim = param1;
+         var _loc2_:Number = (this.unity.move.point.x - param1.x) * (this.unity.move.point.x - param1.x) + (this.unity.move.point.y - param1.y) * (this.unity.move.point.y - param1.y);
+         var _loc3_:Number = (this.unity.move.hitRect.width + this.unity.move.hitRect.height) / 2;
+         _loc3_ = _loc3_ * _loc3_ * this.aimode.bodyRt2;
+         // The Captain's stand-ground AI profile zeroes bodyFar.y/bodyClose.y; tactical movement owns its thrust.
+         if(_loc2_ > _loc3_)
+         {
+            this.close = this.aimode.bodyFar.x;
+            this.aiPow = this._aiLastPowMut;
+         }
+         else
+         {
+            this.close = 1;
+            this.aiPow = 0;
+         }
+      }
+      
+      private function nearestIn(param1:Array) : AIUnity
+      {
+         var _loc2_:AIUnity = null;
+         var _loc3_:AIUnity = null;
+         var _loc4_:Number = Number.MAX_VALUE;
+         var _loc5_:Number = NaN;
+         for each(_loc3_ in param1)
+         {
+            if(_loc3_ != this)
+            {
+               _loc5_ = this.distToSq(_loc3_);
+               if(_loc5_ < _loc4_)
+               {
+                  _loc4_ = _loc5_;
+                  _loc2_ = _loc3_;
+               }
+            }
+         }
+         return _loc2_;
+      }
+      
+      private function distToSq(param1:AIUnity) : Number
+      {
+         var _loc2_:Number = this.unity.move.point.x - param1.unity.move.point.x;
+         var _loc3_:Number = this.unity.move.point.y - param1.unity.move.point.y;
+         return _loc2_ * _loc2_ + _loc3_ * _loc3_;
+      }
+      
+      private function supportTarget(param1:Array) : AIUnity
+      {
+         var _loc2_:AIUnity = null;
+         var _loc3_:AIUnity = null;
+         var _loc4_:Number = Number.MAX_VALUE;
+         var _loc5_:Number = NaN;
+         var _loc6_:Number = NaN;
+         var _refPoint:Point = null;
+         if(this.leaderUnity && !this.leaderUnity.isDeadA1 && this.leaderUnity.unity && this.leaderUnity.unity.move)
+         {
+            _refPoint = this.leaderUnity.unity.move.point;
+         }
+         else if(InitData.CORE.cam)
+         {
+            _refPoint = InitData.CORE.cam.crossPoint;
+         }
+         if(_refPoint)
+         {
+            for each(_loc3_ in param1)
+            {
+               if(_loc3_ != this)
+               {
+                  _loc5_ = _refPoint.x - _loc3_.unity.move.point.x;
+                  _loc6_ = _refPoint.y - _loc3_.unity.move.point.y;
+                  _loc5_ = _loc5_ * _loc5_ + _loc6_ * _loc6_;
+                  if(_loc5_ < _loc4_)
+                  {
+                     _loc4_ = _loc5_;
+                     _loc2_ = _loc3_;
+                  }
+               }
+            }
+            if(_loc2_ && _loc4_ <= this.unity.udata.fireRange * this.unity.udata.fireRange)
+            {
+               return _loc2_;
+            }
+         }
+         return this.nearestIn(param1);
       }
       
       public function chooseAIGun() : void
@@ -803,6 +1026,11 @@ package f4.unit.ai
          if(InitData.CORE.cam.mv == this.unity.move)
          {
             InitData.CORE.cam.mv = new MoveAs(this.unity.move.point.x,this.unity.move.point.y);
+         }
+         if(this.soundEngine)
+         {
+            this.soundEngine.isDeadA1 = true;
+            this.soundEngine = null;
          }
          this.unity.move.point.x = this.unity.move.point.y = -1000000;
       }

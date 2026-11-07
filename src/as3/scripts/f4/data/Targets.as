@@ -48,6 +48,8 @@ package f4.data
       
       public var deadParta1:Array1;
       
+      private var _allPools:Array;
+      
       private var _rect2:Rect2;
       
       private var _ckRect:Rectangle;
@@ -79,6 +81,7 @@ package f4.data
          this.ta1 = new Array1();
          this.outa1 = new Array1();
          this.deadParta1 = new Array1();
+         this._allPools = [this.outa1, this.eba1, this.efa1, this.pba1, this.pfa1, this.pa1, this.swa1, this.swa2, this.ia1, this.ta1, this.deadParta1];
          this.hitRectPoints = new HitRectPoints();
          this._rect2 = StaticShit.RECT2;
          this._ckRect = new Rectangle();
@@ -107,12 +110,35 @@ package f4.data
          {
             _loc6_ = InitData.CORE.playerFly.unity.move.point.x;
             _loc7_ = InitData.CORE.playerFly.unity.move.point.y;
+            var _capUnit:AIUnity = this.evts.getAIByPerson("Captain");
             _loc8_ = 0;
-            while(_loc8_ < ConfigAndStory.AI.length)
+            var _compCount:int = ConfigAndStory.COMPANIONS ? ConfigAndStory.COMPANIONS.length : 0;
+            while(_loc8_ < _compCount)
             {
-               if(ConfigAndStory.AI[_loc8_] != null)
+               var _compRecord:Object = ConfigAndStory.COMPANIONS[_loc8_];
+               if(_compRecord != null && _compRecord.craftIndex >= 0)
                {
-                  this.evts.addAI(_loc6_ + (_loc8_ + 1) * 80,_loc7_,"Michael",["AI_P"],0,ConfigAndStory.AI[_loc8_],true,false,2);
+                  var _cRole:int = _compRecord.role;
+                  var _cLeader:int = _compRecord.leader;
+                  var _targetLeaderUnit:AIUnity = null;
+                  var _spawnLeaderName:String = "Michael";
+                  var _sX:Number = _loc6_ + (_loc8_ + 1) * 80;
+                  var _sY:Number = _loc7_;
+
+                  if(_cLeader == ConfigAndStory.LEADER_CAPTAIN && _capUnit != null && _capUnit.unity != null && _capUnit.unity.move != null)
+                  {
+                     _targetLeaderUnit = _capUnit;
+                     _spawnLeaderName = "Captain";
+                     _sX = _capUnit.unity.move.point.x + (_loc8_ + 1) * 80;
+                     _sY = _capUnit.unity.move.point.y;
+                  }
+                  else
+                  {
+                     _targetLeaderUnit = InitData.CORE.playerFly;
+                     _spawnLeaderName = "Michael";
+                  }
+
+                  this.evts.addAI(_sX,_sY,_spawnLeaderName,["AI_P"],0,_compRecord.craftIndex,true,false,2,_cRole,_targetLeaderUnit);
                }
                _loc8_++;
             }
@@ -170,17 +196,20 @@ package f4.data
       public function reset() : void
       {
          this._maptimer = this.levelTimer = 0;
-         this.outa1.fastRemoveSelf1();
-         this.eba1.fastRemoveSelf1();
-         this.efa1.fastRemoveSelf1();
-         this.pba1.fastRemoveSelf1();
-         this.pfa1.fastRemoveSelf1();
-         this.pa1.fastRemoveSelf1();
-         this.swa1.fastRemoveSelf1();
-         this.swa2.fastRemoveSelf1();
-         this.ia1.fastRemoveSelf1();
-         this.ta1.fastRemoveSelf1();
-         this.deadParta1.fastRemoveSelf1();
+         if(this._allPools)
+         {
+            for each(var pool:Array1 in this._allPools)
+            {
+               if(pool)
+               {
+                  pool.removeSelf1();
+               }
+            }
+         }
+         if(InitData.SOUNDC32)
+         {
+            InitData.SOUNDC32.clean();
+         }
          this.evts.clean();
       }
       
@@ -277,7 +306,18 @@ package f4.data
                _loc4_.data.hp.x = 1;
             }
          }
-         this.iaCkItem(this.ia1.array,param1);
+         if(param1 && !param1.isDeadA1 && param1.unity)
+         {
+            this.iaCkItem(this.ia1.array,param1);
+         }
+         var _loc10_:AIUnity = null;
+         for each(_loc10_ in this.pfa1.array)
+         {
+            if(_loc10_ && !_loc10_.isDeadA1 && _loc10_.unity)
+            {
+               this.iaCkItem(this.ia1.array,_loc10_);
+            }
+         }
       }
       
       public function runSW() : void
@@ -573,7 +613,7 @@ package f4.data
          var _loc4_:AIPart = null;
          for each(_loc3_ in param1)
          {
-            if(this._rect2.rectIntersects(_loc3_.hit,param2.unity.move.hitRect))
+            if(!_loc3_.isDeadA1 && this._rect2.rectIntersects(_loc3_.hit,param2.unity.move.hitRect))
             {
                for each(_loc4_ in param2.unity.parts)
                {

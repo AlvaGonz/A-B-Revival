@@ -1,16 +1,78 @@
 package f4data.sdata
 {
    import f4.data.InitData;
+   import f4data.F4DataHole;
    import f4data.F4DataLinks;
+   import f4data.F4DataOrg;
    import f4data.cpx.F4DataCPX;
+   import flash.display.Stage;
+   import flash.display.StageScaleMode;
+   import flash.display.StageAlign;
+   import flash.display.StageQuality;
+   import flash.display.StageDisplayState;
    import flash.events.Event;
    import flash.net.SharedObject;
    import flash.ui.Mouse;
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
+   import fullshit.AbsMain;
    
    public class ConfigAndStory
    {
+      public static var TIP_CAPTAIN_MOD:Boolean = false;
+      
+      public static var TIP_COMPANION_UNLOCK:Boolean = false;
+      
+      public static const LEADER_MICHAEL:int = 0;
+      public static const LEADER_CAPTAIN:int = 1;
+
+      public static const ROLE_ANCHOR:int = 0;
+      public static const ROLE_ESCORT:int = 1;
+      public static const ROLE_EVADE:int = 2;
+      public static const ROLE_SEEK:int = 3;
+      public static const ROLE_SUPPORT:int = 4;
+      public static const ROLE_SHIELD:int = 5;
+
+      public static const ROLE_NAMES:Array = [
+         "ANCHOR",
+         "ESCORT",
+         "EVADE",
+         "HUNT",
+         "SUPPORT",
+         "SHIELD"
+      ];
+
+      public static const LEADER_NAMES:Array = [
+         "MICHAEL",
+         "CAPTAIN"
+      ];
+
+      public static function makeCompanionAssignment(param1:int = -1, param2:int = 1, param3:int = 0) : Object
+      {
+         return {
+            "craftIndex": param1,
+            "role": (param2 >= 0 && param2 <= 5 ? param2 : ROLE_ESCORT),
+            "leader": (param3 == LEADER_CAPTAIN ? LEADER_CAPTAIN : LEADER_MICHAEL)
+         };
+      }
+      
+      public static const RES_640:int = 0;
+      
+      public static const RES_720:int = 1;
+      
+      public static const RES_1080:int = 2;
+      
+      public static const QUALITY_LOW:int = 0;
+      
+      public static const QUALITY_MEDIUM:int = 1;
+      
+      public static const QUALITY_HIGH:int = 2;
+      
+      public static var RESOLUTION:int = RES_1080;
+      
+      public static var QUALITY:int = QUALITY_MEDIUM;
+      
+      public static var FULLSCREEN:Boolean = false;
       
       public static var CONFIG:Array;
       
@@ -24,7 +86,7 @@ package f4data.sdata
       
       public static var PLAYER:int;
       
-      public static var AI:Array;
+      public static var COMPANIONS:Array;
       
       public static var MONEY:int;
       
@@ -50,6 +112,8 @@ package f4data.sdata
       
       public static var SOData:SharedObject;
       
+      public static var AUTOSAVE:Boolean = true;
+      
       public static const GIFT:Array = [];
       
       public static const MAP1:int = 35;
@@ -61,7 +125,7 @@ package f4data.sdata
       
       public static function init() : void
       {
-         CONFIG = [1,0,1,1,1,1];
+         CONFIG = [1,0,1,1,1,1,0];
          SHOWTEXTMENU = [0,0,0,0,0];
          HOWTOPLAY = [0,0,0,0,0,0,0,0,0];
          STORY = 0;
@@ -75,7 +139,7 @@ package f4data.sdata
          }
          PLAYER = 0;
          TIMEALL = 0;
-         AI = [];
+         COMPANIONS = [];
          AIGAME = true;
          DIRECTOR = new Director();
          MISSIONS = new MissionData();
@@ -84,15 +148,157 @@ package f4data.sdata
          loadData();
       }
       
+      public static function applyResolution(param1:int) : void
+      {
+         RESOLUTION = param1;
+         var _targetW:int = 640;
+         var _targetH:int = 480;
+         if(param1 == RES_720)
+         {
+            _targetW = 1280;
+            _targetH = 720;
+         }
+         else if(param1 == RES_1080)
+         {
+            _targetW = 1920;
+            _targetH = 1080;
+         }
+         var _stg:Stage = AbsMain.STAGE;
+         if(_stg)
+         {
+            if(param1 == RES_720 || param1 == RES_1080 || FULLSCREEN)
+            {
+               _stg.scaleMode = StageScaleMode.EXACT_FIT;
+            }
+            else
+            {
+               _stg.scaleMode = StageScaleMode.SHOW_ALL;
+            }
+            _stg.align = StageAlign.TOP;
+            try
+            {
+               if("nativeWindow" in _stg && _stg["nativeWindow"] != null)
+               {
+                  _stg["nativeWindow"]["width"] = _targetW;
+                  _stg["nativeWindow"]["height"] = _targetH;
+               }
+            }
+            catch(e:Error)
+            {
+            }
+         }
+         if(InitData.RENDERDATA)
+         {
+            InitData.RENDERDATA.W = 640;
+            InitData.RENDERDATA.H = 480;
+         }
+      }
+
+      public static function applyQuality(param1:int) : void
+      {
+         QUALITY = param1;
+         var _stg:Stage = AbsMain.STAGE;
+         if(_stg)
+         {
+            if(param1 == QUALITY_LOW)
+            {
+               _stg.quality = StageQuality.LOW;
+               CONFIG[0] = 0;
+               CONFIG[1] = 0;
+            }
+            else if(param1 == QUALITY_MEDIUM)
+            {
+               _stg.quality = StageQuality.MEDIUM;
+               CONFIG[0] = 1;
+               CONFIG[1] = 0;
+            }
+            else
+            {
+               _stg.quality = StageQuality.HIGH;
+               CONFIG[0] = 1;
+               CONFIG[1] = 1;
+            }
+         }
+         if(InitData.RENDERDATA)
+         {
+            InitData.RENDERDATA.sms = (param1 != QUALITY_LOW);
+         }
+      }
+
+      public static function setFullscreen(param1:Boolean) : Boolean
+      {
+         var _stg:Stage = AbsMain.STAGE;
+         if(!_stg)
+         {
+            return false;
+         }
+         try
+         {
+            if(param1)
+            {
+               _stg.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+               _stg.scaleMode = StageScaleMode.EXACT_FIT;
+               FULLSCREEN = true;
+            }
+            else
+            {
+               _stg.displayState = StageDisplayState.NORMAL;
+               if(RESOLUTION == RES_640)
+               {
+                  _stg.scaleMode = StageScaleMode.SHOW_ALL;
+               }
+               else
+               {
+                  _stg.scaleMode = StageScaleMode.EXACT_FIT;
+               }
+               FULLSCREEN = false;
+            }
+            return true;
+         }
+         catch(e:Error)
+         {
+            try
+            {
+               if(param1)
+               {
+                  _stg.displayState = StageDisplayState.FULL_SCREEN;
+                  _stg.scaleMode = StageScaleMode.EXACT_FIT;
+                  FULLSCREEN = true;
+               }
+               else
+               {
+                  _stg.displayState = StageDisplayState.NORMAL;
+                  if(RESOLUTION == RES_640)
+                  {
+                     _stg.scaleMode = StageScaleMode.SHOW_ALL;
+                  }
+                  else
+                  {
+                     _stg.scaleMode = StageScaleMode.EXACT_FIT;
+                  }
+                  FULLSCREEN = false;
+               }
+               return true;
+            }
+            catch(e2:Error)
+            {
+            }
+         }
+         return false;
+      }
+
+      public static function toggleFullscreen() : Boolean
+      {
+         return setFullscreen(!FULLSCREEN);
+      }
+
       public static function makeChange() : void
       {
-         if(CONFIG[0] == 0 && CONFIG[1] == 0)
+         applyQuality(QUALITY);
+         applyResolution(RESOLUTION);
+         if(FULLSCREEN)
          {
-            InitData.RENDERDATA.sms = false;
-         }
-         else
-         {
-            InitData.RENDERDATA.sms = true;
+            setFullscreen(true);
          }
          if(CONFIG[4] == 0)
          {
@@ -104,16 +310,10 @@ package f4data.sdata
             InitData.SOUNDC2.nowVol = 1;
             InitData.SOUNDC2.allResume();
          }
-         if(CONFIG[2] == 0)
+         if(InitData.RENDERDATA)
          {
-            InitData.RENDERDATA.W = 512;
-            InitData.RENDERDATA.H = 384;
-            InitData.RENDERDATA.init();
-         }
-         else
-         {
-            InitData.RENDERDATA.W = 640;
-            InitData.RENDERDATA.H = 480;
+            InitData.RENDERDATA.W = 1920;
+            InitData.RENDERDATA.H = 1080;
             InitData.RENDERDATA.init();
          }
          save();
@@ -137,6 +337,104 @@ package f4data.sdata
          return true;
       }
       
+      public static function getCaptainFly() : F4DataLinks
+      {
+         var _loc1_:F4DataLinks = null;
+         if(!ALLPART || !ALLPART.plFly)
+         {
+            return null;
+         }
+         for each(_loc1_ in ALLPART.plFly)
+         {
+            if(_loc1_ && _loc1_.isCaptainShip())
+            {
+               return _loc1_;
+            }
+         }
+         return null;
+      }
+      
+      private static function cloneFlyTree(param1:F4DataLinks) : F4DataLinks
+      {
+         var _loc2_:F4DataOrg = null;
+         var _loc3_:F4DataLinks = null;
+         var _loc4_:int = 0;
+         var _loc5_:int = 0;
+         var _loc6_:F4DataHole = null;
+         var _loc7_:F4DataHole = null;
+         var _loc8_:F4DataLinks = null;
+         if(!param1 || !param1.f4dataorg)
+         {
+            return null;
+         }
+         _loc2_ = param1.f4dataorg.clone(ALLPART.defFire,ALLPART.defBullet);
+         _loc2_.index = ALLPART.plPart.length;
+         ALLPART.plPart.push(_loc2_);
+         _loc3_ = new F4DataLinks();
+         _loc3_.f4dataorg = _loc2_;
+         _loc3_.name = param1.name;
+         _loc3_.colorHue = param1.colorHue;
+         _loc3_.special = param1.special;
+         if(Boolean(param1.f4dataorg.hole) && Boolean(_loc2_.hole))
+         {
+            _loc4_ = int(param1.f4dataorg.hole.length);
+            _loc5_ = 0;
+            while(_loc5_ < _loc4_)
+            {
+               _loc6_ = param1.f4dataorg.hole[_loc5_] as F4DataHole;
+               _loc7_ = _loc2_.hole[_loc5_] as F4DataHole;
+               if(Boolean(_loc6_) && Boolean(_loc6_.partf4) && Boolean(_loc7_))
+               {
+                  _loc8_ = cloneFlyTree(_loc6_.partf4);
+                  if(_loc8_)
+                  {
+                     _loc7_.partf4 = _loc8_;
+                     _loc8_.atHole = _loc7_;
+                     _loc8_.parentPart = _loc3_;
+                  }
+               }
+               _loc5_++;
+            }
+         }
+         return _loc3_;
+      }
+      
+      public static function checkCaptainShip() : void
+      {
+         var _loc1_:F4DataLinks = null;
+         var _loc2_:F4DataLinks = null;
+         var _loc3_:int = 0;
+         var _loc4_:F4DataLinks = null;
+         if(STORY >= 3 && Boolean(ALLPART) && Boolean(ALLPART.plFly) && Boolean(ALLPART.defFly) && Boolean(ALLPART.defFly[76]))
+         {
+            if(getCaptainFly() != null)
+            {
+               return;
+            }
+            _loc1_ = ALLPART.defFly[76] as F4DataLinks;
+            if(_loc1_)
+            {
+               _loc2_ = cloneFlyTree(_loc1_);
+               if(_loc2_)
+               {
+                  _loc2_.name = "Captain's Ship";
+                  _loc2_.special = true;
+                  _loc3_ = 0;
+                  for each(_loc4_ in ALLPART.plFly)
+                  {
+                     if(_loc4_ && _loc4_.index >= _loc3_)
+                     {
+                        _loc3_ = _loc4_.index + 1;
+                     }
+                  }
+                  _loc2_.index = _loc3_;
+                  ALLPART.plFly[_loc3_] = _loc2_;
+                  saveData();
+               }
+            }
+         }
+      }
+      
       public static function ckAI() : void
       {
          var _loc2_:F4DataLinks = null;
@@ -152,9 +450,13 @@ package f4data.sdata
          var _loc1_:int = 0;
          while(_loc1_ < 20)
          {
-            if(AI[_loc1_] == PLAYER || !ALLPART.plFly[AI[_loc1_]])
+            if(COMPANIONS && COMPANIONS[_loc1_] != null)
             {
-               AI[_loc1_] = null;
+               var _cRecord:Object = COMPANIONS[_loc1_];
+               if(_cRecord && (_cRecord["craftIndex"] == PLAYER || !ALLPART.plFly[_cRecord["craftIndex"]]))
+               {
+                  COMPANIONS[_loc1_] = null;
+               }
             }
             _loc1_++;
          }
@@ -166,7 +468,27 @@ package f4data.sdata
          if(SO.data["config"] != null)
          {
             CONFIG = SO.data["config"];
+            if(CONFIG.length < 7 || CONFIG[6] == null)
+            {
+               CONFIG[6] = 0;
+            }
             TIMEALL = SO.data["time"];
+            if(SO.data["autosave"] != null)
+            {
+               AUTOSAVE = Boolean(SO.data["autosave"]);
+            }
+            if(SO.data["resolution"] != null)
+            {
+               RESOLUTION = int(SO.data["resolution"]);
+            }
+            if(SO.data["quality"] != null)
+            {
+               QUALITY = int(SO.data["quality"]);
+            }
+            if(SO.data["fullscreen"] != null)
+            {
+               FULLSCREEN = Boolean(SO.data["fullscreen"]);
+            }
          }
          else
          {
@@ -180,7 +502,22 @@ package f4data.sdata
          CKTIME = getTimer();
          SO.data["config"] = CONFIG.concat();
          SO.data["time"] = TIMEALL;
+         SO.data["autosave"] = AUTOSAVE;
+         SO.data["resolution"] = RESOLUTION;
+         SO.data["quality"] = QUALITY;
+         SO.data["fullscreen"] = FULLSCREEN;
          SO.flush();
+      }
+      
+      public static function autoSaveMission() : Boolean
+      {
+         if(!AUTOSAVE)
+         {
+            return false;
+         }
+         saveData();
+         save();
+         return true;
       }
       
       public static function loadData() : void
@@ -192,10 +529,53 @@ package f4data.sdata
             STORY = SOData.data["story"];
             MONEY = SOData.data["money"];
             PLAYER = SOData.data["player"];
-            AI = SOData.data["ai"];
             AIGAME = SOData.data["aigame"];
             HOWTOPLAY = SOData.data["how"];
             SHOWTEXTMENU = SOData.data["menu"];
+            if(SOData.data["tipCap"] != null)
+            {
+               TIP_CAPTAIN_MOD = Boolean(SOData.data["tipCap"]);
+            }
+            if(SOData.data["tipComp"] != null)
+            {
+               TIP_COMPANION_UNLOCK = Boolean(SOData.data["tipComp"]);
+            }
+            COMPANIONS = [];
+            var _rawComps:Array = SOData.data["companions"] as Array;
+            if(_rawComps != null)
+            {
+               var _ri:int = 0;
+               while(_ri < _rawComps.length)
+               {
+                  if(_rawComps[_ri] != null)
+                  {
+                     COMPANIONS[_ri] = makeCompanionAssignment(int(_rawComps[_ri]["craftIndex"]), int(_rawComps[_ri]["role"]), int(_rawComps[_ri]["leader"]));
+                  }
+                  else
+                  {
+                     COMPANIONS[_ri] = null;
+                  }
+                  _ri++;
+               }
+            }
+            else if(SOData.data["ai"] != null)
+            {
+               var _legacyAI:Array = SOData.data["ai"] as Array;
+               var _li:int = 0;
+               while(_li < _legacyAI.length)
+               {
+                  if(_legacyAI[_li] != null && int(_legacyAI[_li]) >= 0)
+                  {
+                     COMPANIONS[_li] = makeCompanionAssignment(int(_legacyAI[_li]), ROLE_ESCORT, LEADER_MICHAEL);
+                  }
+                  else
+                  {
+                     COMPANIONS[_li] = null;
+                  }
+                  _li++;
+               }
+            }
+            checkCaptainShip();
          }
          else
          {
@@ -216,8 +596,31 @@ package f4data.sdata
          }
          SOData.data["money"] = MONEY;
          SOData.data["player"] = PLAYER;
-         SOData.data["ai"] = AI.concat();
          SOData.data["aigame"] = AIGAME;
+         var _compList:Array = [];
+         if(COMPANIONS)
+         {
+            var _ci:int = 0;
+            while(_ci < COMPANIONS.length)
+            {
+               if(COMPANIONS[_ci] != null)
+               {
+                  _compList.push({
+                     "craftIndex": int(COMPANIONS[_ci]["craftIndex"]),
+                     "role": int(COMPANIONS[_ci]["role"]),
+                     "leader": int(COMPANIONS[_ci]["leader"])
+                  });
+               }
+               else
+               {
+                  _compList.push(null);
+               }
+               _ci++;
+            }
+         }
+         SOData.data["companions"] = _compList;
+         SOData.data["tipCap"] = TIP_CAPTAIN_MOD;
+         SOData.data["tipComp"] = TIP_COMPANION_UNLOCK;
          SOData.data["how"] = HOWTOPLAY.concat();
          SOData.data["menu"] = SHOWTEXTMENU.concat();
          SOData.flush();
@@ -231,8 +634,29 @@ package f4data.sdata
          _loc1_["story"] = STORY;
          _loc1_["money"] = MONEY;
          _loc1_["player"] = PLAYER;
-         _loc1_["ai"] = AI.concat();
          _loc1_["aigame"] = AIGAME;
+         var _outComps:Array = [];
+         if(COMPANIONS)
+         {
+            var _oi:int = 0;
+            while(_oi < COMPANIONS.length)
+            {
+               if(COMPANIONS[_oi] != null)
+               {
+                  _outComps.push({
+                     "craftIndex": int(COMPANIONS[_oi]["craftIndex"]),
+                     "role": int(COMPANIONS[_oi]["role"]),
+                     "leader": int(COMPANIONS[_oi]["leader"])
+                  });
+               }
+               else
+               {
+                  _outComps.push(null);
+               }
+               _oi++;
+            }
+         }
+         _loc1_["companions"] = _outComps;
          _loc1_["how"] = HOWTOPLAY.concat();
          _loc1_["menu"] = SHOWTEXTMENU.concat();
          var _loc2_:ByteArray = new ByteArray();
@@ -262,10 +686,44 @@ package f4data.sdata
                STORY = obj["story"];
                MONEY = obj["money"];
                PLAYER = obj["player"];
-               AI = obj["ai"];
                AIGAME = obj["aigame"];
                HOWTOPLAY = obj["how"];
                SHOWTEXTMENU = obj["menu"];
+               COMPANIONS = [];
+               var _objComps:Array = obj["companions"] as Array;
+               if(_objComps != null)
+               {
+                  var _oji:int = 0;
+                  while(_oji < _objComps.length)
+                  {
+                     if(_objComps[_oji] != null)
+                     {
+                        COMPANIONS[_oji] = makeCompanionAssignment(int(_objComps[_oji]["craftIndex"]), int(_objComps[_oji]["role"]), int(_objComps[_oji]["leader"]));
+                     }
+                     else
+                     {
+                        COMPANIONS[_oji] = null;
+                     }
+                     _oji++;
+                  }
+               }
+               else if(obj["ai"] != null)
+               {
+                  var _legacyObjAI:Array = obj["ai"] as Array;
+                  var _loi:int = 0;
+                  while(_loi < _legacyObjAI.length)
+                  {
+                     if(_legacyObjAI[_loi] != null && int(_legacyObjAI[_loi]) >= 0)
+                     {
+                        COMPANIONS[_loi] = makeCompanionAssignment(int(_legacyObjAI[_loi]), ROLE_ESCORT, LEADER_MICHAEL);
+                     }
+                     else
+                     {
+                        COMPANIONS[_loi] = null;
+                     }
+                     _loi++;
+                  }
+               }
                saveData();
                InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[17]);
                return true;
@@ -298,8 +756,10 @@ package f4data.sdata
             MONEY = 0;
          }
          PLAYER = 0;
-         AI = [];
+         COMPANIONS = [];
          AIGAME = true;
+         TIP_CAPTAIN_MOD = false;
+         TIP_COMPANION_UNLOCK = false;
          HOWTOPLAY = [0,0,0,0,0,0,0,0,0];
          SHOWTEXTMENU = [0,0,0,0,0];
       }
@@ -320,7 +780,7 @@ package f4data.sdata
          var _loc6_:int = 0;
          while(_loc6_ < 35)
          {
-            GIFT[_loc6_] = [_loc1_,_loc1_ + 1,_loc2_,_loc2_,_loc2_,_loc2_,_loc3_,_loc3_,_loc3_,_loc3_,_loc4_,_loc5_];
+            GIFT[_loc6_] = [_loc1_,_loc1_ + 1,_loc2_,_loc3_,_loc4_,_loc5_];
             _loc1_ += 2;
             _loc3_++;
             _loc4_++;
@@ -332,9 +792,6 @@ package f4data.sdata
             else
             {
                (GIFT[_loc6_] as Array).push(_loc2_ + 1);
-               (GIFT[_loc6_] as Array).push(_loc2_ + 1);
-               (GIFT[_loc6_] as Array).push(_loc2_ + 1);
-               (GIFT[_loc6_] as Array).push(_loc2_ + 1);
                _loc2_ += 2;
             }
             _loc6_++;
@@ -344,9 +801,6 @@ package f4data.sdata
          _loc8_ = 133 + 35 - 1;
          while(_loc8_ < 173)
          {
-            _loc7_.push(_loc8_);
-            _loc7_.push(_loc8_);
-            _loc7_.push(_loc8_);
             _loc7_.push(_loc8_);
             _loc8_++;
          }
@@ -365,9 +819,6 @@ package f4data.sdata
          _loc8_ = 71 + 53 - 1;
          while(_loc8_ < 133)
          {
-            _loc7_.push(_loc8_);
-            _loc7_.push(_loc8_);
-            _loc7_.push(_loc8_);
             _loc7_.push(_loc8_);
             _loc8_++;
          }

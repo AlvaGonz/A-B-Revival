@@ -2,6 +2,7 @@ package f4.unit.particle
 {
    import f4.data.InitData;
    import f4.gfx.RenderData;
+   import f4.unit.move.MoveAs;
    import f4.unit.render.Cam;
    import flash.display.BitmapData;
    import flash.geom.Point;
@@ -59,7 +60,7 @@ package f4.unit.particle
          this._rect2 = StaticShit.RECT2;
          this._bline = StaticShit.BLINE;
          this._hsv = StaticShit.RGB;
-         this.life = param9;
+         this.life = Math.round(param9 * (60.0 / 36.0));
          this.autof = param8;
          this.rect = new Rectangle(0,0,this.w,this.w);
          this.cam = param1;
@@ -75,10 +76,31 @@ package f4.unit.particle
          this.flash = true;
          this.flashRect = new Rectangle(0,0,2,2);
          this.lastRect = new Rectangle(0,0,this.cam.rect.width,this.cam.rect.height);
-         if(InitData.TARGETS.pa1.num > 1000 && Math.random() < 0.3)
+         if(InitData.TARGETS && InitData.TARGETS.pa1)
          {
-            isDeadA1 = true;
+            if(InitData.TARGETS.pa1.num >= 400)
+            {
+               isDeadA1 = true;
+            }
+            else if(InitData.TARGETS.pa1.num > 250 && Math.random() < 0.6)
+            {
+               isDeadA1 = true;
+            }
          }
+      }
+      
+      override public function startRemoveA1() : void
+      {
+         this.cam = null;
+         this.renderData = null;
+         this.point = null;
+         this.spd = null;
+         this.rect = null;
+         this.flashRect = null;
+         this.lastRect = null;
+         this._rect2 = null;
+         this._bline = null;
+         this._hsv = null;
       }
       
       public function colorFromBmpd(param1:BitmapData) : void
@@ -97,30 +119,36 @@ package f4.unit.particle
       
       override public function runA1() : void
       {
-         this.point.x += this.spd.x;
-         this.point.y += this.spd.y;
-         if(this.spd.x < 0)
+         var sx:Number = this.spd.x * 0.6;
+         var sy:Number = this.spd.y * 0.6;
+         this.point.x += sx;
+         this.point.y += sy;
+         if(sx < 0)
          {
             this.rect.x = this.point.x;
-            this.rect.width = -this.spd.x;
+            this.rect.width = -sx;
          }
          else
          {
-            this.rect.x = this.point.x - this.spd.x;
-            this.rect.width = this.spd.x;
+            this.rect.x = this.point.x - sx;
+            this.rect.width = sx;
          }
-         if(this.spd.y < 0)
+         if(sy < 0)
          {
             this.rect.y = this.point.y;
-            this.rect.height = -this.spd.y;
+            this.rect.height = -sy;
          }
          else
          {
-            this.rect.y = this.point.y - this.spd.y;
-            this.rect.height = this.spd.y;
+            this.rect.y = this.point.y - sy;
+            this.rect.height = sy;
          }
-         this.spd.x *= this.autof;
-         this.spd.y *= this.autof;
+         if(this.autof != 1)
+         {
+            var decay:Number = Math.pow(this.autof, 0.6);
+            this.spd.x *= decay;
+            this.spd.y *= decay;
+         }
          if(this.life-- <= 0)
          {
             this.alpha -= 20;
