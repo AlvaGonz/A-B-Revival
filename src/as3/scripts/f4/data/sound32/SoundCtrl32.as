@@ -23,10 +23,24 @@ package f4.data.sound32
       
       public function init() : void
       {
+         this.clean();
          this.soundBuffer = [];
          this.soundRun = new Array1();
          this.sfxa1 = new Array1();
          this.sound32_1 = new SoundUnit32(InitData.SOUNDDATA.soundArray[0],0,true);
+      }
+      
+      public function clean() : void
+      {
+         if(this.soundRun)
+         {
+            this.soundRun.removeSelf1();
+         }
+         if(this.sfxa1)
+         {
+            this.sfxa1.removeSelf1();
+         }
+         this.soundBuffer = [];
       }
       
       public function run() : void

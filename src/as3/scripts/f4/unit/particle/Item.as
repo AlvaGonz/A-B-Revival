@@ -83,19 +83,19 @@ package f4.unit.particle
             if(param1 && param1.unity)
             {
                param1.unity.autoHP = 0.009;
-               param1.unity.autoHT += 36;
+               param1.unity.autoHT += 60;
             }
             if(InitData.CORE && InitData.CORE.playerFly && InitData.CORE.playerFly.unity)
             {
                InitData.CORE.playerFly.unity.autoHP = 0.0075;
-               InitData.CORE.playerFly.unity.autoHT += 36;
+               InitData.CORE.playerFly.unity.autoHT += 60;
             }
             for each(_loc6_ in _loc5_.pfa1.array)
             {
                if(_loc6_ && _loc6_.unity)
                {
                   _loc6_.unity.autoHP = 0.0075;
-                  _loc6_.unity.autoHT += 36;
+                  _loc6_.unity.autoHT += 60;
                }
             }
             _loc4_ = 10;
@@ -136,6 +136,11 @@ package f4.unit.particle
                _loc3_++;
             }
          }
+         this.cam = null;
+         this.point = null;
+         this.spd = null;
+         this.hit = null;
+         this.data = null;
       }
       
       public function render() : void
@@ -146,7 +151,7 @@ package f4.unit.particle
             this.bmpd2d.makeDrawPoint(this.point.x - this.cam.rect.x,this.point.y - this.cam.rect.y);
             this.bmpd2d.bmpd.nextFrame();
             this.bmpd2d.bmpd.moveRect();
-            if(this.life > 5 * 36)
+            if(this.life > 5 * 60)
             {
                this.bmpd2d.render(0);
             }

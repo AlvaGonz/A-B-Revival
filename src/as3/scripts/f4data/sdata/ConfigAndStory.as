@@ -5,14 +5,38 @@ package f4data.sdata
    import f4data.F4DataLinks;
    import f4data.F4DataOrg;
    import f4data.cpx.F4DataCPX;
+   import flash.display.Stage;
+   import flash.display.StageScaleMode;
+   import flash.display.StageAlign;
+   import flash.display.StageQuality;
+   import flash.display.StageDisplayState;
    import flash.events.Event;
    import flash.net.SharedObject;
    import flash.ui.Mouse;
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
+   import fullshit.AbsMain;
    
    public class ConfigAndStory
    {
+      
+      public static const RES_640:int = 0;
+      
+      public static const RES_720:int = 1;
+      
+      public static const RES_1080:int = 2;
+      
+      public static const QUALITY_LOW:int = 0;
+      
+      public static const QUALITY_MEDIUM:int = 1;
+      
+      public static const QUALITY_HIGH:int = 2;
+      
+      public static var RESOLUTION:int = RES_1080;
+      
+      public static var QUALITY:int = QUALITY_MEDIUM;
+      
+      public static var FULLSCREEN:Boolean = false;
       
       public static var CONFIG:Array;
       
@@ -88,15 +112,132 @@ package f4data.sdata
          loadData();
       }
       
+      public static function applyResolution(param1:int) : void
+      {
+         RESOLUTION = param1;
+         var _targetW:int = 640;
+         var _targetH:int = 480;
+         if(param1 == RES_720)
+         {
+            _targetW = 1280;
+            _targetH = 720;
+         }
+         else if(param1 == RES_1080)
+         {
+            _targetW = 1920;
+            _targetH = 1080;
+         }
+         var _stg:Stage = AbsMain.STAGE;
+         if(_stg)
+         {
+            _stg.scaleMode = StageScaleMode.SHOW_ALL;
+            _stg.align = StageAlign.TOP;
+            try
+            {
+               if("nativeWindow" in _stg && _stg["nativeWindow"] != null)
+               {
+                  _stg["nativeWindow"]["width"] = _targetW;
+                  _stg["nativeWindow"]["height"] = _targetH;
+               }
+            }
+            catch(e:Error)
+            {
+            }
+         }
+         if(InitData.RENDERDATA)
+         {
+            InitData.RENDERDATA.W = 640;
+            InitData.RENDERDATA.H = 480;
+         }
+      }
+
+      public static function applyQuality(param1:int) : void
+      {
+         QUALITY = param1;
+         var _stg:Stage = AbsMain.STAGE;
+         if(_stg)
+         {
+            if(param1 == QUALITY_LOW)
+            {
+               _stg.quality = StageQuality.LOW;
+               CONFIG[0] = 0;
+               CONFIG[1] = 0;
+            }
+            else if(param1 == QUALITY_MEDIUM)
+            {
+               _stg.quality = StageQuality.MEDIUM;
+               CONFIG[0] = 1;
+               CONFIG[1] = 0;
+            }
+            else
+            {
+               _stg.quality = StageQuality.HIGH;
+               CONFIG[0] = 1;
+               CONFIG[1] = 1;
+            }
+         }
+         if(InitData.RENDERDATA)
+         {
+            InitData.RENDERDATA.sms = (param1 != QUALITY_LOW);
+         }
+      }
+
+      public static function setFullscreen(param1:Boolean) : Boolean
+      {
+         var _stg:Stage = AbsMain.STAGE;
+         if(!_stg)
+         {
+            return false;
+         }
+         try
+         {
+            if(param1)
+            {
+               _stg.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+               FULLSCREEN = true;
+            }
+            else
+            {
+               _stg.displayState = StageDisplayState.NORMAL;
+               FULLSCREEN = false;
+            }
+            return true;
+         }
+         catch(e:Error)
+         {
+            try
+            {
+               if(param1)
+               {
+                  _stg.displayState = StageDisplayState.FULL_SCREEN;
+                  FULLSCREEN = true;
+               }
+               else
+               {
+                  _stg.displayState = StageDisplayState.NORMAL;
+                  FULLSCREEN = false;
+               }
+               return true;
+            }
+            catch(e2:Error)
+            {
+            }
+         }
+         return false;
+      }
+
+      public static function toggleFullscreen() : Boolean
+      {
+         return setFullscreen(!FULLSCREEN);
+      }
+
       public static function makeChange() : void
       {
-         if(CONFIG[0] == 0 && CONFIG[1] == 0)
+         applyQuality(QUALITY);
+         applyResolution(RESOLUTION);
+         if(FULLSCREEN)
          {
-            InitData.RENDERDATA.sms = false;
-         }
-         else
-         {
-            InitData.RENDERDATA.sms = true;
+            setFullscreen(true);
          }
          if(CONFIG[4] == 0)
          {
@@ -108,13 +249,7 @@ package f4data.sdata
             InitData.SOUNDC2.nowVol = 1;
             InitData.SOUNDC2.allResume();
          }
-         if(CONFIG[2] == 0)
-         {
-            InitData.RENDERDATA.W = 512;
-            InitData.RENDERDATA.H = 384;
-            InitData.RENDERDATA.init();
-         }
-         else
+         if(InitData.RENDERDATA)
          {
             InitData.RENDERDATA.W = 640;
             InitData.RENDERDATA.H = 480;
@@ -273,6 +408,18 @@ package f4data.sdata
             {
                AUTOSAVE = Boolean(SO.data["autosave"]);
             }
+            if(SO.data["resolution"] != null)
+            {
+               RESOLUTION = int(SO.data["resolution"]);
+            }
+            if(SO.data["quality"] != null)
+            {
+               QUALITY = int(SO.data["quality"]);
+            }
+            if(SO.data["fullscreen"] != null)
+            {
+               FULLSCREEN = Boolean(SO.data["fullscreen"]);
+            }
          }
          else
          {
@@ -287,6 +434,9 @@ package f4data.sdata
          SO.data["config"] = CONFIG.concat();
          SO.data["time"] = TIMEALL;
          SO.data["autosave"] = AUTOSAVE;
+         SO.data["resolution"] = RESOLUTION;
+         SO.data["quality"] = QUALITY;
+         SO.data["fullscreen"] = FULLSCREEN;
          SO.flush();
       }
       

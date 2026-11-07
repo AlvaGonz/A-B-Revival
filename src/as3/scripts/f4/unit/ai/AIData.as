@@ -10,7 +10,7 @@ package f4.unit.ai
          super();
          this.ais = [];
          var _loc1_:AIRunMode = new AIRunMode();
-         _loc1_.frameEx = 18;
+         _loc1_.frameEx = 30;
          _loc1_.strong1.x = 0.81;
          _loc1_.strong1.y = 1;
          _loc1_.strong1.width = 1;
@@ -34,7 +34,7 @@ package f4.unit.ai
          _loc1_.bodyClose.y = 0.2;
          this.ais.push(_loc1_);
          _loc1_ = new AIRunMode();
-         _loc1_.frameEx = 18;
+         _loc1_.frameEx = 30;
          _loc1_.strong1.x = 0.81;
          _loc1_.strong1.y = 1;
          _loc1_.strong1.width = 1;
@@ -58,7 +58,7 @@ package f4.unit.ai
          _loc1_.bodyClose.y = 1;
          this.ais.push(_loc1_);
          _loc1_ = new AIRunMode();
-         _loc1_.frameEx = 18;
+         _loc1_.frameEx = 30;
          _loc1_.strong1.x = 0.5;
          _loc1_.strong1.y = 1;
          _loc1_.strong1.width = 1;
@@ -82,7 +82,7 @@ package f4.unit.ai
          _loc1_.bodyClose.y = 1;
          this.ais.push(_loc1_);
          _loc1_ = new AIRunMode();
-         _loc1_.frameEx = 18;
+         _loc1_.frameEx = 30;
          _loc1_.strong1.x = 0.5;
          _loc1_.strong1.y = 1;
          _loc1_.strong1.width = 1;
@@ -106,7 +106,7 @@ package f4.unit.ai
          _loc1_.bodyClose.y = 1;
          this.ais.push(_loc1_);
          _loc1_ = new AIRunMode();
-         _loc1_.frameEx = 20;
+         _loc1_.frameEx = 33;
          _loc1_.strong1.x = 1;
          _loc1_.strong1.y = 1;
          _loc1_.strong1.width = 0;

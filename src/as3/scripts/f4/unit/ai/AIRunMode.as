@@ -6,7 +6,7 @@ package f4.unit.ai
    public class AIRunMode
    {
       
-      public var frameEx:int = 36;
+      public var frameEx:int = 60;
       
       public var strong1:Rectangle = new Rectangle(0.25,1,1);
       

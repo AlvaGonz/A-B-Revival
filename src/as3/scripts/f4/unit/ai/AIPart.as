@@ -252,7 +252,7 @@ package f4.unit.ai
          {
             param2.part.data.hp.x -= param1.pow * 0.1;
          }
-         param2.showLifeTime = 36;
+         param2.showLifeTime = 60;
          if(param2.part.data.hp.x / param2.part.data.hp.y < 0.33)
          {
             (param2.part.render as TRender).toDie = true;

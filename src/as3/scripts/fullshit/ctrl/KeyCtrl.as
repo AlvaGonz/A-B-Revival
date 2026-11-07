@@ -46,11 +46,14 @@ package fullshit.ctrl
          var _loc2_:String = String.fromCharCode(param1.keyCode);
          delete this._keyArr[_loc2_];
          delete this._keyArrN[_loc2_];
+         delete this._keyArr["#" + param1.keyCode];
+         delete this._keyArrN["#" + param1.keyCode];
       }
       
       private function keyDownE(param1:KeyboardEvent) : void
       {
          this._keyArr[String.fromCharCode(param1.keyCode)] = true;
+         this._keyArr["#" + param1.keyCode] = true;
       }
       
       public function isKeyDown(param1:String) : Boolean
@@ -63,6 +66,17 @@ package fullshit.ctrl
          if(Boolean(this._keyArr[param1]) && !this._keyArrN[param1])
          {
             this._keyArrN[param1] = true;
+            return true;
+         }
+         return false;
+      }
+
+      public function isKeyCodeDownOnce(param1:uint) : Boolean
+      {
+         var _key:String = "#" + param1;
+         if(Boolean(this._keyArr[_key]) && !this._keyArrN[_key])
+         {
+            this._keyArrN[_key] = true;
             return true;
          }
          return false;

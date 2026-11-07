@@ -37,7 +37,7 @@ package ui.pages
          this.endFunc = param8;
          this.helpMC = param4.getChildByName("help") as MovieClip;
          this.helpMC.filters = [new GlowFilter(16777215,0.3,6,6,0.8,1),new DropShadowFilter(4,45,3355443,1,6,6)];
-         this._timerEnd = this.helpMC.totalFrames * 1.2 * 36;
+         this._timerEnd = this.helpMC.totalFrames * 1.2 * 60;
          this.helpMC.gotoAndStop(1);
          this._title = param2;
          (param4.getChildByName("txtTitle") as TextField).text = param2;

@@ -170,17 +170,21 @@ package f4.data
       public function reset() : void
       {
          this._maptimer = this.levelTimer = 0;
-         this.outa1.fastRemoveSelf1();
-         this.eba1.fastRemoveSelf1();
-         this.efa1.fastRemoveSelf1();
-         this.pba1.fastRemoveSelf1();
-         this.pfa1.fastRemoveSelf1();
-         this.pa1.fastRemoveSelf1();
-         this.swa1.fastRemoveSelf1();
-         this.swa2.fastRemoveSelf1();
-         this.ia1.fastRemoveSelf1();
-         this.ta1.fastRemoveSelf1();
-         this.deadParta1.fastRemoveSelf1();
+         this.outa1.removeSelf1();
+         this.eba1.removeSelf1();
+         this.efa1.removeSelf1();
+         this.pba1.removeSelf1();
+         this.pfa1.removeSelf1();
+         this.pa1.removeSelf1();
+         this.swa1.removeSelf1();
+         this.swa2.removeSelf1();
+         this.ia1.removeSelf1();
+         this.ta1.removeSelf1();
+         this.deadParta1.removeSelf1();
+         if(InitData.SOUNDC32)
+         {
+            InitData.SOUNDC32.clean();
+         }
          this.evts.clean();
       }
       

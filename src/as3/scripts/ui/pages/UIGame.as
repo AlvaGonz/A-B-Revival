@@ -530,7 +530,7 @@ package ui.pages
          {
             this.lostMod++;
          }
-         this.lostFlashTimer = 10;
+         this.lostFlashTimer = 17;
          this.updateLostPartsText();
       }
 
@@ -544,7 +544,7 @@ package ui.pages
          this.tacticalModeTxt.x = 320 - this.tacticalModeTxt.width / 2;
          this.tacticalModeTxt.visible = true;
          this.tacticalModeTxt.alpha = 1;
-         this.tacticalModeFade = 45;
+         this.tacticalModeFade = 75;
          if(this.capModeCodeTxt)
          {
             this.capModeCodeTxt.text = this._tacticalModeCodes[param1];
@@ -624,7 +624,7 @@ package ui.pages
          this.capAlertTxt.text = param1;
          this.capAlertTxt.textColor = param2;
          this.capAlertTxt.x = 400 - this.capAlertTxt.width / 2;
-         this.capAlertTimer = 72;
+         this.capAlertTimer = 120;
          this.capAlertTxt.visible = true;
          this.capAlertTxt.alpha = 1;
          InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13], 0.35);
@@ -827,6 +827,35 @@ package ui.pages
       public function mapBack() : void
       {
          InitData.CORE.pause = false;
+      }
+
+      override public function removeSelf() : UIBase
+      {
+         if(InitData.CORE)
+         {
+            InitData.CORE.pause = true;
+            InitData.CORE.over = true;
+         }
+         if(InitData.RENDERDATA)
+         {
+            InitData.RENDERDATA.disBmpds();
+         }
+         if(InitData.TARGETS)
+         {
+            InitData.TARGETS.reset();
+         }
+         if(this.autofireDot && this.autofireDot.parent)
+         {
+            this.autofireDot.parent.removeChild(this.autofireDot);
+         }
+         this.autofireDot = null;
+         this.mapbmp = null;
+         this.pf1 = null;
+         this.pf2 = null;
+         this.core = null;
+         this.cam = null;
+         this.eventCrtl = null;
+         return super.removeSelf();
       }
    }
 }
