@@ -25,9 +25,19 @@ This document establishes the coding conventions, domain encapsulation rules, an
    - Avoid deep traversal walks through DisplayObjects to read model data (e.g. `part.f4DataLink.f4dataorg.type == targetType && part.f4DataLink.f4dataorg.useAs != 2`).
    - Encapsulate composite queries on the immediate wrapper (e.g. `part.isRemovableType(targetType)`).
 
+4. **IP & Attribution Integrity**:
+   - Never generate code comments, commit logs, or documentation claiming ownership of original game code, assets, or mechanics. Vargames is always acknowledged as the sole creator and copyright owner of *Assembly & Battle*.
+
+## 2. Reglas de Rendimiento Unity 6.6 (6000.6.8f1 - CPU Multicore & GPU TBDR)
+
+- **Zero-Alloc:** Prohibido usar `LINQ`, `foreach` sobre listas dinámicas o instanciar clases (`new`) en `Update`, `FixedUpdate` o `LateUpdate`.
+- **Concurrencia:** Simula flotas, proyectiles e IA táctica (ADR 0006) con `NativeArray<T>`, `struct` y `IJobParallelFor` decorados con `[BurstCompile]`.
+- **Física 2D:** Reemplaza colisiones heredadas por la API multihilo `Unity.U2D.Physics` (`PhysicsCore2D`) basada en structs.
+- **Batching & Shaders:** Agrupa piezas modulares en Sprite Atlases (ASTC en móvil, BC7 en PC), ordena con Z-Buffer y usa `unity_RendererUserValue` para daño o facción por pieza sin romper el batching; prioriza Vulkan en Android/PC y Metal en iOS.
+
 ---
 
-## 2. Pre-Commit Verification Pipeline
+## 3. Pre-Commit Verification Pipeline
 
 - All commits modifying ActionScript 3 sources (`src/as3/**/*.as`) must pass pre-commit verification.
 - Active hooks live in `.githooks/` and are configured via:

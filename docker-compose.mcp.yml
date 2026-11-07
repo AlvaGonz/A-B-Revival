@@ -1,0 +1,23 @@
+services:
+  mcp-gateway:
+    image: docker/mcp-gateway:latest
+    command: ["--transport=sse", "--port=8811"]
+    ports:
+      - "127.0.0.1:8811:8811"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - unity-mcp-server
+
+  unity-mcp-server:
+    image: ivanmurzakdev/unity-mcp-server:latest
+    # Alternativa CoplayDev: msanatan/mcp-for-unity-server:latest
+    environment:
+      - MCP_PLUGIN_CLIENT_TRANSPORT=streamableHttp
+      - MCP_PLUGIN_PORT=8080
+      - UNITY_HOST=host.docker.internal
+      - DISABLE_TELEMETRY=true
+    ports:
+      - "127.0.0.1:8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
