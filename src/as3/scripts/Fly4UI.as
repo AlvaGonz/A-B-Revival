@@ -294,6 +294,10 @@ package
                   trace("[DEV_MODE] Disabled");
                }
             }
+            if(this.key.isKeyCodeDownOnce(122))
+            {
+               ConfigAndStory.toggleFullscreen();
+            }
          }
 
          var _t0:uint = uint(getTimer());
@@ -331,7 +335,10 @@ package
             var _memMb:String = (System.totalMemory / 1048576).toFixed(2);
             var _currentFps:Number = _frameDelta > 0 ? (1000 / _frameDelta) : (stage ? stage.frameRate : 60);
 
-            this.text.text = "FPS: " + _currentFps.toFixed(1) + " (" + _frameDelta + "ms) [Logic: " + _logicMs + "ms, Render: " + _renderMs + "ms] | Mem: " + _memMb + " MB | DObjs: " + this._cachedDObjCount;
+            var _resStr:String = ConfigAndStory.RESOLUTION == ConfigAndStory.RES_1080 ? "1080p" : (ConfigAndStory.RESOLUTION == ConfigAndStory.RES_720 ? "720p" : "640x480");
+            var _qStr:String = ConfigAndStory.QUALITY == ConfigAndStory.QUALITY_HIGH ? "High" : (ConfigAndStory.QUALITY == ConfigAndStory.QUALITY_LOW ? "Low" : "Med");
+            var _fsStr:String = ConfigAndStory.FULLSCREEN ? "ON" : "OFF";
+            this.text.text = "FPS: " + _currentFps.toFixed(1) + " (" + _frameDelta + "ms) [Logic: " + _logicMs + "ms, Render: " + _renderMs + "ms] | Mem: " + _memMb + " MB | DObjs: " + this._cachedDObjCount + " | " + _resStr + " | Q:" + _qStr + " | FS:" + _fsStr;
             this.text.appendText("\nBullets: " + _bullets + " | Particles: " + _particles + " | Ships: " + _ships + " | Drops: " + _drops + " | Debris: " + _debris + " | Arrays: " + _arrays);
 
             if(this._logCounter % 180 == 0)
