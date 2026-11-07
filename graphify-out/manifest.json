@@ -6,9 +6,9 @@
     "semantic_hash": ""
   },
   "src/as3/scripts/Fly4UI.as": {
-    "mtime": 1794025521.5565164,
-    "seen": 1794025587.854869,
-    "ast_hash": "4ec1fec15fbfacbcd87e6aed094da60a",
+    "mtime": 1794025922.7912333,
+    "seen": 1794026231.0668466,
+    "ast_hash": "2dd0c2221edae2f3732ed93aee908f7f",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -188,9 +188,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/evts/EvtCtrl.as": {
-    "mtime": 1794022638.3201475,
-    "seen": 1794022957.6700318,
-    "ast_hash": "6c384ed9bb119f11271ba651a7763ddc",
+    "mtime": 1794025845.9475138,
+    "seen": 1794026231.0669954,
+    "ast_hash": "5ae62d632062393b36048b248c3768a1",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -279,9 +279,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/ai/AIData.as": {
-    "mtime": 1794022638.3691213,
-    "seen": 1794022957.670165,
-    "ast_hash": "193f2ccc59370e75b92c411a58bdf074",
+    "mtime": 1794025846.0047762,
+    "seen": 1794026231.0671532,
+    "ast_hash": "b64e5e6147a0bac18d6b8bbf28bed20b",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -293,23 +293,23 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/ai/AIPart.as": {
-    "mtime": 1794022638.408234,
-    "seen": 1794022957.6701903,
-    "ast_hash": "621795095afca3d7bebd833cbe2b438d",
+    "mtime": 1794025846.106943,
+    "seen": 1794026231.0671651,
+    "ast_hash": "5dad4a6f1eec0e70de1e693055d55be7",
     "semantic_hash": "",
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/ai/AIRunMode.as": {
-    "mtime": 1794022638.4811013,
-    "seen": 1794022957.670197,
-    "ast_hash": "d4993f16b45381bd9c1173d59a77aac6",
+    "mtime": 1794025846.2633438,
+    "seen": 1794026231.0671706,
+    "ast_hash": "56d35ec594b6cfb8e9adae71db214873",
     "semantic_hash": "",
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/ai/AIUnity.as": {
-    "mtime": 1794022484.4417596,
-    "seen": 1794022957.6702027,
-    "ast_hash": "5d6addb3b045905f9fdb520f3732ba57",
+    "mtime": 1794025846.336196,
+    "seen": 1794026231.0671759,
+    "ast_hash": "2cb5f1981c87c424edd13fa7a4c152b5",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -356,9 +356,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/fire/FireTimer.as": {
-    "mtime": 1794022638.5408118,
-    "seen": 1794022957.670241,
-    "ast_hash": "cb3a42a55e29eccbcf8745dcb00d96a6",
+    "mtime": 1794025846.3905604,
+    "seen": 1794026231.067216,
+    "ast_hash": "cf4be56af79ac079b30ca5c3eccca1f3",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -398,9 +398,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/particle/Item.as": {
-    "mtime": 1794023473.232937,
-    "seen": 1794024579.6889987,
-    "ast_hash": "62bb1b794e8c8d36ac9e067881259cd3",
+    "mtime": 1794025846.4361494,
+    "seen": 1794026231.0672522,
+    "ast_hash": "d860606f96826c187e76b8a8c6758666",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -573,8 +573,8 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/F4ShowData.as": {
-    "mtime": 1794025386.908845,
-    "seen": 1794025587.8553119,
+    "mtime": 1794025845.6147566,
+    "seen": 1794026231.0673873,
     "ast_hash": "f2d23a5c96e8ce1a32b142de4dc4df2a",
     "semantic_hash": "",
     "language": "language=.ts"
@@ -643,8 +643,8 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4ui/f4partmc/F4PartMC.as": {
-    "mtime": 1794025356.635512,
-    "seen": 1794025587.8553646,
+    "mtime": 1794025845.6911123,
+    "seen": 1794026231.0674422,
     "ast_hash": "f1d8e582bc64bebb77473ae97de7cdfb",
     "semantic_hash": "",
     "language": "language=.ts"
@@ -937,9 +937,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIGame.as": {
-    "mtime": 1794022586.618851,
-    "seen": 1794022957.670709,
-    "ast_hash": "93e253449f76adf0fa26e844aab8f459",
+    "mtime": 1794025846.4946628,
+    "seen": 1794026231.067715,
+    "ast_hash": "b5457b27d9d5670b69162f6e06ba7b9a",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -951,9 +951,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIHelpX2.as": {
-    "mtime": 1794022638.699033,
-    "seen": 1794022957.6707194,
-    "ast_hash": "6cae639cb42f207973d5217bf4df1a06",
+    "mtime": 1794025846.5373857,
+    "seen": 1794026231.0677261,
+    "ast_hash": "800070ac63e91427f52c7cd387a97c0c",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -993,16 +993,16 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIMovie.as": {
-    "mtime": 1794022638.772957,
-    "seen": 1794022957.6707516,
-    "ast_hash": "7bae75e55697acd5915512c9ee02feec",
+    "mtime": 1794025846.6707115,
+    "seen": 1794026231.0677602,
+    "ast_hash": "2409e3a6d3730b496fef2c4f977d991e",
     "semantic_hash": "",
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIOptions.as": {
-    "mtime": 1794023021.0178275,
-    "seen": 1794024579.689445,
-    "ast_hash": "950ad1c47f6b80904ea59de4268c5a33",
+    "mtime": 1794027068.0779097,
+    "seen": 1794027117.0779078,
+    "ast_hash": "5de72123887c97449e2d28bcf3ecbacf",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "GLOSSARY.md": {
-    "mtime": 1794023780.1471772,
-    "seen": 1794024579.6895316,
-    "ast_hash": "eb3d8000dcb3083d7ecdeacf6cb4dd58",
+    "mtime": 1794026192.754315,
+    "seen": 1794026231.0678542,
+    "ast_hash": "35a2cede75b3a70400ed9f7e8a7fc6cb",
     "semantic_hash": ""
   },
   "docs/adr/0001-record-architecture-decisions.md": {
@@ -1251,6 +1251,24 @@
     "mtime": 1794025038.5323405,
     "seen": 1794025587.855782,
     "ast_hash": "16d2e340ec7b4580f41c34afb1104e9b",
+    "semantic_hash": ""
+  },
+  "scripts/test_perf_runtime.py": {
+    "mtime": 1794025889.7587714,
+    "seen": 1794026231.0668387,
+    "ast_hash": "d89e1bc492050303da9cfc9a43989093",
+    "semantic_hash": ""
+  },
+  "docs/adr/0010-fixed-timestep-simulation-and-runtime-performance-gate.md": {
+    "mtime": 1794026192.9366603,
+    "seen": 1794026231.0679104,
+    "ast_hash": "730efd06397efcc32de39b184b3310b1",
+    "semantic_hash": ""
+  },
+  "docs/research/60fps-optimization-and-runtime-performance.md": {
+    "mtime": 1794025815.3737967,
+    "seen": 1794026231.067931,
+    "ast_hash": "f24b909e626be5e6580241e50290cad4",
     "semantic_hash": ""
   }
 }
