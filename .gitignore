@@ -30,6 +30,10 @@ scripts/*local*
 /Packages/
 /ProjectSettings/
 
+# Build and binary folders
+[Bb]in/
+[Oo]bj/
+
 # Unity generated files
 [Ll]ibrary/
 [Tt]emp/
