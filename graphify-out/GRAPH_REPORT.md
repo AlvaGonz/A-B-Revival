@@ -1,17 +1,17 @@
 # Graph Report - A&B revival  (2026-11-07)
 
 ## Corpus Check
-- 187 files · ~78,891 words
+- 187 files · ~78,961 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 23 file(s) not represented in the graph (top: .bin 12, .bat 7, (none) 2)
 
 ## Summary
-- 2727 nodes · 3486 edges · 340 communities (75 shown, 265 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 148 edges (avg confidence: 0.92)
+- 2727 nodes · 3488 edges · 340 communities (75 shown, 265 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 150 edges (avg confidence: 0.92)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `db90d95d`
+- Built from commit: `78acbfe7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -299,16 +299,16 @@
 10. `Core Entities` - 19 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Context` --references--> `render()`  [INFERRED]
-  docs/adr/0010-fixed-timestep-simulation-and-runtime-performance-gate.md → src/as3/scripts/f4/gfx/RenderData.as
-- `Phase 1: Immediate CPU Pipeline Optimization (Zero Architectural Risk)` --references--> `render()`  [INFERRED]
-  docs/research/multithreading-workers-and-gpu-hardware-acceleration.md → src/as3/scripts/f4/gfx/RenderData.as
-- `Core Entities` --references--> `MochiAd()`  [INFERRED]
-  GLOSSARY.md → src/as3/scripts/mochi/as3/MochiAd.as
-- `Feasibility Matrix` --references--> `UIMakePlayer()`  [INFERRED]
-  docs/research/automated-testing-and-playwright-equivalents-for-flash.md → src/as3/scripts/ui/pages/UIMakePlayer.as
 - `The Independent VM Model` --references--> `AIUnity`  [INFERRED]
   docs/research/multithreading-workers-and-gpu-hardware-acceleration.md → src/as3/scripts/f4/unit/ai/AIUnity.as
+- `Context` --references--> `EvtCtrl`  [INFERRED]
+  docs/adr/0002-allied-flagship-lifecycle.md → src/as3/scripts/f4/evts/EvtCtrl.as
+- `Phase 3: Stage3D Quad Batcher GPU Migration` --references--> `MC2BMPD`  [INFERRED]
+  docs/research/multithreading-workers-and-gpu-hardware-acceleration.md → src/as3/scripts/f4/gfx/bmpdmc/MC2BMPD.as
+- `Feasibility Matrix` --references--> `UIMakePlayer()`  [INFERRED]
+  docs/research/automated-testing-and-playwright-equivalents-for-flash.md → src/as3/scripts/ui/pages/UIMakePlayer.as
+- `Decision` --references--> `unFire()`  [INFERRED]
+  docs/adr/0008-60fps-resolution-modernization-and-leak-prevention.md → src/as3/scripts/f4/unit/fire/FireTimer.as
 
 ## Import Cycles
 - None detected.
@@ -622,16 +622,16 @@ Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Core Entities` connect `Core Entities` to `Decision`, `2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()``, `AIUnity`, `MochiAd.as`, `ConfigAndStory`, `updateNew`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
+  _High betweenness centrality (0.023) - this node is a cross-community bridge._
 - **Are the 6 inferred relationships involving `AIUnity` (e.g. with `Decision` and `Decision`) actually correct?**
   _`AIUnity` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **Should `as3/scripts/ui/pages/UIMakePlayer.as` be split into smaller, more focused modules?**
   _Cohesion score 0.10574712643678161 - nodes in this community are weakly interconnected._
 - **Why does `UIMakePlayer()` connect `updateNew` to `as3/scripts/ui/pages/UIMakePlayer.as`, `Core Entities`, `Decision`, `UIChooseFlyAI.as`, `act`, `as3/scripts/Fly4UI.as`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `EvtCtrl` (e.g. with `Context` and `Decision`) actually correct?**
   _`EvtCtrl` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Should `MochiServices.as` be split into smaller, more focused modules?**
   _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
 - **Why does `AIUnity` connect `AIUnity` to `Decision`, `Core Entities`, `1.2 Inter-Process Communication (IPC) Mechanisms`, `Decision`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
