@@ -6,6 +6,7 @@ package f4.unit.fire
    import f4.make.Maker;
    import f4.unit.ai.AIPart;
    import f4.unit.ai.AIUnity;
+   import f4.unit.move.MoveAs;
    import f4.unit.particle.Particle;
    import f4.unit.parts.SimpleFly;
    import f4.unit.render.Cam;
@@ -100,7 +101,7 @@ package f4.unit.fire
          if(this.bulletData.aim > 0 && Boolean(this.part.aim))
          {
             _loc11_.aim = this.part.aim;
-            _loc11_.aif.rotLimit = this.bulletData.aim / 180 * Math.PI;
+            _loc11_.aif.rotLimit = (this.bulletData.aim / 180 * Math.PI) * MoveAs.SIM_SCALE;
          }
          if(this.friend)
          {

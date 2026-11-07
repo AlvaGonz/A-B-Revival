@@ -41,29 +41,45 @@ ADR 0010 established a fixed-timestep accumulator (36 Hz simulation tick against
 
 ---
 
-## Decision & Implementation Details
+## Decision & Phased Implementation Details
 
-### 1. True 60 FPS Physics Rescaling (1:1 Lockstep)
+### Phase 1: True 60 FPS Engine Modernization & AIR Foundation (Current Release)
+
+#### 1. True 60 FPS Physics Rescaling (1:1 Lockstep) - Implemented in Task #104
 - **Eliminate Accumulator Substeps:** `loop()` in `Fly4UI.as` executes exactly 1 simulation step (`core.runGame()`, `uictrl.run()`, sound updates) per `ENTER_FRAME`.
-- **Velocity Scaler ($0.6\times$):** Scale base velocities and acceleration increments across `F4FlyData`, `AIUnity`, `SimpleFly`, bullets, and particles by $0.6$.
-- **Lifespan Compensation ($1.667\times$):** Scale weapon bullet lifespans and particle durations by $1.667$ so effective flight distance remains invariant ($D = v \cdot t = (0.6 v) \cdot (1.667 t) = 1.0 D$).
-- **Turn Rate Compensation ($0.6\times$):** Scale `rotSpeed` by $0.6$ so angular velocity per frame matches 60 Hz refresh, preserving identical turning circles.
+- **Velocity Scaler ($0.6\times$):** Scale base velocities and acceleration increments across `F4FlyData`, `AIUnity`, `SimpleFly`, bullets, and particles by $0.6$ (`MoveAs.SIM_SCALE = 0.6`).
+- **Lifespan Compensation ($1.667\times$):** Scale weapon bullet lifespans in `F4DataBullet.as` and particle durations in `Particle.as` by $1.667$ so effective flight distance remains invariant ($D = v \cdot t = (0.6 v) \cdot (1.667 t) = 1.0 D$).
+- **Turn Rate Compensation ($0.6\times$):** Scale `rotLimit` by $0.6$ across `AIFunctions.as` and homing missile guidance in `FireMode.as` (`_loc11_.aif.rotLimit = (this.bulletData.aim / 180 * Math.PI) * MoveAs.SIM_SCALE`) so angular velocity per frame matches 60 Hz refresh, preserving identical turning circles.
 
-### 2. Surgical CPU Blitter Optimization in `RenderData.as`
-- **Duplicate Blur Elimination:** Delete line 242 (`this.BMPDFX.applyFilter(this.BMPDFX, this.fxrect, this.point, this.blur)`), which runs an identical redundant blur on `BMPDFX` right after line 238, immediately reclaiming ~2.5 ms per frame.
-- **DisplayList Hardware Scaling for 2× Upscaling:** Replace `CANVAS.draw(this.BMPDFX, this.MTX2X)` and `CANVAS.draw(this.BMPDBLTFX, this.MTX2X)` with scaled display objects (`scaleX = 2.0`, `scaleY = 2.0`, `blendMode = BlendMode.ADD`), leveraging compositor hardware scaling and reclaiming ~3.5–5.0 ms per frame.
-- **Pre-baked Damage Spritesheets:** Eliminate on-the-fly `ColorTransform` draws in `BMPD2D.render()` by pre-caching red-tinted damage frames at level load.
+#### 2. Surgical CPU Blitter Optimization in `RenderData.as` - Implemented in Task #103
+- **Duplicate Blur Elimination:** Deleted line 242 (`this.BMPDFX.applyFilter(this.BMPDFX, this.fxrect, this.point, this.blur)`), which ran an identical redundant blur on `BMPDFX` right after line 238, immediately reclaiming ~2.5 ms per frame.
+- **Bounded Color Transforms:** Bounded full-frame `colorTransform` operations on `BMPD` and `BMPDBLTFX` to active entity periods via `_partFadeFrames` and `_bulletFadeFrames` counters, avoiding expensive fullscreen CPU pixel loops when no entities are decaying.
+- **Throttled Minimap Filter Cadence:** Halved `MINIMAP.applyFilter` execution to alternate frames, cutting minimap CPU overhead by 50%.
+- **Pause Particle Bulking Guard:** Added `!InitData.CORE.pause` guard to particle emission in `SimpleFly.renderAct()`, halting particle accumulation while paused.
 
-### 3. Adobe AIR Runtime Target
-- Create `src/air/application.xml` specifying:
-  - `<renderMode>direct</renderMode>` to unlock Stage3D.
+#### 3. Adobe AIR Runtime Target & Launcher - Implemented in Task #105
+- Created `src/air/application.xml` specifying:
+  - `<renderMode>direct</renderMode>` to unlock Stage3D Direct hardware rendering.
   - `<supportedProfiles>extendedDesktop mobileDevice</supportedProfiles>`.
-  - Windows captive runtime and Android APK/AAB packaging targets.
-- Enable `Stage3D` quad batching underneath the native Flash DisplayList (`UISP` UI layer remains 100% intact).
+  - Android permissions and OpenGL ES 2.0 feature requirements.
+- Created `scripts/run_air.bat` launcher with automatic detection of HARMAN AIR SDK (`adl.exe`) and graceful fallback to standalone Flash Player Debugger.
 
-### 4. Concurrency Boundary (ActionScript Workers)
-- Retain per-frame collision detection (`Targets.bltHit`) on the main thread to avoid the 4.5–6.0 ms marshalling/synchronization penalty between AVM2 memory heaps.
-- Reserve Workers (`flash.system.Worker`) for asynchronous procedural galaxy generation, asset decompression, and 10 Hz strategic squad pathfinding.
+#### 4. Automated Testing & Session Telemetry Tools
+- Implemented `scripts/test_perf_runtime.py` automated performance quality gate.
+- Implemented `scripts/record_dev_session.py` developer session recorder capturing live telemetry upon Dev Mode toggles (`[DEV_SESSION_START]` and `[DEV_SESSION_END]`).
+
+---
+
+### Phase 2: Stage3D GPU Quad Batching & Hardware Pipeline (Subsequent Milestone)
+
+1. **Stage3D Hardware Graphics Pipeline (`flash.display3D.Context3D`):**
+   - Implement `Stage3DQuadRenderer` rendering underneath the native Flash DisplayList (`UISP` UI layer remains 100% intact).
+   - Migrate ship sprites, bullets, and particles into batched GPU vertex buffers, reducing hundreds of individual `copyPixels` calls to 1–2 GPU draw calls (< 0.5 ms).
+2. **DisplayList / Stage3D Additive Layering:**
+   - Migrate additive bullet and particle bloom into GPU blend states (`Context3DBlendFactor.ONE`, `Context3DBlendFactor.ONE`), superseding CPU `CANVAS.draw(..., this.MTX2X)` and `SimpleGlowFilter`.
+3. **Concurrency Boundary (ActionScript Workers):**
+   - Retain per-frame collision detection (`Targets.bltHit`) on the main thread to avoid the 4.5–6.0 ms marshalling/synchronization penalty between AVM2 memory heaps.
+   - Reserve Workers (`flash.system.Worker`) for asynchronous procedural galaxy generation, asset decompression, and 10 Hz strategic squad pathfinding.
 
 ---
 
@@ -78,3 +94,4 @@ ADR 0010 established a fixed-timestep accumulator (36 Hz simulation tick against
 ### Negative / Trade-Offs
 - Requires touching multiple velocity, timer, and rotation constants across decompiled classes (`SimpleFly`, `AIUnity`, `F4FlyData`, `CkBltObj`).
 - Requires maintaining the Adobe AIR application descriptor (`application.xml`).
+
