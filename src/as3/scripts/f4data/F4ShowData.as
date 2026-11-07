@@ -44,6 +44,10 @@ package f4data
       
       public var costMut:Number;
       
+      public var wings:int = 0;
+      
+      public var maxWings:int = 0;
+      
       public function F4ShowData(param1:F4DataLinks, param2:Number = 1)
       {
          super();
@@ -169,6 +173,14 @@ package f4data
          else
          {
             this.cls = "S";
+         }
+         if(this.link)
+         {
+            this.wings = this.link.countWings();
+            if(this.link.f4dataorg)
+            {
+               this.maxWings = F4DataOrg.maxWingsForHull(this.link.f4dataorg);
+            }
          }
       }
       

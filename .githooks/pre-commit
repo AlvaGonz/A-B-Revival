@@ -44,5 +44,36 @@ if [ $BUILD_STATUS -ne 0 ]; then
     exit 1
 fi
 
+# 3. Run SWF ABC Linkage verification
+if [ -f "scripts/check_swf_linkage.py" ]; then
+    echo "[pre-commit] Running SWF ABC linkage verification..."
+    python scripts/check_swf_linkage.py
+    LINK_STATUS=$?
+    if [ $LINK_STATUS -ne 0 ]; then
+        echo ""
+        echo "================================================================"
+        echo " [pre-commit ERROR] SWF ABC linkage check failed."
+        echo " Standalone .as files not mapped in SWF tags cause runtime Error #1065."
+        echo " Please inline helpers or delegate to established domain/UI hubs per ADR-0009."
+        echo "================================================================"
+        exit 1
+    fi
+fi
+
+# 4. Run Core Lifecycle Null-Safety verification
+if [ -f "scripts/test_core_null_safety.py" ]; then
+    echo "[pre-commit] Running core null-safety gate..."
+    python scripts/test_core_null_safety.py
+    NULL_STATUS=$?
+    if [ $NULL_STATUS -ne 0 ]; then
+        echo ""
+        echo "================================================================"
+        echo " [pre-commit ERROR] OpOneCore null-safety verification failed."
+        echo " Ensure playerFly, targets, and gameui are guarded against Error #1009."
+        echo "================================================================"
+        exit 1
+    fi
+fi
+
 echo "[pre-commit] All pre-commit checks passed successfully!"
 exit 0

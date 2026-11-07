@@ -4,6 +4,7 @@ package f4.unit.ai
    import f4.data.sound32.SoundRun1;
    import f4.unit.move.MoveAs;
    import f4.unit.particle.DeadPart;
+   import f4.unit.particle.Item;
    import f4.unit.parts.Unity;
    import f4.unit.render.AIURender;
    import f4.unit.render.Cam;
@@ -54,6 +55,10 @@ package f4.unit.ai
       public var isCaptain:Boolean = false;
       
       public var tacticalMode:int = 0;
+      
+      public var companionRole:int = -1;
+      
+      public var leaderUnity:AIUnity;
       
       public var spawnPoint:Point;
       
@@ -724,21 +729,65 @@ package f4.unit.ai
                   this.aiPow = this.aimode.bodyClose.y;
                }
             }
-            if(this.isCaptain)
+            var _healDrop:Item = this.unity.friend && !this.isCaptain ? this.findPriorityHealDrop() : null;
+            if(_healDrop)
+            {
+               this.aim = _healDrop.point;
+               this.close = 1;
+               this.aiPow = 1 * this._aiLastPowMut;
+            }
+            else if(this.isCaptain || this.companionRole >= 0)
             {
                this.steerTacticalMode(_loc1_);
             }
          }
       }
       
+      private function findPriorityHealDrop() : Item
+      {
+         if(!targets || !targets.ia1 || !targets.pfa1)
+         {
+            return null;
+         }
+         var _heal:Item = null;
+         var _minDistSq:Number = Number.MAX_VALUE;
+         for each(var _item:Item in targets.ia1.array)
+         {
+            if(_item && !_item.isDeadA1 && _item.data && _item.data[0] == "life")
+            {
+               var _dsq:Number = (this.unity.move.point.x - _item.point.x) * (this.unity.move.point.x - _item.point.x) + (this.unity.move.point.y - _item.point.y) * (this.unity.move.point.y - _item.point.y);
+               var _isClosest:Boolean = true;
+               for each(var _comp:AIUnity in targets.pfa1.array)
+               {
+                  if(_comp && !_comp.isDeadA1 && _comp != this && _comp.unity && _comp.unity.move)
+                  {
+                     var _cdsq:Number = (_comp.unity.move.point.x - _item.point.x) * (_comp.unity.move.point.x - _item.point.x) + (_comp.unity.move.point.y - _item.point.y) * (_comp.unity.move.point.y - _item.point.y);
+                     if(_cdsq < _dsq)
+                     {
+                        _isClosest = false;
+                        break;
+                     }
+                  }
+               }
+               if(_isClosest && _dsq < _minDistSq)
+               {
+                  _minDistSq = _dsq;
+                  _heal = _item;
+               }
+            }
+         }
+         return _heal;
+      }
+      
       private function steerTacticalMode(param1:Array) : void
       {
          var _loc2_:AIUnity = this.nearestIn(param1);
-         var _loc3_:AIUnity = InitData.CORE.playerFly;
+         var _loc3_:AIUnity = this.leaderUnity && !this.leaderUnity.isDeadA1 && this.leaderUnity.unity ? this.leaderUnity : InitData.CORE.playerFly;
          var _loc4_:Point = null;
          var _loc5_:Number = NaN;
          var _loc6_:Number = NaN;
-         switch(this.tacticalMode)
+         var _activeMode:int = this.companionRole >= 0 ? this.companionRole : this.tacticalMode;
+         switch(_activeMode)
          {
             case MODE_ESCORT:
                if(_loc3_)
@@ -846,14 +895,23 @@ package f4.unit.ai
          var _loc4_:Number = Number.MAX_VALUE;
          var _loc5_:Number = NaN;
          var _loc6_:Number = NaN;
-         if(InitData.CORE.cam)
+         var _refPoint:Point = null;
+         if(this.leaderUnity && !this.leaderUnity.isDeadA1 && this.leaderUnity.unity && this.leaderUnity.unity.move)
+         {
+            _refPoint = this.leaderUnity.unity.move.point;
+         }
+         else if(InitData.CORE.cam)
+         {
+            _refPoint = InitData.CORE.cam.crossPoint;
+         }
+         if(_refPoint)
          {
             for each(_loc3_ in param1)
             {
                if(_loc3_ != this)
                {
-                  _loc5_ = InitData.CORE.cam.crossPoint.x - _loc3_.unity.move.point.x;
-                  _loc6_ = InitData.CORE.cam.crossPoint.y - _loc3_.unity.move.point.y;
+                  _loc5_ = _refPoint.x - _loc3_.unity.move.point.x;
+                  _loc6_ = _refPoint.y - _loc3_.unity.move.point.y;
                   _loc5_ = _loc5_ * _loc5_ + _loc6_ * _loc6_;
                   if(_loc5_ < _loc4_)
                   {
@@ -968,6 +1026,11 @@ package f4.unit.ai
          if(InitData.CORE.cam.mv == this.unity.move)
          {
             InitData.CORE.cam.mv = new MoveAs(this.unity.move.point.x,this.unity.move.point.y);
+         }
+         if(this.soundEngine)
+         {
+            this.soundEngine.isDeadA1 = true;
+            this.soundEngine = null;
          }
          this.unity.move.point.x = this.unity.move.point.y = -1000000;
       }

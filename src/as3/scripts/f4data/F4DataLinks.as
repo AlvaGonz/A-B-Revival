@@ -1,5 +1,6 @@
 package f4data
 {
+   import f4.data.InitData;
    import f4ui.f4partmc.F4PartMC;
    import flash.geom.Point;
    
@@ -32,6 +33,44 @@ package f4data
       public function get isSpecialProtected() : Boolean
       {
          return this.isCaptainShip();
+      }
+      
+      public function isRootChassis() : Boolean
+      {
+         return Boolean(this.f4dataorg) && this.f4dataorg.useAs == 2;
+      }
+      
+      public function createShowData(param1:Number = 1) : F4ShowData
+      {
+         var _stats:F4ShowData = new F4ShowData(this, param1);
+         _stats.initData();
+         return _stats;
+      }
+      
+      public static function calculateCraftStats(source:*) : F4ShowData
+      {
+         var parts:Array = null;
+         if(source is Array)
+         {
+            parts = source as Array;
+         }
+         else if(source && source.hasOwnProperty("plMc"))
+         {
+            parts = source.plMc as Array;
+         }
+         if(!parts)
+         {
+            return null;
+         }
+         var partMC:F4PartMC = null;
+         for each(partMC in parts)
+         {
+            if(partMC && partMC.isRootChassis())
+            {
+               return partMC.f4DataLink.createShowData(InitData.SELL);
+            }
+         }
+         return null;
       }
       
       public function F4DataLinks()

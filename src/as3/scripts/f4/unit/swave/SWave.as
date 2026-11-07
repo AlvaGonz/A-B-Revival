@@ -54,6 +54,12 @@ package f4.unit.swave
             this.alpha = 255;
          }
       }
+      
+      override public function startRemoveA1() : void
+      {
+         this.point = null;
+         this.rect = null;
+      }
    }
 }
 

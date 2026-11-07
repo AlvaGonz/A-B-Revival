@@ -10,11 +10,15 @@ package ui.pages
    import flash.display.DisplayObjectContainer;
    import flash.display.MovieClip;
    import flash.display.Shape;
+   import flash.display.Graphics;
+   import flash.display.Sprite;
    import flash.events.Event;
+   import flash.events.MouseEvent;
    import flash.geom.ColorTransform;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
+   import flash.text.TextFormatAlign;
    import flash.ui.Mouse;
    import flash.utils.getTimer;
    import fullshit.ctrl2.SoundUnit2;
@@ -73,6 +77,9 @@ package ui.pages
       public var tacticalModeFade:int = 0;
       private var _tacticalModeTitles:Array = ["ANCHOR / HOLD","ESCORT / FOLLOW","EVADE / FLEE","SEEK & DESTROY","FIRE SUPPORT","SHIELD / INTERCEPT"];
       private var _tacticalModeCodes:Array = ["AN","ES","EV","SD","FS","SH"];
+      public var camDistanceTxt:TextField;
+      public var camDistanceFade:int = 0;
+      private var _camDistanceTitles:Array = ["[ CAM: SHORT (1.0x) ]","[ CAM: MEDIUM (1.3x) ]","[ CAM: FAR (1.5x) ]"];
       public var capAlertTimer:int = 0;
       public var capThresholdsFired:Array = [false, false, false, false];
 
@@ -123,8 +130,8 @@ package ui.pages
          this.lostPartsTxt.autoSize = TextFieldAutoSize.LEFT;
          this.lostPartsTxt.selectable = false;
          this.lostPartsTxt.mouseEnabled = false;
-         var _ltf:TextFormat = new TextFormat("_sans", 11, 0xFF5555, true);
-         this.lostPartsTxt.defaultTextFormat = _ltf;
+         UIBase.applyFormat(this.lostPartsTxt, UIBase.FONT_SANS, UIBase.SIZE_HUD, UIBase.COLOR_DAMAGE_CRIMSON, true, TextFieldAutoSize.LEFT);
+         UIBase.applyGlow(this.lostPartsTxt, 0x000000, 0.9, 3, 3);
          this.lostPartsTxt.x = this.lifeBar.x;
          this.lostPartsTxt.y = this.lifeBar.y - 18;
          param2.addChild(this.lostPartsTxt);
@@ -133,8 +140,8 @@ package ui.pages
          this.capAlertTxt.autoSize = TextFieldAutoSize.CENTER;
          this.capAlertTxt.selectable = false;
          this.capAlertTxt.mouseEnabled = false;
-         var _ctf:TextFormat = new TextFormat("_sans", 13, 0xFFFF00, true);
-         this.capAlertTxt.defaultTextFormat = _ctf;
+         UIBase.applyFormat(this.capAlertTxt, UIBase.FONT_SANS, UIBase.SIZE_ALERT, UIBase.COLOR_CAPTAIN_AMBER, true, TextFormatAlign.CENTER);
+         UIBase.applyHoloGlow(this.capAlertTxt, UIBase.COLOR_CAPTAIN_AMBER);
          this.capAlertTxt.x = 400;
          this.capAlertTxt.y = 48;
          this.capAlertTxt.visible = false;
@@ -144,19 +151,29 @@ package ui.pages
           this.tacticalModeTxt.autoSize = TextFieldAutoSize.CENTER;
           this.tacticalModeTxt.selectable = false;
           this.tacticalModeTxt.mouseEnabled = false;
-          var _ttf:TextFormat = new TextFormat("_sans", 13, 0xFFFF00, true);
-          this.tacticalModeTxt.defaultTextFormat = _ttf;
+          UIBase.applyFormat(this.tacticalModeTxt, UIBase.FONT_SANS, UIBase.SIZE_ALERT, UIBase.COLOR_CAPTAIN_AMBER, true, TextFormatAlign.CENTER);
+          UIBase.applyHoloGlow(this.tacticalModeTxt, UIBase.COLOR_CAPTAIN_AMBER);
           this.tacticalModeTxt.x = 320;
           this.tacticalModeTxt.y = 420;
           this.tacticalModeTxt.visible = false;
           param2.addChild(this.tacticalModeTxt);
 
+          this.camDistanceTxt = new TextField();
+          this.camDistanceTxt.autoSize = TextFieldAutoSize.CENTER;
+          this.camDistanceTxt.selectable = false;
+          this.camDistanceTxt.mouseEnabled = false;
+          UIBase.applyFormat(this.camDistanceTxt, UIBase.FONT_SANS, UIBase.SIZE_ALERT, UIBase.COLOR_SYSTEM_CYAN, true, TextFormatAlign.CENTER);
+          UIBase.applyHoloGlow(this.camDistanceTxt, UIBase.COLOR_SYSTEM_CYAN);
+          this.camDistanceTxt.x = 320;
+          this.camDistanceTxt.y = 398;
+          this.camDistanceTxt.visible = false;
+          param2.addChild(this.camDistanceTxt);
+
           this.capModeCodeTxt = new TextField();
           this.capModeCodeTxt.autoSize = TextFieldAutoSize.CENTER;
           this.capModeCodeTxt.selectable = false;
           this.capModeCodeTxt.mouseEnabled = false;
-          var _cmf:TextFormat = new TextFormat("_sans", 10, 0xFFFF00, true);
-          this.capModeCodeTxt.defaultTextFormat = _cmf;
+          UIBase.applyFormat(this.capModeCodeTxt, UIBase.FONT_SANS, UIBase.SIZE_SMALL, UIBase.COLOR_CAPTAIN_AMBER, true, TextFormatAlign.CENTER);
           this.capModeCodeTxt.visible = false;
           if(this.f1)
           {
@@ -221,6 +238,7 @@ package ui.pages
             this.moneyTxt.visible = false;
          }
          super(param1,param2,param3,param4,param5);
+         this.initTouchCombatControls(param2);
          this.cam = InitData.RENDERDATA.cam;
          this.eventCrtl = InitData.TARGETS.evts;
          this.core = InitData.CORE;
@@ -320,6 +338,94 @@ package ui.pages
             _loc11_.next = _loc7_;
             InitData.SOUNDC2.addSound(_loc7_,1,0.01,InitData.SOUNDC2.nowVol);
          }
+         this.repositionHUD();
+      }
+      
+      public function repositionHUD() : void
+      {
+         var w:int = InitData.RENDERDATA ? InitData.RENDERDATA.W : 1920;
+         var h:int = InitData.RENDERDATA ? InitData.RENDERDATA.H : 1080;
+         if(w <= 640 && h <= 480)
+         {
+            return;
+         }
+         if(this.mapPad)
+         {
+            this.mapPad.x = w - 160;
+            this.mapPad.y = 10;
+         }
+         if(this.lifeBar)
+         {
+            this.lifeBar.x = 20;
+            this.lifeBar.y = 20;
+            if(this.lostPartsTxt)
+            {
+               this.lostPartsTxt.x = this.lifeBar.x;
+               this.lostPartsTxt.y = this.lifeBar.y - 18;
+            }
+         }
+         if(this.f1)
+         {
+            this.f1.x = 20;
+            this.f1.y = h - 90;
+         }
+         if(this.f2)
+         {
+            this.f2.x = 100;
+            this.f2.y = h - 90;
+         }
+         if(this.dirs)
+         {
+            this.dirs.x = w / 2;
+            this.dirs.y = h - 50;
+         }
+         if(this.km)
+         {
+            this.km.x = w - 80;
+            this.km.y = h - 45;
+         }
+         if(this.capAlertTxt)
+         {
+            this.capAlertTxt.x = w / 2;
+            this.capAlertTxt.y = 60;
+         }
+         if(this.tacticalModeTxt)
+         {
+            this.tacticalModeTxt.x = w / 2;
+            this.tacticalModeTxt.y = h - 100;
+         }
+         if(this.camDistanceTxt)
+         {
+            this.camDistanceTxt.x = w / 2;
+            this.camDistanceTxt.y = h - 125;
+         }
+         if(this._touchPillsContainer)
+         {
+            var btnAuto:Sprite = this._touchPillsContainer.getChildByName("btnTouchAuto") as Sprite;
+            if(btnAuto)
+            {
+               btnAuto.x = w - 100;
+               btnAuto.y = 24;
+            }
+            var btnCam:Sprite = this._touchPillsContainer.getChildByName("btnTouchCam") as Sprite;
+            if(btnCam)
+            {
+               btnCam.x = w - 160;
+               btnCam.y = 24;
+            }
+            var btnBoost:Sprite = this._touchPillsContainer.getChildByName("btnTouchBoost") as Sprite;
+            if(btnBoost)
+            {
+               btnBoost.x = 40;
+               btnBoost.y = h - 40;
+            }
+            var btnMode:Sprite = this._touchPillsContainer.getChildByName("btnTouchMode") as Sprite;
+            if(btnMode)
+            {
+               btnMode.x = w - 40;
+               btnMode.y = h - 40;
+            }
+         }
       }
       
       public function mouseMove(param1:Boolean, param2:Number) : void
@@ -401,6 +507,8 @@ package ui.pages
          _mov.addChildAt(InitData.CORE.renderData.bmp,0);
          this.tacticalModeFade = 0;
          this.tacticalModeTxt.visible = false;
+         this.camDistanceFade = 0;
+         this.camDistanceTxt.visible = false;
          if(this.pf1 && this.pf1.isCaptain)
          {
             this.capModeCodeTxt.text = this._tacticalModeCodes[AIUnity.MODE_ANCHOR];
@@ -510,6 +618,7 @@ package ui.pages
          this.updateCriticalDistress();
          this.updateAutofireReticle();
          this.updateTacticalModeBadge();
+         this.updateCameraDistanceBadge();
       }
 
       public function recordLostPart(param1:int) : void
@@ -569,6 +678,35 @@ package ui.pages
             if(this.tacticalModeFade == 0)
             {
                this.tacticalModeTxt.visible = false;
+            }
+         }
+      }
+
+      public function showCameraDistance(param1:int) : void
+      {
+         if(param1 < 0 || param1 >= this._camDistanceTitles.length)
+         {
+            param1 = 0;
+         }
+         this.camDistanceTxt.text = this._camDistanceTitles[param1];
+         this.camDistanceTxt.x = 320 - this.camDistanceTxt.width / 2;
+         this.camDistanceTxt.visible = true;
+         this.camDistanceTxt.alpha = 1;
+         this.camDistanceFade = 45;
+      }
+
+      public function updateCameraDistanceBadge() : void
+      {
+         if(this.camDistanceFade > 0)
+         {
+            this.camDistanceFade--;
+            if(this.camDistanceFade <= 15)
+            {
+               this.camDistanceTxt.alpha = this.camDistanceFade / 15;
+            }
+            if(this.camDistanceFade == 0)
+            {
+               this.camDistanceTxt.visible = false;
             }
          }
       }
@@ -639,11 +777,11 @@ package ui.pages
          if(this.lostFlashTimer > 0)
          {
             this.lostFlashTimer--;
-            this.lostPartsTxt.textColor = 0xFFFFFF;
+            this.lostPartsTxt.textColor = UIBase.COLOR_WHITE;
          }
          else
          {
-            this.lostPartsTxt.textColor = 0xFF5555;
+            this.lostPartsTxt.textColor = UIBase.COLOR_DAMAGE_CRIMSON;
          }
       }
 
@@ -827,6 +965,112 @@ package ui.pages
       public function mapBack() : void
       {
          InitData.CORE.pause = false;
+      }
+
+      override public function removeSelf() : UIBase
+      {
+         if(InitData.CORE)
+         {
+            InitData.CORE.pause = true;
+            InitData.CORE.over = true;
+         }
+         if(InitData.RENDERDATA)
+         {
+            InitData.RENDERDATA.disBmpds();
+         }
+         if(InitData.TARGETS)
+         {
+            InitData.TARGETS.reset();
+         }
+         if(this.autofireDot && this.autofireDot.parent)
+         {
+            this.autofireDot.parent.removeChild(this.autofireDot);
+         }
+         this.autofireDot = null;
+         if(this._touchPillsContainer && this._touchPillsContainer.parent)
+         {
+            this._touchPillsContainer.parent.removeChild(this._touchPillsContainer);
+         }
+         this._touchPillsContainer = null;
+         this.mapbmp = null;
+         this.pf1 = null;
+         this.pf2 = null;
+         this.core = null;
+         this.cam = null;
+         this.eventCrtl = null;
+         return super.removeSelf();
+      }
+
+      private var _touchPillsContainer:Sprite;
+
+      private function initTouchCombatControls(param2:MovieClip) : void
+      {
+         this._touchPillsContainer = new Sprite();
+         this._touchPillsContainer.name = "touchPills";
+         param2.addChild(this._touchPillsContainer);
+
+         this.createTouchButton("btnTouchAuto", "AUTO", 540, 24, 46, 22, function():void {
+            if(InitData.CORE && InitData.CORE.input)
+            {
+               InitData.CORE.input.triggerAutofire();
+            }
+         });
+         
+         this.createTouchButton("btnTouchCam", "CAM", 100, 24, 44, 22, function():void {
+            if(InitData.CORE && InitData.CORE.input)
+            {
+               InitData.CORE.input.triggerCameraDistance();
+            }
+         });
+
+         this.createTouchButton("btnTouchBoost", "BOOST", 30, 440, 54, 26, function():void {
+            if(InitData.CORE && InitData.CORE.input)
+            {
+               InitData.CORE.input.triggerBooster();
+            }
+         });
+
+         this.createTouchButton("btnTouchMode", "MODE", 610, 440, 50, 26, function():void {
+            if(InitData.CORE && InitData.CORE.input)
+            {
+               InitData.CORE.input.triggerTacticalMode();
+            }
+         });
+      }
+
+      private function createTouchButton(btnName:String, labelText:String, posX:Number, posY:Number, btnW:Number, btnH:Number, onTrigger:Function) : Sprite
+      {
+         var btn:Sprite = new Sprite();
+         btn.name = btnName;
+         btn.x = posX;
+         btn.y = posY;
+         btn.buttonMode = true;
+         btn.useHandCursor = true;
+
+         var g:Graphics = btn.graphics;
+         g.beginFill(0x1a233a, 0.7);
+         g.lineStyle(1, 0x4a75a0, 0.85);
+         g.drawRoundRect(-btnW / 2, -btnH / 2, btnW, btnH, 6, 6);
+         g.endFill();
+
+         var tf:TextField = new TextField();
+         tf.width = btnW;
+         tf.height = btnH;
+         tf.x = -btnW / 2;
+         tf.y = -btnH / 2 + 3;
+         tf.selectable = false;
+         tf.mouseEnabled = false;
+         UIBase.applyFormat(tf, UIBase.FONT_BODY, 10, UIBase.COLOR_WHITE, true, TextFormatAlign.CENTER);
+         btn.addChild(tf);
+         tf.text = labelText;
+
+         btn.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent):void {
+            e.stopPropagation();
+            onTrigger();
+         });
+
+         this._touchPillsContainer.addChild(btn);
+         return btn;
       }
    }
 }

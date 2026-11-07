@@ -494,7 +494,7 @@ package f4.evts
          }
       }
       
-      public function addAI(param1:Number, param2:Number, param3:String, param4:Array, param5:int, param6:int, param7:Boolean, param8:Boolean, param9:int) : void
+      public function addAI(param1:Number, param2:Number, param3:String, param4:Array, param5:int, param6:int, param7:Boolean, param8:Boolean, param9:int, param10:int = -1, param11:AIUnity = null) : AIUnity
       {
          var _loc11_:Point = null;
          var _loc14_:Particle = null;
@@ -517,6 +517,18 @@ package f4.evts
          _loc13_.pilotName = param4;
          _loc13_.aimode = InitData.AIDATA.ais[param9];
          _loc13_.aimodeNum = param9;
+         if(param10 >= 0)
+         {
+            _loc13_.companionRole = param10;
+         }
+         if(param11 != null)
+         {
+            _loc13_.leaderUnity = param11;
+         }
+         else if(_loc10_ != null)
+         {
+            _loc13_.leaderUnity = _loc10_;
+         }
          if(param7)
          {
             this.core.targets.pfa1.addOne1(_loc13_);
@@ -538,6 +550,7 @@ package f4.evts
             _loc15_.pa1.addOne1(_loc14_);
             _loc16_++;
          }
+         return _loc13_;
       }
       
       public function addOuter(param1:Number, param2:Number, param3:String, param4:Array, param5:int, param6:int, param7:int, param8:int, param9:int, param10:int, param11:int, param12:Boolean, param13:int) : void

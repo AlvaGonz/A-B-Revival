@@ -1,13 +1,17 @@
 package ui.pages
 {
+   import f4.data.InitData;
    import f4data.sdata.ConfigAndStory;
+   import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
+   import flash.display.GradientType;
    import flash.display.Graphics;
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.filters.GlowFilter;
+   import flash.geom.Matrix;
    import flash.net.FileReference;
    import flash.text.TextField;
    import flash.text.TextFormat;
@@ -39,11 +43,17 @@ package ui.pages
       
       private function createAutosaveBtn(param1:MovieClip) : void
       {
+         var _back:DisplayObject = param1.getChildByName("$back");
+         if(_back)
+         {
+            _back.y = 322;
+         }
+         
          this.btnAutosave = new Sprite();
          this.btnAutosave.buttonMode = true;
          this.btnAutosave.useHandCursor = true;
          this.btnAutosave.x = 321;
-         this.btnAutosave.y = 282;
+         this.btnAutosave.y = 287.85;
          
          this.txtAutosave = new TextField();
          this.txtAutosave.width = 132;
@@ -52,10 +62,8 @@ package ui.pages
          this.txtAutosave.y = -10;
          this.txtAutosave.selectable = false;
          this.txtAutosave.mouseEnabled = false;
-         var tf:TextFormat = new TextFormat("Arial", 11, 0xffffff, true);
-         tf.align = TextFormatAlign.CENTER;
-         this.txtAutosave.defaultTextFormat = tf;
-         this.txtAutosave.filters = [new GlowFilter(0x000000, 0.8, 3, 3, 2, 1)];
+         UIBase.applyFormat(this.txtAutosave, UIBase.FONT_BODY, 12, UIBase.COLOR_WHITE, true, TextFormatAlign.CENTER);
+         UIBase.applyGlow(this.txtAutosave, 0x000000, 0.8, 3, 2);
          
          this.btnAutosave.addChild(this.txtAutosave);
          this.updateAutosaveUI();
@@ -77,24 +85,41 @@ package ui.pages
          g.clear();
          
          var isOn:Boolean = ConfigAndStory.AUTOSAVE;
-         var bgColor:uint = this.isHovered ? 0x223348 : 0x141c26;
-         var borderColor:uint = 0;
          var textColor:uint = 0;
          
-         if(isOn)
+         g.beginFill(0x08080a, 1.0);
+         
+         if(this.isHovered)
          {
-            borderColor = this.isHovered ? 0x55ffaa : 0x22cc77;
-            textColor = this.isHovered ? 0x88ffcc : 0x44ff88;
+            g.lineStyle(1.0, 0x95e0f2, 1.0);
+            textColor = 0xffffff;
+         }
+         else if(isOn)
+         {
+            var onMat:Matrix = new Matrix();
+            onMat.createGradientBox(132, 28, 0, -65, -14);
+            g.lineStyle(1.0);
+            g.lineGradientStyle(GradientType.LINEAR, [0x22cc77, 0x55ffaa, 0x22cc77], [0.3, 0.85, 0.3], [0, 128, 255], onMat);
+            textColor = 0x44ff88;
          }
          else
          {
-            borderColor = this.isHovered ? 0xff7777 : 0x884444;
-            textColor = this.isHovered ? 0xffaaaa : 0xcc6666;
+            var offMat:Matrix = new Matrix();
+            offMat.createGradientBox(132, 28, 0, -65, -14);
+            g.lineStyle(1.0);
+            g.lineGradientStyle(GradientType.LINEAR, [0xffffff, 0xabbfdc, 0xffffff], [0.0, 0.4, 0.0], [0, 133, 255], offMat);
+            textColor = 0x5f707e;
          }
          
-         g.lineStyle(1.5, borderColor, 0.95);
-         g.beginFill(bgColor, 0.92);
-         g.drawRoundRect(-66, -12, 132, 24, 6, 6);
+         g.moveTo(66.5, -7.15);
+         g.lineTo(66.5, 7.25);
+         g.lineTo(59.15, 13.5);
+         g.lineTo(-57.15, 13.5);
+         g.lineTo(-64.5, 7.25);
+         g.lineTo(-64.5, -7.15);
+         g.lineTo(-57.15, -13.5);
+         g.lineTo(59.15, -13.5);
+         g.lineTo(66.5, -7.15);
          g.endFill();
          
          if(this.txtAutosave)
@@ -106,6 +131,7 @@ package ui.pages
       
       private function onAutosaveClick(e:MouseEvent) : void
       {
+         InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[19], 1);
          ConfigAndStory.AUTOSAVE = !ConfigAndStory.AUTOSAVE;
          ConfigAndStory.save();
          this.updateAutosaveUI();

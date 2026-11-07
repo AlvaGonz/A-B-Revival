@@ -20,12 +20,12 @@ package f4.unit.ai
       public function AIFunctions(param1:Number = 0.17453292519943295)
       {
          super();
-         this.rotLimit = param1;
+         this.rotLimit = param1 * 0.6;
       }
       
       public function updateData(param1:FlyData) : void
       {
-         this.rotLimit = param1.turn.x / param1.mass;
+         this.rotLimit = (param1.turn.x / param1.mass) * 0.6;
       }
       
       public function closeToRadSR(param1:MoveAs, param2:Number, param3:int) : void
