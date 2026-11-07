@@ -51,3 +51,15 @@ python scripts\as3_search.py class <ClassName>
 ### 6. `run-game.bat` (Root)
 Launches the game directly in standalone Flash Player 32.
 
+### 7. `run_air.bat`
+Launches the game natively via Adobe AIR Debug Launcher (ADL) with Stage3D direct hardware acceleration enabled:
+```cmd
+scripts\run_air.bat
+```
+
+### 8. `package_android_apk.bat`
+Generates a self-signed developer certificate and packages the modified SWF into an installable Android APK (`dist\AssemblyAndBattle.apk`) via ADT:
+```cmd
+scripts\package_android_apk.bat
+```
+
