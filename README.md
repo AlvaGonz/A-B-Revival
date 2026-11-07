@@ -54,6 +54,16 @@ scripts\install-hooks.bat
 
 For token-efficient AS3 navigation use `python scripts/as3_search.py symbol|callers|class <name>`. Full tooling reference: `scripts/README.md`.
 
+## Windows Setup
+
+If you are cloning or working on Windows, enable long path support before cloning to avoid `Filename too long` errors with deep hash-named graphify cache files:
+
+```bat
+git config --global core.longpaths true
+```
+
+This is required for `git worktree` operations used by parallel development workflows. The `graphify-out/cache/` directory is excluded from version control (`.gitignore`) and regenerates automatically from `graph.json`.
+
 ## Attribution & Legal
 
 - **Original Game Creator & Sole Copyright Owner**: **Vargames** (2011).

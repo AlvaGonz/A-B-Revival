@@ -1,0 +1,19 @@
+{
+    "name": "ABRevival.Editor",
+    "rootNamespace": "ABRevival.Editor",
+    "references": [
+        "ABRevival.Core"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+
