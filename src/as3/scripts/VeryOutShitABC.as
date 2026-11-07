@@ -69,12 +69,7 @@ package
       
       private function readyToAds() : void
       {
-         MochiAd.showPreGameAd({
-            "clip":root,
-            "id":"0fbe1356f7457e01",
-            "res":"640x480",
-            "ad_finished":this.readyToLoading
-         });
+         this.readyToLoading();
       }
       
       private function addToStage(param1:Event) : void
