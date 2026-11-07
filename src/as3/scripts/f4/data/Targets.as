@@ -12,6 +12,7 @@ package f4.data
    import f4.unit.parts.SimpleFly;
    import f4.unit.parts.Unity;
    import f4.unit.swave.SWave;
+   import f4data.CompanionAssignment;
    import f4data.sdata.ConfigAndStory;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
@@ -110,12 +111,34 @@ package f4.data
          {
             _loc6_ = InitData.CORE.playerFly.unity.move.point.x;
             _loc7_ = InitData.CORE.playerFly.unity.move.point.y;
+            var _capUnit:AIUnity = this.evts.getAIByPerson("Captain");
             _loc8_ = 0;
             while(_loc8_ < ConfigAndStory.AI.length)
             {
                if(ConfigAndStory.AI[_loc8_] != null)
                {
-                  this.evts.addAI(_loc6_ + (_loc8_ + 1) * 80,_loc7_,"Michael",["AI_P"],0,ConfigAndStory.AI[_loc8_],true,false,2);
+                  var _compRecord:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc8_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc8_] as CompanionAssignment : null;
+                  var _cRole:int = _compRecord ? _compRecord.role : CompanionAssignment.ROLE_ESCORT;
+                  var _cLeader:int = _compRecord ? _compRecord.leader : CompanionAssignment.LEADER_MICHAEL;
+                  var _targetLeaderUnit:AIUnity = null;
+                  var _spawnLeaderName:String = "Michael";
+                  var _sX:Number = _loc6_ + (_loc8_ + 1) * 80;
+                  var _sY:Number = _loc7_;
+
+                  if(_cLeader == CompanionAssignment.LEADER_CAPTAIN && _capUnit != null && _capUnit.unity != null && _capUnit.unity.move != null)
+                  {
+                     _targetLeaderUnit = _capUnit;
+                     _spawnLeaderName = "Captain";
+                     _sX = _capUnit.unity.move.point.x + (_loc8_ + 1) * 80;
+                     _sY = _capUnit.unity.move.point.y;
+                  }
+                  else
+                  {
+                     _targetLeaderUnit = InitData.CORE.playerFly;
+                     _spawnLeaderName = "Michael";
+                  }
+
+                  this.evts.addAI(_sX,_sY,_spawnLeaderName,["AI_P"],0,ConfigAndStory.AI[_loc8_],true,false,2,_cRole,_targetLeaderUnit);
                }
                _loc8_++;
             }

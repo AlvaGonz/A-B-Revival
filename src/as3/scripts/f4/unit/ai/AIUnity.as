@@ -56,6 +56,10 @@ package f4.unit.ai
       
       public var tacticalMode:int = 0;
       
+      public var companionRole:int = -1;
+      
+      public var leaderUnity:AIUnity;
+      
       public var spawnPoint:Point;
       
       public static const MODE_ANCHOR:int = 0;
@@ -732,7 +736,7 @@ package f4.unit.ai
                this.close = 1;
                this.aiPow = 1 * this._aiLastPowMut;
             }
-            else if(this.isCaptain)
+            else if(this.isCaptain || this.companionRole >= 0)
             {
                this.steerTacticalMode(_loc1_);
             }
@@ -778,11 +782,12 @@ package f4.unit.ai
       private function steerTacticalMode(param1:Array) : void
       {
          var _loc2_:AIUnity = this.nearestIn(param1);
-         var _loc3_:AIUnity = InitData.CORE.playerFly;
+         var _loc3_:AIUnity = this.leaderUnity && !this.leaderUnity.isDeadA1 && this.leaderUnity.unity ? this.leaderUnity : InitData.CORE.playerFly;
          var _loc4_:Point = null;
          var _loc5_:Number = NaN;
          var _loc6_:Number = NaN;
-         switch(this.tacticalMode)
+         var _activeMode:int = this.companionRole >= 0 ? this.companionRole : this.tacticalMode;
+         switch(_activeMode)
          {
             case MODE_ESCORT:
                if(_loc3_)
@@ -890,14 +895,23 @@ package f4.unit.ai
          var _loc4_:Number = Number.MAX_VALUE;
          var _loc5_:Number = NaN;
          var _loc6_:Number = NaN;
-         if(InitData.CORE.cam)
+         var _refPoint:Point = null;
+         if(this.leaderUnity && !this.leaderUnity.isDeadA1 && this.leaderUnity.unity && this.leaderUnity.unity.move)
+         {
+            _refPoint = this.leaderUnity.unity.move.point;
+         }
+         else if(InitData.CORE.cam)
+         {
+            _refPoint = InitData.CORE.cam.crossPoint;
+         }
+         if(_refPoint)
          {
             for each(_loc3_ in param1)
             {
                if(_loc3_ != this)
                {
-                  _loc5_ = InitData.CORE.cam.crossPoint.x - _loc3_.unity.move.point.x;
-                  _loc6_ = InitData.CORE.cam.crossPoint.y - _loc3_.unity.move.point.y;
+                  _loc5_ = _refPoint.x - _loc3_.unity.move.point.x;
+                  _loc6_ = _refPoint.y - _loc3_.unity.move.point.y;
                   _loc5_ = _loc5_ * _loc5_ + _loc6_ * _loc6_;
                   if(_loc5_ < _loc4_)
                   {
