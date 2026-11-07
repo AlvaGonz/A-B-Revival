@@ -1,7 +1,7 @@
 # Graph Report - A&B revival  (2026-11-07)
 
 ## Corpus Check
-- 187 files · ~78,961 words
+- 187 files · ~78,997 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 23 file(s) not represented in the graph (top: .bin 12, .bat 7, (none) 2)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `78acbfe7`
+- Built from commit: `898475ef`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -622,16 +622,16 @@ Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Core Entities` connect `Core Entities` to `Decision`, `2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()``, `AIUnity`, `MochiAd.as`, `ConfigAndStory`, `updateNew`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
 - **Are the 6 inferred relationships involving `AIUnity` (e.g. with `Decision` and `Decision`) actually correct?**
   _`AIUnity` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **Should `as3/scripts/ui/pages/UIMakePlayer.as` be split into smaller, more focused modules?**
   _Cohesion score 0.10574712643678161 - nodes in this community are weakly interconnected._
 - **Why does `UIMakePlayer()` connect `updateNew` to `as3/scripts/ui/pages/UIMakePlayer.as`, `Core Entities`, `Decision`, `UIChooseFlyAI.as`, `act`, `as3/scripts/Fly4UI.as`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+  _High betweenness centrality (0.020) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `EvtCtrl` (e.g. with `Context` and `Decision`) actually correct?**
   _`EvtCtrl` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Should `MochiServices.as` be split into smaller, more focused modules?**
   _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
 - **Why does `AIUnity` connect `AIUnity` to `Decision`, `Core Entities`, `1.2 Inter-Process Communication (IPC) Mechanisms`, `Decision`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
