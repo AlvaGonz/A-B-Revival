@@ -38,3 +38,4 @@ Continuing parallel dual-engine development introduces cognitive drag, duplicate
 ### Negative / Trade-offs
 - The Unity version must absorb all remaining reverse-engineered systems (e.g. mission script parser, shop UI, dialog trees) from the AS3 reference before achieving full campaign parity.
 - Contributors must adhere to strict zero-alloc DOTS constraints (`NativeArray<T>`, `[BurstCompile]`, no dynamic LINQ/`new` in simulation loops).
+
