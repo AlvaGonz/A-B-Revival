@@ -141,7 +141,6 @@ package f4.unit.particle
          _loc6_ = this.part.part.partMove.hitRect.y + Math.random() * this.part.part.partMove.hitRect.height;
          this.part.part.partMove.point.x = this.part.part.partMove.point.y = -1000000;
          this.part = null;
-         this.unity = null;
       }
    }
 }

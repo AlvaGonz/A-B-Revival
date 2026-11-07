@@ -137,7 +137,6 @@ package f4.unit.particle
             }
          }
          this.cam = null;
-         this.renderData = null;
          this.point = null;
          this.spd = null;
          this.hit = null;
