@@ -122,7 +122,7 @@ namespace ABRevival.Tests
 
             assembly.TryMountPart(engine, out _);
             Assert.IsFalse(assembly.IsValid);
-            Assert.IsFalse(assembly.IsValid(out var error));
+            Assert.IsFalse(assembly.Validate(out var error));
             Assert.AreEqual(AssemblyError.MissingHull, error);
         }
 
@@ -137,7 +137,7 @@ namespace ABRevival.Tests
             assembly.TryMountPart(wing, out _);
 
             Assert.IsTrue(assembly.IsValid);
-            Assert.IsTrue(assembly.IsValid(out var error));
+            Assert.IsTrue(assembly.Validate(out var error));
             Assert.AreEqual(AssemblyError.None, error);
         }
 
