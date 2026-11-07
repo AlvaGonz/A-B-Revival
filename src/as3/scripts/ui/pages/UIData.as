@@ -22,6 +22,7 @@ package ui.pages
    import ui.UICtrl;
    import ui.base.BtnBase;
    import ui.base.UIBase;
+   import ui.base.UIStyles;
    
    public class UIData extends UIBase
    {
@@ -62,10 +63,8 @@ package ui.pages
          this.txtAutosave.y = -10;
          this.txtAutosave.selectable = false;
          this.txtAutosave.mouseEnabled = false;
-         var tf:TextFormat = new TextFormat("Arial", 12, 0xffffff, true);
-         tf.align = TextFormatAlign.CENTER;
-         this.txtAutosave.defaultTextFormat = tf;
-         this.txtAutosave.filters = [new GlowFilter(0x000000, 0.8, 3, 3, 2, 1)];
+         UIStyles.applyFormat(this.txtAutosave, UIStyles.FONT_BODY, 12, UIStyles.COLOR_WHITE, true, TextFormatAlign.CENTER);
+         UIStyles.applyGlow(this.txtAutosave, 0x000000, 0.8, 3, 2);
          
          this.btnAutosave.addChild(this.txtAutosave);
          this.updateAutosaveUI();

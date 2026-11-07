@@ -29,6 +29,7 @@ package ui.pages
    import ui.UICtrl;
    import ui.base.BtnBase;
    import ui.base.UIBase;
+   import ui.base.UIStyles;
    import ui.make.MakeUI;
    import ui.unit.FormFly;
    import ui.unit.FormPlayerPart;
@@ -340,13 +341,12 @@ package ui.pages
          }
          this.txtWingHint = new TextField();
          this.txtWingHint.name = "txtWingHint";
-         var _tf:TextFormat = new TextFormat("Arial", 11, 0x66ccff, true);
-         this.txtWingHint.defaultTextFormat = _tf;
+         UIStyles.applyFormat(this.txtWingHint, UIStyles.FONT_BODY, UIStyles.SIZE_HUD, UIStyles.COLOR_SYSTEM_LIGHT, true, TextFieldAutoSize.LEFT);
          this.txtWingHint.text = "[R] Rotate Wing   |   [F] Flip Wing";
          this.txtWingHint.autoSize = TextFieldAutoSize.LEFT;
          this.txtWingHint.selectable = false;
          this.txtWingHint.mouseEnabled = false;
-         this.txtWingHint.filters = [new GlowFilter(0x000000, 0.9, 4, 4, 3, 1)];
+         UIStyles.applyGlow(this.txtWingHint, 0x000000, 0.9, 4, 3);
          var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
          if(_pic)
          {
