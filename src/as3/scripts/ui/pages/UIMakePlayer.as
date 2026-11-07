@@ -26,7 +26,6 @@ package ui.pages
    import flash.text.TextFormat;
    import flash.text.TextFormatAlign;
    import fullshit.tool.Attach;
-   import mochi.as3.MochiEvents;
    import ui.UICtrl;
    import ui.base.BtnBase;
    import ui.base.UIBase;
@@ -422,7 +421,7 @@ package ui.pages
          this.updateWingsInDtTemp();
       }
       
-      public function updateWingsInDtTemp() : void
+      public function updateWingsInDtTemp(param1:F4ShowData = null) : void
       {
          if(!this.txtWings)
          {
@@ -430,8 +429,7 @@ package ui.pages
          }
          var _dtTemp:MovieClip = _mov.getChildByName("dtTemp") as MovieClip;
          var _txtHp:TextField = _dtTemp ? _dtTemp.getChildByName("txtHp") as TextField : null;
-         var _hull:F4DataOrg = F4DataHole.getAssemblyHull();
-         if(!_txtHp || _txtHp.text == "" || _txtHp.text == "-" || !_hull)
+         if(!_txtHp || _txtHp.text == "" || _txtHp.text == "-")
          {
             if(this.txtWings.text != "")
             {
@@ -439,8 +437,27 @@ package ui.pages
             }
             return;
          }
-         var _curWings:int = F4DataHole.countMountedWings();
-         var _maxWings:int = F4DataOrg.maxWingsForHull(_hull);
+         var _curWings:int = 0;
+         var _maxWings:int = 0;
+         if(param1)
+         {
+            _curWings = param1.wings;
+            _maxWings = param1.maxWings;
+         }
+         else
+         {
+            var _hull:F4DataOrg = F4DataHole.getAssemblyHull();
+            if(!_hull)
+            {
+               if(this.txtWings.text != "")
+               {
+                  this.txtWings.text = "";
+               }
+               return;
+            }
+            _curWings = F4DataHole.countMountedWings();
+            _maxWings = F4DataOrg.maxWingsForHull(_hull);
+         }
          var _text:String = _curWings + "/" + _maxWings;
          if(this.txtWings.text != _text)
          {
@@ -571,7 +588,7 @@ package ui.pages
       public function addDtLTempRun() : void
       {
          var _loc2_:MovieClip = _mov.getChildByName("dtTemp") as MovieClip;
-         var _loc3_:F4ShowData = F4DataLinks.calculateCraftStats(this.f4datax.plMc);
+         var _loc3_:F4ShowData = F4DataLinks.calculateCraftStats(this.f4datax);
          if(_loc3_)
          {
             ShowPart.addFlyTemp(_loc3_,_loc2_);
@@ -580,7 +597,7 @@ package ui.pages
          {
             ShowPart.cleanFlyTemp(_loc2_);
          }
-         this.updateWingsInDtTemp();
+         this.updateWingsInDtTemp(_loc3_);
       }
       
       private function runzoom() : void
@@ -917,7 +934,6 @@ package ui.pages
       
       public function editYes() : void
       {
-         MochiEvents.trackEvent("edit_fly");
          this.formFly.form.visible = false;
          this.form.form.visible = true;
          _mov.getChildByName("tmask").visible = false;
@@ -974,7 +990,6 @@ package ui.pages
       
       public function addFlyYes() : void
       {
-         MochiEvents.trackEvent("add_fly",this.addFlyReal.inputWord);
          this.addToFly(false,this.addFlyReal.inputWord);
          this.addFlyReal = null;
          this.cleanDt();
@@ -989,7 +1004,6 @@ package ui.pages
       
       public function mergeFlyYes() : void
       {
-         MochiEvents.trackEvent("merge_fly",this.mergeFlyReal.inputWord);
          this.addToFly(true,this.mergeFlyReal.inputWord);
          this.mergeFlyReal = null;
          this.showFlys(true);
@@ -1024,7 +1038,6 @@ package ui.pages
       public function mergeFlyLeaveYes() : void
       {
          var tempui:UIBase = null;
-         MochiEvents.trackEvent("merge_fly_leave",this.mergeFlyReal.inputWord);
          this.addToFly(true,this.mergeFlyReal.inputWord);
          this.mergeFlyReal = null;
          this.cleanMCNotBack();
@@ -1096,7 +1109,6 @@ package ui.pages
       
       public function removeYes() : void
       {
-         MochiEvents.trackEvent("break_fly");
          this.cleanMC();
          this.formFly.deleteNow();
          this.formFly.selToDel = -1;

@@ -54,8 +54,6 @@ package
       
       public var soundc32:SoundCtrl32;
       
-      public var text:TextField;
-      
       public var loadNum:int = 0;
       
       public var alldata:AllData;
@@ -260,11 +258,11 @@ package
          }
       }
       
-      public function showAds(param1:Function) : void
+      public function showAds(callback:Function) : void
       {
-         if(param1 is Function)
+         if(callback is Function)
          {
-            param1();
+            callback();
          }
       }
    }

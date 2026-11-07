@@ -10,8 +10,6 @@ package
    import flash.net.navigateToURL;
    import flash.text.TextField;
    import flash.utils.getDefinitionByName;
-   import mochi.as3.MochiAd;
-   import mochi.as3.MochiServices;
    
    [SWF(width="640", height="480", backgroundColor="#000000", frameRate="60")]
    public dynamic class VeryOutShitABC extends MovieClip
@@ -46,7 +44,6 @@ package
       private function ckURL() : void
       {
          var _loc2_:String = null;
-         MochiServices.connect("0fbe1356f7457e01",this);
          var _loc1_:String = this.loaderInfo.loaderURL;
          for each(_loc2_ in this.noAdsUrls)
          {

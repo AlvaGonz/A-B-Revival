@@ -46,6 +46,11 @@ package f4ui.f4partmc
          return Boolean(this.f4DataLink) && Boolean(this.f4DataLink.f4dataorg) && this.f4DataLink.f4dataorg.type == targetType && this.f4DataLink.f4dataorg.useAs != 2;
       }
       
+      public function isRootChassis() : Boolean
+      {
+         return Boolean(this.f4DataLink) && this.f4DataLink.isRootChassis();
+      }
+      
       override public function mouseOver(param1:MouseEvent) : void
       {
          activePart = this;

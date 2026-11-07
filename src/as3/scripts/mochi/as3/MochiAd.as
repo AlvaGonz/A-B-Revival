@@ -28,44 +28,37 @@ package mochi.as3
          return _loc4_;
       }
       
+      private static function triggerFinished(options:Object) : void
+      {
+         if(options && options.ad_finished is Function)
+         {
+            options.ad_finished();
+         }
+      }
+      
       public static function showPreGameAd(param1:Object) : void
       {
-         if(param1 && param1.ad_finished is Function)
-         {
-            param1.ad_finished();
-         }
+         triggerFinished(param1);
       }
       
       public static function showClickAwayAd(param1:Object) : void
       {
-         if(param1 && param1.ad_finished is Function)
-         {
-            param1.ad_finished();
-         }
+         triggerFinished(param1);
       }
       
       public static function showInterLevelAd(param1:Object) : void
       {
-         if(param1 && param1.ad_finished is Function)
-         {
-            param1.ad_finished();
-         }
+         triggerFinished(param1);
       }
       
       public static function showPreloaderAd(param1:Object) : void
       {
-         if(param1 && param1.ad_finished is Function)
-         {
-            param1.ad_finished();
-         }
+         triggerFinished(param1);
       }
       
       public static function showTimedAd(param1:Object) : void
       {
-         if(param1 && param1.ad_finished is Function)
-         {
-            param1.ad_finished();
-         }
+         triggerFinished(param1);
       }
       
       public static function _allowDomains(param1:String) : String
@@ -75,10 +68,7 @@ package mochi.as3
       
       public static function load(param1:Object) : MovieClip
       {
-         if(param1 && param1.ad_finished is Function)
-         {
-            param1.ad_finished();
-         }
+         triggerFinished(param1);
          return new MovieClip();
       }
       
