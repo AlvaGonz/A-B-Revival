@@ -74,6 +74,9 @@ package ui.pages
       public var tacticalModeFade:int = 0;
       private var _tacticalModeTitles:Array = ["ANCHOR / HOLD","ESCORT / FOLLOW","EVADE / FLEE","SEEK & DESTROY","FIRE SUPPORT","SHIELD / INTERCEPT"];
       private var _tacticalModeCodes:Array = ["AN","ES","EV","SD","FS","SH"];
+      public var camDistanceTxt:TextField;
+      public var camDistanceFade:int = 0;
+      private var _camDistanceTitles:Array = ["[ CAM: SHORT (1.0x) ]","[ CAM: MEDIUM (1.3x) ]","[ CAM: FAR (1.5x) ]"];
       public var capAlertTimer:int = 0;
       public var capThresholdsFired:Array = [false, false, false, false];
 
@@ -412,6 +415,8 @@ package ui.pages
          _mov.addChildAt(InitData.CORE.renderData.bmp,0);
          this.tacticalModeFade = 0;
          this.tacticalModeTxt.visible = false;
+         this.camDistanceFade = 0;
+         this.camDistanceTxt.visible = false;
          if(this.pf1 && this.pf1.isCaptain)
          {
             this.capModeCodeTxt.text = this._tacticalModeCodes[AIUnity.MODE_ANCHOR];
@@ -521,6 +526,7 @@ package ui.pages
          this.updateCriticalDistress();
          this.updateAutofireReticle();
          this.updateTacticalModeBadge();
+         this.updateCameraDistanceBadge();
       }
 
       public function recordLostPart(param1:int) : void
@@ -580,6 +586,35 @@ package ui.pages
             if(this.tacticalModeFade == 0)
             {
                this.tacticalModeTxt.visible = false;
+            }
+         }
+      }
+
+      public function showCameraDistance(param1:int) : void
+      {
+         if(param1 < 0 || param1 >= this._camDistanceTitles.length)
+         {
+            param1 = 0;
+         }
+         this.camDistanceTxt.text = this._camDistanceTitles[param1];
+         this.camDistanceTxt.x = 320 - this.camDistanceTxt.width / 2;
+         this.camDistanceTxt.visible = true;
+         this.camDistanceTxt.alpha = 1;
+         this.camDistanceFade = 45;
+      }
+
+      public function updateCameraDistanceBadge() : void
+      {
+         if(this.camDistanceFade > 0)
+         {
+            this.camDistanceFade--;
+            if(this.camDistanceFade <= 15)
+            {
+               this.camDistanceTxt.alpha = this.camDistanceFade / 15;
+            }
+            if(this.camDistanceFade == 0)
+            {
+               this.camDistanceTxt.visible = false;
             }
          }
       }

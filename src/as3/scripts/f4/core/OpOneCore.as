@@ -57,6 +57,11 @@ package f4.core
          this.levelStartChangeCtrl = false;
          this.renderData = InitData.RENDERDATA;
          this.renderData.init();
+         var _initDist:int = ConfigAndStory.CONFIG && ConfigAndStory.CONFIG[6] != null ? int(ConfigAndStory.CONFIG[6]) : 0;
+         if(_initDist > 0)
+         {
+            this.renderData.setCameraDistance(_initDist);
+         }
          this.targets = InitData.TARGETS;
          this.targets.reset();
          this.targets.initEvts();
@@ -125,6 +130,20 @@ package f4.core
             if(this._key.isKeyDownOnce("X") || this._key.isKeyDownOnce("x"))
             {
                this.autoFire = !this.autoFire;
+            }
+            if(this._key.isKeyDownOnce("C") || this._key.isKeyDownOnce("c"))
+            {
+               var _curDist:int = ConfigAndStory.CONFIG && ConfigAndStory.CONFIG[6] != null ? int(ConfigAndStory.CONFIG[6]) : 0;
+               _curDist = (_curDist + 1) % 3;
+               ConfigAndStory.CONFIG[6] = _curDist;
+               ConfigAndStory.save();
+               this.renderData.setCameraDistance(_curDist);
+               var _cgui:* = this.targets ? this.targets.evts.gameui : null;
+               if(_cgui && _cgui.showCameraDistance)
+               {
+                  _cgui.showCameraDistance(_curDist);
+               }
+               InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
             }
             if(this.playerFly.aiPowMut > 1)
             {

@@ -4,6 +4,7 @@ package f4.unit.ai
    import f4.data.sound32.SoundRun1;
    import f4.unit.move.MoveAs;
    import f4.unit.particle.DeadPart;
+   import f4.unit.particle.Item;
    import f4.unit.parts.Unity;
    import f4.unit.render.AIURender;
    import f4.unit.render.Cam;
@@ -724,11 +725,54 @@ package f4.unit.ai
                   this.aiPow = this.aimode.bodyClose.y;
                }
             }
-            if(this.isCaptain)
+            var _healDrop:Item = this.unity.friend && !this.isCaptain ? this.findPriorityHealDrop() : null;
+            if(_healDrop)
+            {
+               this.aim = _healDrop.point;
+               this.close = 1;
+               this.aiPow = 1 * this._aiLastPowMut;
+            }
+            else if(this.isCaptain)
             {
                this.steerTacticalMode(_loc1_);
             }
          }
+      }
+      
+      private function findPriorityHealDrop() : Item
+      {
+         if(!targets || !targets.ia1 || !targets.pfa1)
+         {
+            return null;
+         }
+         var _heal:Item = null;
+         var _minDistSq:Number = Number.MAX_VALUE;
+         for each(var _item:Item in targets.ia1.array)
+         {
+            if(_item && !_item.isDeadA1 && _item.data && _item.data[0] == "life")
+            {
+               var _dsq:Number = (this.unity.move.point.x - _item.point.x) * (this.unity.move.point.x - _item.point.x) + (this.unity.move.point.y - _item.point.y) * (this.unity.move.point.y - _item.point.y);
+               var _isClosest:Boolean = true;
+               for each(var _comp:AIUnity in targets.pfa1.array)
+               {
+                  if(_comp && !_comp.isDeadA1 && _comp != this && _comp.unity && _comp.unity.move)
+                  {
+                     var _cdsq:Number = (_comp.unity.move.point.x - _item.point.x) * (_comp.unity.move.point.x - _item.point.x) + (_comp.unity.move.point.y - _item.point.y) * (_comp.unity.move.point.y - _item.point.y);
+                     if(_cdsq < _dsq)
+                     {
+                        _isClosest = false;
+                        break;
+                     }
+                  }
+               }
+               if(_isClosest && _dsq < _minDistSq)
+               {
+                  _minDistSq = _dsq;
+                  _heal = _item;
+               }
+            }
+         }
+         return _heal;
       }
       
       private function steerTacticalMode(param1:Array) : void
