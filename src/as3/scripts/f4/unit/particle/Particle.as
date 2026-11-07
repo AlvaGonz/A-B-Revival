@@ -60,7 +60,7 @@ package f4.unit.particle
          this._rect2 = StaticShit.RECT2;
          this._bline = StaticShit.BLINE;
          this._hsv = StaticShit.RGB;
-         this.life = Math.round(param9 * (1.0 / MoveAs.SIM_SCALE));
+         this.life = Math.round(param9 * (60.0 / 36.0));
          this.autof = param8;
          this.rect = new Rectangle(0,0,this.w,this.w);
          this.cam = param1;
@@ -119,8 +119,8 @@ package f4.unit.particle
       
       override public function runA1() : void
       {
-         var sx:Number = this.spd.x * MoveAs.SIM_SCALE;
-         var sy:Number = this.spd.y * MoveAs.SIM_SCALE;
+         var sx:Number = this.spd.x * 0.6;
+         var sy:Number = this.spd.y * 0.6;
          this.point.x += sx;
          this.point.y += sy;
          if(sx < 0)
@@ -145,7 +145,7 @@ package f4.unit.particle
          }
          if(this.autof != 1)
          {
-            var decay:Number = Math.pow(this.autof, MoveAs.SIM_SCALE);
+            var decay:Number = Math.pow(this.autof, 0.6);
             this.spd.x *= decay;
             this.spd.y *= decay;
          }

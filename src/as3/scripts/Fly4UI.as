@@ -44,8 +44,6 @@ package
       
       public static const BUILD:String = "BUILD 111214_2";
       
-      public static const SIM_STEP_MS:Number = 27.777778;
-      
       public var key:KeyCtrl;
       
       public var ui_out:Sprite;
@@ -63,8 +61,6 @@ package
       public var alldata:AllData;
       
       private var _lastFrameTimer:uint = 0;
-      
-      private var _simAccumulator:Number = 0;
       
       private var devOverlay:DevMetricsOverlay;
       

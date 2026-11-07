@@ -101,7 +101,7 @@ package f4.unit.fire
          if(this.bulletData.aim > 0 && Boolean(this.part.aim))
          {
             _loc11_.aim = this.part.aim;
-            _loc11_.aif.rotLimit = (this.bulletData.aim / 180 * Math.PI) * MoveAs.SIM_SCALE;
+            _loc11_.aif.rotLimit = (this.bulletData.aim / 180 * Math.PI) * 0.6;
          }
          if(this.friend)
          {

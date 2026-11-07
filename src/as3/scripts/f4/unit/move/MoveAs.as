@@ -6,7 +6,7 @@ package f4.unit.move
    
    public class MoveAs
    {
-      public static var SIM_SCALE:Number = 0.6;
+      public static const SIM_SCALE:Number = 0.6;
       
       public var point:Point;
       
@@ -80,12 +80,12 @@ package f4.unit.move
       public function updateSpd() : void
       {
          this.dxy.x = this.dxy.y = 0;
-         this.spdp.x += this.accp.x * SIM_SCALE;
-         this.spdp.y += this.accp.y * SIM_SCALE;
+         this.spdp.x += this.accp.x * 0.6;
+         this.spdp.y += this.accp.y * 0.6;
          if(this.autof != 1)
          {
-            this.spdp.x *= Math.pow(this.autof, SIM_SCALE);
-            this.spdp.y *= Math.pow(this.autof, SIM_SCALE);
+            this.spdp.x *= Math.pow(this.autof, 0.6);
+            this.spdp.y *= Math.pow(this.autof, 0.6);
          }
       }
       
@@ -97,8 +97,8 @@ package f4.unit.move
          this.lastPoint.y = this.point.y;
          if(!(this.spdp.x == 0 && this.spdp.y == 0 && this.accp.x == 0 && this.accp.y == 0))
          {
-            this.point.x += (this.spdp.x + this.dxy.x) * SIM_SCALE;
-            this.point.y += (this.spdp.y + this.dxy.y) * SIM_SCALE;
+            this.point.x += (this.spdp.x + this.dxy.x) * 0.6;
+            this.point.y += (this.spdp.y + this.dxy.y) * 0.6;
             this.d2r(this.spdp,this.spd);
          }
          this.hitRect.x = this.point.x - this.hitRect.width / 2;

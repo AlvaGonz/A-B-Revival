@@ -43,7 +43,7 @@ package f4data
          this.mcName = param1["mcName"];
          this.hp = param1["hp"];
          this.dmg = param1["dmg"];
-         this.life = Math.round(param1["life"] * (1.0 / MoveAs.SIM_SCALE));
+         this.life = Math.round(param1["life"] * (60.0 / 36.0));
          this.aim = param1["aim"];
          this.deadAct = param1["deadAct"];
          this.btwh = param1["btwh"];
