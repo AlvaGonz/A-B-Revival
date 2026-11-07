@@ -51,7 +51,14 @@ package ui.unit
          _loc3_.push(ConfigAndStory.num2LR(_loc2_.lr));
          _loc3_.push(_loc2_.maxhp);
          _loc3_.push((_loc2_.turnFly * (180 / Math.PI)).toFixed(1));
-         _loc3_.push(_loc2_.powFly.toFixed(1));
+         if(_loc2_.type == F4DataOrg.TYPE_GUN)
+         {
+            _loc3_.push(int(_loc2_.getEffectiveRange()) + "");
+         }
+         else
+         {
+            _loc3_.push(_loc2_.powFly.toFixed(1));
+         }
          _loc3_.push(_loc2_.mass);
          _loc3_.push(_loc4_);
          _loc3_.push(int(_loc2_.cost * this.costMut));
