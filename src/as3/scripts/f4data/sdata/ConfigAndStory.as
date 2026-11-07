@@ -16,6 +16,7 @@ package f4data.sdata
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
    import fullshit.AbsMain;
+   import f4data.CompanionAssignment;
    
    public class ConfigAndStory
    {
@@ -51,6 +52,8 @@ package f4data.sdata
       public static var PLAYER:int;
       
       public static var AI:Array;
+      
+      public static var COMPANIONS:Array;
       
       public static var MONEY:int;
       
@@ -104,6 +107,7 @@ package f4data.sdata
          PLAYER = 0;
          TIMEALL = 0;
          AI = [];
+         COMPANIONS = [];
          AIGAME = true;
          DIRECTOR = new Director();
          MISSIONS = new MissionData();
@@ -414,11 +418,64 @@ package f4data.sdata
          var _loc1_:int = 0;
          while(_loc1_ < 20)
          {
-            if(AI[_loc1_] == PLAYER || !ALLPART.plFly[AI[_loc1_]])
+            if(AI && (AI[_loc1_] == PLAYER || !ALLPART.plFly[AI[_loc1_]]))
             {
                AI[_loc1_] = null;
             }
+            if(COMPANIONS && COMPANIONS[_loc1_] != null)
+            {
+               if(COMPANIONS[_loc1_].craftIndex == PLAYER || !ALLPART.plFly[COMPANIONS[_loc1_].craftIndex])
+               {
+                  COMPANIONS[_loc1_] = null;
+               }
+            }
             _loc1_++;
+         }
+      }
+      
+      public static function syncCompanionsAndAI() : void
+      {
+         if(!COMPANIONS)
+         {
+            COMPANIONS = [];
+         }
+         if(!AI)
+         {
+            AI = [];
+         }
+         var _maxLen:int = Math.max(AI.length, COMPANIONS.length);
+         if(_maxLen < 20)
+         {
+            _maxLen = 20;
+         }
+         var _i:int = 0;
+         while(_i < _maxLen)
+         {
+            var _comp:CompanionAssignment = _i < COMPANIONS.length ? COMPANIONS[_i] : null;
+            var _aiCraft:* = _i < AI.length ? AI[_i] : null;
+            
+            if(_comp != null && _comp.craftIndex >= 0)
+            {
+               AI[_i] = _comp.craftIndex;
+            }
+            else if(_aiCraft != null)
+            {
+               var _cIdx:int = int(_aiCraft);
+               if(_comp == null)
+               {
+                  COMPANIONS[_i] = new CompanionAssignment(_cIdx, CompanionAssignment.ROLE_ESCORT, CompanionAssignment.LEADER_MICHAEL);
+               }
+               else
+               {
+                  _comp.craftIndex = _cIdx;
+               }
+            }
+            else
+            {
+               AI[_i] = null;
+               COMPANIONS[_i] = null;
+            }
+            _i++;
          }
       }
       
@@ -490,9 +547,32 @@ package f4data.sdata
             MONEY = SOData.data["money"];
             PLAYER = SOData.data["player"];
             AI = SOData.data["ai"];
+            if(AI == null)
+            {
+               AI = [];
+            }
             AIGAME = SOData.data["aigame"];
             HOWTOPLAY = SOData.data["how"];
             SHOWTEXTMENU = SOData.data["menu"];
+            COMPANIONS = [];
+            var _rawComps:Array = SOData.data["companions"] as Array;
+            if(_rawComps != null)
+            {
+               var _ri:int = 0;
+               while(_ri < _rawComps.length)
+               {
+                  if(_rawComps[_ri] != null)
+                  {
+                     COMPANIONS[_ri] = CompanionAssignment.fromObject(_rawComps[_ri]);
+                  }
+                  else
+                  {
+                     COMPANIONS[_ri] = null;
+                  }
+                  _ri++;
+               }
+            }
+            syncCompanionsAndAI();
             checkCaptainShip();
          }
          else
@@ -516,6 +596,28 @@ package f4data.sdata
          SOData.data["player"] = PLAYER;
          SOData.data["ai"] = AI.concat();
          SOData.data["aigame"] = AIGAME;
+         var _compList:Array = [];
+         if(COMPANIONS)
+         {
+            var _ci:int = 0;
+            while(_ci < COMPANIONS.length)
+            {
+               if(COMPANIONS[_ci] is CompanionAssignment)
+               {
+                  _compList.push(CompanionAssignment(COMPANIONS[_ci]).toObject());
+               }
+               else if(COMPANIONS[_ci] != null)
+               {
+                  _compList.push(CompanionAssignment.fromObject(COMPANIONS[_ci]).toObject());
+               }
+               else
+               {
+                  _compList.push(null);
+               }
+               _ci++;
+            }
+         }
+         SOData.data["companions"] = _compList;
          SOData.data["how"] = HOWTOPLAY.concat();
          SOData.data["menu"] = SHOWTEXTMENU.concat();
          SOData.flush();
@@ -531,6 +633,28 @@ package f4data.sdata
          _loc1_["player"] = PLAYER;
          _loc1_["ai"] = AI.concat();
          _loc1_["aigame"] = AIGAME;
+         var _outComps:Array = [];
+         if(COMPANIONS)
+         {
+            var _oi:int = 0;
+            while(_oi < COMPANIONS.length)
+            {
+               if(COMPANIONS[_oi] is CompanionAssignment)
+               {
+                  _outComps.push(CompanionAssignment(COMPANIONS[_oi]).toObject());
+               }
+               else if(COMPANIONS[_oi] != null)
+               {
+                  _outComps.push(CompanionAssignment.fromObject(COMPANIONS[_oi]).toObject());
+               }
+               else
+               {
+                  _outComps.push(null);
+               }
+               _oi++;
+            }
+         }
+         _loc1_["companions"] = _outComps;
          _loc1_["how"] = HOWTOPLAY.concat();
          _loc1_["menu"] = SHOWTEXTMENU.concat();
          var _loc2_:ByteArray = new ByteArray();
@@ -561,9 +685,32 @@ package f4data.sdata
                MONEY = obj["money"];
                PLAYER = obj["player"];
                AI = obj["ai"];
+               if(AI == null)
+               {
+                  AI = [];
+               }
                AIGAME = obj["aigame"];
                HOWTOPLAY = obj["how"];
                SHOWTEXTMENU = obj["menu"];
+               COMPANIONS = [];
+               var _objComps:Array = obj["companions"] as Array;
+               if(_objComps != null)
+               {
+                  var _oji:int = 0;
+                  while(_oji < _objComps.length)
+                  {
+                     if(_objComps[_oji] != null)
+                     {
+                        COMPANIONS[_oji] = CompanionAssignment.fromObject(_objComps[_oji]);
+                     }
+                     else
+                     {
+                        COMPANIONS[_oji] = null;
+                     }
+                     _oji++;
+                  }
+               }
+               syncCompanionsAndAI();
                saveData();
                InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[17]);
                return true;
@@ -597,6 +744,7 @@ package f4data.sdata
          }
          PLAYER = 0;
          AI = [];
+         COMPANIONS = [];
          AIGAME = true;
          HOWTOPLAY = [0,0,0,0,0,0,0,0,0];
          SHOWTEXTMENU = [0,0,0,0,0];
