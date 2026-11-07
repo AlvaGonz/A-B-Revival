@@ -197,6 +197,84 @@ package f4.gfx
          this._targets = InitData.TARGETS;
       }
       
+      public function setCameraDistance(param1:int) : void
+      {
+         if(param1 == 1)
+         {
+            this.W = 832;
+            this.H = 624;
+         }
+         else if(param1 == 2)
+         {
+            this.W = 960;
+            this.H = 720;
+         }
+         else
+         {
+            this.W = 640;
+            this.H = 480;
+         }
+         this.renderwh.x = this.W;
+         this.renderwh.y = this.H;
+         if(this.cam)
+         {
+            this.cam.rect.width = this.W;
+            this.cam.rect.height = this.H;
+         }
+         if(this.BMPD)
+         {
+            this.BMPD.dispose();
+         }
+         if(this.CANVAS)
+         {
+            this.CANVAS.dispose();
+         }
+         if(this.BMPDFX)
+         {
+            this.BMPDFX.dispose();
+         }
+         if(this.BMPDBLTFX)
+         {
+            this.BMPDBLTFX.dispose();
+         }
+         if(this.BMPDBG)
+         {
+            this.BMPDBG.dispose();
+         }
+         if(this.sm)
+         {
+            this.sm.dispose();
+         }
+
+         this.BMPD = new BitmapData(this.W,this.H,true,0);
+         this.CANVAS = this.BMPD.clone();
+         this.BMPDFX = new BitmapData(this.W / 2,this.H / 2,true,0);
+         this.BMPDBLTFX = this.BMPDFX.clone();
+         this.BMPDBG = this.BMPD.clone();
+         this.rect = this.BMPD.rect;
+         this.fxrect = this.BMPDBLTFX.rect;
+
+         this.sm = new SimpleGlowFilter(this.CANVAS,0.45);
+         if(ConfigAndStory.CONFIG[0] == 1)
+         {
+            this.sm.colorTransform.alphaMultiplier = 0.75;
+            this.sm.blur.blurX = this.sm.blur.blurY = 4;
+         }
+         else if(ConfigAndStory.CONFIG[1] == 1)
+         {
+            this.sm.colorTransform.alphaMultiplier = 0.95;
+            this.sm.blur.blurX = this.sm.blur.blurY = 8;
+            this.sm.blur.quality = 2;
+         }
+
+         if(this.bmp)
+         {
+            this.bmp.bitmapData = this.CANVAS;
+            this.bmp.scaleX = 640.0 / this.W;
+            this.bmp.scaleY = 480.0 / this.H;
+         }
+      }
+      
       public function makeCamBg(param1:int, param2:int) : void
       {
          this.cam = new Cam(new Rectangle(2000,2000,this.W,this.H),new Point(param1,param2),new Point(2500,2500));

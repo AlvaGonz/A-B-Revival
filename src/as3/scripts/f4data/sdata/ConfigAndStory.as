@@ -89,7 +89,7 @@ package f4data.sdata
       
       public static function init() : void
       {
-         CONFIG = [1,0,1,1,1,1];
+         CONFIG = [1,0,1,1,1,1,0];
          SHOWTEXTMENU = [0,0,0,0,0];
          HOWTOPLAY = [0,0,0,0,0,0,0,0,0];
          STORY = 0;
@@ -403,6 +403,10 @@ package f4data.sdata
          if(SO.data["config"] != null)
          {
             CONFIG = SO.data["config"];
+            if(CONFIG.length < 7 || CONFIG[6] == null)
+            {
+               CONFIG[6] = 0;
+            }
             TIMEALL = SO.data["time"];
             if(SO.data["autosave"] != null)
             {
