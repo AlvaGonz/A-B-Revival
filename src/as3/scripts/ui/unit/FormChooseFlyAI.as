@@ -8,7 +8,7 @@ package ui.unit
    import flash.text.TextFormat;
    import flash.text.TextFormatAlign;
    import ui.base.FormBase;
-   import ui.base.UIStyles;
+   import ui.base.UIBase;
    
    public class FormChooseFlyAI extends FormBase
    {
@@ -121,7 +121,7 @@ package ui.unit
                   {
                      _badge = new TextField();
                      _badge.name = "txtCaptainBadge";
-                     UIStyles.applyFormat(_badge, UIStyles.FONT_BODY, UIStyles.SIZE_SMALL, UIStyles.COLOR_SYSTEM_LIGHT, true, TextFormatAlign.CENTER);
+                     UIBase.applyFormat(_badge, UIBase.FONT_BODY, UIBase.SIZE_SMALL, UIBase.COLOR_SYSTEM_LIGHT, true, TextFormatAlign.CENTER);
                      _badge.text = "[CAPTAIN]";
                      var _bai:MovieClip = _loc2_.getChildByName("$bai") as MovieClip;
                      if(_bai)
@@ -133,7 +133,7 @@ package ui.unit
                      }
                      _badge.selectable = false;
                      _badge.mouseEnabled = false;
-                     UIStyles.applyGlow(_badge, 0x003366, 0.8, 3, 2);
+                     UIBase.applyGlow(_badge, 0x003366, 0.8, 3, 2);
                      _loc2_.addChild(_badge);
                   }
                   _badge.visible = true;

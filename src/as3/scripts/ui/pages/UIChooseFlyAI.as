@@ -19,7 +19,6 @@ package ui.pages
    import ui.UICtrl;
    import ui.base.BtnBase;
    import ui.base.UIBase;
-   import ui.base.UIStyles;
    import ui.unit.FormChooseFlyAI;
    import ui.unit.ShowPart;
    
@@ -826,7 +825,7 @@ package ui.pages
             _txtR.height = 11;
             _txtR.selectable = false;
             _txtR.mouseEnabled = false;
-            UIStyles.applyFormat(_txtR, UIStyles.FONT_BODY, 8, UIStyles.COLOR_ACCENT_CYAN, true, TextFormatAlign.CENTER);
+            UIBase.applyFormat(_txtR, UIBase.FONT_BODY, 8, UIBase.COLOR_ACCENT_CYAN, true, TextFormatAlign.CENTER);
             _txtR.text = "ESC";
             _btnRole.addChild(_txtR);
             _btnRole.addEventListener(MouseEvent.CLICK, this.createRoleBtnClickHandler(_i));
@@ -850,7 +849,7 @@ package ui.pages
             _txtL.height = 11;
             _txtL.selectable = false;
             _txtL.mouseEnabled = false;
-            UIStyles.applyFormat(_txtL, UIStyles.FONT_BODY, 8, UIStyles.COLOR_SUCCESS, true, TextFormatAlign.CENTER);
+            UIBase.applyFormat(_txtL, UIBase.FONT_BODY, 8, UIBase.COLOR_SUCCESS, true, TextFormatAlign.CENTER);
             _txtL.text = "[M]";
             _btnLead.addChild(_txtL);
             _btnLead.addEventListener(MouseEvent.CLICK, this.createLeaderClickHandler(_i));
@@ -970,7 +969,7 @@ package ui.pages
             _optTxt.height = 13;
             _optTxt.selectable = false;
             _optTxt.mouseEnabled = false;
-            UIStyles.applyFormat(_optTxt, UIStyles.FONT_BODY, 8, UIStyles.COLOR_SYSTEM_LIGHT, false, TextFormatAlign.LEFT);
+            UIBase.applyFormat(_optTxt, UIBase.FONT_BODY, 8, UIBase.COLOR_SYSTEM_LIGHT, false, TextFormatAlign.LEFT);
             _optTxt.text = ROLE_SHORT_NAMES[_k] + " " + ROLE_FULL_NAMES[_k];
             _item.addChild(_optTxt);
             

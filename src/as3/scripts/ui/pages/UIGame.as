@@ -26,7 +26,6 @@ package ui.pages
    import ui.UICtrl;
    import ui.base.BtnBase;
    import ui.base.UIBase;
-   import ui.base.UIStyles;
    
    public class UIGame extends UIBase
    {
@@ -131,8 +130,8 @@ package ui.pages
          this.lostPartsTxt.autoSize = TextFieldAutoSize.LEFT;
          this.lostPartsTxt.selectable = false;
          this.lostPartsTxt.mouseEnabled = false;
-         UIStyles.applyFormat(this.lostPartsTxt, UIStyles.FONT_SANS, UIStyles.SIZE_HUD, UIStyles.COLOR_DAMAGE_CRIMSON, true, TextFieldAutoSize.LEFT);
-         UIStyles.applyGlow(this.lostPartsTxt, 0x000000, 0.9, 3, 3);
+         UIBase.applyFormat(this.lostPartsTxt, UIBase.FONT_SANS, UIBase.SIZE_HUD, UIBase.COLOR_DAMAGE_CRIMSON, true, TextFieldAutoSize.LEFT);
+         UIBase.applyGlow(this.lostPartsTxt, 0x000000, 0.9, 3, 3);
          this.lostPartsTxt.x = this.lifeBar.x;
          this.lostPartsTxt.y = this.lifeBar.y - 18;
          param2.addChild(this.lostPartsTxt);
@@ -141,8 +140,8 @@ package ui.pages
          this.capAlertTxt.autoSize = TextFieldAutoSize.CENTER;
          this.capAlertTxt.selectable = false;
          this.capAlertTxt.mouseEnabled = false;
-         UIStyles.applyFormat(this.capAlertTxt, UIStyles.FONT_SANS, UIStyles.SIZE_ALERT, UIStyles.COLOR_CAPTAIN_AMBER, true, TextFormatAlign.CENTER);
-         UIStyles.applyHoloGlow(this.capAlertTxt, UIStyles.COLOR_CAPTAIN_AMBER);
+         UIBase.applyFormat(this.capAlertTxt, UIBase.FONT_SANS, UIBase.SIZE_ALERT, UIBase.COLOR_CAPTAIN_AMBER, true, TextFormatAlign.CENTER);
+         UIBase.applyHoloGlow(this.capAlertTxt, UIBase.COLOR_CAPTAIN_AMBER);
          this.capAlertTxt.x = 400;
          this.capAlertTxt.y = 48;
          this.capAlertTxt.visible = false;
@@ -152,8 +151,8 @@ package ui.pages
           this.tacticalModeTxt.autoSize = TextFieldAutoSize.CENTER;
           this.tacticalModeTxt.selectable = false;
           this.tacticalModeTxt.mouseEnabled = false;
-          UIStyles.applyFormat(this.tacticalModeTxt, UIStyles.FONT_SANS, UIStyles.SIZE_ALERT, UIStyles.COLOR_CAPTAIN_AMBER, true, TextFormatAlign.CENTER);
-          UIStyles.applyHoloGlow(this.tacticalModeTxt, UIStyles.COLOR_CAPTAIN_AMBER);
+          UIBase.applyFormat(this.tacticalModeTxt, UIBase.FONT_SANS, UIBase.SIZE_ALERT, UIBase.COLOR_CAPTAIN_AMBER, true, TextFormatAlign.CENTER);
+          UIBase.applyHoloGlow(this.tacticalModeTxt, UIBase.COLOR_CAPTAIN_AMBER);
           this.tacticalModeTxt.x = 320;
           this.tacticalModeTxt.y = 420;
           this.tacticalModeTxt.visible = false;
@@ -163,8 +162,8 @@ package ui.pages
           this.camDistanceTxt.autoSize = TextFieldAutoSize.CENTER;
           this.camDistanceTxt.selectable = false;
           this.camDistanceTxt.mouseEnabled = false;
-          UIStyles.applyFormat(this.camDistanceTxt, UIStyles.FONT_SANS, UIStyles.SIZE_ALERT, UIStyles.COLOR_SYSTEM_CYAN, true, TextFormatAlign.CENTER);
-          UIStyles.applyHoloGlow(this.camDistanceTxt, UIStyles.COLOR_SYSTEM_CYAN);
+          UIBase.applyFormat(this.camDistanceTxt, UIBase.FONT_SANS, UIBase.SIZE_ALERT, UIBase.COLOR_SYSTEM_CYAN, true, TextFormatAlign.CENTER);
+          UIBase.applyHoloGlow(this.camDistanceTxt, UIBase.COLOR_SYSTEM_CYAN);
           this.camDistanceTxt.x = 320;
           this.camDistanceTxt.y = 398;
           this.camDistanceTxt.visible = false;
@@ -174,7 +173,7 @@ package ui.pages
           this.capModeCodeTxt.autoSize = TextFieldAutoSize.CENTER;
           this.capModeCodeTxt.selectable = false;
           this.capModeCodeTxt.mouseEnabled = false;
-          UIStyles.applyFormat(this.capModeCodeTxt, UIStyles.FONT_SANS, UIStyles.SIZE_SMALL, UIStyles.COLOR_CAPTAIN_AMBER, true, TextFormatAlign.CENTER);
+          UIBase.applyFormat(this.capModeCodeTxt, UIBase.FONT_SANS, UIBase.SIZE_SMALL, UIBase.COLOR_CAPTAIN_AMBER, true, TextFormatAlign.CENTER);
           this.capModeCodeTxt.visible = false;
           if(this.f1)
           {
@@ -690,11 +689,11 @@ package ui.pages
          if(this.lostFlashTimer > 0)
          {
             this.lostFlashTimer--;
-            this.lostPartsTxt.textColor = UIStyles.COLOR_WHITE;
+            this.lostPartsTxt.textColor = UIBase.COLOR_WHITE;
          }
          else
          {
-            this.lostPartsTxt.textColor = UIStyles.COLOR_DAMAGE_CRIMSON;
+            this.lostPartsTxt.textColor = UIBase.COLOR_DAMAGE_CRIMSON;
          }
       }
 
@@ -973,7 +972,7 @@ package ui.pages
          tf.y = -btnH / 2 + 3;
          tf.selectable = false;
          tf.mouseEnabled = false;
-         UIStyles.applyFormat(tf, UIStyles.FONT_BODY, 10, UIStyles.COLOR_WHITE, true, TextFormatAlign.CENTER);
+         UIBase.applyFormat(tf, UIBase.FONT_BODY, 10, UIBase.COLOR_WHITE, true, TextFormatAlign.CENTER);
          btn.addChild(tf);
          tf.text = labelText;
 

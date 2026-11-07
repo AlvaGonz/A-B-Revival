@@ -19,7 +19,6 @@ package ui.pages
    import ui.UICtrl;
    import ui.base.BtnBase;
    import ui.base.UIBase;
-   import ui.base.UIStyles;
    
    public class UIOptions extends UIBase
    {
@@ -186,8 +185,8 @@ package ui.pages
          this.txtControls.selectable = false;
          this.txtControls.mouseEnabled = false;
 
-         UIStyles.applyFormat(this.txtControls, UIStyles.FONT_BODY, 11, 0xFFFFFF, true, TextFormatAlign.CENTER);
-         UIStyles.applyGlow(this.txtControls, 0x000000, 0.8, 3, 2);
+         UIBase.applyFormat(this.txtControls, UIBase.FONT_BODY, 11, 0xFFFFFF, true, TextFormatAlign.CENTER);
+         UIBase.applyGlow(this.txtControls, 0x000000, 0.8, 3, 2);
          this.txtControls.text = "CONTROLS / KEYBINDS";
 
          this.btnControls.addChild(this.txtControls);
@@ -425,7 +424,7 @@ import flash.geom.Matrix;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
-import ui.base.UIStyles;
+import ui.base.UIBase;
 import ui.pages.UIOptions;
 
 class UITutorialsModal extends Sprite
@@ -483,8 +482,8 @@ class UITutorialsModal extends Sprite
       titleTxt.y = 12;
       titleTxt.selectable = false;
       titleTxt.mouseEnabled = false;
-      UIStyles.applyFormat(titleTxt, UIStyles.FONT_TITLE, UIStyles.SIZE_HEADER, UIStyles.COLOR_SYSTEM_LIGHT, true, TextFormatAlign.CENTER);
-      UIStyles.applyHoloGlow(titleTxt, UIStyles.COLOR_SYSTEM_CYAN);
+      UIBase.applyFormat(titleTxt, UIBase.FONT_TITLE, UIBase.SIZE_HEADER, UIBase.COLOR_SYSTEM_LIGHT, true, TextFormatAlign.CENTER);
+      UIBase.applyHoloGlow(titleTxt, UIBase.COLOR_SYSTEM_CYAN);
       titleTxt.text = this._isCombat ? "SECTION TUTORIALS: COMBAT & FLIGHT" : "SECTION TUTORIALS: BASE & HANGAR";
       this._panel.addChild(titleTxt);
 
@@ -499,7 +498,7 @@ class UITutorialsModal extends Sprite
       subtitleTxt.y = 44;
       subtitleTxt.selectable = false;
       subtitleTxt.mouseEnabled = false;
-      UIStyles.applyFormat(subtitleTxt, UIStyles.FONT_BODY, UIStyles.SIZE_HUD, 0x88BBDD, false, TextFormatAlign.CENTER);
+      UIBase.applyFormat(subtitleTxt, UIBase.FONT_BODY, UIBase.SIZE_HUD, 0x88BBDD, false, TextFormatAlign.CENTER);
       subtitleTxt.text = this._isCombat 
          ? "Guidance and tactical protocols for active battlefield engagements" 
          : "Operational procedures for ship assembly, fleet deployment, and logistics";
@@ -583,7 +582,7 @@ class UITutorialsModal extends Sprite
       tTitle.height = 20;
       tTitle.selectable = false;
       tTitle.mouseEnabled = false;
-      UIStyles.applyFormat(tTitle, UIStyles.FONT_TITLE, UIStyles.SIZE_HUD, 0x00E5FF, true, TextFormatAlign.LEFT);
+      UIBase.applyFormat(tTitle, UIBase.FONT_TITLE, UIBase.SIZE_HUD, 0x00E5FF, true, TextFormatAlign.LEFT);
       tTitle.filters = [new GlowFilter(0x0088CC, 0.7, 3, 3, 2, 1)];
       tTitle.text = title;
       card.addChild(tTitle);
@@ -597,7 +596,7 @@ class UITutorialsModal extends Sprite
       tBody.wordWrap = true;
       tBody.selectable = false;
       tBody.mouseEnabled = false;
-      UIStyles.applyFormat(tBody, UIStyles.FONT_BODY, UIStyles.SIZE_HUD - 1, 0xD0E5F5, false, TextFormatAlign.LEFT);
+      UIBase.applyFormat(tBody, UIBase.FONT_BODY, UIBase.SIZE_HUD - 1, 0xD0E5F5, false, TextFormatAlign.LEFT);
       tBody.text = text;
       card.addChild(tBody);
 

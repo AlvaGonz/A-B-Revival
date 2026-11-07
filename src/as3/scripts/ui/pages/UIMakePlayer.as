@@ -29,7 +29,6 @@ package ui.pages
    import ui.UICtrl;
    import ui.base.BtnBase;
    import ui.base.UIBase;
-   import ui.base.UIStyles;
    import ui.make.MakeUI;
    import ui.unit.FormFly;
    import ui.unit.FormPlayerPart;
@@ -363,12 +362,12 @@ package ui.pages
          }
          this.txtWingHint = new TextField();
          this.txtWingHint.name = "txtWingHint";
-         UIStyles.applyFormat(this.txtWingHint, UIStyles.FONT_BODY, UIStyles.SIZE_HUD, UIStyles.COLOR_SYSTEM_LIGHT, true, TextFieldAutoSize.LEFT);
+         UIBase.applyFormat(this.txtWingHint, UIBase.FONT_BODY, UIBase.SIZE_HUD, UIBase.COLOR_SYSTEM_LIGHT, true, TextFieldAutoSize.LEFT);
          this.txtWingHint.text = "Tap: Select | Drag: Move | Drag Pan: Canvas";
          this.txtWingHint.autoSize = TextFieldAutoSize.LEFT;
          this.txtWingHint.selectable = false;
          this.txtWingHint.mouseEnabled = false;
-         UIStyles.applyGlow(this.txtWingHint, 0x000000, 0.9, 4, 3);
+         UIBase.applyGlow(this.txtWingHint, 0x000000, 0.9, 4, 3);
          var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
          if(_pic)
          {

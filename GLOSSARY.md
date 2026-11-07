@@ -53,6 +53,12 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Mission / Director (`MissionData`, `Director`, `LevelData`, `LevelBase`)**: Campaign wave definitions, enemy spawn scripting, objective evaluation, and reward payouts.
 - **Weapon Effective Firing Range (`F4DataOrg.getEffectiveRange`, `range`)**: The maximum theoretical travel distance (in stage pixels) of a projectile emitted by a weapon before its lifetime expires, calculated via the domain kinematic formula \(d = v_0 \cdot t + 0.5 \cdot a \cdot t^2\) using projectile velocity, burst acceleration, and bullet life from `F4DataFire` and `F4DataBullet`.
 - **Weapon Range Metric Display (`Rng: <N>`, `FormShop`, `FormPlayerPart`, `FormRepair`, `ShowPart`)**: Visual telemetry displayed in weapon inventory lists and part inspection cards, allowing players to compare weapon ranges directly alongside firepower and power drain.
+- **Unified 60 FPS Engine Baseline (`1:1 60 Hz Lockstep`)**: Single canonical 60 Hz engine loop where physics simulation and rendering execute in 1:1 lockstep (16.666 ms frame budget), permanently deprecating legacy 36 Hz simulation accumulators and dual-rate scaling adapters.
+- **Native 1920×1080 Viewport (FHD Baseline)**: The game's internal rendering resolution and stage coordinate space operating at true 16:9 1080p ($1920 \times 1080$), providing an expanded tactical field-of-view without bitmap stretching.
+- **Hybrid Stage3D Layering**: Rendering architecture where high-density space combat entities (starfields, craft, modular parts, projectiles, particles, additive bloom) are drawn via Stage3D GPU textured quads on layer 1, while vector UI menus and HUD overlays remain on the Flash DisplayList on layer 2.
+- **Boot-Time Texture Atlas Generator**: Runtime asset ingestion pipeline that draws embedded sub-SWF vector definitions (`AllData_data.bin`) into high-DPI `BitmapData` and uploads them to a GPU `TextureAtlas` upon launch.
+- **Normalized Socket Grid**: Grid alignment system in `UIMakePlayer` maintaining standard integer socket pitch and center-screen offsets in 1920×1080, guaranteeing 100% save-file compatibility for legacy and modern ship blueprints.
+- **Edge-Anchored Tactical HUD**: Widescreen HUD layout system in `UIGame` that dynamically anchors gauges, radars, and telemetry to 16:9 screen boundaries (`stage.stageWidth` / `stage.stageHeight`).
 
 ## Tooling Vocabulary
 - **JPEXS (FFDec)**: Open-source Flash decompiler and ActionScript bytecode editor used for unpacking, editing, and repacking `.swf` binaries.

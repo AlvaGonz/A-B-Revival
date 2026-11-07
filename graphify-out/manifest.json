@@ -111,9 +111,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/core/OpOneCore.as": {
-    "mtime": 1794037076.6329532,
-    "seen": 1794038680.2489128,
-    "ast_hash": "5fa2f101e3555b6976ff5a7f9efff1bd",
+    "mtime": 1794056563.358742,
+    "seen": 1794056644.416415,
+    "ast_hash": "e8d389007ffca5f957e6791aa46f0e91",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -328,8 +328,8 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/fire/FireMode.as": {
-    "mtime": 1794033132.6742215,
-    "seen": 1794033363.09686,
+    "mtime": 1794053791.0930715,
+    "seen": 1794055390.6599145,
     "ast_hash": "ba01aaa6d24372287bfe99021eb025f7",
     "semantic_hash": "",
     "language": "language=.ts"
@@ -405,8 +405,8 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/particle/Particle.as": {
-    "mtime": 1794033132.6752217,
-    "seen": 1794033363.096917,
+    "mtime": 1794053791.1897056,
+    "seen": 1794055390.6600044,
     "ast_hash": "de1d5427a503e3afd5d92857f6113b3e",
     "semantic_hash": "",
     "language": "language=.ts"
@@ -433,8 +433,8 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/parts/SimpleFly.as": {
-    "mtime": 1794033132.6759562,
-    "seen": 1794033363.0969372,
+    "mtime": 1794053791.3431354,
+    "seen": 1794055390.6600401,
     "ast_hash": "ed36f10e99edc8621de91eebd2e4c69b",
     "semantic_hash": "",
     "language": "language=.ts"
@@ -895,9 +895,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/base/UIBase.as": {
-    "mtime": 1794013769.5550091,
-    "seen": 1794019772.1467268,
-    "ast_hash": "e2cdc1b5ce50b58b07b1bf039128ec07",
+    "mtime": 1794055634.5609362,
+    "seen": 1794056644.4170232,
+    "ast_hash": "febc70fb9b44a4c16a892ba00ccd239d",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -916,16 +916,16 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIChooseFlyAI.as": {
-    "mtime": 1794038451.4890978,
-    "seen": 1794038680.2495205,
-    "ast_hash": "38ac331055e4f7a314bccae19aa13374",
+    "mtime": 1794055634.6958299,
+    "seen": 1794056644.4170399,
+    "ast_hash": "14c83f95da96deb69e6e864602118583",
     "semantic_hash": "",
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIData.as": {
-    "mtime": 1794033268.9142947,
-    "seen": 1794033363.0972974,
-    "ast_hash": "d86c7f7ba95ce56b01c6dfaa049be3e1",
+    "mtime": 1794055634.876571,
+    "seen": 1794056644.4170454,
+    "ast_hash": "92dde3acc66e3f377edb5b98f3e38c19",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -937,9 +937,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIGame.as": {
-    "mtime": 1794037033.9338384,
-    "seen": 1794038680.2495415,
-    "ast_hash": "56aed74f5e5e2f062b383e1a24a60c17",
+    "mtime": 1794055634.9665008,
+    "seen": 1794056644.4170563,
+    "ast_hash": "8cc729f304645c9df89d67295d3d5842",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -965,9 +965,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIMakePlayer.as": {
-    "mtime": 1794038439.764531,
-    "seen": 1794038680.2495615,
-    "ast_hash": "4e1cd7d1d510102773859a656a921801",
+    "mtime": 1794055635.094679,
+    "seen": 1794056644.4170787,
+    "ast_hash": "b079b04ad5ceb7ad9a14b0c47b488fd1",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1000,9 +1000,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIOptions.as": {
-    "mtime": 1794038554.579176,
-    "seen": 1794038680.2495863,
-    "ast_hash": "8b17fc841c3e9318bbafa67e681b7aec",
+    "mtime": 1794055635.1762452,
+    "seen": 1794056644.4171054,
+    "ast_hash": "ebf4d61f75b67c36b8286a488fb31f51",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1056,9 +1056,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/unit/FormChooseFlyAI.as": {
-    "mtime": 1794038086.9280865,
-    "seen": 1794038680.2496262,
-    "ast_hash": "d56e45950ffaa0a971b268451ce91d6a",
+    "mtime": 1794055635.2138565,
+    "seen": 1794056644.4171484,
+    "ast_hash": "5f6c5eab7f6b9d549b11b3b9cef75e94",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "GLOSSARY.md": {
-    "mtime": 1794035962.1315286,
-    "seen": 1794038680.2496665,
-    "ast_hash": "140c6112fe52cf2d8739bd356e6b8eb4",
+    "mtime": 1794056554.1747758,
+    "seen": 1794056644.417192,
+    "ast_hash": "6afc3e968cfcb7a3c611e0610606de7b",
     "semantic_hash": ""
   },
   "docs/adr/0001-record-architecture-decisions.md": {
@@ -1170,9 +1170,9 @@
     "semantic_hash": ""
   },
   ".githooks/pre-commit": {
-    "mtime": 1793980704.1096165,
-    "seen": 1793997166.7713943,
-    "ast_hash": "4bb6518330b935335723d187a74c9e17",
+    "mtime": 1794056624.1087546,
+    "seen": 1794056644.4162407,
+    "ast_hash": "40bf581cc8ec7c1eb898f42a02efcfa9",
     "semantic_hash": ""
   },
   "scripts/as3_search.py": {
@@ -1296,24 +1296,10 @@
     "semantic_hash": ""
   },
   "scripts/test_multicore_affinity.py": {
-    "mtime": 1794033132.6732218,
-    "seen": 1794033363.0965989,
+    "mtime": 1794055332.9423,
+    "seen": 1794055390.6596375,
     "ast_hash": "39c13939bc4c8262d0cf02c62a8ad9cf",
     "semantic_hash": ""
-  },
-  "src/as3/scripts/ui/base/UIStyles.as": {
-    "mtime": 1794033387.1073751,
-    "seen": 1794038680.249504,
-    "ast_hash": "d45767575fd22279a3990d93c0d49561",
-    "semantic_hash": "",
-    "language": "language=.ts"
-  },
-  "src/as3/scripts/ui/pages/UIControlsModal.as": {
-    "mtime": 1794033469.2271998,
-    "seen": 1794038680.2495258,
-    "ast_hash": "2a889ed18154fe7e64cba55c1d9f5b7c",
-    "semantic_hash": "",
-    "language": "language=.ts"
   },
   "docs/adr/0012-weapon-firing-range-telemetry.md": {
     "mtime": 1794035976.9955318,
@@ -1355,6 +1341,18 @@
     "mtime": 1794036740.9408221,
     "seen": 1794038680.249812,
     "ast_hash": "e90b2e4ea1d2b6e91689d0c6cad3e4a2",
+    "semantic_hash": ""
+  },
+  "scripts/check_swf_linkage.py": {
+    "mtime": 1794054795.7393699,
+    "seen": 1794055390.659594,
+    "ast_hash": "f61bd9a7b72a791b90231e3d74af1b1e",
+    "semantic_hash": ""
+  },
+  "scripts/test_core_null_safety.py": {
+    "mtime": 1794056392.5381567,
+    "seen": 1794056644.4163082,
+    "ast_hash": "7c60ecbae2af0b05db2eb0ef12916a97",
     "semantic_hash": ""
   }
 }
