@@ -22,6 +22,13 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Critical Portrait State (`UIGame.updatePortraitCriticalEffects`)**: Visual distress feedback (pulsing red tint and impact jitter) applied to Michael and Captain Tom portrait frames when total health is at or below 30%.
 - **Autofire Reticle Indicator (`OpOneCore.autoFire`, `UIGame`)**: Continuous weapon discharge mode toggled by key 'X', rendered as a mouse-anchored green circular indicator when active.
 - **Combat Camera Distance (`RenderData.setCameraDistance`, `ConfigAndStory.CONFIG[6]`)**: Viewport scale state determining the battlefield field-of-view (FOV) rendered onto the 640x480 stage: Short (1.0x / 640x480), Medium (1.3x / 832x624), and Far (1.5x / 960x720).
+- **Captain Tactical Mode (`AIUnity.tacticalMode`, `OpOneCore` 'E' hotkey)**: In-battle selectable behavior for the Allied Flagship (Captain Tom), cycled by pressing 'E'. Modes reset to Anchor each mission and are displayed via a center-bottom ephemeral HUD badge plus a two-letter code on the Captain's portrait.
+- **Anchor / Hold Mode (`AN`)**: Captain holds his mission spawn point and fires at enemies in range (base-game behavior).
+- **Escort / Follow Mode (`ES`)**: Captain trails ~80px behind the player, matching speed, defending nearby hostiles.
+- **Evade / Flee Mode (`EV`)**: Captain flees from the nearest threat; once safe, holds position while remaining in Evade mode.
+- **Seek & Destroy Mode (`SD`)**: Captain aggressively pursues and engages the closest hostile regardless of player position.
+- **Fire Support Mode (`FS`)**: Captain maintains engagement range to its target and focuses fire on the player's target, falling back to the nearest hostile.
+- **Shield / Intercept Mode (`SH`)**: Captain positions between the player and the nearest hostile (positioning only; no projectile blocking modeled).
 - **Camera Viewport Scaling (`Cam.rect`, `RenderData.bmp.scaleX/Y`)**: Dynamic buffer resizing in `RenderData` that reallocates canvas bitmap buffers to match the active distance FOV while mapping mouse aim coordinates via inverse scale factors.
 - **Camera Distance HUD Badge (`UIGame.showCameraDistanceAlert`)**: Ephemeral combat HUD text indicator displaying the newly selected camera distance upon pressing key 'C', auto-fading after 1.5 seconds.
 - **Companion Heal Priority Navigation (`AIUnity`, `Targets.ia1`)**: Tactical AI behavior where friendly wingmen detect dropped repair items (`data[0] == "life"`) on the battlefield, making navigation to the pickup coordinates their primary steering goal while simultaneously engaging hostile craft in weapon range.

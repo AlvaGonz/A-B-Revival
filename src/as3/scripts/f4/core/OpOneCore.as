@@ -95,6 +95,33 @@ package f4.core
          var _loc4_:Number = NaN;
          if(!this.playerFly.isDeadA1)
          {
+            if(this._key.isKeyDownOnce("E") || this._key.isKeyDownOnce("e"))
+            {
+               var _capMode:* = null;
+               var _gui:* = this.targets ? this.targets.evts.gameui : null;
+               if(_gui)
+               {
+                  _capMode = _gui.pf1;
+                  if(!_capMode || !_capMode.isCaptain || _capMode.unity.udata.hp.x <= 0)
+                  {
+                     _capMode = _gui.pf2;
+                  }
+               }
+               if(_capMode && _capMode.isCaptain && _capMode.unity.udata.hp.x > 0)
+               {
+                  _capMode.tacticalMode++;
+                  if(_capMode.tacticalMode >= AIUnity.MODE_COUNT)
+                  {
+                     _capMode.tacticalMode = AIUnity.MODE_ANCHOR;
+                  }
+                  _gui.showTacticalMode(_capMode.tacticalMode);
+                  InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
+               }
+               else if(_gui)
+               {
+                  _gui.showNoCaptain();
+               }
+            }
             if(this._key.isKeyDownOnce("X") || this._key.isKeyDownOnce("x"))
             {
                this.autoFire = !this.autoFire;
