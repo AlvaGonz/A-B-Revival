@@ -62,9 +62,7 @@ package
       
       private var _lastFrameTimer:uint = 0;
       
-      private var _logCounter:int = 0;
-      
-      private var _cachedDObjCount:int = 0;
+      private var devOverlay:DevMetricsOverlay;
       
       public function Fly4UI()
       {
@@ -201,55 +199,7 @@ package
          ConfigAndStory.ALLPART = new F4DataCPX(this.alldata);
          this.ui_out = new Sprite();
          this.key = new KeyCtrl(stage);
-         this.text = new TextField();
-         this.text.y = 442;
-         this.text.x = 8;
-         this.text.textColor = 0x00FF66;
-         this.text.selectable = false;
-         this.text.width = 624;
-         this.text.height = 34;
-         this.text.multiline = true;
-         this.text.wordWrap = true;
-         this.text.background = true;
-         this.text.backgroundColor = 0x000000;
-         this.text.mouseWheelEnabled = false;
-         this.text.mouseEnabled = false;
-         this.text.alpha = 0.85;
-         if(DEBUG)
-         {
-            stage.addChild(this.text);
-         }
-      }
-      
-      public static function countDisplayObjects(param1:DisplayObjectContainer) : int
-      {
-         if(param1 == null)
-         {
-            return 0;
-         }
-         var _count:int = 1;
-         var _len:int = param1.numChildren;
-         var _i:int = 0;
-         while(_i < _len)
-         {
-            try
-            {
-               var _child:DisplayObject = param1.getChildAt(_i);
-               if(_child is DisplayObjectContainer)
-               {
-                  _count += countDisplayObjects(_child as DisplayObjectContainer);
-               }
-               else if(_child != null)
-               {
-                  _count++;
-               }
-            }
-            catch(e:Error)
-            {
-            }
-            _i++;
-         }
-         return _count;
+         this.devOverlay = new DevMetricsOverlay(stage);
       }
       
       public function xmlLoaded() : void
@@ -278,20 +228,9 @@ package
          {
             if(this.key.isKeyDownOnce("I") || this.key.isKeyDownOnce("i") || this.key.isKeyCodeDownOnce(192) || this.key.isKeyCodeDownOnce(112))
             {
-               DEBUG = !DEBUG;
-               if(DEBUG)
+               if(this.devOverlay)
                {
-                  if(!this.text.parent && stage)
-                  {
-                     stage.addChild(this.text);
-                  }
-                  this.text.visible = true;
-                  trace("[DEV_MODE] Enabled (FPS, frame time, memory, object counters active)");
-               }
-               else
-               {
-                  this.text.visible = false;
-                  trace("[DEV_MODE] Disabled");
+                  this.devOverlay.toggle(stage);
                }
             }
             if(this.key.isKeyCodeDownOnce(122))
@@ -301,7 +240,7 @@ package
          }
 
          var _t0:uint = uint(getTimer());
-         var _frameDelta:uint = this._lastFrameTimer > 0 ? uint(_t0 - this._lastFrameTimer) : 28;
+         var _frameDelta:uint = this._lastFrameTimer > 0 ? uint(_t0 - this._lastFrameTimer) : 16;
          this._lastFrameTimer = _t0;
 
          this.uictrl.run();
@@ -315,48 +254,137 @@ package
          this.core.runRender();
          var _renderMs:uint = uint(getTimer() - _t2);
 
-         if(DEBUG)
+         if(this.devOverlay)
          {
-            if(stage && this.text.parent == stage)
-            {
-               stage.setChildIndex(this.text, stage.numChildren - 1);
-            }
-            if(++this._logCounter % 15 == 0)
-            {
-               this._cachedDObjCount = countDisplayObjects(stage);
-            }
-            var _targets:Targets = InitData.TARGETS;
-            var _bullets:int = _targets ? ((_targets.pba1 ? _targets.pba1.num : 0) + (_targets.eba1 ? _targets.eba1.num : 0)) : 0;
-            var _particles:int = _targets && _targets.pa1 ? _targets.pa1.num : 0;
-            var _ships:int = _targets ? ((_targets.pfa1 ? _targets.pfa1.num : 0) + (_targets.efa1 ? _targets.efa1.num : 0)) : 0;
-            var _drops:int = _targets && _targets.ia1 ? _targets.ia1.num : 0;
-            var _debris:int = _targets && _targets.deadParta1 ? _targets.deadParta1.num : 0;
-            var _arrays:int = _bullets + _particles + _ships + _drops + _debris + (_targets && _targets.swa1 ? _targets.swa1.num : 0) + (_targets && _targets.swa2 ? _targets.swa2.num : 0);
-            var _memMb:String = (System.totalMemory / 1048576).toFixed(2);
-            var _currentFps:Number = _frameDelta > 0 ? (1000 / _frameDelta) : (stage ? stage.frameRate : 60);
-
-            var _resStr:String = ConfigAndStory.RESOLUTION == ConfigAndStory.RES_1080 ? "1080p" : (ConfigAndStory.RESOLUTION == ConfigAndStory.RES_720 ? "720p" : "640x480");
-            var _qStr:String = ConfigAndStory.QUALITY == ConfigAndStory.QUALITY_HIGH ? "High" : (ConfigAndStory.QUALITY == ConfigAndStory.QUALITY_LOW ? "Low" : "Med");
-            var _fsStr:String = ConfigAndStory.FULLSCREEN ? "ON" : "OFF";
-            this.text.text = "FPS: " + _currentFps.toFixed(1) + " (" + _frameDelta + "ms) [Logic: " + _logicMs + "ms, Render: " + _renderMs + "ms] | Mem: " + _memMb + " MB | DObjs: " + this._cachedDObjCount + " | " + _resStr + " | Q:" + _qStr + " | FS:" + _fsStr;
-            this.text.appendText("\nBullets: " + _bullets + " | Particles: " + _particles + " | Ships: " + _ships + " | Drops: " + _drops + " | Debris: " + _debris + " | Arrays: " + _arrays);
-
-            if(this._logCounter % 180 == 0)
-            {
-               trace("[PERF_METRICS] time=" + ConfigAndStory.TIMEALL + "s fps=" + _currentFps.toFixed(1) + " frameDelta=" + _frameDelta + "ms logic=" + _logicMs + "ms render=" + _renderMs + "ms mem=" + _memMb + "MB bullets=" + _bullets + " particles=" + _particles + " dObjs=" + this._cachedDObjCount + " arrays=" + _arrays);
-            }
+            this.devOverlay.update(stage, _frameDelta, _logicMs, _renderMs);
          }
       }
       
       public function showAds(param1:Function) : void
       {
-         MochiAd.showInterLevelAd({
-            "clip":root,
-            "id":"0fbe1356f7457e01",
-            "res":"640x480",
-            "ad_finished":param1
-         });
+         if(param1 is Function)
+         {
+            param1();
+         }
       }
+   }
+}
+
+import f4.data.Targets;
+import f4.data.InitData;
+import f4data.sdata.ConfigAndStory;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
+import flash.display.Stage;
+import flash.system.System;
+import flash.text.TextField;
+
+class DevMetricsOverlay
+{
+   public var text:TextField;
+   private var _logCounter:int = 0;
+   private var _cachedDObjCount:int = 0;
+   
+   public function DevMetricsOverlay(stage:Stage)
+   {
+      this.text = new TextField();
+      this.text.y = 442;
+      this.text.x = 8;
+      this.text.textColor = 0x00FF66;
+      this.text.selectable = false;
+      this.text.width = 624;
+      this.text.height = 34;
+      this.text.multiline = true;
+      this.text.wordWrap = true;
+      this.text.background = true;
+      this.text.backgroundColor = 0x000000;
+      this.text.mouseWheelEnabled = false;
+      this.text.mouseEnabled = false;
+      this.text.alpha = 0.85;
+      this.text.visible = false;
+      if(stage)
+      {
+         stage.addChild(this.text);
+      }
+   }
+   
+   public function toggle(stage:Stage) : void
+   {
+      Fly4UI.DEBUG = !Fly4UI.DEBUG;
+      if(this.text)
+      {
+         this.text.visible = Fly4UI.DEBUG;
+         if(Fly4UI.DEBUG && stage && this.text.parent != stage)
+         {
+            stage.addChild(this.text);
+         }
+      }
+      trace(Fly4UI.DEBUG ? "[DEV_MODE] Enabled (FPS, frame time, memory, object counters active)" : "[DEV_MODE] Disabled");
+   }
+   
+   public function update(stage:Stage, frameDelta:uint, logicMs:uint, renderMs:uint) : void
+   {
+      if(!Fly4UI.DEBUG || !this.text)
+      {
+         return;
+      }
+      if(stage && this.text.parent == stage)
+      {
+         stage.setChildIndex(this.text, stage.numChildren - 1);
+      }
+      if(++this._logCounter % 15 == 0)
+      {
+         this._cachedDObjCount = countDisplayObjects(stage);
+      }
+      var _targets:Targets = InitData.TARGETS;
+      var _bullets:int = _targets ? ((_targets.pba1 ? _targets.pba1.num : 0) + (_targets.eba1 ? _targets.eba1.num : 0)) : 0;
+      var _particles:int = _targets && _targets.pa1 ? _targets.pa1.num : 0;
+      var _ships:int = _targets ? ((_targets.pfa1 ? _targets.pfa1.num : 0) + (_targets.efa1 ? _targets.efa1.num : 0)) : 0;
+      var _drops:int = _targets && _targets.ia1 ? _targets.ia1.num : 0;
+      var _debris:int = _targets && _targets.deadParta1 ? _targets.deadParta1.num : 0;
+      var _arrays:int = _bullets + _particles + _ships + _drops + _debris + (_targets && _targets.swa1 ? _targets.swa1.num : 0) + (_targets && _targets.swa2 ? _targets.swa2.num : 0);
+      var _memMb:String = (System.totalMemory / 1048576).toFixed(2);
+      var _currentFps:Number = frameDelta > 0 ? (1000 / frameDelta) : (stage ? stage.frameRate : 60);
+
+      var _resStr:String = ConfigAndStory.RESOLUTION == ConfigAndStory.RES_1080 ? "1080p" : (ConfigAndStory.RESOLUTION == ConfigAndStory.RES_720 ? "720p" : "640x480");
+      var _qStr:String = ConfigAndStory.QUALITY == ConfigAndStory.QUALITY_HIGH ? "High" : (ConfigAndStory.QUALITY == ConfigAndStory.QUALITY_LOW ? "Low" : "Med");
+      var _fsStr:String = ConfigAndStory.FULLSCREEN ? "ON" : "OFF";
+      this.text.text = "FPS: " + _currentFps.toFixed(1) + " (" + frameDelta + "ms) [Logic: " + logicMs + "ms, Render: " + renderMs + "ms] | Mem: " + _memMb + " MB | DObjs: " + this._cachedDObjCount + " | " + _resStr + " | Q:" + _qStr + " | FS:" + _fsStr;
+      this.text.appendText("\nBullets: " + _bullets + " | Particles: " + _particles + " | Ships: " + _ships + " | Drops: " + _drops + " | Debris: " + _debris + " | Arrays: " + _arrays);
+
+      if(this._logCounter % 180 == 0)
+      {
+         trace("[PERF_METRICS] time=" + ConfigAndStory.TIMEALL + "s fps=" + _currentFps.toFixed(1) + " frameDelta=" + frameDelta + "ms logic=" + logicMs + "ms render=" + renderMs + "ms mem=" + _memMb + "MB bullets=" + _bullets + " particles=" + _particles + " dObjs=" + this._cachedDObjCount + " arrays=" + _arrays);
+      }
+   }
+   
+   private static function countDisplayObjects(container:DisplayObjectContainer) : int
+   {
+      if(!container)
+      {
+         return 0;
+      }
+      var count:int = 1;
+      var len:int = container.numChildren;
+      for(var i:int = 0; i < len; i++)
+      {
+         try
+         {
+            var child:DisplayObject = container.getChildAt(i);
+            if(child is DisplayObjectContainer)
+            {
+               count += countDisplayObjects(child as DisplayObjectContainer);
+            }
+            else if(child != null)
+            {
+               count++;
+            }
+         }
+         catch(e:Error)
+         {
+         }
+      }
+      return count;
    }
 }
 
