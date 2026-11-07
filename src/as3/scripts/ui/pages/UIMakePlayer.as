@@ -1146,6 +1146,16 @@ package ui.pages
          this.showFlyEdit(true);
          this.nowedit = true;
          this.updateClearButtons();
+         if(this.formFly.selToDel >= 0 && this.formFly.selToDel < this.f4datax.plFly.length)
+         {
+            var _editingCraft:F4DataLinks = this.f4datax.plFly[this.formFly.selToDel];
+            if(_editingCraft && _editingCraft.isCaptainShip() && !ConfigAndStory.TIP_CAPTAIN_MOD)
+            {
+               ConfigAndStory.TIP_CAPTAIN_MOD = true;
+               ConfigAndStory.saveData();
+               new UIReally(null,null,null,"Captain\'s Flagship","\nYou are customizing Captain Tom\'s flagship!\nOutfit it with balanced defenses and durable weapons.\nIf the Captain falls in combat, the battle is lost!",_sp,Attach.attach("UI_Really") as MovieClip,"UI_Really",_ui,this);
+            }
+         }
       }
       
       public function showFlys(param1:Boolean) : void

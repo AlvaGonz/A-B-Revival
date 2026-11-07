@@ -159,6 +159,12 @@ package ui.pages
          {
             (_mov.getChildByName("lock1") as MovieClip).gotoAndPlay(1);
             (_mov.getChildByName("lock2") as MovieClip).gotoAndPlay(1);
+            if(!ConfigAndStory.TIP_COMPANION_UNLOCK)
+            {
+               ConfigAndStory.TIP_COMPANION_UNLOCK = true;
+               ConfigAndStory.saveData();
+               new UIReally(null,null,null,"AI Companions Unlocked","\nAI companion deployment is now active!\nAssign ships to your wingmen and set their pre-battle roles (Escort, Hunt, Shield, etc.).\nCommand them in combat using the Tactical HUD.",_sp,Attach.attach("UI_Really") as MovieClip,"UI_Really",_ui,this);
+            }
          }
          if(ConfigAndStory.STORY == 1)
          {

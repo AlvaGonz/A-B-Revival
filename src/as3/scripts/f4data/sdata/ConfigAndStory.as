@@ -19,6 +19,10 @@ package f4data.sdata
    
    public class ConfigAndStory
    {
+      public static var TIP_CAPTAIN_MOD:Boolean = false;
+      
+      public static var TIP_COMPANION_UNLOCK:Boolean = false;
+      
       public static const LEADER_MICHAEL:int = 0;
       public static const LEADER_CAPTAIN:int = 1;
 
@@ -528,6 +532,14 @@ package f4data.sdata
             AIGAME = SOData.data["aigame"];
             HOWTOPLAY = SOData.data["how"];
             SHOWTEXTMENU = SOData.data["menu"];
+            if(SOData.data["tipCap"] != null)
+            {
+               TIP_CAPTAIN_MOD = Boolean(SOData.data["tipCap"]);
+            }
+            if(SOData.data["tipComp"] != null)
+            {
+               TIP_COMPANION_UNLOCK = Boolean(SOData.data["tipComp"]);
+            }
             COMPANIONS = [];
             var _rawComps:Array = SOData.data["companions"] as Array;
             if(_rawComps != null)
@@ -607,6 +619,8 @@ package f4data.sdata
             }
          }
          SOData.data["companions"] = _compList;
+         SOData.data["tipCap"] = TIP_CAPTAIN_MOD;
+         SOData.data["tipComp"] = TIP_COMPANION_UNLOCK;
          SOData.data["how"] = HOWTOPLAY.concat();
          SOData.data["menu"] = SHOWTEXTMENU.concat();
          SOData.flush();
@@ -744,6 +758,8 @@ package f4data.sdata
          PLAYER = 0;
          COMPANIONS = [];
          AIGAME = true;
+         TIP_CAPTAIN_MOD = false;
+         TIP_COMPANION_UNLOCK = false;
          HOWTOPLAY = [0,0,0,0,0,0,0,0,0];
          SHOWTEXTMENU = [0,0,0,0,0];
       }
