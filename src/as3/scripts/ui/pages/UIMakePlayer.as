@@ -12,12 +12,15 @@ package ui.pages
    import f4ui.f4partmc.OrgEvent;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
+   import flash.display.GradientType;
    import flash.display.Graphics;
    import flash.display.MovieClip;
+   import flash.display.Shape;
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.filters.GlowFilter;
+   import flash.geom.Matrix;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
@@ -73,9 +76,7 @@ package ui.pages
       
       public var txtWingHint:TextField;
       
-      public var wingLimitSprite:Sprite;
-      
-      public var txtWingLimit:TextField;
+      public var txtWings:TextField;
       
       public var btnClearWeapons:Sprite;
       
@@ -113,7 +114,7 @@ package ui.pages
          this.undoList = [];
          this.undoShow();
          this.initWingHint();
-         this.initWingLimitUI();
+         this.initWingsInDtTemp();
          this.initClearButtons();
       }
       
@@ -361,97 +362,97 @@ package ui.pages
          _showFly.addChild(this.txtWingHint);
       }
       
-      public function initWingLimitUI() : void
+      public function initWingsInDtTemp() : void
       {
-         if(!_mov)
+         var dtTemp:MovieClip = _mov.getChildByName("dtTemp") as MovieClip;
+         if(!dtTemp || dtTemp.getChildByName("txtWings"))
          {
             return;
          }
-         this.wingLimitSprite = new Sprite();
-         this.wingLimitSprite.name = "wingLimitSprite";
-         this.wingLimitSprite.mouseEnabled = false;
-         this.wingLimitSprite.mouseChildren = false;
+         var _i:int = 0;
+         while(_i < dtTemp.numChildren)
+         {
+            var _ch:DisplayObject = dtTemp.getChildAt(_i);
+            if(_ch && (_ch.y >= 60 || _ch.getBounds(dtTemp).y >= 60))
+            {
+               _ch.y += 16.5;
+            }
+            _i++;
+         }
+         dtTemp.scaleY = 0.835;
          
-         this.txtWingLimit = new TextField();
-         this.txtWingLimit.name = "txtWingLimit";
-         var _tf:TextFormat = new TextFormat("Arial", 10, 0x00ccff, true);
-         this.txtWingLimit.defaultTextFormat = _tf;
-         this.txtWingLimit.autoSize = TextFieldAutoSize.LEFT;
-         this.txtWingLimit.selectable = false;
-         this.txtWingLimit.mouseEnabled = false;
-         this.txtWingLimit.filters = [new GlowFilter(0x000000, 1, 3, 3, 4, 1)];
+         var wingsBg:Shape = new Shape();
+         wingsBg.name = "wingsBg";
+         var mat:Matrix = new Matrix();
+         mat.createGradientBox(105, 16, Math.PI / 2, 0, 64.4);
+         wingsBg.graphics.lineStyle(1, 0x2b3744, 0.7);
+         wingsBg.graphics.beginGradientFill(GradientType.LINEAR, [0x161e28, 0x090c10], [0.95, 0.95], [0, 255], mat);
+         wingsBg.graphics.drawRoundRect(-0.5, 64.4, 105, 15.5, 3, 3);
+         wingsBg.graphics.endFill();
+         dtTemp.addChildAt(wingsBg, 0);
          
-         this.wingLimitSprite.addChild(this.txtWingLimit);
-         _mov.addChild(this.wingLimitSprite);
-         this.updateWingLimitUI();
+         var lblWings:TextField = new TextField();
+         lblWings.name = "lblWings";
+         var tfLbl:TextFormat = new TextFormat("Arial", 10, 0xbfbfbf, true);
+         tfLbl.align = TextFormatAlign.RIGHT;
+         lblWings.defaultTextFormat = tfLbl;
+         lblWings.selectable = false;
+         lblWings.mouseEnabled = false;
+         lblWings.text = "Wings";
+         lblWings.x = -2;
+         lblWings.y = 67.8;
+         lblWings.width = 49;
+         lblWings.height = 16;
+         dtTemp.addChild(lblWings);
+         
+         this.txtWings = new TextField();
+         this.txtWings.name = "txtWings";
+         var tfVal:TextFormat = new TextFormat("Arial", 10, 0xbfbfbf, true);
+         tfVal.align = TextFormatAlign.RIGHT;
+         this.txtWings.defaultTextFormat = tfVal;
+         this.txtWings.selectable = false;
+         this.txtWings.mouseEnabled = false;
+         this.txtWings.text = "-";
+         this.txtWings.x = 53.05;
+         this.txtWings.y = 67.8;
+         this.txtWings.width = 48.5;
+         this.txtWings.height = 16;
+         dtTemp.addChild(this.txtWings);
+         
+         this.updateWingsInDtTemp();
       }
       
-      public function updateWingLimitUI() : void
+      public function updateWingsInDtTemp() : void
       {
-         if(!this.wingLimitSprite || !this.txtWingLimit)
+         if(!this.txtWings)
          {
             return;
          }
          var _hull:F4DataOrg = F4DataHole.getAssemblyHull();
          if(!_hull)
          {
-            this.wingLimitSprite.visible = false;
+            this.txtWings.text = "-";
             return;
          }
-         this.wingLimitSprite.visible = true;
          var _curWings:int = F4DataHole.countMountedWings();
          var _maxWings:int = F4DataOrg.maxWingsForHull(_hull);
          var _text:String = _curWings + "/" + _maxWings;
-         
-         var _color:uint = _curWings >= _maxWings ? 0xffcc00 : 0x00ccff;
+         if(this.txtWings.text != _text)
+         {
+            this.txtWings.text = _text;
+         }
+         var _color:uint = _curWings >= _maxWings ? 0xffcc00 : 0xbfbfbf;
          if(_curWings > _maxWings)
          {
             _color = 0xff4444;
          }
-         
-         var _lineY:Number = 0;
-         var _slotIndex:int = _maxWings - 1;
-         if(_slotIndex >= 0 && _slotIndex < this.undoNum)
-         {
-            var _slot:DisplayObject = _mov.getChildByName("$chooseu" + _slotIndex);
-            if(_slot)
-            {
-               _lineY = _slot.y + 19.5;
-            }
-            else
-            {
-               _lineY = 16.95 + _maxWings * 20.75;
-            }
-         }
-         else
-         {
-            _lineY = 16.95 + _maxWings * 20.75;
-         }
-         
-         if(this.txtWingLimit.text != _text)
-         {
-            this.txtWingLimit.text = _text;
-         }
-         var _tf:TextFormat = this.txtWingLimit.defaultTextFormat;
+         var _tf:TextFormat = this.txtWings.defaultTextFormat;
          if(_tf.color != _color)
          {
             _tf.color = _color;
-            this.txtWingLimit.defaultTextFormat = _tf;
-            this.txtWingLimit.setTextFormat(_tf);
+            this.txtWings.defaultTextFormat = _tf;
+            this.txtWings.setTextFormat(_tf);
          }
-         
-         this.txtWingLimit.x = Math.round(27 - this.txtWingLimit.width / 2);
-         this.txtWingLimit.y = Math.round(_lineY - this.txtWingLimit.height + 2);
-         
-         var g:Graphics = this.wingLimitSprite.graphics;
-         g.clear();
-         g.beginFill(0x0a1018, 0.85);
-         g.drawRoundRect(this.txtWingLimit.x - 3, this.txtWingLimit.y + 1, this.txtWingLimit.width + 6, this.txtWingLimit.height - 2, 4, 4);
-         g.endFill();
-         
-         g.lineStyle(1.5, _color, 0.95);
-         g.moveTo(9, _lineY);
-         g.lineTo(45, _lineY);
       }
       
       override public function afterFadeIn() : void
@@ -556,6 +557,10 @@ package ui.pages
       public function cleanDtTemp() : void
       {
          ShowPart.cleanFlyTemp(_mov.getChildByName("dtTemp") as MovieClip);
+         if(this.txtWings)
+         {
+            this.txtWings.text = "";
+         }
       }
       
       public function addDtLTempRun() : void
@@ -575,6 +580,7 @@ package ui.pages
                break;
             }
          }
+         this.updateWingsInDtTemp();
       }
       
       private function runzoom() : void
@@ -594,7 +600,7 @@ package ui.pages
       {
          this.addDtLTempRun();
          this.runzoom();
-         this.updateWingLimitUI();
+         this.updateWingsInDtTemp();
       }
       
       override public function outAct(param1:String) : void
@@ -948,10 +954,6 @@ package ui.pages
          if(this.txtWingHint)
          {
             this.txtWingHint.visible = !param1;
-         }
-         if(this.wingLimitSprite)
-         {
-            this.wingLimitSprite.visible = !param1;
          }
          if(param1)
          {

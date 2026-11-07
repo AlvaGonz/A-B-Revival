@@ -24,12 +24,13 @@ Ship assembly previously enforced a single global cap of 10 wings regardless of 
    - In `F4DataHole.acceptableOrg`, already-mounted wings (`isMountedWing(org)`) bypass the capacity check. This ensures players can reposition or edit existing wings on over-cap legacy crafts, while strictly blocking the addition of new wings beyond the category cap.
 5. **Rejection Feedback:**
    - Wing addition past the limit returns rejection code `2` in `acceptableOrg`. This seamlessly feeds existing sound triggers in `addPart` (`soundArray[13]`) and drag-drop `linkAct` (`soundArray[18]`). No new sound assets or hooks required.
-6. **Assembly UI Counter & Limit Line (`UIMakePlayer.wingLimitSprite`, `txtWingLimit`):**
-   - Preserves original assembly layout: `txtWingHint` remains a single-line hotkey reminder (`[R] Rotate Wing | [F] Flip Wing`) without layout disruption.
-   - On the left 12-slot parts tray (`$chooseu0..11`), a dynamic horizontal capacity line is drawn at the boundary of the hull's allowable wings (e.g. at slot 4 for Small, slot 6 for Medium, slot 8 for Large, slot 12 for Mega).
-   - Centered directly on top of the limit line, a compact `x/limit` text indicator is rendered in a dark translucent badge with glow filter.
-   - Dynamic coloring: cyan (`0x00ccff`) when within limit, warning gold (`0xffcc00`) when cap is reached, and alert red (`0xff4444`) on over-cap legacy crafts.
-   - Refreshed in `uiloop` per frame, maintaining fast performance and zero layout shift.
+6. **Assembly Stats Table Counter (`UIMakePlayer.initWingsInDtTemp`, `txtWings`):**
+   - Preserves original assembly layout: `txtWingHint` remains a clean single-line hotkey reminder (`[R] Rotate Wing | [F] Flip Wing`) without layout disruption.
+   - The wing counter is integrated directly into the bottom-right craft statistics table (`dtTemp`) as an additional row immediately above `Parts` (`Hp`, `Steering`, `Speed`, `Fire Pow.`, `Wings`, `Parts`).
+   - The `dtTemp` container is vertically scaled (`scaleY = 0.835`) to compact all 6 rows into the original 80.9px bounding box, preventing any overlap with surrounding controls or the `CLR GUNS` / `CLR WINGS` buttons below.
+   - Styled to match existing table rows: background shape with rounded corners, silver label (`Wings`), and right-aligned counter (`x/limit`).
+   - Dynamic coloring: standard gray (`0xbfbfbf`) within limit, warning gold (`0xffcc00`) at limit, and alert red (`0xff4444`) on over-cap legacy crafts.
+   - Refreshed in `uiloop` and `addDtLTempRun`, maintaining fast performance and zero layout shift.
 
 ## Consequences
 - Balances craft creation: light interceptors remain agile while mega ships have capacity for heavier configurations.
