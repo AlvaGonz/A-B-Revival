@@ -68,6 +68,15 @@ package f4.unit.parts
          }
          this.ckblt.updateCk();
          outCam();
+         if(this.render && this.render.cam && this.render.cam.rect)
+         {
+            var _camR:Rectangle = this.render.cam.rect;
+            if(move.point.x < _camR.x - 1000 || move.point.x > _camR.x + _camR.width + 1000 ||
+               move.point.y < _camR.y - 1000 || move.point.y > _camR.y + _camR.height + 1000)
+            {
+               isDeadA1 = true;
+            }
+         }
          --this.life;
          if(this.life == 0)
          {
@@ -96,15 +105,30 @@ package f4.unit.parts
          render.runRender(0);
          if(!InitData.CORE.pause && this.life > 0 && render.inRender && Boolean(this.bulletData.partPoint))
          {
-            _loc1_ = move.radFace + this.bulletData.partPoint.y;
-            _loc2_ = move.point.x + this.bulletData.partPoint.x * Math.cos(_loc1_);
-            _loc3_ = move.point.y + this.bulletData.partPoint.x * Math.sin(_loc1_);
-            _loc4_ = new Particle(render.cam,_loc2_ - (render.cam.rect.x - render.cam.last.x),_loc3_ - (render.cam.rect.y - render.cam.last.y),Math.PI + _loc1_ + Math.PI * (Math.random() * 10 - 5) / 180,1,Math.random() + 2,30,0.95,1);
-            _loc4_.layer = 1;
-            _loc4_.flash = false;
-            _loc4_.spd.x += move.spdp.x * 0.5;
-            _loc4_.spd.y += move.spdp.y * 0.5;
-            targets.pa1.addOne1(_loc4_);
+            var _skipTrail:Boolean = false;
+            if(targets && targets.pa1)
+            {
+               if(targets.pa1.num >= 350)
+               {
+                  _skipTrail = true;
+               }
+               else if(targets.pa1.num >= 180 && (this.life % 2 != 0))
+               {
+                  _skipTrail = true;
+               }
+            }
+            if(!_skipTrail)
+            {
+               _loc1_ = move.radFace + this.bulletData.partPoint.y;
+               _loc2_ = move.point.x + this.bulletData.partPoint.x * Math.cos(_loc1_);
+               _loc3_ = move.point.y + this.bulletData.partPoint.x * Math.sin(_loc1_);
+               _loc4_ = new Particle(render.cam,_loc2_ - (render.cam.rect.x - render.cam.last.x),_loc3_ - (render.cam.rect.y - render.cam.last.y),Math.PI + _loc1_ + Math.PI * (Math.random() * 10 - 5) / 180,1,Math.random() + 2,30,0.95,1);
+               _loc4_.layer = 1;
+               _loc4_.flash = false;
+               _loc4_.spd.x += move.spdp.x * 0.5;
+               _loc4_.spd.y += move.spdp.y * 0.5;
+               targets.pa1.addOne1(_loc4_);
+            }
          }
       }
       

@@ -111,8 +111,20 @@ package f4.unit.fire
          {
             this.targets.eba1.addOne1(_loc11_);
          }
+         var _muzzleCount:int = 4;
+         if(this.targets && this.targets.pa1)
+         {
+            if(this.targets.pa1.num >= 350)
+            {
+               _muzzleCount = 0;
+            }
+            else if(this.targets.pa1.num >= 180)
+            {
+               _muzzleCount = 1;
+            }
+         }
          var _loc13_:int = 0;
-         while(_loc13_ < 4)
+         while(_loc13_ < _muzzleCount)
          {
             _loc12_ = new Particle(_loc9_,_loc7_ - (_loc9_.rect.x - _loc9_.last.x) - this.unity.unity.move.spdp.x,_loc8_ - (_loc9_.rect.y - _loc9_.last.y) - this.unity.unity.move.spdp.y,Math.random() * Math.PI / 6 - Math.PI / 12 + _loc10_ + this.part.part.partMove.radFire,Math.random() * 3 + 1,1,0,0.75,Math.random() * 2 + 1);
             _loc12_.spd.x = _loc12_.spd.x + this.unity.unity.move.spdp.x;

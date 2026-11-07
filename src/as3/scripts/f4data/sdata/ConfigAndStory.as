@@ -130,7 +130,14 @@ package f4data.sdata
          var _stg:Stage = AbsMain.STAGE;
          if(_stg)
          {
-            _stg.scaleMode = StageScaleMode.SHOW_ALL;
+            if(param1 == RES_720 || param1 == RES_1080 || FULLSCREEN)
+            {
+               _stg.scaleMode = StageScaleMode.EXACT_FIT;
+            }
+            else
+            {
+               _stg.scaleMode = StageScaleMode.SHOW_ALL;
+            }
             _stg.align = StageAlign.TOP;
             try
             {
@@ -194,11 +201,20 @@ package f4data.sdata
             if(param1)
             {
                _stg.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+               _stg.scaleMode = StageScaleMode.EXACT_FIT;
                FULLSCREEN = true;
             }
             else
             {
                _stg.displayState = StageDisplayState.NORMAL;
+               if(RESOLUTION == RES_640)
+               {
+                  _stg.scaleMode = StageScaleMode.SHOW_ALL;
+               }
+               else
+               {
+                  _stg.scaleMode = StageScaleMode.EXACT_FIT;
+               }
                FULLSCREEN = false;
             }
             return true;
@@ -210,11 +226,20 @@ package f4data.sdata
                if(param1)
                {
                   _stg.displayState = StageDisplayState.FULL_SCREEN;
+                  _stg.scaleMode = StageScaleMode.EXACT_FIT;
                   FULLSCREEN = true;
                }
                else
                {
                   _stg.displayState = StageDisplayState.NORMAL;
+                  if(RESOLUTION == RES_640)
+                  {
+                     _stg.scaleMode = StageScaleMode.SHOW_ALL;
+                  }
+                  else
+                  {
+                     _stg.scaleMode = StageScaleMode.EXACT_FIT;
+                  }
                   FULLSCREEN = false;
                }
                return true;

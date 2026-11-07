@@ -76,9 +76,16 @@ package f4.unit.particle
          this.flash = true;
          this.flashRect = new Rectangle(0,0,2,2);
          this.lastRect = new Rectangle(0,0,this.cam.rect.width,this.cam.rect.height);
-         if(InitData.TARGETS && InitData.TARGETS.pa1 && InitData.TARGETS.pa1.num > 400 && Math.random() < 0.5)
+         if(InitData.TARGETS && InitData.TARGETS.pa1)
          {
-            isDeadA1 = true;
+            if(InitData.TARGETS.pa1.num >= 400)
+            {
+               isDeadA1 = true;
+            }
+            else if(InitData.TARGETS.pa1.num > 250 && Math.random() < 0.6)
+            {
+               isDeadA1 = true;
+            }
          }
       }
       
