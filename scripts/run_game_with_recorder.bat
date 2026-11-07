@@ -3,7 +3,7 @@ setlocal
 cd /d "%~dp0\.."
 
 echo ===============================================================================
-echo             A&B REVIVAL - RUN GAME WITH LIVE DEV TELEMETRY RECORDER
+echo             A^&B REVIVAL - RUN GAME WITH LIVE DEV TELEMETRY RECORDER
 echo ===============================================================================
 echo 1. Clearing previous flashlog.txt...
 python scripts\record_dev_session.py --clear
@@ -16,4 +16,3 @@ echo    Press 'I' or '~' in game to toggle Dev Mode!
 echo    Close the terminal or press Ctrl+C when finished.
 echo ===============================================================================
 python scripts\record_dev_session.py --watch
-

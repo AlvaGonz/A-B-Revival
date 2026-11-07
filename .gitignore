@@ -7,6 +7,8 @@ Desktop.ini
 *.tmp
 *.bak
 *~
+__pycache__/
+*.pyc
 
 # Generated mod binaries
 game/*_mod.swf

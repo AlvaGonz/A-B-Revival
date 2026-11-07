@@ -42,8 +42,26 @@ if [ -n "$STAGED_AS3" ]; then
     fi
 fi
 
-# 3. If neither Unity nor AS3 staged
-if [ -z "$STAGED_UNITY" ] && [ -z "$STAGED_AS3" ]; then
+# 3. Check for staged batch shell scripts (*.bat)
+STAGED_BAT=$(git diff --cached --name-only | grep -E '\.bat$')
+
+if [ -n "$STAGED_BAT" ]; then
+    echo "[pre-commit] Staged .bat scripts detected. Running shell script quoting linter..."
+    python scripts/lint_shell_scripts.py --staged
+    LINT_BAT_STATUS=$?
+    if [ $LINT_BAT_STATUS -ne 0 ]; then
+        echo ""
+        echo "================================================================"
+        echo " [pre-commit ERROR] Batch script lint check failed."
+        echo " Enforce set \"VAR=...\" and escape ampersands with ^&."
+        echo "================================================================"
+        exit 1
+    fi
+    echo "[pre-commit] Shell script linter passed successfully."
+fi
+
+# 4. If nothing requiring gates was staged
+if [ -z "$STAGED_UNITY" ] && [ -z "$STAGED_AS3" ] && [ -z "$STAGED_BAT" ]; then
     echo "[pre-commit] Documentation or metadata changes staged. Skipping test runner."
 fi
 
