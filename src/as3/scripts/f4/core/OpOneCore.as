@@ -45,6 +45,8 @@ package f4.core
       
       public var levelStartChangeCtrl:Boolean;
       
+      public var input:CombatInput = new CombatInput();
+      
       public function OpOneCore()
       {
          super();
@@ -100,7 +102,8 @@ package f4.core
          var _loc4_:Number = NaN;
          if(!this.playerFly.isDeadA1)
          {
-            if(this._key.isKeyDownOnce("E") || this._key.isKeyDownOnce("e"))
+            this.input.updateActions(this.autoFire);
+            if(this.input.isTacticalModeTriggered)
             {
                var _capMode:* = null;
                var _gui:* = this.targets ? this.targets.evts.gameui : null;
@@ -127,11 +130,11 @@ package f4.core
                   _gui.showNoCaptain();
                }
             }
-            if(this._key.isKeyDownOnce("X") || this._key.isKeyDownOnce("x"))
+            if(this.input.isAutofireTriggered)
             {
                this.autoFire = !this.autoFire;
             }
-            if(this._key.isKeyDownOnce("C") || this._key.isKeyDownOnce("c"))
+            if(this.input.isCameraDistanceTriggered)
             {
                var _curDist:int = ConfigAndStory.CONFIG && ConfigAndStory.CONFIG[6] != null ? int(ConfigAndStory.CONFIG[6]) : 0;
                _curDist = (_curDist + 1) % 3;
@@ -151,7 +154,7 @@ package f4.core
             }
             if(this.playerCtrlMode == 0)
             {
-               if(this.playerFly.unity.powNum > 0 && this.playerFly.canUse && this._key.isKeyDownOnce(" "))
+               if(this.playerFly.unity.powNum > 0 && this.playerFly.canUse && this.input.isBoosterTriggered)
                {
                   _loc1_ = new SoundUBlt32(InitData.SOUNDDATA.soundArray[6],6,this.playerFly.unity.move.point);
                   InitData.SOUNDC32.addSFX25(_loc1_);
@@ -174,10 +177,10 @@ package f4.core
                   this.playerFly.aiPow = 0;
                   this.targets.evts.gameui.mouseMove(false,_loc3_);
                }
-               _loc2_ = this.autoFire || this._mouse.mouseIsDown;
+               _loc2_ = this.input.isFireHeld;
                this.playerFly.runUnity(!_loc2_);
                this.targets.evts.gameui.mouseFire(_loc2_);
-               if(!this.levelStartChangeCtrl || this._key.isKeyDownOnce("Q"))
+               if(!this.levelStartChangeCtrl || this.input.isModeSwitchTriggered)
                {
                   this.playerCtrlMode = 1;
                   this.targets.evts.gameui.changeKM();
@@ -188,7 +191,7 @@ package f4.core
             }
             else if(this.playerCtrlMode == 1)
             {
-               if(this.playerFly.unity.powNum > 0 && this.playerFly.canUse && this._key.isKeyDownOnce(" "))
+               if(this.playerFly.unity.powNum > 0 && this.playerFly.canUse && this.input.isBoosterTriggered)
                {
                   _loc1_ = new SoundUBlt32(InitData.SOUNDDATA.soundArray[6],6,this.playerFly.unity.move.point);
                   InitData.SOUNDC32.addSFX25(_loc1_);
@@ -245,10 +248,10 @@ package f4.core
                }
                this.playerFly.aiPow = this.playerKeyTw[0];
                this.playerFly.unity.move.radFace += this.playerKeyTw[1] + this.playerKeyTw[2];
-               _loc2_ = this.autoFire || this._mouse.mouseIsDown;
+               _loc2_ = this.input.isFireHeld;
                this.playerFly.runUnityKey(!_loc2_);
                this.targets.evts.gameui.mouseFire(_loc2_);
-               if(this._key.isKeyDownOnce("Q"))
+               if(this.input.isModeSwitchTriggered)
                {
                   this.playerCtrlMode = 0;
                   this.targets.evts.gameui.changeKM();
@@ -258,7 +261,7 @@ package f4.core
             else if(this.playerCtrlMode == 2)
             {
                this.playerFly.aiPow = 0;
-               _loc2_ = this.autoFire || this._mouse.mouseIsDown;
+               _loc2_ = this.input.isFireHeld;
                this.playerFly.runUnityKey(!_loc2_);
                this.targets.evts.gameui.mouseFire(_loc2_);
             }
@@ -280,6 +283,102 @@ package f4.core
          }
          this.over = true;
       }
+   }
+}
+
+import flash.geom.Point;
+import fullshit.AbsMain;
+import fullshit.ctrl.KeyCtrl;
+import fullshit.ctrl.MouseCtrl;
+
+class CombatInput
+{
+   public var isTacticalModeTriggered:Boolean = false;
+   public var isAutofireTriggered:Boolean = false;
+   public var isCameraDistanceTriggered:Boolean = false;
+   public var isBoosterTriggered:Boolean = false;
+   public var isModeSwitchTriggered:Boolean = false;
+   public var isFireHeld:Boolean = false;
+
+   public var moveThrust:Number = 0;
+   public var moveTurn:Number = 0;
+
+   public var isTouchMode:Boolean = false;
+   public var touchAim:Point = null;
+
+   private var _key:KeyCtrl;
+   private var _mouse:MouseCtrl;
+
+   public function CombatInput()
+   {
+      super();
+      this._key = AbsMain.keyCtrl;
+      this._mouse = AbsMain.mouseCtrl;
+   }
+
+   public function updateActions(autoFireActive:Boolean) : void
+   {
+      this.isTacticalModeTriggered = false;
+      this.isAutofireTriggered = false;
+      this.isCameraDistanceTriggered = false;
+      this.isBoosterTriggered = false;
+      this.isModeSwitchTriggered = false;
+
+      if(this._key)
+      {
+         if(this._key.isKeyDownOnce("E") || this._key.isKeyDownOnce("e"))
+         {
+            this.isTacticalModeTriggered = true;
+         }
+         if(this._key.isKeyDownOnce("X") || this._key.isKeyDownOnce("x"))
+         {
+            this.isAutofireTriggered = true;
+         }
+         if(this._key.isKeyDownOnce("C") || this._key.isKeyDownOnce("c"))
+         {
+            this.isCameraDistanceTriggered = true;
+         }
+         if(this._key.isKeyDownOnce(" "))
+         {
+            this.isBoosterTriggered = true;
+         }
+         if(this._key.isKeyDownOnce("Q") || this._key.isKeyDownOnce("q"))
+         {
+            this.isModeSwitchTriggered = true;
+         }
+      }
+
+      this.isFireHeld = autoFireActive || (this._mouse && this._mouse.mouseIsDown);
+   }
+
+   public function triggerTacticalMode() : void
+   {
+      this.isTacticalModeTriggered = true;
+   }
+
+   public function triggerAutofire() : void
+   {
+      this.isAutofireTriggered = true;
+   }
+
+   public function triggerCameraDistance() : void
+   {
+      this.isCameraDistanceTriggered = true;
+   }
+
+   public function triggerBooster() : void
+   {
+      this.isBoosterTriggered = true;
+   }
+
+   public function triggerModeSwitch() : void
+   {
+      this.isModeSwitchTriggered = true;
+   }
+
+   public function setFireHeld(param1:Boolean) : void
+   {
+      this.isFireHeld = param1;
    }
 }
 

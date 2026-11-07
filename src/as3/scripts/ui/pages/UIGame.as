@@ -10,11 +10,15 @@ package ui.pages
    import flash.display.DisplayObjectContainer;
    import flash.display.MovieClip;
    import flash.display.Shape;
+   import flash.display.Graphics;
+   import flash.display.Sprite;
    import flash.events.Event;
+   import flash.events.MouseEvent;
    import flash.geom.ColorTransform;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
+   import flash.text.TextFormatAlign;
    import flash.ui.Mouse;
    import flash.utils.getTimer;
    import fullshit.ctrl2.SoundUnit2;
@@ -235,6 +239,7 @@ package ui.pages
             this.moneyTxt.visible = false;
          }
          super(param1,param2,param3,param4,param5);
+         this.initTouchCombatControls(param2);
          this.cam = InitData.RENDERDATA.cam;
          this.eventCrtl = InitData.TARGETS.evts;
          this.core = InitData.CORE;
@@ -895,6 +900,11 @@ package ui.pages
             this.autofireDot.parent.removeChild(this.autofireDot);
          }
          this.autofireDot = null;
+         if(this._touchPillsContainer && this._touchPillsContainer.parent)
+         {
+            this._touchPillsContainer.parent.removeChild(this._touchPillsContainer);
+         }
+         this._touchPillsContainer = null;
          this.mapbmp = null;
          this.pf1 = null;
          this.pf2 = null;
@@ -902,6 +912,78 @@ package ui.pages
          this.cam = null;
          this.eventCrtl = null;
          return super.removeSelf();
+      }
+
+      private var _touchPillsContainer:Sprite;
+
+      private function initTouchCombatControls(param2:MovieClip) : void
+      {
+         this._touchPillsContainer = new Sprite();
+         this._touchPillsContainer.name = "touchPills";
+         param2.addChild(this._touchPillsContainer);
+
+         this.createTouchButton("btnTouchAuto", "AUTO", 540, 24, 46, 22, function():void {
+            if(InitData.CORE && InitData.CORE.input)
+            {
+               InitData.CORE.input.triggerAutofire();
+            }
+         });
+         
+         this.createTouchButton("btnTouchCam", "CAM", 100, 24, 44, 22, function():void {
+            if(InitData.CORE && InitData.CORE.input)
+            {
+               InitData.CORE.input.triggerCameraDistance();
+            }
+         });
+
+         this.createTouchButton("btnTouchBoost", "BOOST", 30, 440, 54, 26, function():void {
+            if(InitData.CORE && InitData.CORE.input)
+            {
+               InitData.CORE.input.triggerBooster();
+            }
+         });
+
+         this.createTouchButton("btnTouchMode", "MODE", 610, 440, 50, 26, function():void {
+            if(InitData.CORE && InitData.CORE.input)
+            {
+               InitData.CORE.input.triggerTacticalMode();
+            }
+         });
+      }
+
+      private function createTouchButton(btnName:String, labelText:String, posX:Number, posY:Number, btnW:Number, btnH:Number, onTrigger:Function) : Sprite
+      {
+         var btn:Sprite = new Sprite();
+         btn.name = btnName;
+         btn.x = posX;
+         btn.y = posY;
+         btn.buttonMode = true;
+         btn.useHandCursor = true;
+
+         var g:Graphics = btn.graphics;
+         g.beginFill(0x1a233a, 0.7);
+         g.lineStyle(1, 0x4a75a0, 0.85);
+         g.drawRoundRect(-btnW / 2, -btnH / 2, btnW, btnH, 6, 6);
+         g.endFill();
+
+         var tf:TextField = new TextField();
+         tf.width = btnW;
+         tf.height = btnH;
+         tf.x = -btnW / 2;
+         tf.y = -btnH / 2 + 3;
+         tf.selectable = false;
+         tf.mouseEnabled = false;
+         UIStyles.applyFormat(tf, UIStyles.FONT_BODY, 10, UIStyles.COLOR_WHITE, true, TextFormatAlign.CENTER);
+         btn.addChild(tf);
+         tf.text = labelText;
+
+         btn.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent):void {
+            e.stopPropagation();
+            onTrigger();
+         });
+
+         this._touchPillsContainer.addChild(btn);
+         return btn;
       }
    }
 }
