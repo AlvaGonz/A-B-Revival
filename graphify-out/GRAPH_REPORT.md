@@ -1,17 +1,17 @@
 # Graph Report - A&B revival  (2026-11-07)
 
 ## Corpus Check
-- 187 files · ~78,997 words
+- 188 files · ~79,673 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 23 file(s) not represented in the graph (top: .bin 12, .bat 7, (none) 2)
 
 ## Summary
-- 2727 nodes · 3488 edges · 340 communities (75 shown, 265 thin omitted)
+- 2736 nodes · 3510 edges · 352 communities (80 shown, 272 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 150 edges (avg confidence: 0.92)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `898475ef`
+- Built from commit: `fb348954`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -83,7 +83,7 @@
 - SoundData
 - 1.2 Inter-Process Communication (IPC) Mechanisms
 - BMPDMC
-- 4. Blitting & Compositing Optimizations
+- render
 - AIOuter
 - as3/scripts/ui/pages/UIRepair.as
 - DisDown
@@ -112,7 +112,7 @@
 - AIURender
 - BGMoveSimple
 - Cam
-- Item
+- dump_uidata/scripts/ui/pages/UIShop.as
 - TalkIndex.as
 - AbsMain
 - SaveLoad
@@ -139,7 +139,7 @@
 - OrgEvent
 - Attach
 - VeryOutShitABC_loading
-- 4. Practical Modernization Roadmap for A&B Revival
+- Phase 1: True 60 FPS Engine Modernization & AIR Foundation (Current Release)
 - 1. Record architecture decisions
 - Scripts
 - Domain Documentation Layout
@@ -156,6 +156,7 @@
 - struct
 - dump_uidata/scripts/ui/base/UIBase.as
 - dump_uidata/scripts/ui/pages/UIRepair.as
+- F4DataOrg
 - ConfigAndStory
 - dump_uidata/scripts/mochi/as3/MochiInventory.as
 - FormBase
@@ -272,10 +273,12 @@
 - ticket-3.md
 - updateNew
 - 8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam
+- OpOneCore
 - ticket_29_body.md
 - Decision
 - as3_search.py
 - cleanDt
+- BMPD2D
 - pr_tooling_body.md
 - ticket1.md
 - ticket3.md
@@ -285,67 +288,76 @@
 - 4. Combat Damage Telemetry, Ally Health Alerts, Critical Distressing, and Autofire System
 - ticket-1.md
 - ticket-4.md
+- SimpleFly
+- 10. Fixed-Timestep Simulation Loop, Runtime Performance Gate & Hallmark Resolution Selector
+- Feasibility Matrix
+- SWave
+- cleanMC
+- as3/scripts/f4/unit/fire/FireLoop.as
+- FlyPart
+- Glossary: A&B Revival (Assembly & Battle Space)
+- FlyData
 
 ## God Nodes (most connected - your core abstractions)
 1. `AIUnity` - 32 edges
 2. `EvtCtrl` - 32 edges
 3. `EvtCtrl` - 30 edges
 4. `F4PartMC` - 27 edges
-5. `F4PartMC` - 23 edges
-6. `ConfigAndStory` - 23 edges
+5. `ConfigAndStory` - 23 edges
+6. `F4PartMC` - 23 edges
 7. `AIUnity` - 21 edges
 8. `F4DataCPX` - 21 edges
 9. `F4DataCPX` - 20 edges
 10. `Core Entities` - 19 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `The Independent VM Model` --references--> `AIUnity`  [INFERRED]
-  docs/research/multithreading-workers-and-gpu-hardware-acceleration.md → src/as3/scripts/f4/unit/ai/AIUnity.as
-- `Context` --references--> `EvtCtrl`  [INFERRED]
-  docs/adr/0002-allied-flagship-lifecycle.md → src/as3/scripts/f4/evts/EvtCtrl.as
-- `Phase 3: Stage3D Quad Batcher GPU Migration` --references--> `MC2BMPD`  [INFERRED]
-  docs/research/multithreading-workers-and-gpu-hardware-acceleration.md → src/as3/scripts/f4/gfx/bmpdmc/MC2BMPD.as
 - `Feasibility Matrix` --references--> `UIMakePlayer()`  [INFERRED]
   docs/research/automated-testing-and-playwright-equivalents-for-flash.md → src/as3/scripts/ui/pages/UIMakePlayer.as
-- `Decision` --references--> `unFire()`  [INFERRED]
-  docs/adr/0008-60fps-resolution-modernization-and-leak-prevention.md → src/as3/scripts/f4/unit/fire/FireTimer.as
+- `1. True 60 FPS Physics Rescaling (1:1 Lockstep) - Implemented in Task #104` --references--> `AIUnity`  [INFERRED]
+  docs/adr/0011-adobe-air-mobile-target-and-true-60fps-gpu-architecture.md → src/as3/scripts/f4/unit/ai/AIUnity.as
+- `Negative / Trade-Offs` --references--> `AIUnity`  [INFERRED]
+  docs/adr/0011-adobe-air-mobile-target-and-true-60fps-gpu-architecture.md → src/as3/scripts/f4/unit/ai/AIUnity.as
+- `The Independent VM Model` --references--> `AIUnity`  [INFERRED]
+  docs/research/multithreading-workers-and-gpu-hardware-acceleration.md → src/as3/scripts/f4/unit/ai/AIUnity.as
+- `Phase 3: Stage3D Quad Batcher GPU Migration` --references--> `MC2BMPD`  [INFERRED]
+  docs/research/multithreading-workers-and-gpu-hardware-acceleration.md → src/as3/scripts/f4/gfx/bmpdmc/MC2BMPD.as
 
 ## Import Cycles
 - None detected.
 
-## Communities (340 total, 265 thin omitted)
+## Communities (352 total, 272 thin omitted)
 
 ### Community 0 - "as3/scripts/ui/pages/UIMakePlayer.as"
+Cohesion: 0.13
+Nodes (12): addBtnL(), addDt(), addDtL(), afterFadeIn(), afterTalk(), changeOrgDt(), hidePoints(), overAct() (+4 more)
+
+### Community 1 - "EvtCtrl"
 Cohesion: 0.11
-Nodes (20): Feasibility Matrix, addBtnL(), addDt(), addDtL(), addPart(), afterFadeIn(), afterTalk(), autoPlug() (+12 more)
+Nodes (5): 2. Allied Flagship (Captain's Ship) Lifecycle and Deployment Boundary, Consequences, Context, Status, EvtCtrl
 
 ### Community 3 - "as3/scripts/ui/pages/UIRepair.as"
 Cohesion: 0.13
 Nodes (7): afterFadeIn(), alphaRunStart(), initArr(), removeAll(), removeBtnL(), removeSelf(), startToRemove()
 
 ### Community 5 - "UIChooseFlyAI.as"
-Cohesion: 0.09
-Nodes (25): 2. Allied Flagship (Captain's Ship) Lifecycle and Deployment Boundary, Consequences, Context, Decision, Status, act(), addAI(), addDtL() (+17 more)
-
-### Community 6 - "AIUnity"
-Cohesion: 0.07
-Nodes (21): 5. Configurable Combat Camera Distance and Dynamic FOV Scaling, Consequences, Context, Decision, Status, 0011. Adobe AIR Mobile Target, True 60 FPS Rescaling, and Stage3D GPU Architecture, 1. True 60 FPS Physics Rescaling (1:1 Lockstep) - Implemented in Task #104, 3. Adobe AIR Runtime Target & Launcher - Implemented in Task #105 (+13 more)
+Cohesion: 0.11
+Nodes (21): Decision, act(), addAI(), addDtL(), afterFadeIn(), afterTalk(), changeAI2PlayerYes(), ckAIUse() (+13 more)
 
 ### Community 7 - "F4DataCPX"
 Cohesion: 0.10
 Nodes (8): Further Notes, Implementation Decisions, Out of Scope, Problem Statement, Solution, Testing Decisions, User Stories, F4DataCPX
 
 ### Community 8 - "MochiAd.as"
-Cohesion: 0.20
-Nodes (4): function(), load(), MochiAd(), triggerFinished()
+Cohesion: 0.22
+Nodes (3): function(), load(), triggerFinished()
 
 ### Community 9 - "RGBHSLHSV.as"
 Cohesion: 0.14
 Nodes (8): changeRGB(), colorBack(), colorIn01(), HSL2RGB(), RGB2H(), RGB2HSL(), RGB2HSV(), RGBHSLHSV()
 
 ### Community 10 - "act"
-Cohesion: 0.15
-Nodes (16): uiName(), act(), act(), autoZoom(), cleanDtL(), cleanMC(), leaveNormal(), leaveYes() (+8 more)
+Cohesion: 0.19
+Nodes (13): uiName(), act(), act(), addPart(), autoPlug(), autoZoom(), cleanDtL(), makeFly() (+5 more)
 
 ### Community 11 - "Spec: Clear Weapons Button in Factory Shipbuilder"
 Cohesion: 0.22
@@ -356,24 +368,24 @@ Cohesion: 0.19
 Nodes (6): disTo(), EPoint(), get(), makeDis(), rotTo(), scale()
 
 ### Community 24 - "Decision"
-Cohesion: 0.15
+Cohesion: 0.18
 Nodes (7): Decision, 5.3. Solution: Object Pooling & Geometry Reuse, Array1(), fastRemoveSelf1(), removeSelf1(), run1(), removeSelf()
 
 ### Community 29 - "as3/scripts/Fly4UI.as"
-Cohesion: 0.05
-Nodes (39): 1. Executive Summary & Problem Context, 2. In-Depth Candidate Analysis, 3. Comparative Evaluation Matrix, 4. Architectural Recommendations for A&B Revival, 5. Primary Source Citations & References, Architectural Overview, Architectural Overview, Architectural Overview (+31 more)
+Cohesion: 0.06
+Nodes (36): 1. Executive Summary & Problem Context, 2. In-Depth Candidate Analysis, 3. Comparative Evaluation Matrix, 5. Primary Source Citations & References, Architectural Overview, Architectural Overview, Architectural Overview, Architectural Overview (+28 more)
 
 ### Community 31 - "UIWin.as"
 Cohesion: 0.24
 Nodes (5): act(), addBtnL(), nextGame(), removeBtnL(), toNext()
 
 ### Community 32 - "Core Entities"
-Cohesion: 0.07
-Nodes (11): Core Entities, Glossary: A&B Revival (Assembly & Battle Space), Tooling Vocabulary, FireLoop(), FireSingle(), FlyBase, FlyPart, FlyData (+3 more)
+Cohesion: 0.18
+Nodes (6): Core Entities, FireSingle(), FlyBase, MissionData(), MochiAd(), MochiEvents()
 
 ### Community 36 - "2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()`"
-Cohesion: 0.06
-Nodes (23): 2. Surgical CPU Blitter Optimization in `RenderData.as` - Implemented in Task #103, 1. Executive Summary & Problem Context, 2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()`, 3. Fixed-Timestep Accumulator vs Variable Delta Time, 5.1. AVM2 Garbage Collection Dynamics, 5.2. Root Cause of Allocation Churn in Combat, 5. Garbage Collection & Memory Churn Elimination, 60 FPS Optimization and Runtime Performance Architecture (+15 more)
+Cohesion: 0.15
+Nodes (12): 2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()`, 3. Fixed-Timestep Accumulator vs Variable Delta Time, 60 FPS Optimization and Runtime Performance Architecture, Analysis of Current Pacing Architecture, Architectural Benefits:, Bottleneck A: Unbounded Full-Surface `ColorTransform`, Bottleneck B: Redundant & Multiple CPU Blur Filters (`applyFilter`), Bottleneck C: Upscaling Vector Rasterization (`BitmapData.draw` with `Matrix`) (+4 more)
 
 ### Community 37 - "Forcing Adobe Flash Player Standalone to use the NVIDIA GTX 1650"
 Cohesion: 0.25
@@ -400,8 +412,8 @@ Cohesion: 0.25
 Nodes (8): 2.1 Why Flash Games Default to 0% GPU Utilization, 2.2 `flash.display3D` (Stage3D) Low-Level Architecture, 2.3 `renderMode` and `wmode` Disambiguation, 2.4 AGAL (Adobe Graphics Assembly Language) & 2D Quad Batching, 2. Flash GPU Hardware Acceleration & Stage3D Architecture, AGAL Shader Pipeline for 2D Batched Sprites, Performance Impact: Software Blitting vs Quad Batching, The Hardware Layering Hierarchy
 
 ### Community 51 - "Multithreading (AVM2 Workers) and GPU Hardware Acceleration (Stage3D) Architecture Research"
-Cohesion: 0.29
-Nodes (6): 3.1 Standalone Flash Player Projector 32 (`flashplayer_32_sa.exe`), 3.2 HARMAN Adobe AIR Desktop SDK (v33.x / v51.x+), 3. Evaluation of Target Environments, 5. Primary Source References, Executive Summary, Multithreading (AVM2 Workers) and GPU Hardware Acceleration (Stage3D) Architecture Research
+Cohesion: 0.18
+Nodes (10): 3.1 Standalone Flash Player Projector 32 (`flashplayer_32_sa.exe`), 3.2 HARMAN Adobe AIR Desktop SDK (v33.x / v51.x+), 3. Evaluation of Target Environments, 4. Practical Modernization Roadmap for A&B Revival, 5. Primary Source References, Executive Summary, Multithreading (AVM2 Workers) and GPU Hardware Acceleration (Stage3D) Architecture Research, Phase 1: Immediate CPU Pipeline Optimization (Zero Architectural Risk) (+2 more)
 
 ### Community 54 - "as3/scripts/ui/pages/UIShop.as"
 Cohesion: 0.20
@@ -416,16 +428,16 @@ Cohesion: 0.29
 Nodes (6): A&B Revival (Assembly & Battle: The Story in the Space), Development guardrails, Overview, Project Objectives, Project Structure, Quick Start
 
 ### Community 62 - "MC2BMPD"
-Cohesion: 0.25
-Nodes (4): 1.3 Feasibility Analysis: Can `Targets.bltHit()` Be Offloaded to a Worker?, Code Trace of `Targets.bltHit()`, Where Workers Provide High ROI in A&B Revival, MC2BMPD
+Cohesion: 0.15
+Nodes (8): 4.1. Replacing Vector `draw()` with Pre-baked Spritesheets, 4.2. Offloading Buffer Upscaling to the Flash Display List Compositor, 4.3. Dirty Rectangles vs Full-Surface Operations, 4. Blitting & Compositing Optimizations, 1.3 Feasibility Analysis: Can `Targets.bltHit()` Be Offloaded to a Worker?, Code Trace of `Targets.bltHit()`, Where Workers Provide High ROI in A&B Revival, MC2BMPD
 
 ### Community 72 - "1.2 Inter-Process Communication (IPC) Mechanisms"
 Cohesion: 0.29
 Nodes (7): 1.1 Primary Architecture of AVM2 Concurrency, 1.2 Inter-Process Communication (IPC) Mechanisms, 1. ActionScript 3 Concurrency & Multithreading (AVM2 Workers), Mechanism A: `MessageChannel` (AMF3 Serialization), Mechanism B: `ByteArray.shareable = true` (Zero-Copy Shared Memory), Mechanism C: Synchronization Primitives (`Mutex` and `Condition`), The Independent VM Model
 
-### Community 74 - "4. Blitting & Compositing Optimizations"
-Cohesion: 0.40
-Nodes (4): 4.1. Replacing Vector `draw()` with Pre-baked Spritesheets, 4.2. Offloading Buffer Upscaling to the Flash Display List Compositor, 4.3. Dirty Rectangles vs Full-Surface Operations, 4. Blitting & Compositing Optimizations
+### Community 74 - "render"
+Cohesion: 0.12
+Nodes (14): 5. Configurable Combat Camera Distance and Dynamic FOV Scaling, Consequences, Context, Decision, Status, 0011. Adobe AIR Mobile Target, True 60 FPS Rescaling, and Stage3D GPU Architecture, Consequences, Considered Options (+6 more)
 
 ### Community 76 - "as3/scripts/ui/pages/UIRepair.as"
 Cohesion: 0.21
@@ -459,13 +471,17 @@ Nodes (18): 7. Hull Category Wing Capacity & Assembly HUD Counter, Consequences,
 Cohesion: 0.18
 Nodes (9): Agent skills, Architecture & Codebase Overview, Codebase navigation (`graphify` & `as3_search`), Domain docs & standards, Engineering Workflow Lifecycle, Issue tracker, Pre-commit guardrails, Project documentation (`docs/` & `CONTEXT.md`) (+1 more)
 
+### Community 105 - "dump_uidata/scripts/ui/pages/UIShop.as"
+Cohesion: 0.21
+Nodes (12): acceptYes(), act(), addDt(), afterFadeIn(), afterTalk(), cleanDt(), flyYes(), overAct() (+4 more)
+
 ### Community 132 - "Operations"
 Cohesion: 0.29
 Nodes (6): Creating issues, Issue Tracker: GitHub Issues, Listing issues, Operations, Viewing an issue, Wayfinding operations
 
-### Community 142 - "4. Practical Modernization Roadmap for A&B Revival"
-Cohesion: 0.50
-Nodes (4): 4. Practical Modernization Roadmap for A&B Revival, Phase 1: Immediate CPU Pipeline Optimization (Zero Architectural Risk), Phase 2: SWF Header Upgrade & Concurrency Foundation, Phase 3: Stage3D Quad Batcher GPU Migration
+### Community 142 - "Phase 1: True 60 FPS Engine Modernization & AIR Foundation (Current Release)"
+Cohesion: 0.18
+Nodes (10): 1. True 60 FPS Physics Rescaling (1:1 Lockstep) - Implemented in Task #104, 2. Surgical CPU Blitter Optimization in `RenderData.as` - Implemented in Task #103, 3. Adobe AIR Runtime Target & Launcher - Implemented in Task #105, 4. Automated Testing & Session Telemetry Tools, Decision & Phased Implementation Details, Phase 1: True 60 FPS Engine Modernization & AIR Foundation (Current Release), Phase 2: Stage3D GPU Quad Batching & Hardware Pipeline (Subsequent Milestone), 5.1. AVM2 Garbage Collection Dynamics (+2 more)
 
 ### Community 143 - "1. Record architecture decisions"
 Cohesion: 0.33
@@ -476,8 +492,8 @@ Cohesion: 0.22
 Nodes (8): 1. `recompile.bat`, 2. `export-assets.bat`, 3. `install-hooks.bat` / `install-hooks.sh`, 4. `lint_domain_leakage.py`, 5. `as3_search.py`, 6. `run-game.bat` (Root), Build and Export Scripts, Scripts
 
 ### Community 158 - "dump_uidata/scripts/ui/pages/UIMakePlayer.as"
-Cohesion: 0.08
-Nodes (48): act(), addBtnL(), addDt(), addDtL(), addDtLTempRun(), addFlyYes(), addPart(), addToFly() (+40 more)
+Cohesion: 0.06
+Nodes (54): uiName(), act(), addBtnL(), afterFadeIn(), drawOneStart(), removeBtnL(), act(), addBtnL() (+46 more)
 
 ### Community 160 - "dump_uidata/scripts/mochi/as3/MochiServices.as"
 Cohesion: 0.11
@@ -504,8 +520,8 @@ Cohesion: 0.13
 Nodes (7): afterFadeIn(), alphaRunStart(), initArr(), removeAll(), removeBtnL(), removeSelf(), startToRemove()
 
 ### Community 169 - "dump_uidata/scripts/ui/pages/UIRepair.as"
-Cohesion: 0.07
-Nodes (30): uiName(), act(), addBtnL(), afterFadeIn(), drawOneStart(), removeBtnL(), acceptYes(), act() (+22 more)
+Cohesion: 0.21
+Nodes (12): acceptYes(), act(), addDt(), afterFadeIn(), afterTalk(), cleanDt(), flyYes(), overAct() (+4 more)
 
 ### Community 177 - "dump_uidata/scripts/fullshit/tool/EPoint.as"
 Cohesion: 0.19
@@ -564,24 +580,28 @@ Cohesion: 0.40
 Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 
 ### Community 319 - "updateNew"
-Cohesion: 0.24
-Nodes (13): addToUndo(), createCyberBtn(), editYes(), initClearButtons(), initWingHint(), mergeFlyYes(), newYes(), showFlyEdit() (+5 more)
+Cohesion: 0.18
+Nodes (17): 4. Architectural Recommendations for A&B Revival, Tier 1: Fast CI Behavioral & Logic Quality Gate (Candidate 3), Tier 2: Interactive Remote E2E Test Driver ("Flash-Playwright" - Candidate 4), addToUndo(), createCyberBtn(), editYes(), initClearButtons(), initWingHint() (+9 more)
 
 ### Community 320 - "8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam"
-Cohesion: 0.18
-Nodes (5): 8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam, Consequences, Context, Status, SWave
+Cohesion: 0.40
+Nodes (4): 8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam, Consequences, Context, Status
 
 ### Community 324 - "Decision"
 Cohesion: 0.15
-Nodes (9): 10. Fixed-Timestep Simulation Loop, Runtime Performance Gate & Hallmark Resolution Selector, Consequences, Context, Decision, Status, AIData(), FireTimer(), unFire() (+1 more)
+Nodes (6): Decision, AIData(), FireTimer(), unFire(), Item, okFunc()
 
 ### Community 325 - "as3_search.py"
-Cohesion: 0.08
-Nodes (26): class_synopsis(), find_as_files(), main(), print_help(), search_callers(), search_symbol(), get_staged_files(), lint_file() (+18 more)
+Cohesion: 0.07
+Nodes (30): class_synopsis(), find_as_files(), main(), print_help(), search_callers(), search_symbol(), get_staged_files(), lint_file() (+22 more)
 
 ### Community 326 - "cleanDt"
 Cohesion: 0.38
 Nodes (7): addFlyYes(), addToFly(), cleanDt(), cleanMCNotBack(), mergeFlyLeaveYes(), resetMC(), resetYes()
+
+### Community 327 - "BMPD2D"
+Cohesion: 0.29
+Nodes (4): 6. Modern Platform Pathways (Desktop AIR & Flash Player 32), Recommended Implementation Roadmap (Pathway A + C), BMPD2D, loop()
 
 ### Community 333 - "pr_tooling_body.md"
 Cohesion: 0.40
@@ -615,23 +635,35 @@ Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 Cohesion: 0.40
 Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 
+### Community 344 - "10. Fixed-Timestep Simulation Loop, Runtime Performance Gate & Hallmark Resolution Selector"
+Cohesion: 0.40
+Nodes (4): 10. Fixed-Timestep Simulation Loop, Runtime Performance Gate & Hallmark Resolution Selector, Consequences, Context, Status
+
+### Community 345 - "Feasibility Matrix"
+Cohesion: 0.50
+Nodes (5): Feasibility Matrix, countPartsByType(), onClearEnginesClick(), onClearWeaponsClick(), onClearWingsClick()
+
+### Community 347 - "cleanMC"
+Cohesion: 0.40
+Nodes (5): cleanMC(), leaveNormal(), leaveYes(), removeSelf(), removeYes()
+
 ## Knowledge Gaps
-- **265 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **272 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Core Entities` connect `Core Entities` to `Decision`, `2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()``, `AIUnity`, `MochiAd.as`, `ConfigAndStory`, `updateNew`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `Core Entities` connect `Core Entities` to `Decision`, `updateNew`, `AIUnity`, `render`, `F4DataOrg`, `ConfigAndStory`, `SimpleFly`, `as3/scripts/f4/unit/fire/FireLoop.as`, `FlyPart`, `Glossary: A&B Revival (Assembly & Battle Space)`, `FlyData`?**
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
 - **Are the 6 inferred relationships involving `AIUnity` (e.g. with `Decision` and `Decision`) actually correct?**
   _`AIUnity` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **Should `as3/scripts/ui/pages/UIMakePlayer.as` be split into smaller, more focused modules?**
-  _Cohesion score 0.10574712643678161 - nodes in this community are weakly interconnected._
-- **Why does `UIMakePlayer()` connect `updateNew` to `as3/scripts/ui/pages/UIMakePlayer.as`, `Core Entities`, `Decision`, `UIChooseFlyAI.as`, `act`, `as3/scripts/Fly4UI.as`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+  _Cohesion score 0.12987012987012986 - nodes in this community are weakly interconnected._
+- **Why does `UIMakePlayer()` connect `updateNew` to `Core Entities`, `as3/scripts/ui/pages/UIMakePlayer.as`, `Decision`, `UIChooseFlyAI.as`, `Feasibility Matrix`, `as3/scripts/Fly4UI.as`?**
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `EvtCtrl` (e.g. with `Context` and `Decision`) actually correct?**
   _`EvtCtrl` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **Should `MochiServices.as` be split into smaller, more focused modules?**
-  _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
-- **Why does `AIUnity` connect `AIUnity` to `Decision`, `Core Entities`, `1.2 Inter-Process Communication (IPC) Mechanisms`, `Decision`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Should `EvtCtrl` be split into smaller, more focused modules?**
+  _Cohesion score 0.10952380952380952 - nodes in this community are weakly interconnected._
+- **Why does `render()` connect `render` to `10. Fixed-Timestep Simulation Loop, Runtime Performance Gate & Hallmark Resolution Selector`, `Core Entities`, `Multithreading (AVM2 Workers) and GPU Hardware Acceleration (Stage3D) Architecture Research`, `2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()``?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
