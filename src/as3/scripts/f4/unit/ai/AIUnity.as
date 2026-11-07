@@ -969,6 +969,11 @@ package f4.unit.ai
          {
             InitData.CORE.cam.mv = new MoveAs(this.unity.move.point.x,this.unity.move.point.y);
          }
+         if(this.soundEngine)
+         {
+            this.soundEngine.isDeadA1 = true;
+            this.soundEngine = null;
+         }
          this.unity.move.point.x = this.unity.move.point.y = -1000000;
       }
       

@@ -90,13 +90,49 @@ package f4.gfx
       
       public function disBmpds() : void
       {
-         this.BMPD.dispose();
-         this.CANVAS.dispose();
-         this.BMPDFX.dispose();
-         this.BMPDBLTFX.dispose();
-         this.BMPDBG.dispose();
-         this.sm.dispose();
-         this.bmp && this.bmp.parent && this.bmp.parent.removeChild(this.bmp);
+         if(this.BMPD)
+         {
+            this.BMPD.dispose();
+            this.BMPD = null;
+         }
+         if(this.CANVAS)
+         {
+            this.CANVAS.dispose();
+            this.CANVAS = null;
+         }
+         if(this.BMPDFX)
+         {
+            this.BMPDFX.dispose();
+            this.BMPDFX = null;
+         }
+         if(this.BMPDBLTFX)
+         {
+            this.BMPDBLTFX.dispose();
+            this.BMPDBLTFX = null;
+         }
+         if(this.BMPDBG)
+         {
+            this.BMPDBG.dispose();
+            this.BMPDBG = null;
+         }
+         if(this.MINIMAP)
+         {
+            this.MINIMAP.dispose();
+            this.MINIMAP = null;
+         }
+         if(this.sm)
+         {
+            this.sm.dispose();
+            this.sm = null;
+         }
+         if(this.bmp)
+         {
+            if(this.bmp.parent)
+            {
+               this.bmp.parent.removeChild(this.bmp);
+            }
+            this.bmp = null;
+         }
       }
       
       public function init() : void

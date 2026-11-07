@@ -198,6 +198,12 @@ package f4.unit.parts
             InitData.SOUNDC32.addSFX25(_loc7_);
          }
          InitData.CORE.cam.addShake(move.point.x,move.point.y,this.bulletData.deadAct / 20);
+         this.whoFire = null;
+         this.aim = null;
+         this.ckblt = null;
+         this.line = null;
+         this.aif = null;
+         this.deadSpd = null;
       }
    }
 }

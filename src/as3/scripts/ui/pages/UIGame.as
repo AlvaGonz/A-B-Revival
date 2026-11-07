@@ -828,6 +828,35 @@ package ui.pages
       {
          InitData.CORE.pause = false;
       }
+
+      override public function removeSelf() : UIBase
+      {
+         if(InitData.CORE)
+         {
+            InitData.CORE.pause = true;
+            InitData.CORE.over = true;
+         }
+         if(InitData.RENDERDATA)
+         {
+            InitData.RENDERDATA.disBmpds();
+         }
+         if(InitData.TARGETS)
+         {
+            InitData.TARGETS.reset();
+         }
+         if(this.autofireDot && this.autofireDot.parent)
+         {
+            this.autofireDot.parent.removeChild(this.autofireDot);
+         }
+         this.autofireDot = null;
+         this.mapbmp = null;
+         this.pf1 = null;
+         this.pf2 = null;
+         this.core = null;
+         this.cam = null;
+         this.eventCrtl = null;
+         return super.removeSelf();
+      }
    }
 }
 

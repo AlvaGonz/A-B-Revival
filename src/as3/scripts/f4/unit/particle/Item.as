@@ -136,6 +136,12 @@ package f4.unit.particle
                _loc3_++;
             }
          }
+         this.cam = null;
+         this.renderData = null;
+         this.point = null;
+         this.spd = null;
+         this.hit = null;
+         this.data = null;
       }
       
       public function render() : void
