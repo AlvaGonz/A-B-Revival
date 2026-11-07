@@ -11,9 +11,9 @@
         <title>Assembly &amp; Battle: The Story in the Space</title>
         <content>a&amp;b_space_mod.swf</content>
         <visible>true</visible>
-        <width>640</width>
-        <height>480</height>
-        <minSize>640 480</minSize>
+        <width>1920</width>
+        <height>1080</height>
+        <minSize>1280 720</minSize>
         <aspectRatio>landscape</aspectRatio>
         <renderMode>direct</renderMode>
         <autoOrients>true</autoOrients>
