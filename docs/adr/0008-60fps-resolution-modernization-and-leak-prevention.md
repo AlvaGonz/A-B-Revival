@@ -3,7 +3,8 @@
 Date: 2026-11-06
 
 ## Status
-Accepted
+Superseded by ADR 0014 and ADR 0015 (Flash AS3 Frozen Reference Baseline).
+*Note: Flash-specific Stage/BitmapData mechanisms are retired, while core 60 FPS timing ratios and entity lifecycle invariants are preserved in the Unity 6.6 target (ADR 0014).*
 
 ## Context
 The game previously ran locked at 36 FPS and a fixed 640×480 window presentation, with performance gradually degrading over extended battles due to uncollected entities (bullets, particles, shockwaves, debris) and unreleased BitmapData buffers (Spec #83, Tickets #84, #85, #86, #87, #88). Modern players expect 60 FPS smoothness, support for window sizes up to 1920×1080, and zero frame-time degradation regardless of battle duration.

@@ -1,78 +1,50 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # .githooks/pre-commit
-# Enforces clean compilation and domain architectural boundaries before commits.
+# Enforces automated testing and architectural boundaries before commits (ADR 0015, ADR 0016).
 
 echo "[pre-commit] Checking staged files..."
 
-# Check if any ActionScript sources or compile assets are staged
+# 1. Check for staged Unity 6.6 changes (A&B-U/)
+STAGED_UNITY=$(git diff --cached --name-only | grep -E '^A&B-U/')
+
+if [ -n "$STAGED_UNITY" ]; then
+    echo "[pre-commit] Unity 6.6 changes detected. Running Tier 1 automated test suite (ADR 0016)..."
+    dotnet test "A&B-U/Assets/Scripts/Tests/ABRevival.Tests.csproj" --nologo -v q
+    TEST_STATUS=$?
+    if [ $TEST_STATUS -ne 0 ]; then
+        echo ""
+        echo "================================================================"
+        echo " [pre-commit ERROR] Tier 1 .NET unit test suite failed (exit code $TEST_STATUS)."
+        echo " Please ensure all tests pass (Zero-Error Verification Gate) before committing."
+        echo "================================================================"
+        exit 1
+    fi
+    echo "[pre-commit] Tier 1 test suite passed successfully."
+fi
+
+# 2. Check for staged legacy ActionScript sources (src/as3/)
 STAGED_AS3=$(git diff --cached --name-only | grep -E '^src/as3/.*\.as$')
 
-if [ -z "$STAGED_AS3" ]; then
-    echo "[pre-commit] No ActionScript sources staged. Fast-path skipping compiler verification."
-    exit 0
-fi
-
-echo "[pre-commit] ActionScript changes detected in staged commit:"
-echo "$STAGED_AS3" | sed 's/^/  - /'
-
-# 1. Run Domain Boundary Linter (if present)
-if [ -f "scripts/lint_domain_leakage.py" ]; then
-    echo "[pre-commit] Running domain architecture linter..."
-    python scripts/lint_domain_leakage.py --staged
-    LINT_STATUS=$?
-    if [ $LINT_STATUS -ne 0 ]; then
-        echo ""
-        echo "================================================================"
-        echo " [pre-commit ERROR] Domain boundary lint check failed."
-        echo " Please encapsulate domain logic before committing."
-        echo "================================================================"
-        exit 1
-    fi
-fi
-
-# 2. Run Recompilation verification
-echo "[pre-commit] Running SWF recompilation verification..."
-python scripts/recompile.py
-BUILD_STATUS=$?
-
-if [ $BUILD_STATUS -ne 0 ]; then
-    echo ""
+if [ -n "$STAGED_AS3" ]; then
     echo "================================================================"
-    echo " [pre-commit ERROR] ActionScript compilation failed (exit code $BUILD_STATUS)."
-    echo " Commit aborted. Please resolve compiler errors before committing."
+    echo " [pre-commit WARNING] Changes detected in src/as3/."
+    echo " Note: ActionScript 3 is frozen as a read-only baseline per ADR 0015."
     echo "================================================================"
-    exit 1
-fi
-
-# 3. Run SWF ABC Linkage verification
-if [ -f "scripts/check_swf_linkage.py" ]; then
-    echo "[pre-commit] Running SWF ABC linkage verification..."
-    python scripts/check_swf_linkage.py
-    LINK_STATUS=$?
-    if [ $LINK_STATUS -ne 0 ]; then
-        echo ""
-        echo "================================================================"
-        echo " [pre-commit ERROR] SWF ABC linkage check failed."
-        echo " Standalone .as files not mapped in SWF tags cause runtime Error #1065."
-        echo " Please inline helpers or delegate to established domain/UI hubs per ADR-0009."
-        echo "================================================================"
-        exit 1
+    
+    if [ -f "scripts/lint_domain_leakage.py" ]; then
+        echo "[pre-commit] Running domain architecture linter..."
+        python scripts/lint_domain_leakage.py --staged
+        LINT_STATUS=$?
+        if [ $LINT_STATUS -ne 0 ]; then
+            echo "[pre-commit ERROR] Domain boundary lint check failed."
+            exit 1
+        fi
     fi
 fi
 
-# 4. Run Core Lifecycle Null-Safety verification
-if [ -f "scripts/test_core_null_safety.py" ]; then
-    echo "[pre-commit] Running core null-safety gate..."
-    python scripts/test_core_null_safety.py
-    NULL_STATUS=$?
-    if [ $NULL_STATUS -ne 0 ]; then
-        echo ""
-        echo "================================================================"
-        echo " [pre-commit ERROR] OpOneCore null-safety verification failed."
-        echo " Ensure playerFly, targets, and gameui are guarded against Error #1009."
-        echo "================================================================"
-        exit 1
-    fi
+# 3. If neither Unity nor AS3 staged
+if [ -z "$STAGED_UNITY" ] && [ -z "$STAGED_AS3" ]; then
+    echo "[pre-commit] Documentation or metadata changes staged. Skipping test runner."
 fi
 
 echo "[pre-commit] All pre-commit checks passed successfully!"

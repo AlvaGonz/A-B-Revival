@@ -3,7 +3,8 @@
 Date: 2026-11-07
 
 ## Status
-Accepted
+Superseded by ADR 0014, ADR 0015, and ADR 0016.
+*Note: Flash accumulator hacks and Flash Player trace gates (`scripts/test_perf_runtime.py`) are retired. Unity 6.6 executes physics at deterministic 60 Hz in `FixedUpdate` (PhysicsCore2D / Burst jobs), and runtime testing is governed by the two-tier automated harness in ADR 0016.*
 
 ## Context
 Following the initial 60 FPS modernization in ADR 0008, playtesting revealed two critical gameplay regressions:

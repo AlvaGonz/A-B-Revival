@@ -37,17 +37,20 @@ This document establishes the coding conventions, domain encapsulation rules, an
 
 ---
 
-## 3. Pre-Commit Verification Pipeline
+## 3. Automated Testing & Verification Pipeline (ADR 0016)
 
-- All commits modifying ActionScript 3 sources (`src/as3/**/*.as`) must pass pre-commit verification.
-- Active hooks live in `.githooks/` and are configured via:
+- **Tier 1 (Fast Loop — Pre-Commit & TDD):**
+  - Command: `dotnet test "A&B-U/Assets/Scripts/Tests/ABRevival.Tests.csproj" --nologo`
+  - Enforced by `.githooks/pre-commit` on any staged changes in `A&B-U/`.
+  - Runs in ~150 ms; verifies domain models, catalog parser, wing limits, and combat simulation loop with zero GC allocations.
+- **Tier 2 (Deep Loop — CI & Headless Engine Gate):**
+  - Command: `scripts/run-unity-tests.bat --unity`
+  - Runs headless Unity 6.6 (`-batchmode -runTests -testPlatform EditMode`) validating ScriptableObjects, asset importer, Sprite Atlases, and physics scenes.
+- **Active hooks:**
   ```bash
   scripts/install-hooks.bat   # Windows
   sh scripts/install-hooks.sh # Unix / macOS
   ```
-- Checks executed on commit:
-  1. `scripts/lint_domain_leakage.py --staged`: Static check against domain leakage.
-  2. `scripts/recompile.bat`: FFDec compilation check ensuring `game/a&b_space_mod.swf` compiles with exit code `0`.
 
 ---
 

@@ -1,17 +1,18 @@
 # Graph Report - A&B revival  (2026-11-07)
 
 ## Corpus Check
-- 199 files · ~93,879 words
+- 234 files · ~106,117 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 24 file(s) not represented in the graph (top: .bin 12, .bat 8, (none) 2)
+- Unclassified: 128 file(s) not represented in the graph (top: .meta 59, .asset 36, .bin 12)
+- WARNING: 128 of 367 files seen (35%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
 
 ## Summary
-- 2895 nodes · 3733 edges · 362 communities (94 shown, 268 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 167 edges (avg confidence: 0.92)
+- 3701 nodes · 5074 edges · 438 communities (130 shown, 308 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 290 edges (avg confidence: 0.9)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `94e22fa6`
+- Built from commit: `1151f74d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -33,7 +34,6 @@
 - Maker
 - AIPart
 - EPoint.as
-- MochiEvents.as
 - MochiUserData
 - FormShop
 - RepairPartsCtrl
@@ -49,7 +49,7 @@
 - F4ShowData
 - BresenhamLine
 - 2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()`
-- Forcing Adobe Flash Player Standalone to use the NVIDIA GTX 1650
+- CombatSimulation
 - VeryOutShitABC
 - LevelBase
 - GData
@@ -60,7 +60,7 @@
 - UIModeX.as
 - UIMovie.as
 - as3/scripts/ui/pages/UIShop.as
-- Decision
+- Item
 - AIFunctions
 - as3/scripts/ui/pages/UIRepair.as
 - Render
@@ -82,7 +82,7 @@
 - SoundCtrl32
 - SoundUBlt32
 - SoundData
-- updateNew
+- cleanMC
 - BMPDMC
 - 9. Monolith Decomposition and Domain Seams under Flash/AS3 Constraints
 - AIOuter
@@ -270,14 +270,14 @@
 - Attach
 - VeryOutShitABC_loading
 - 3. Hybrid Shop Stock Model, Purchase Stacking, and Retroactive Inventory Reconciliation
-- ticket_30_body.md
+- cleanPartsByType
 - ticket-2.md
 - ticket-3.md
 - UIMakePlayer
 - 8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam
 - CombatInput
 - ticket_29_body.md
-- undoShow
+- unity_mathematics
 - as3_search.py
 - act
 - BMPD2D
@@ -291,57 +291,133 @@
 - ticket-1.md
 - ticket-4.md
 - SimpleFly
-- 3. Fixed-Timestep Accumulator vs Variable Delta Time
+- com.unity.2d.common@15.0.0
 - addPart
 - 4. Blitting & Compositing Optimizations
-- FlyData
+- ProjectileData
 - as3/scripts/f4/unit/fire/FireLoop.as
-- FlyPart
+- com.unity.modules.physics@1.0.0
 - render
 - MC2BMPD
 - FlyBase
 - 2. Flash GPU Hardware Acceleration & Stage3D Architecture
-- 0011. Adobe AIR Mobile Target, True 60 FPS Rescaling, and Stage3D GPU Architecture
+- Consequences
 - Multithreading (AVM2 Workers) and GPU Hardware Acceleration (Stage3D) Architecture Research
 - 1.2 Inter-Process Communication (IPC) Mechanisms
 - Stage3DQuadRenderer
 - 5. Configurable Combat Camera Distance and Dynamic FOV Scaling
 - SWave
 - 4. Practical Modernization Roadmap for A&B Revival
+- CraftAssembly
+- packages-lock.json
+- com.unity.modules.imageconversion@1.0.0
+- com.unity.modules.unitywebrequest@1.0.0
+- dependencies
+- com.unity.modules.jsonserialize@1.0.0
+- com.unity.nuget.mono-cecil@1.11.5
+- com.unity.mathematics@1.2.6
+- PartCatalogParser
+- com.unity.render-pipelines.core
+- ShipEntity
+- CraftBlueprintSO
+- com.unity.dt.app-ui@1.3.6
+- com.unity.settings-manager@1.0.3
+- com.unity.searcher
+- com.unity.test-framework@1.4.6
+- com.unity.2d.tilemap@1.0.0
+- manifest.json
+- dependencies
+- com.unity.modules.uielements@1.0.0
+- PartCatalogImporter
+- uiName
+- com.unity.modules.imgui@1.0.0
+- mcp-gateway
+- com.unity.modules.terrain
+- updateNew
+- AssemblyError
+- CaptainTacticalMode
+- 15. Sunsetting Flash AS3 Target in Favor of Unity 6.6 DOTS Runtime
+- Forcing Adobe Flash Player Standalone to use the NVIDIA GTX 1650
+- cleanDt
+- com.unity.ide.rider
+- as3/scripts/f4/unit/fire/FireTimer.as
 - addBtnL
+- removeSelf
+- com.unity.2d.animation@16.0.1
+- com.unity.2d.sprite@1.0.0
+- com.unity.2d.tilemap@1.0.0
+- com.unity.2d.tilemap.extras@9.0.1
+- com.unity.2d.tooling@4.0.1
+- com.unity.ai.assistant@2.21.0-pre.2
+- com.unity.ai.inference@2.6.1
+- com.unity.ide.rider@3.1.0
+- com.unity.ide.visualstudio@2.0.26
+- com.unity.inputsystem@1.20.1
+- com.unity.modules.accessibility@1.0.0
+- com.unity.modules.adaptiveperformance@1.0.0
+- com.unity.modules.ai@1.0.0
+- com.unity.modules.androidjni@1.0.0
+- com.unity.modules.assetbundle@1.0.0
+- com.unity.modules.audio@1.0.0
+- com.unity.modules.cloth@1.0.0
+- com.unity.modules.imageconversion@1.0.0
+- com.unity.modules.imgui@1.0.0
+- com.unity.modules.jsonserialize@1.0.0
+- com.unity.modules.physics@1.0.0
+- com.unity.modules.physics2d@1.0.0
+- com.unity.modules.physicscore2d@1.0.0
+- com.unity.modules.screencapture@1.0.0
+- com.unity.modules.terrain@1.0.0
+- com.unity.modules.terrainphysics@1.0.0
+- com.unity.modules.tetgen@1.0.0
+- com.unity.modules.tilemap@1.0.0
+- com.unity.modules.uielements@1.0.0
+- com.unity.modules.umbra@1.0.0
+- com.unity.modules.unitywebrequest@1.0.0
+- com.unity.modules.unitywebrequestaudio@1.0.0
+- com.unity.modules.unitywebrequestwww@1.0.0
+- com.unity.modules.vectorgraphics@1.0.0
+- com.unity.modules.vehicles@1.0.0
+- com.unity.modules.wind@1.0.0
+- com.unity.modules.xr@1.0.0
+- com.unity.pipeline@0.10.0-exp.1
+- com.unity.render-pipelines.universal@17.6.0
+- com.unity.test-framework@1.8.0
+- com.unity.timeline@6.6.0
+- com.unity.visualscripting@1.9.12
 
 ## God Nodes (most connected - your core abstractions)
-1. `EvtCtrl` - 32 edges
-2. `EvtCtrl` - 30 edges
-3. `F4PartMC` - 29 edges
-4. `ConfigAndStory` - 24 edges
-5. `UIMakePlayer()` - 23 edges
-6. `F4PartMC` - 23 edges
-7. `AIUnity` - 21 edges
-8. `F4DataCPX` - 21 edges
-9. `Core Entities` - 21 edges
-10. `F4DataCPX` - 20 edges
+1. `CombatSimulation` - 37 edges
+2. `CraftAssembly` - 36 edges
+3. `EvtCtrl` - 32 edges
+4. `EvtCtrl` - 30 edges
+5. `F4PartMC` - 29 edges
+6. `MountedPartData` - 26 edges
+7. `ConfigAndStory` - 24 edges
+8. `UIMakePlayer()` - 24 edges
+9. `ShipEntity` - 23 edges
+10. `F4PartMC` - 23 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Core Entities` --references--> `setCameraDistance()`  [INFERRED]
-  GLOSSARY.md → src/as3/scripts/f4/gfx/RenderData.as
-- `Context` --references--> `render()`  [INFERRED]
-  docs/adr/0010-fixed-timestep-simulation-and-runtime-performance-gate.md → src/as3/scripts/f4/gfx/RenderData.as
-- `Considered Options` --references--> `render()`  [INFERRED]
-  docs/adr/0011-adobe-air-mobile-target-and-true-60fps-gpu-architecture.md → src/as3/scripts/f4/gfx/RenderData.as
-- `Context & Problem Statement` --references--> `render()`  [INFERRED]
-  docs/adr/0011-adobe-air-mobile-target-and-true-60fps-gpu-architecture.md → src/as3/scripts/f4/gfx/RenderData.as
-- `Decision Drivers` --references--> `render()`  [INFERRED]
-  docs/adr/0011-adobe-air-mobile-target-and-true-60fps-gpu-architecture.md → src/as3/scripts/f4/gfx/RenderData.as
+- `Unity 6000.6 Data-Oriented Architecture & Entity Mappings` --references--> `AssemblyError`  [INFERRED]
+  GLOSSARY.md → A&B-U/Assets/Scripts/Data/CraftAssembly.cs
+- `Decision` --references--> `CraftAssembly`  [INFERRED]
+  docs/adr/0016-two-tier-automated-testing-gates-unity-utf.md → A&B-U/Assets/Scripts/Data/CraftAssembly.cs
+- `2.3 Tiered Testing Strategy (Fast Loop + Deep Loop)` --references--> `CraftAssembly`  [INFERRED]
+  docs/research/runtime-test-harness-unity-utf.md → A&B-U/Assets/Scripts/Data/CraftAssembly.cs
+- `Domain Entity Mapping (AS3 -> Unity C# DoD)` --references--> `CraftBlueprintSO`  [INFERRED]
+  docs/adr/0014-unity-6000-dots-physics-core-2d-migration.md → A&B-U/Assets/Scripts/Data/CraftBlueprintSO.cs
+- `Unity 6000.6 Data-Oriented Architecture & Entity Mappings` --references--> `CraftBlueprintSO`  [INFERRED]
+  GLOSSARY.md → A&B-U/Assets/Scripts/Data/CraftBlueprintSO.cs
 
 ## Import Cycles
 - None detected.
 
-## Communities (362 total, 268 thin omitted)
+## Communities (438 total, 308 thin omitted)
 
 ### Community 0 - "as3/scripts/ui/pages/UIMakePlayer.as"
 Cohesion: 0.09
-Nodes (14): addDtL(), autoZoom(), cleanEngines(), cleanEnginesYes(), cleanPartsByType(), cleanWeapons(), cleanWeaponsYes(), cleanWings() (+6 more)
+Nodes (14): addBtnL(), addDt(), addDtL(), afterFadeIn(), afterTalk(), autoZoom(), changeOrgDt(), hidePoints() (+6 more)
 
 ### Community 1 - "EvtCtrl"
 Cohesion: 0.11
@@ -350,6 +426,10 @@ Nodes (5): 2. Allied Flagship (Captain's Ship) Lifecycle and Deployment Boundary
 ### Community 3 - "as3/scripts/ui/pages/UIRepair.as"
 Cohesion: 0.10
 Nodes (11): ADR-0009, addToView(), afterFadeIn(), alphaRunStart(), drawOneStart(), initArr(), removeAll(), removeBtnL() (+3 more)
+
+### Community 4 - "F4PartMC"
+Cohesion: 0.10
+Nodes (5): Changes Overview, Evidence, Merge Danger, Summary, F4PartMC
 
 ### Community 5 - "UIChooseFlyAI.as"
 Cohesion: 0.11
@@ -364,8 +444,8 @@ Cohesion: 0.10
 Nodes (8): Further Notes, Implementation Decisions, Out of Scope, Problem Statement, Solution, Testing Decisions, User Stories, F4DataCPX
 
 ### Community 8 - "MochiAd.as"
-Cohesion: 0.20
-Nodes (4): function(), load(), MochiAd(), triggerFinished()
+Cohesion: 0.22
+Nodes (3): function(), load(), triggerFinished()
 
 ### Community 9 - "RGBHSLHSV.as"
 Cohesion: 0.14
@@ -388,8 +468,8 @@ Cohesion: 0.19
 Nodes (6): disTo(), EPoint(), get(), makeDis(), rotTo(), scale()
 
 ### Community 24 - "as3/scripts/ui/pages/UIOptions.as"
-Cohesion: 0.16
-Nodes (18): act(), afterFadeIn(), buildModal(), changes(), configChange(), createButton(), createCard(), initControlsUI() (+10 more)
+Cohesion: 0.14
+Nodes (21): Decision, AIData(), act(), afterFadeIn(), buildModal(), changes(), configChange(), createButton() (+13 more)
 
 ### Community 29 - "as3/scripts/Fly4UI.as"
 Cohesion: 0.06
@@ -400,24 +480,24 @@ Cohesion: 0.24
 Nodes (5): act(), addBtnL(), nextGame(), removeBtnL(), toNext()
 
 ### Community 32 - "Core Entities"
-Cohesion: 0.23
-Nodes (9): Decision, Core Entities, FireSingle(), MissionData(), addDtLTempRun(), initWingsInDtTemp(), runzoom(), uiloop() (+1 more)
+Cohesion: 0.18
+Nodes (6): Core Entities, FireSingle(), FlyPart, MissionData(), MochiAd(), MochiEvents()
 
 ### Community 36 - "2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()`"
-Cohesion: 0.20
-Nodes (8): 1. Executive Summary & Problem Context, 2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()`, 60 FPS Optimization and Runtime Performance Architecture, Bottleneck A: Unbounded Full-Surface `ColorTransform`, Bottleneck B: Redundant & Multiple CPU Blur Filters (`applyFilter`), Bottleneck C: Upscaling Vector Rasterization (`BitmapData.draw` with `Matrix`), Bottleneck D: Software Additive Blending in `SimpleGlowFilter`, Bottleneck E: Dynamic Fallback to `draw()` on Combat Damage
+Cohesion: 0.13
+Nodes (13): 1. Executive Summary & Problem Context, 2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()`, 3. Fixed-Timestep Accumulator vs Variable Delta Time, 60 FPS Optimization and Runtime Performance Architecture, Analysis of Current Pacing Architecture, Architectural Benefits:, Bottleneck A: Unbounded Full-Surface `ColorTransform`, Bottleneck B: Redundant & Multiple CPU Blur Filters (`applyFilter`) (+5 more)
 
-### Community 37 - "Forcing Adobe Flash Player Standalone to use the NVIDIA GTX 1650"
-Cohesion: 0.25
-Nodes (7): 1. Per-app GPU preference (done via registry), 2. Enable Flash's own hardware acceleration (manual, one-time), 3. NVIDIA Control Panel backup (optional), 4. Verify, Caveats (important), Forcing Adobe Flash Player Standalone to use the NVIDIA GTX 1650, Sources
+### Community 37 - "CombatSimulation"
+Cohesion: 0.12
+Nodes (12): CombatSimulation, Inputs, IsDisposed, IsInitialized, MaxProjectiles, MaxShips, ProjectileCount, Projectiles (+4 more)
 
 ### Community 40 - "GData"
-Cohesion: 0.05
-Nodes (22): 0013. Unified 60 FPS Baseline, Native 1920×1080 Widescreen, and Stage3D GPU Architecture, Consequences, Context & Problem Statement, Decision, Negative / Trade-Offs, Positive, 1. Executive Summary, 2. Benchmark Methodology & Test Harness (+14 more)
+Cohesion: 0.06
+Nodes (16): 1. Executive Summary, 2. Benchmark Methodology & Test Harness, 3.1 Runtime Telemetry Summary, 3.2 Analysis of Results, 3. Empirical Benchmark Results, 4. Adobe AIR Packaging & Descriptor Validation, 5. Domain Integrity & Code Quality Gates, 6. Conclusion & Next Steps (+8 more)
 
 ### Community 41 - "F4DataLinks"
-Cohesion: 0.07
-Nodes (20): 1. Domain Model Encapsulation, 2. Pre-Commit Verification Pipeline, 3. Fowler Code Smell Baseline, Coding Standards & Architecture Guardrails, Changes Overview, Evidence, Merge Danger, Summary (+12 more)
+Cohesion: 0.08
+Nodes (16): 1. Domain Model Encapsulation, 2. Reglas de Rendimiento Unity 6.6 (6000.6.8f1 - CPU Multicore & GPU TBDR), 3. Automated Testing & Verification Pipeline (ADR 0016), 3. Fowler Code Smell Baseline, Coding Standards & Architecture Guardrails, Further Notes, Implementation Decisions, Out of Scope (+8 more)
 
 ### Community 45 - "UIHelpX2.as"
 Cohesion: 0.36
@@ -435,10 +515,6 @@ Nodes (6): act(), alwaysLoop(), drawAndEnd(), nextMovie(), removeBtnL(), startAd
 Cohesion: 0.20
 Nodes (17): acceptYes(), act(), addDt(), afterFadeIn(), afterTalk(), cleanDt(), downAct(), flyYes() (+9 more)
 
-### Community 49 - "Decision"
-Cohesion: 0.15
-Nodes (6): Decision, AIData(), FireTimer(), unFire(), Item, okFunc()
-
 ### Community 51 - "as3/scripts/ui/pages/UIRepair.as"
 Cohesion: 0.21
 Nodes (12): acceptYes(), act(), addDt(), afterFadeIn(), afterTalk(), cleanDt(), flyYes(), overAct() (+4 more)
@@ -452,20 +528,20 @@ Cohesion: 0.48
 Nodes (5): MochiDigits(), reencode(), setValue(), toString(), value()
 
 ### Community 61 - "A&B Revival (Assembly & Battle: The Story in the Space)"
-Cohesion: 0.29
-Nodes (6): A&B Revival (Assembly & Battle: The Story in the Space), Development guardrails, Overview, Project Objectives, Project Structure, Quick Start
+Cohesion: 0.13
+Nodes (13): 1. Ownership & Original Game Intellectual Property, 2. Fan Modifications, Custom Tooling & Documentation, 3. Fair Use & Non-Commercial Preservation, License & Intellectual Property Notice, MIT License (for original repository scripts and fan tooling only), A&B Revival (Assembly & Battle: The Story in the Space), Attribution & Legal, Development guardrails (+5 more)
 
 ### Community 62 - "Research & Benchmark: Mobile Performance Validation on Device (Large Battles)"
 Cohesion: 0.18
 Nodes (11): 1. Executive Summary, 2. Benchmark Methodology & Test Harness, 3.1 Scenario 1: Main Menu & Factory / Touch Shipbuilder, 3.2 Scenario 2: Moderate Fleet Engagement (10–15 Ships, ~100 Projectiles), 3.3 Scenario 3: Large Fleet Battle Saturation (30–50 Ships, 350+ Projectiles, Heavy Particles), 3. Empirical Results & Performance Baseline, 4. Bottleneck Identification & Profiling Analysis, 5. Architectural Recommendations & Follow-Up Path (+3 more)
 
-### Community 72 - "updateNew"
-Cohesion: 0.33
-Nodes (10): cleanMC(), editYes(), mergeFlyYes(), newYes(), onTouchRemoveClick(), removeYes(), showFlyEdit(), showFlys() (+2 more)
+### Community 72 - "cleanMC"
+Cohesion: 0.40
+Nodes (5): cleanMC(), leaveNormal(), leaveYes(), removeSelf(), removeYes()
 
 ### Community 74 - "9. Monolith Decomposition and Domain Seams under Flash/AS3 Constraints"
-Cohesion: 0.29
-Nodes (6): 9. Monolith Decomposition and Domain Seams under Flash/AS3 Constraints, Consequences, Context, Decision, Status, F4DataHole()
+Cohesion: 0.40
+Nodes (4): 9. Monolith Decomposition and Domain Seams under Flash/AS3 Constraints, Consequences, Context, Status
 
 ### Community 76 - "Research: iOS Packaging Constraints (IPA, Application Domains & Code Loading)"
 Cohesion: 0.18
@@ -492,16 +568,16 @@ Cohesion: 0.33
 Nodes (5): 6. Captain Ship Tactical AI Modes (E hotkey), Consequences, Context, Decision, Status
 
 ### Community 97 - "removeSelf"
-Cohesion: 0.33
-Nodes (7): addFlyYes(), addToFly(), cleanMCNotBack(), leaveNormal(), leaveYes(), mergeFlyLeaveYes(), removeSelf()
+Cohesion: 0.38
+Nodes (7): addFlyYes(), addToFly(), cleanDt(), cleanMCNotBack(), mergeFlyLeaveYes(), resetMC(), resetYes()
 
 ### Community 100 - "as3/scripts/f4data/F4DataHole.as"
-Cohesion: 0.17
-Nodes (6): 7. Hull Category Wing Capacity & Assembly HUD Counter, Consequences, Context, Status, acceptable(), acceptableOrg()
+Cohesion: 0.13
+Nodes (12): 7. Hull Category Wing Capacity & Assembly HUD Counter, Consequences, Context, Decision, Status, acceptable(), acceptableOrg(), addDtLTempRun() (+4 more)
 
 ### Community 101 - "Agent skills"
-Cohesion: 0.18
-Nodes (9): Agent skills, Architecture & Codebase Overview, Codebase navigation (`graphify` & `as3_search`), Domain docs & standards, Engineering Workflow Lifecycle, Issue tracker, Pre-commit guardrails, Project documentation (`docs/` & `CONTEXT.md`) (+1 more)
+Cohesion: 0.17
+Nodes (10): Agent skills, Architecture & Codebase Overview, Codebase navigation (`graphify` & `as3_search`), Domain docs & standards, Engineering Workflow Lifecycle, Issue tracker, Pre-commit guardrails, Project documentation (`docs/` & `CONTEXT.md`) (+2 more)
 
 ### Community 105 - "dump_uidata/scripts/ui/pages/UIShop.as"
 Cohesion: 0.21
@@ -524,8 +600,8 @@ Cohesion: 0.18
 Nodes (10): 1. `recompile.bat`, 2. `export-assets.bat`, 3. `install-hooks.bat` / `install-hooks.sh`, 4. `lint_domain_leakage.py`, 5. `as3_search.py`, 6. `run-game.bat` (Root), 7. `run_air.bat`, 8. `package_android_apk.bat` (+2 more)
 
 ### Community 158 - "dump_uidata/scripts/ui/pages/UIMakePlayer.as"
-Cohesion: 0.06
-Nodes (54): uiName(), act(), addBtnL(), afterFadeIn(), drawOneStart(), removeBtnL(), act(), addBtnL() (+46 more)
+Cohesion: 0.10
+Nodes (24): act(), addDt(), addDtL(), addDtLTempRun(), addPart(), addToUndo(), autoPlug(), autoZoom() (+16 more)
 
 ### Community 160 - "dump_uidata/scripts/mochi/as3/MochiServices.as"
 Cohesion: 0.11
@@ -599,6 +675,10 @@ Nodes (3): act(), nextGame(), toNext()
 Cohesion: 0.33
 Nodes (5): 3. Hybrid Shop Stock Model, Purchase Stacking, and Retroactive Inventory Reconciliation, Consequences, Context, Decision, Status
 
+### Community 316 - "cleanPartsByType"
+Cohesion: 0.18
+Nodes (10): Testing Decisions, Acceptance Criteria, Context, cleanEngines(), cleanEnginesYes(), cleanPartsByType(), cleanWeapons(), cleanWeaponsYes() (+2 more)
+
 ### Community 317 - "ticket-2.md"
 Cohesion: 0.40
 Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
@@ -608,28 +688,28 @@ Cohesion: 0.40
 Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 
 ### Community 319 - "UIMakePlayer"
-Cohesion: 0.14
-Nodes (17): 4. Architectural Recommendations for A&B Revival, Tier 1: Fast CI Behavioral & Logic Quality Gate (Candidate 3), Tier 2: Interactive Remote E2E Test Driver ("Flash-Playwright" - Candidate 4), 1. Executive Summary, 2. Detailed Options Assessment, 3. Impact Matrix, 4. Final Recommendation & Implementation Roadmap, Option 1: Fixed 4:3 with Aspect Pillarboxing (`StageScaleMode.SHOW_ALL`) (+9 more)
+Cohesion: 0.10
+Nodes (25): Decision, 0013. Unified 60 FPS Baseline, Native 1920×1080 Widescreen, and Stage3D GPU Architecture, Consequences, Context & Problem Statement, Decision, Negative / Trade-Offs, Positive, 4. Architectural Recommendations for A&B Revival (+17 more)
 
 ### Community 320 - "8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (8): 8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam, Consequences, Context, Status, 10. Fixed-Timestep Simulation Loop, Runtime Performance Gate & Hallmark Resolution Selector, Consequences, Context, Status
 
 ### Community 321 - "CombatInput"
 Cohesion: 0.08
 Nodes (13): 1. Executive Summary, 2.1 Mode 0: Pointer-Directed Flight (`playerCtrlMode == 0`), 2.2 Mode 1: Keyboard Direct-Thrust / Dogfight Mode (`playerCtrlMode == 1`), 2. Deep-Dive Architectural Assessment, 3. UI & Screen Layout Impact, 4. Final Recommendation, Implementation Mechanics (`OpOneCore.as` lines 152–188), Implementation Mechanics (`OpOneCore.as` lines 189–245) (+5 more)
 
-### Community 324 - "undoShow"
-Cohesion: 0.40
-Nodes (5): addToUndo(), undoCk(), undoShow(), undoSortAfterUse(), undoUse()
+### Community 324 - "unity_mathematics"
+Cohesion: 0.13
+Nodes (4): ABRevival.Tests, ABRevival.Core.Simulation, ABRevival.Core.Data, ABRevival.Editor
 
 ### Community 325 - "as3_search.py"
 Cohesion: 0.06
 Nodes (35): class_synopsis(), find_as_files(), main(), print_help(), search_callers(), search_symbol(), find_declared_classes(), find_ffdec() (+27 more)
 
 ### Community 326 - "act"
-Cohesion: 0.31
-Nodes (10): uiName(), act(), addDt(), changeOrgDt(), cleanDt(), cleanDtL(), hidePoints(), makeFly() (+2 more)
+Cohesion: 0.17
+Nodes (17): uiName(), act(), act(), addToUndo(), cleanDtL(), editYes(), makeFly(), mergeFlyYes() (+9 more)
 
 ### Community 327 - "BMPD2D"
 Cohesion: 0.29
@@ -649,7 +729,7 @@ Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 
 ### Community 338 - "as3/scripts/ui/pages/UIGame.as"
 Cohesion: 0.10
-Nodes (17): act(), addBtnL(), afterFadeIn(), createTouchButton(), drawOneStart(), initTouchCombatControls(), missionLoop(), recordLostPart() (+9 more)
+Nodes (16): addBtnL(), afterFadeIn(), createTouchButton(), drawOneStart(), initTouchCombatControls(), missionLoop(), recordLostPart(), removeBtnL() (+8 more)
 
 ### Community 339 - "spec-combat-telemetry.md"
 Cohesion: 0.25
@@ -667,21 +747,29 @@ Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 Cohesion: 0.40
 Nodes (4): Acceptance criteria, Blocked by, Parent, What to build
 
-### Community 344 - "3. Fixed-Timestep Accumulator vs Variable Delta Time"
-Cohesion: 0.40
-Nodes (5): 3. Fixed-Timestep Accumulator vs Variable Delta Time, Analysis of Current Pacing Architecture, Architectural Benefits:, The Optimal Pattern: Fixed-Timestep Accumulator (Gaffer on Games Pattern), Why Variable Delta Time ($\Delta t$) is Fatal for this Engine
+### Community 344 - "com.unity.2d.common@15.0.0"
+Cohesion: 0.06
+Nodes (36): dependencies, depth, source, url, version, dependencies, depth, source (+28 more)
 
 ### Community 345 - "addPart"
-Cohesion: 0.20
-Nodes (11): Feasibility Matrix, addPart(), autoPlug(), countPartsByType(), onClearEnginesClick(), onClearWeaponsClick(), onClearWingsClick(), part2In() (+3 more)
+Cohesion: 0.25
+Nodes (11): Feasibility Matrix, addPart(), autoPlug(), countPartsByType(), onClearEnginesClick(), onClearWeaponsClick(), onClearWingsClick(), onTouchRemoveClick() (+3 more)
 
 ### Community 346 - "4. Blitting & Compositing Optimizations"
 Cohesion: 0.40
 Nodes (4): 4.1. Replacing Vector `draw()` with Pre-baked Spritesheets, 4.2. Offloading Buffer Upscaling to the Flash Display List Compositor, 4.3. Dirty Rectangles vs Full-Surface Operations, 4. Blitting & Compositing Optimizations
 
+### Community 347 - "ProjectileData"
+Cohesion: 0.11
+Nodes (17): PartDefinitionSO, ProjectileData, ProjectileMoveJob, ProjectileTests, 0014. Unity 6.6 (6000.6.8f1) Migration: DOTS Job System, PhysicsCore2D, Burst, and BatchRendererGroup, Consequences, Context & Problem Statement, Decision (+9 more)
+
+### Community 349 - "com.unity.modules.physics@1.0.0"
+Cohesion: 0.06
+Nodes (36): dependencies, depth, source, version, dependencies, depth, source, version (+28 more)
+
 ### Community 350 - "render"
-Cohesion: 0.33
-Nodes (8): camCtrl(), init(), initStage3D(), onContextCreated(), render(), renderSoftwareFallback(), renderStage3D(), setCameraDistance()
+Cohesion: 0.21
+Nodes (13): Decision, 0011. Adobe AIR Mobile Target, True 60 FPS Rescaling, and Stage3D GPU Architecture, Considered Options, Context & Problem Statement, Decision Drivers, camCtrl(), init(), initStage3D() (+5 more)
 
 ### Community 351 - "MC2BMPD"
 Cohesion: 0.25
@@ -691,9 +779,9 @@ Nodes (4): 1.3 Feasibility Analysis: Can `Targets.bltHit()` Be Offloaded to a Wo
 Cohesion: 0.25
 Nodes (8): 2.1 Why Flash Games Default to 0% GPU Utilization, 2.2 `flash.display3D` (Stage3D) Low-Level Architecture, 2.3 `renderMode` and `wmode` Disambiguation, 2.4 AGAL (Adobe Graphics Assembly Language) & 2D Quad Batching, 2. Flash GPU Hardware Acceleration & Stage3D Architecture, AGAL Shader Pipeline for 2D Batched Sprites, Performance Impact: Software Blitting vs Quad Batching, The Hardware Layering Hierarchy
 
-### Community 354 - "0011. Adobe AIR Mobile Target, True 60 FPS Rescaling, and Stage3D GPU Architecture"
-Cohesion: 0.29
-Nodes (7): 0011. Adobe AIR Mobile Target, True 60 FPS Rescaling, and Stage3D GPU Architecture, Consequences, Considered Options, Context & Problem Statement, Decision Drivers, Negative / Trade-Offs, Positive
+### Community 354 - "Consequences"
+Cohesion: 0.67
+Nodes (3): Consequences, Negative / Trade-Offs, Positive
 
 ### Community 355 - "Multithreading (AVM2 Workers) and GPU Hardware Acceleration (Stage3D) Architecture Research"
 Cohesion: 0.29
@@ -704,36 +792,168 @@ Cohesion: 0.29
 Nodes (7): 1.1 Primary Architecture of AVM2 Concurrency, 1.2 Inter-Process Communication (IPC) Mechanisms, 1. ActionScript 3 Concurrency & Multithreading (AVM2 Workers), Mechanism A: `MessageChannel` (AMF3 Serialization), Mechanism B: `ByteArray.shareable = true` (Zero-Copy Shared Memory), Mechanism C: Synchronization Primitives (`Mutex` and `Condition`), The Independent VM Model
 
 ### Community 358 - "5. Configurable Combat Camera Distance and Dynamic FOV Scaling"
-Cohesion: 0.33
-Nodes (5): 5. Configurable Combat Camera Distance and Dynamic FOV Scaling, Consequences, Context, Decision, Status
+Cohesion: 0.40
+Nodes (4): 5. Configurable Combat Camera Distance and Dynamic FOV Scaling, Consequences, Context, Status
 
 ### Community 360 - "4. Practical Modernization Roadmap for A&B Revival"
 Cohesion: 0.50
 Nodes (4): 4. Practical Modernization Roadmap for A&B Revival, Phase 1: Immediate CPU Pipeline Optimization (Zero Architectural Risk), Phase 2: SWF Header Upgrade & Concurrency Foundation, Phase 3: Stage3D Quad Batcher GPU Migration
 
-### Community 361 - "addBtnL"
+### Community 361 - "CraftAssembly"
+Cohesion: 0.15
+Nodes (12): CraftAssembly, BodyCount, CurrentStats, HullCategory, HullName, IsGrandfathered, IsValid, PartCount (+4 more)
+
+### Community 362 - "packages-lock.json"
+Cohesion: 0.08
+Nodes (29): dependencies, depth, source, version, dependencies, depth, source, version (+21 more)
+
+### Community 363 - "com.unity.modules.imageconversion@1.0.0"
+Cohesion: 0.07
+Nodes (29): dependencies, dependencies, depth, source, url, version, dependencies, depth (+21 more)
+
+### Community 364 - "com.unity.modules.unitywebrequest@1.0.0"
+Cohesion: 0.08
+Nodes (29): dependencies, depth, source, version, dependencies, depth, source, version (+21 more)
+
+### Community 365 - "dependencies"
+Cohesion: 0.07
+Nodes (27): dependencies, depth, source, url, version, dependencies, depth, source (+19 more)
+
+### Community 366 - "com.unity.modules.jsonserialize@1.0.0"
+Cohesion: 0.07
+Nodes (27): dependencies, depth, source, version, dependencies, depth, source, version (+19 more)
+
+### Community 367 - "com.unity.nuget.mono-cecil@1.11.5"
+Cohesion: 0.08
+Nodes (26): dependencies, depth, source, url, version, dependencies, depth, source (+18 more)
+
+### Community 368 - "com.unity.mathematics@1.2.6"
+Cohesion: 0.08
+Nodes (25): dependencies, depth, source, url, version, dependencies, depth, source (+17 more)
+
+### Community 369 - "PartCatalogParser"
+Cohesion: 0.13
+Nodes (10): BulletDef, FireDef, PartCatalogParser, PartDefinitionRecord, PartCategory, Body, Engine, Gun (+2 more)
+
+### Community 370 - "com.unity.render-pipelines.core"
+Cohesion: 0.09
+Nodes (24): dependencies, depth, source, url, version, dependencies, depth, source (+16 more)
+
+### Community 371 - "ShipEntity"
+Cohesion: 0.20
+Nodes (6): ShipEntity, ShipInput, ShipMovementJob, TacticalAIJob, ShipMovementTests, TacticalAITests
+
+### Community 372 - "CraftBlueprintSO"
+Cohesion: 0.14
+Nodes (9): CraftBlueprintSO, HullCategory, Large, Medium, Mega, Small, AggregateCraftStats, Welcome2DScript (+1 more)
+
+### Community 373 - "com.unity.dt.app-ui@1.3.6"
+Cohesion: 0.11
+Nodes (19): dependencies, depth, source, url, version, dependencies, depth, source (+11 more)
+
+### Community 374 - "com.unity.settings-manager@1.0.3"
+Cohesion: 0.11
+Nodes (19): dependencies, depth, source, version, dependencies, depth, source, url (+11 more)
+
+### Community 375 - "com.unity.searcher"
+Cohesion: 0.11
+Nodes (19): dependencies, depth, source, version, dependencies, depth, source, url (+11 more)
+
+### Community 376 - "com.unity.test-framework@1.4.6"
+Cohesion: 0.12
+Nodes (18): dependencies, dependencies, depth, source, url, version, depth, dependencies (+10 more)
+
+### Community 377 - "com.unity.2d.tilemap@1.0.0"
+Cohesion: 0.12
+Nodes (17): dependencies, depth, dependencies, depth, source, url, version, source (+9 more)
+
+### Community 378 - "manifest.json"
+Cohesion: 0.12
+Nodes (15): com.unity.2d.aseprite@6.0.0, com.unity.2d.psdimporter@15.0.1, com.unity.2d.spriteshape@16.0.0, com.unity.collab-proxy@2.13.6, com.unity.modules.animation@1.0.0, com.unity.modules.ui@1.0.0, com.unity.modules.unitywebrequesttexture@1.0.0, com.unity.modules.animation (+7 more)
+
+### Community 379 - "dependencies"
+Cohesion: 0.12
+Nodes (16): dependencies, com.unity.learn.iet-framework@6.0.7, com.unity.modules.director@1.0.0, com.unity.modules.particlesystem@1.0.0, com.unity.modules.timelinefoundation@1.0.0, com.unity.modules.unityanalytics@1.0.0, com.unity.modules.unitywebrequestassetbundle@1.0.0, com.unity.modules.video@1.0.0 (+8 more)
+
+### Community 380 - "com.unity.modules.uielements@1.0.0"
+Cohesion: 0.12
+Nodes (16): dependencies, depth, source, url, version, depth, source, version (+8 more)
+
+### Community 381 - "PartCatalogImporter"
+Cohesion: 0.14
+Nodes (10): PartCatalogImporter, ABRevival.Editor, 1. Problem Statement & Historical Context, 2.1 Two Testing Modalities: EditMode vs PlayMode, 2.2 Unity Test Framework CLI Automation (Primary Source Reference), 2.3 Tiered Testing Strategy (Fast Loop + Deep Loop), 2. Primary Source Survey: Unity Test Architecture, 3. Retiring Obsolete Flash Gates (+2 more)
+
+### Community 382 - "uiName"
+Cohesion: 0.16
+Nodes (6): uiName(), act(), addBtnL(), afterFadeIn(), drawOneStart(), removeBtnL()
+
+### Community 383 - "com.unity.modules.imgui@1.0.0"
+Cohesion: 0.15
+Nodes (13): dependencies, depth, source, version, dependencies, depth, source, version (+5 more)
+
+### Community 384 - "mcp-gateway"
+Cohesion: 0.15
+Nodes (12): command, depends_on, image, ports, volumes, services, mcp-gateway, unity-mcp-server (+4 more)
+
+### Community 385 - "com.unity.modules.terrain"
+Cohesion: 0.18
+Nodes (11): dependencies, depth, source, version, dependencies, depth, source, version (+3 more)
+
+### Community 386 - "updateNew"
+Cohesion: 0.31
+Nodes (11): cleanMC(), editYes(), mergeFlyYes(), newYes(), removeYes(), showFlyEdit(), showFlys(), showFlysX() (+3 more)
+
+### Community 387 - "AssemblyError"
+Cohesion: 0.25
+Nodes (8): AssemblyError, AssemblyFull, ExceedsWingCapacity, InsufficientEnergy, MissingHull, None, SocketOccupied, SocketOutOfRange
+
+### Community 388 - "CaptainTacticalMode"
+Cohesion: 0.25
+Nodes (7): CaptainTacticalMode, Anchor, Escort, Evade, FireSupport, SeekAndDestroy, Shield
+
+### Community 389 - "15. Sunsetting Flash AS3 Target in Favor of Unity 6.6 DOTS Runtime"
+Cohesion: 0.25
+Nodes (7): 15. Sunsetting Flash AS3 Target in Favor of Unity 6.6 DOTS Runtime, Consequences, Context, Decision, Negative / Trade-offs, Positive, Status
+
+### Community 390 - "Forcing Adobe Flash Player Standalone to use the NVIDIA GTX 1650"
+Cohesion: 0.25
+Nodes (7): 1. Per-app GPU preference (done via registry), 2. Enable Flash's own hardware acceleration (manual, one-time), 3. NVIDIA Control Panel backup (optional), 4. Verify, Caveats (important), Forcing Adobe Flash Player Standalone to use the NVIDIA GTX 1650, Sources
+
+### Community 391 - "cleanDt"
+Cohesion: 0.38
+Nodes (7): addFlyYes(), addToFly(), cleanDt(), cleanMCNotBack(), mergeFlyLeaveYes(), resetMC(), resetYes()
+
+### Community 392 - "com.unity.ide.rider"
+Cohesion: 0.33
+Nodes (6): dependencies, depth, source, url, version, com.unity.ide.rider
+
+### Community 394 - "addBtnL"
 Cohesion: 0.67
 Nodes (3): addBtnL(), afterFadeIn(), afterTalk()
 
+### Community 395 - "removeSelf"
+Cohesion: 0.67
+Nodes (3): leaveNormal(), leaveYes(), removeSelf()
+
 ## Knowledge Gaps
-- **1 isolated node(s):** `ADR-0009`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1463 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **268 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **39 isolated node(s):** `None`, `ExceedsWingCapacity`, `SocketOccupied`, `SocketOutOfRange`, `InsufficientEnergy` (+34 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1821 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **308 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Core Entities` connect `Core Entities` to `FlyBase`, `MochiAd.as`, `GData`, `9. Monolith Decomposition and Domain Seams under Flash/AS3 Constraints`, `ConfigAndStory`, `12. Weapon Firing Range Telemetry Across Inventory & Inspection Views`, `MochiEvents.as`, `SimpleFly`, `FlyData`, `as3/scripts/f4/unit/fire/FireLoop.as`, `FlyPart`, `render`, `UIMakePlayer`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
-- **Are the 2 inferred relationships involving `EvtCtrl` (e.g. with `Context` and `Decision`) actually correct?**
-  _`EvtCtrl` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `ADR-0009` to the rest of the system?**
-  _1 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `UIMakePlayer()` connect `UIMakePlayer` to `Core Entities`, `as3/scripts/ui/pages/UIMakePlayer.as`, `as3/scripts/f4data/F4DataHole.as`, `UIChooseFlyAI.as`, `act`, `12. Weapon Firing Range Telemetry Across Inventory & Inspection Views`, `Research: Modern Resolution and Asset Rescaling Plan`, `addPart`, `ProjectileData`, `as3/scripts/Fly4UI.as`?**
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
+- **Are the 10 inferred relationships involving `CombatSimulation` (e.g. with `CombatIntegrationTests.CombatIntegration_EndToEnd_CraftAssembly_And_600Tick_ZeroAlloc_Combat()` and `CombatSimulationTests.CombatSimulation_AfterDispose_ThrowsObjectDisposedException()`) actually correct?**
+  _`CombatSimulation` has 10 INFERRED edges - model-reasoned connections that need verification._
+- **What connects `None`, `ExceedsWingCapacity`, `SocketOccupied` to the rest of the system?**
+  _39 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `as3/scripts/ui/pages/UIMakePlayer.as` be split into smaller, more focused modules?**
-  _Cohesion score 0.09113300492610837 - nodes in this community are weakly interconnected._
-- **Why does `UIMakePlayer()` connect `UIMakePlayer` to `Core Entities`, `as3/scripts/ui/pages/UIMakePlayer.as`, `undoShow`, `UIChooseFlyAI.as`, `act`, `GData`, `updateNew`, `9. Monolith Decomposition and Domain Seams under Flash/AS3 Constraints`, `12. Weapon Firing Range Telemetry Across Inventory & Inspection Views`, `Research: Modern Resolution and Asset Rescaling Plan`, `addPart`, `as3/scripts/Fly4UI.as`?**
+  _Cohesion score 0.09359605911330049 - nodes in this community are weakly interconnected._
+- **Why does `Domain Entity Mapping (AS3 -> Unity C# DoD)` connect `ProjectileData` to `FlyBase`, `Core Entities`, `ShipEntity`, `CraftBlueprintSO`, `UIMakePlayer`?**
   _High betweenness centrality (0.029) - this node is a cross-community bridge._
-- **Are the 14 inferred relationships involving `UIMakePlayer()` (e.g. with `Decision` and `Decision`) actually correct?**
-  _`UIMakePlayer()` has 14 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 13 inferred relationships involving `CraftAssembly` (e.g. with `CombatIntegrationTests.CombatIntegration_EndToEnd_CraftAssembly_And_600Tick_ZeroAlloc_Combat()` and `CraftAssemblyTests.CraftAssembly_CurrentStats_IncrementalAccumulation()`) actually correct?**
+  _`CraftAssembly` has 13 INFERRED edges - model-reasoned connections that need verification._
 - **Should `EvtCtrl` be split into smaller, more focused modules?**
   _Cohesion score 0.10952380952380952 - nodes in this community are weakly interconnected._

@@ -2,7 +2,8 @@
 
 **Date:** 2026-11-07  
 **Author:** Architecture & Engineering Team  
-**Status:** Approved  
+**Status:** Superseded by ADR 0014 and ADR 0015 (Flash AS3 Frozen Reference Baseline)  
+*Note: Stage3D 1080p GPU baseline and AGAL batching are retired as the completed Flash preservation milestone. Unity 6.6 URP with 1080p native rendering, Sprite Atlases, and BatchRendererGroup serves as the sole active production baseline.*  
 **Supersedes/Builds On:**
 - `docs/adr/0008-60fps-resolution-modernization-and-leak-prevention.md`
 - `docs/adr/0010-fixed-timestep-simulation-and-runtime-performance-gate.md`

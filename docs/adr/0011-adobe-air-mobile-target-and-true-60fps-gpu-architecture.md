@@ -2,7 +2,8 @@
 
 **Date:** 2026-11-07  
 **Author:** Architecture & Engineering Team  
-**Status:** Approved  
+**Status:** Superseded by ADR 0014 and ADR 0015 (Flash AS3 Frozen Reference Baseline)  
+*Note: Adobe AIR SDK target and Stage3D/AGAL rendering are retired in favor of native Unity 6.6 URP/Vulkan/Metal. The kinematic invariants and 60 FPS scale factors defined herein remain active in Unity 6.6.*  
 **Supersedes/Builds On:** 
 - `docs/adr/0008-60fps-resolution-modernization-and-leak-prevention.md`
 - `docs/adr/0010-fixed-timestep-simulation-and-runtime-performance-gate.md`

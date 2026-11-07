@@ -51,8 +51,8 @@ boundaries, dependencies, or data flows:
 
 ### Pre-commit guardrails
 Pre-commit hooks are version-controlled in `.githooks/` and enforce:
-1. `scripts/lint_domain_leakage.py --staged`: Static check against domain leakage in UI.
-2. `scripts/recompile.bat`: Recompiles SWF to verify zero syntax/compilation errors.
+1. `dotnet test "A&B-U/Assets/Scripts/Tests/ABRevival.Tests.csproj"`: Tier 1 fast automated testing gate (ADR 0016) verifying all pure C# domain, simulation, and catalog tests pass with exit code `0`.
+2. `scripts/lint_domain_leakage.py --staged`: Static check against domain leakage if legacy Flash AS3 files are touched (frozen baseline, ADR 0015).
 Activate via `scripts/install-hooks.bat` (Windows) or `sh scripts/install-hooks.sh` (Unix).
 
 ### Project documentation (`docs/` & `CONTEXT.md`)
