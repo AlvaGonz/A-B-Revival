@@ -12,6 +12,7 @@ package
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.system.ApplicationDomain;
+   import flash.system.LoaderContext;
    import flash.text.TextField;
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
@@ -141,21 +142,27 @@ package
       {
          var _loc1_:Loader = new Loader();
          _loc1_.contentLoaderInfo.addEventListener(Event.COMPLETE,this.dataCop);
-         _loc1_.loadBytes(new this.alldata.data());
+         var _ctx1:LoaderContext = new LoaderContext();
+         _ctx1.allowCodeImport = true;
+         _loc1_.loadBytes(new this.alldata.data(),_ctx1);
       }
       
       public function soundLoad() : void
       {
          var _loc1_:Loader = new Loader();
          _loc1_.contentLoaderInfo.addEventListener(Event.COMPLETE,this.soundCop);
-         _loc1_.loadBytes(new this.alldata.sound());
+         var _ctx2:LoaderContext = new LoaderContext();
+         _ctx2.allowCodeImport = true;
+         _loc1_.loadBytes(new this.alldata.sound(),_ctx2);
       }
       
       public function uiLoad() : void
       {
          var _loc1_:Loader = new Loader();
          _loc1_.contentLoaderInfo.addEventListener(Event.COMPLETE,this.uiCop);
-         _loc1_.loadBytes(new this.alldata.ui());
+         var _ctx3:LoaderContext = new LoaderContext();
+         _ctx3.allowCodeImport = true;
+         _loc1_.loadBytes(new this.alldata.ui(),_ctx3);
       }
       
       private function dataCop(param1:Event) : void

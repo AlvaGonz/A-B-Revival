@@ -8,6 +8,7 @@ package
    import flash.events.MouseEvent;
    import flash.net.URLRequest;
    import flash.net.navigateToURL;
+   import flash.system.LoaderContext;
    import flash.text.TextField;
    import flash.utils.getDefinitionByName;
    
@@ -79,7 +80,9 @@ package
       {
          this.loader = new Loader();
          this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.uiCop);
-         this.loader.loadBytes(new this.loading());
+         var _locContext_:LoaderContext = new LoaderContext();
+         _locContext_.allowCodeImport = true;
+         this.loader.loadBytes(new this.loading(),_locContext_);
       }
       
       private function uiCop(param1:Event) : void
