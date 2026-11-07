@@ -59,9 +59,13 @@ package f4data
          {
             return 2;
          }
-         if(param1.type == 1)
+         if(param1.type == F4DataOrg.TYPE_WING)
          {
-            if(this.getCurrentWings(param1) >= 10)
+            if(this.isMountedWing(param1))
+            {
+               return 0;
+            }
+            if(this.getCurrentWings(param1) >= F4DataOrg.maxWingsForHull(this.getHullOrg()))
             {
                return 2;
             }
@@ -84,6 +88,11 @@ package f4data
       
       public function getCurrentWings(excludeOrg:F4DataOrg = null) : int
       {
+         return F4DataHole.countMountedWings(excludeOrg);
+      }
+      
+      public static function countMountedWings(excludeOrg:F4DataOrg = null) : int
+      {
          var _cnt:int = 0;
          if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plMc && ConfigAndStory.ALLPART.plMc.length > 0)
          {
@@ -95,7 +104,7 @@ package f4data
                   {
                      continue;
                   }
-                  if(_mc.f4DataLink.f4dataorg.type == 1)
+                  if(_mc.f4DataLink.f4dataorg.type == F4DataOrg.TYPE_WING)
                   {
                      _cnt++;
                   }
@@ -112,6 +121,48 @@ package f4data
             }
          }
          return 0;
+      }
+
+      private function isMountedWing(param1:F4DataOrg) : Boolean
+      {
+         if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plMc)
+         {
+            for each(var _mc:* in ConfigAndStory.ALLPART.plMc)
+            {
+               if(_mc && _mc.f4DataLink && _mc.f4DataLink.f4dataorg == param1)
+               {
+                  return true;
+               }
+            }
+         }
+         return false;
+      }
+
+      private function getHullOrg() : F4DataOrg
+      {
+         if(this.parentOrg && this.parentOrg.type == F4DataOrg.TYPE_BODY)
+         {
+            return this.parentOrg;
+         }
+         if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plMc)
+         {
+            for each(var _mc:* in ConfigAndStory.ALLPART.plMc)
+            {
+               if(_mc && _mc.f4DataLink && _mc.f4DataLink.f4dataorg && _mc.f4DataLink.parentPart == null && _mc.f4DataLink.f4dataorg.type == F4DataOrg.TYPE_BODY)
+               {
+                  return _mc.f4DataLink.f4dataorg;
+               }
+            }
+         }
+         if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plFly)
+         {
+            var _pl:F4DataLinks = ConfigAndStory.ALLPART.plFly[ConfigAndStory.PLAYER] as F4DataLinks;
+            if(_pl && _pl.f4dataorg)
+            {
+               return _pl.f4dataorg;
+            }
+         }
+         return this.parentOrg;
       }
       
       public function strToType(param1:String) : void
