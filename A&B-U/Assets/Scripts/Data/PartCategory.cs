@@ -12,3 +12,4 @@ namespace ABRevival.Core.Data
         Gun = 3
     }
 }
+

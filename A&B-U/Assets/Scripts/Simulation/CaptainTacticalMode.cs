@@ -14,3 +14,4 @@ namespace ABRevival.Core.Simulation
         Shield = 5
     }
 }
+
