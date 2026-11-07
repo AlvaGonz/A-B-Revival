@@ -12,10 +12,15 @@ namespace ABRevival.Core.Simulation
         public float2 velocity;
         public float2 acceleration;
         public float lifetime;
-        public float initialLifetime;
         public float distanceTraveled;
         public float damage;
         public int factionId;
+        /// <summary>
+        /// Projectile type discriminator (e.g. bullet, missile, beam).
+        /// Stored as int for Burst blittable compatibility.
+        /// </summary>
+        public int projectileType;
         public bool isAlive;
     }
 }
+

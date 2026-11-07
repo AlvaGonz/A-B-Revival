@@ -21,7 +21,6 @@ namespace ABRevival.Tests
                 velocity = new float2(0f, v0),
                 acceleration = new float2(0f, burstAcc),
                 lifetime = totalLifetime,
-                initialLifetime = totalLifetime,
                 damage = 25f,
                 isAlive = true
             };
@@ -81,3 +80,4 @@ namespace ABRevival.Tests
         }
     }
 }
+

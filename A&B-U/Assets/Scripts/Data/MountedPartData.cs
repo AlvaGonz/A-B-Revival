@@ -9,6 +9,7 @@ namespace ABRevival.Core.Data
         public int partId;
         public PartCategory category;
         public float health;
+        public float maxHealth;
         public float mass;
         public float thrust;
         public float energyDraw;
@@ -24,3 +25,4 @@ namespace ABRevival.Core.Data
         public float totalEnergyDraw;
     }
 }
+

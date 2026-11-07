@@ -34,7 +34,7 @@ namespace ABRevival.Core.Simulation
             }
 
             // 2. Forward vector from heading angle (0 rad = up / positive Y)
-            float2 forward = new float2(-math.sin(ship.rotation), math.cos(ship.rotation));
+            float2 forward = ShipEntity.Forward(ship.rotation);
 
             // 3. Acceleration & Thrust
             float safeMass = math.max(1f, ship.mass);

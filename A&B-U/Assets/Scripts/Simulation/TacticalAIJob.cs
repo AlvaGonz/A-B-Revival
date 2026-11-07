@@ -44,7 +44,7 @@ namespace ABRevival.Core.Simulation
 
                 case CaptainTacticalMode.Escort:
                     // Trail ~80px behind player craft
-                    float2 playerForward = new float2(-math.sin(player.rotation), math.cos(player.rotation));
+                    float2 playerForward = ShipEntity.Forward(player.rotation);
                     targetPos = player.position - (playerForward * 80f);
                     float distToEscort = math.distance(captain.position, targetPos);
                     input.throttle = math.clamp(distToEscort / 40f, 0f, 1f);
@@ -93,7 +93,7 @@ namespace ABRevival.Core.Simulation
                 if (math.lengthsq(toTarget) > 0.001f)
                 {
                     toTarget = math.normalize(toTarget);
-                    float2 forward = new float2(-math.sin(captain.rotation), math.cos(captain.rotation));
+                    float2 forward = ShipEntity.Forward(captain.rotation);
                     float2 right = new float2(forward.y, -forward.x);
 
                     // Cross product (right dot toTarget) determines steering angle
@@ -126,3 +126,4 @@ namespace ABRevival.Core.Simulation
         }
     }
 }
+
