@@ -40,16 +40,16 @@ package f4.unit.fire
       
       public function unFire() : void
       {
-         if(this._unfireTimer < 108 && this.timer % (this.fireFrame + this.stopFrame) >= this.fireFrame)
+         if(this._unfireTimer < 180 && this.timer % (this.fireFrame + this.stopFrame) >= this.fireFrame)
          {
-            this._unfireTimer = 107;
+            this._unfireTimer = 179;
          }
          ++this._unfireTimer;
-         if(this._unfireTimer == 108)
+         if(this._unfireTimer == 180)
          {
             this.timer = this.fireFrame;
          }
-         else if(this._unfireTimer > 108)
+         else if(this._unfireTimer > 180)
          {
             ++this.timer;
             if(this.timer % (this.fireFrame + this.stopFrame + this.firstFrame) == 0)

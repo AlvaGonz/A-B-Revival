@@ -530,7 +530,7 @@ package ui.pages
          {
             this.lostMod++;
          }
-         this.lostFlashTimer = 10;
+         this.lostFlashTimer = 17;
          this.updateLostPartsText();
       }
 
@@ -544,7 +544,7 @@ package ui.pages
          this.tacticalModeTxt.x = 320 - this.tacticalModeTxt.width / 2;
          this.tacticalModeTxt.visible = true;
          this.tacticalModeTxt.alpha = 1;
-         this.tacticalModeFade = 45;
+         this.tacticalModeFade = 75;
          if(this.capModeCodeTxt)
          {
             this.capModeCodeTxt.text = this._tacticalModeCodes[param1];
@@ -624,7 +624,7 @@ package ui.pages
          this.capAlertTxt.text = param1;
          this.capAlertTxt.textColor = param2;
          this.capAlertTxt.x = 400 - this.capAlertTxt.width / 2;
-         this.capAlertTimer = 72;
+         this.capAlertTimer = 120;
          this.capAlertTxt.visible = true;
          this.capAlertTxt.alpha = 1;
          InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13], 0.35);

@@ -329,7 +329,7 @@ package
             var _debris:int = _targets && _targets.deadParta1 ? _targets.deadParta1.num : 0;
             var _arrays:int = _bullets + _particles + _ships + _drops + _debris + (_targets && _targets.swa1 ? _targets.swa1.num : 0) + (_targets && _targets.swa2 ? _targets.swa2.num : 0);
             var _memMb:String = (System.totalMemory / 1048576).toFixed(2);
-            var _currentFps:Number = _frameDelta > 0 ? (1000 / _frameDelta) : (stage ? stage.frameRate : 36);
+            var _currentFps:Number = _frameDelta > 0 ? (1000 / _frameDelta) : (stage ? stage.frameRate : 60);
 
             this.text.text = "FPS: " + _currentFps.toFixed(1) + " (" + _frameDelta + "ms) [Logic: " + _logicMs + "ms, Render: " + _renderMs + "ms] | Mem: " + _memMb + " MB | DObjs: " + this._cachedDObjCount;
             this.text.appendText("\nBullets: " + _bullets + " | Particles: " + _particles + " | Ships: " + _ships + " | Drops: " + _drops + " | Debris: " + _debris + " | Arrays: " + _arrays);

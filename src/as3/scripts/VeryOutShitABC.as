@@ -13,7 +13,7 @@ package
    import mochi.as3.MochiAd;
    import mochi.as3.MochiServices;
    
-   [SWF(width="640", height="480", backgroundColor="#000000", frameRate="36")]
+   [SWF(width="640", height="480", backgroundColor="#000000", frameRate="60")]
    public dynamic class VeryOutShitABC extends MovieClip
    {
       
