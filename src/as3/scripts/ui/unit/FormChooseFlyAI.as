@@ -1,5 +1,6 @@
 package ui.unit
 {
+   import f4data.CompanionAssignment;
    import f4data.F4DataLinks;
    import f4data.sdata.ConfigAndStory;
    import flash.display.MovieClip;
@@ -32,6 +33,25 @@ package ui.unit
          return false;
       }
       
+      public function isCraftAssigned(param1:int) : int
+      {
+         if(!ConfigAndStory.COMPANIONS)
+         {
+            return -1;
+         }
+         var _i:int = 0;
+         while(_i < ConfigAndStory.COMPANIONS.length)
+         {
+            var _c:CompanionAssignment = ConfigAndStory.COMPANIONS[_i] as CompanionAssignment;
+            if(_c != null && _c.craftIndex == param1)
+            {
+               return _i;
+            }
+            _i++;
+         }
+         return -1;
+      }
+
       override public function f4linkToArray(param1:*) : Array
       {
          var _loc2_:F4DataLinks = param1;
@@ -46,7 +66,7 @@ package ui.unit
          {
             _loc3_.push(0);
          }
-         if(ConfigAndStory.AI.indexOf(_loc2_.index) != -1)
+         if(this.isCraftAssigned(_loc2_.index) != -1)
          {
             _loc3_.push(1);
          }
@@ -63,14 +83,9 @@ package ui.unit
          {
             return false;
          }
-         var _loc2_:int = 0;
-         while(_loc2_ < ConfigAndStory.AI.length)
+         if(this.isCraftAssigned(param1) != -1)
          {
-            if(ConfigAndStory.AI[_loc2_] == param1)
-            {
-               return false;
-            }
-            _loc2_++;
+            return false;
          }
          if(ConfigAndStory.PLAYER == param1)
          {
@@ -167,30 +182,19 @@ package ui.unit
       
       public function updateAI() : void
       {
-         var _loc1_:Array = ConfigAndStory.AI;
          var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 20;
          var _loc5_:int = int(workArr.length);
          _loc2_ = 0;
          while(_loc2_ < _loc5_)
          {
-            if(_loc1_.indexOf(workArr[_loc2_][0]) == -1)
+            var _cSlot:int = this.isCraftAssigned(workArr[_loc2_][0]);
+            if(_cSlot == -1)
             {
                workArr[_loc2_][3] = 0;
             }
             else
             {
-               _loc3_ = 0;
-               while(_loc3_ < _loc4_)
-               {
-                  if(workArr[_loc2_][0] == _loc1_[_loc3_])
-                  {
-                     workArr[_loc2_][3] = _loc3_ + 1;
-                     break;
-                  }
-                  _loc3_++;
-               }
+               workArr[_loc2_][3] = _cSlot + 1;
             }
             _loc2_++;
          }

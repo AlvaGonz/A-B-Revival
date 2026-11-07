@@ -77,11 +77,13 @@ package ui.pages
                ConfigAndStory.PLAYER = 0;
             }
             var _aiSlot:int = 0;
-            while(_aiSlot < ConfigAndStory.AI.length)
+            var _cLen:int = ConfigAndStory.COMPANIONS ? ConfigAndStory.COMPANIONS.length : 0;
+            while(_aiSlot < _cLen)
             {
-               if(ConfigAndStory.AI[_aiSlot] == _capFly.index)
+               var _cSlotItem:CompanionAssignment = ConfigAndStory.COMPANIONS[_aiSlot] as CompanionAssignment;
+               if(_cSlotItem && _cSlotItem.craftIndex == _capFly.index)
                {
-                  ConfigAndStory.AI[_aiSlot] = null;
+                  ConfigAndStory.COMPANIONS[_aiSlot] = null;
                }
                _aiSlot++;
             }
@@ -215,9 +217,10 @@ package ui.pages
          else if(param1.charAt(0) == "a")
          {
             _loc2_ = parseInt(param1.substr(1)) - 1;
-            if(ConfigAndStory.AI[_loc2_])
+            var _compHover:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as CompanionAssignment : null;
+            if(_compHover && _compHover.craftIndex >= 0)
             {
-               _loc4_ = int(ConfigAndStory.AI[_loc2_]);
+               _loc4_ = _compHover.craftIndex;
                _loc3_ = this.f4datax.plFly[_loc4_];
                if(_loc3_)
                {
@@ -359,7 +362,8 @@ package ui.pages
          else if(btnStr.charAt(0) == "a")
          {
             aiNum = parseInt(btnStr.substr(1)) - 1;
-            if(ConfigAndStory.AI[aiNum] == null)
+            var _compAct:CompanionAssignment = ConfigAndStory.COMPANIONS && aiNum < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[aiNum] as CompanionAssignment : null;
+            if(_compAct == null || _compAct.craftIndex < 0)
             {
                this.reAI(aiNum);
             }
@@ -428,13 +432,15 @@ package ui.pages
          if(ConfigAndStory.STORY != 49)
          {
             i = 0;
-            while(i < ConfigAndStory.AI.length)
+            var _compReadyLen:int = ConfigAndStory.COMPANIONS ? ConfigAndStory.COMPANIONS.length : 0;
+            while(i < _compReadyLen)
             {
-               if(ConfigAndStory.AI[i] != null)
+               var _cReady:CompanionAssignment = ConfigAndStory.COMPANIONS[i] as CompanionAssignment;
+               if(_cReady != null && _cReady.craftIndex >= 0)
                {
                   aiNums++;
-                  InitData.CORE.levelData.afa.push(this.f4datax.plFly[ConfigAndStory.AI[i]]);
-                  InitData.CORE.repair.flys.push(this.f4datax.plFly[ConfigAndStory.AI[i]]);
+                  InitData.CORE.levelData.afa.push(this.f4datax.plFly[_cReady.craftIndex]);
+                  InitData.CORE.repair.flys.push(this.f4datax.plFly[_cReady.craftIndex]);
                }
                i++;
             }
@@ -479,12 +485,15 @@ package ui.pages
       
       public function ckAIUseAI(param1:int) : int
       {
+         if(!ConfigAndStory.COMPANIONS)
+         {
+            return -1;
+         }
          var _loc3_:int = 0;
-         var _loc2_:Array = ConfigAndStory.AI;
-         _loc3_ = 0;
          while(_loc3_ < this.ainum)
          {
-            if(_loc2_[_loc3_] == param1)
+            var _c:CompanionAssignment = _loc3_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc3_] as CompanionAssignment : null;
+            if(_c != null && _c.craftIndex == param1)
             {
                return _loc3_;
             }
@@ -499,16 +508,19 @@ package ui.pages
          {
             return true;
          }
-         var _loc3_:int = 0;
-         var _loc2_:Array = ConfigAndStory.AI;
          if(ConfigAndStory.PLAYER == param1)
          {
             return true;
          }
-         _loc3_ = 0;
+         if(!ConfigAndStory.COMPANIONS)
+         {
+            return false;
+         }
+         var _loc3_:int = 0;
          while(_loc3_ < this.ainum)
          {
-            if(_loc2_[_loc3_] == param1)
+            var _c:CompanionAssignment = _loc3_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc3_] as CompanionAssignment : null;
+            if(_c != null && _c.craftIndex == param1)
             {
                return true;
             }
@@ -537,14 +549,15 @@ package ui.pages
             _loc2_ = this.f4datax.plFly[param1];
             _loc3_ = new F4ShowData(_loc2_);
             _loc3_.initData();
-            _loc4_ = ConfigAndStory.AI;
             _loc6_ = false;
             _loc5_ = 0;
             while(_loc5_ < this.ainum)
             {
-               if(_loc4_[_loc5_] == null)
+               var _cAdd:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc5_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc5_] as CompanionAssignment : null;
+               if(_cAdd == null || _cAdd.craftIndex < 0)
                {
-                  _loc4_[_loc5_] = param1;
+                  var _existingComp:CompanionAssignment = this.getOrCreateCompanion(_loc5_);
+                  _existingComp.craftIndex = param1;
                   var _aipad1:MovieClip = _mov.getChildByName("aipad") as MovieClip;
                   var _txtFld1:TextField = _aipad1 ? _aipad1.getChildByName("$a" + (_loc5_ + 1)) as TextField : null;
                   if(_txtFld1)
@@ -552,8 +565,6 @@ package ui.pages
                      _txtFld1.text = _loc3_.cls;
                   }
                   this.ais[_loc5_] = param1;
-                  var _existingComp:CompanionAssignment = this.getOrCreateCompanion(_loc5_);
-                  _existingComp.craftIndex = param1;
                   this.updateCompanionUI();
                   InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
                   _loc6_ = true;
@@ -582,18 +593,16 @@ package ui.pages
                _loc3_ = this.f4datax.plFly[_loc2_];
                _loc4_ = new F4ShowData(_loc3_);
                _loc4_.initData();
-               _loc5_ = ConfigAndStory.AI;
-               _loc5_[param1] = _loc2_;
+               var _existingReComp:CompanionAssignment = this.getOrCreateCompanion(param1);
+               _existingReComp.craftIndex = _loc2_;
                var _aipad2:MovieClip = _mov.getChildByName("aipad") as MovieClip;
                var _txtFld2:TextField = _aipad2 ? _aipad2.getChildByName("$a" + (param1 + 1)) as TextField : null;
                if(_txtFld2)
                {
                   _txtFld2.text = _loc4_.cls;
                }
-               this.addDtL(_loc3_,this.dtLinkS,"showDetail",true);
-               var _existingReComp:CompanionAssignment = this.getOrCreateCompanion(param1);
-               _existingReComp.craftIndex = _loc2_;
                this.updateCompanionUI();
+               this.addDtL(_loc3_,this.dtLinkS,"showDetail",true);
                InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
             }
          }
@@ -602,7 +611,6 @@ package ui.pages
       public function delAI(param1:int) : void
       {
          var _loc2_:F4DataLinks = null;
-         ConfigAndStory.AI[param1] = null;
          if(ConfigAndStory.COMPANIONS && param1 < ConfigAndStory.COMPANIONS.length)
          {
             ConfigAndStory.COMPANIONS[param1] = null;
@@ -625,17 +633,13 @@ package ui.pages
       public function findAIUse() : void
       {
          var _loc2_:int = 0;
-         var _loc1_:Array = ConfigAndStory.AI;
          _loc2_ = 0;
          while(_loc2_ < this.ainum)
          {
-            if(_loc1_[_loc2_] != null && _loc1_[_loc2_] == ConfigAndStory.PLAYER)
+            var _cUse:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as CompanionAssignment : null;
+            if(_cUse != null && _cUse.craftIndex == ConfigAndStory.PLAYER)
             {
-               _loc1_[_loc2_] = null;
-               if(ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length)
-               {
-                  ConfigAndStory.COMPANIONS[_loc2_] = null;
-               }
+               ConfigAndStory.COMPANIONS[_loc2_] = null;
             }
             _loc2_++;
          }
@@ -645,16 +649,16 @@ package ui.pages
       {
          var _loc2_:F4DataLinks = null;
          var _loc4_:int = 0;
-         var _loc1_:Array = ConfigAndStory.AI;
          var _loc3_:F4ShowData = new F4ShowData(_loc2_);
          var _aipad:MovieClip = _mov.getChildByName("aipad") as MovieClip;
          _loc4_ = 0;
          while(_loc4_ < this.ainum)
          {
             var _txtFld:TextField = _aipad ? _aipad.getChildByName("$a" + (_loc4_ + 1)) as TextField : null;
-            if(_loc1_ != null && _loc4_ < _loc1_.length && _loc1_[_loc4_] != null && this.f4datax != null && this.f4datax.plFly != null)
+            var _cFill:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc4_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc4_] as CompanionAssignment : null;
+            if(_cFill != null && _cFill.craftIndex >= 0 && this.f4datax != null && this.f4datax.plFly != null)
             {
-               _loc2_ = this.f4datax.plFly[_loc1_[_loc4_]];
+               _loc2_ = this.f4datax.plFly[_cFill.craftIndex];
                if(_loc2_ != null)
                {
                   _loc3_.link = _loc2_;
@@ -663,7 +667,7 @@ package ui.pages
                   {
                      _txtFld.text = _loc3_.cls;
                   }
-                  this.ais[_loc4_] = _loc1_[_loc4_];
+                  this.ais[_loc4_] = _cFill.craftIndex;
                }
                else
                {
@@ -722,11 +726,11 @@ package ui.pages
       {
          var _loc2_:int = 0;
          var _loc3_:int = 0;
-         var _loc1_:Array = ConfigAndStory.AI;
          _loc2_ = 0;
-         while(_loc2_ < this.ainum)
+         while(_loc2_ < 5)
          {
-            if(_loc1_[_loc2_] == null)
+            var _cBest:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as CompanionAssignment : null;
+            if(_cBest == null || _cBest.craftIndex < 0)
             {
                _loc3_ = this.findBestAI();
                if(_loc3_ >= 0)
@@ -775,8 +779,7 @@ package ui.pages
          var _comp:CompanionAssignment = param1 < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[param1] as CompanionAssignment : null;
          if(!_comp)
          {
-            var _craftId:int = param1 < ConfigAndStory.AI.length && ConfigAndStory.AI[param1] != null ? int(ConfigAndStory.AI[param1]) : -1;
-            _comp = new CompanionAssignment(_craftId, CompanionAssignment.ROLE_ESCORT, CompanionAssignment.LEADER_MICHAEL);
+            _comp = new CompanionAssignment(-1, CompanionAssignment.ROLE_ESCORT, CompanionAssignment.LEADER_MICHAEL);
             ConfigAndStory.COMPANIONS[param1] = _comp;
          }
          return _comp;
@@ -870,7 +873,7 @@ package ui.pages
             var _cCont:Sprite = this._slotContainers[_i] as Sprite;
             if(_cCont)
             {
-               var _hasCraft:Boolean = ConfigAndStory.AI && _i < ConfigAndStory.AI.length && ConfigAndStory.AI[_i] != null;
+               var _hasCraft:Boolean = ConfigAndStory.COMPANIONS && _i < ConfigAndStory.COMPANIONS.length && ConfigAndStory.COMPANIONS[_i] != null && ConfigAndStory.COMPANIONS[_i].craftIndex >= 0;
                if(!_hasCraft)
                {
                   _cCont.visible = false;

@@ -1,6 +1,7 @@
 package ui.make
 {
    import f4.data.InitData;
+   import f4data.CompanionAssignment;
    import f4data.F4DataLinks;
    import f4data.sdata.ConfigAndStory;
    import flash.display.DisplayObjectContainer;
@@ -59,15 +60,16 @@ package ui.make
          {
             InitData.CORE.repair.flys.push(_capFly);
          }
-         if(ConfigAndStory.STORY != 49)
+         if(ConfigAndStory.STORY != 49 && ConfigAndStory.COMPANIONS)
          {
             _loc2_ = 0;
-            while(_loc2_ < ConfigAndStory.AI.length)
+            while(_loc2_ < ConfigAndStory.COMPANIONS.length)
             {
-               if(ConfigAndStory.AI[_loc2_] != null)
+               var _compEntry:CompanionAssignment = ConfigAndStory.COMPANIONS[_loc2_] as CompanionAssignment;
+               if(_compEntry != null && _compEntry.craftIndex >= 0)
                {
-                  InitData.CORE.levelData.afa.push(ConfigAndStory.ALLPART.plFly[ConfigAndStory.AI[_loc2_]]);
-                  InitData.CORE.repair.flys.push(ConfigAndStory.ALLPART.plFly[ConfigAndStory.AI[_loc2_]]);
+                  InitData.CORE.levelData.afa.push(ConfigAndStory.ALLPART.plFly[_compEntry.craftIndex]);
+                  InitData.CORE.repair.flys.push(ConfigAndStory.ALLPART.plFly[_compEntry.craftIndex]);
                }
                _loc2_++;
             }

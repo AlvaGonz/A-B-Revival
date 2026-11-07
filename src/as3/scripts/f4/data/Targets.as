@@ -113,13 +113,14 @@ package f4.data
             _loc7_ = InitData.CORE.playerFly.unity.move.point.y;
             var _capUnit:AIUnity = this.evts.getAIByPerson("Captain");
             _loc8_ = 0;
-            while(_loc8_ < ConfigAndStory.AI.length)
+            var _compCount:int = ConfigAndStory.COMPANIONS ? ConfigAndStory.COMPANIONS.length : 0;
+            while(_loc8_ < _compCount)
             {
-               if(ConfigAndStory.AI[_loc8_] != null)
+               var _compRecord:CompanionAssignment = ConfigAndStory.COMPANIONS[_loc8_] as CompanionAssignment;
+               if(_compRecord != null && _compRecord.craftIndex >= 0)
                {
-                  var _compRecord:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc8_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc8_] as CompanionAssignment : null;
-                  var _cRole:int = _compRecord ? _compRecord.role : CompanionAssignment.ROLE_ESCORT;
-                  var _cLeader:int = _compRecord ? _compRecord.leader : CompanionAssignment.LEADER_MICHAEL;
+                  var _cRole:int = _compRecord.role;
+                  var _cLeader:int = _compRecord.leader;
                   var _targetLeaderUnit:AIUnity = null;
                   var _spawnLeaderName:String = "Michael";
                   var _sX:Number = _loc6_ + (_loc8_ + 1) * 80;
@@ -138,7 +139,7 @@ package f4.data
                      _spawnLeaderName = "Michael";
                   }
 
-                  this.evts.addAI(_sX,_sY,_spawnLeaderName,["AI_P"],0,ConfigAndStory.AI[_loc8_],true,false,2,_cRole,_targetLeaderUnit);
+                  this.evts.addAI(_sX,_sY,_spawnLeaderName,["AI_P"],0,_compRecord.craftIndex,true,false,2,_cRole,_targetLeaderUnit);
                }
                _loc8_++;
             }

@@ -51,8 +51,6 @@ package f4data.sdata
       
       public static var PLAYER:int;
       
-      public static var AI:Array;
-      
       public static var COMPANIONS:Array;
       
       public static var MONEY:int;
@@ -106,7 +104,6 @@ package f4data.sdata
          }
          PLAYER = 0;
          TIMEALL = 0;
-         AI = [];
          COMPANIONS = [];
          AIGAME = true;
          DIRECTOR = new Director();
@@ -418,64 +415,15 @@ package f4data.sdata
          var _loc1_:int = 0;
          while(_loc1_ < 20)
          {
-            if(AI && (AI[_loc1_] == PLAYER || !ALLPART.plFly[AI[_loc1_]]))
-            {
-               AI[_loc1_] = null;
-            }
             if(COMPANIONS && COMPANIONS[_loc1_] != null)
             {
-               if(COMPANIONS[_loc1_].craftIndex == PLAYER || !ALLPART.plFly[COMPANIONS[_loc1_].craftIndex])
+               var _cRecord:CompanionAssignment = COMPANIONS[_loc1_] as CompanionAssignment;
+               if(_cRecord && (_cRecord.craftIndex == PLAYER || !ALLPART.plFly[_cRecord.craftIndex]))
                {
                   COMPANIONS[_loc1_] = null;
                }
             }
             _loc1_++;
-         }
-      }
-      
-      public static function syncCompanionsAndAI() : void
-      {
-         if(!COMPANIONS)
-         {
-            COMPANIONS = [];
-         }
-         if(!AI)
-         {
-            AI = [];
-         }
-         var _maxLen:int = Math.max(AI.length, COMPANIONS.length);
-         if(_maxLen < 20)
-         {
-            _maxLen = 20;
-         }
-         var _i:int = 0;
-         while(_i < _maxLen)
-         {
-            var _comp:CompanionAssignment = _i < COMPANIONS.length ? COMPANIONS[_i] : null;
-            var _aiCraft:* = _i < AI.length ? AI[_i] : null;
-            
-            if(_comp != null && _comp.craftIndex >= 0)
-            {
-               AI[_i] = _comp.craftIndex;
-            }
-            else if(_aiCraft != null)
-            {
-               var _cIdx:int = int(_aiCraft);
-               if(_comp == null)
-               {
-                  COMPANIONS[_i] = new CompanionAssignment(_cIdx, CompanionAssignment.ROLE_ESCORT, CompanionAssignment.LEADER_MICHAEL);
-               }
-               else
-               {
-                  _comp.craftIndex = _cIdx;
-               }
-            }
-            else
-            {
-               AI[_i] = null;
-               COMPANIONS[_i] = null;
-            }
-            _i++;
          }
       }
       
@@ -546,11 +494,6 @@ package f4data.sdata
             STORY = SOData.data["story"];
             MONEY = SOData.data["money"];
             PLAYER = SOData.data["player"];
-            AI = SOData.data["ai"];
-            if(AI == null)
-            {
-               AI = [];
-            }
             AIGAME = SOData.data["aigame"];
             HOWTOPLAY = SOData.data["how"];
             SHOWTEXTMENU = SOData.data["menu"];
@@ -572,7 +515,23 @@ package f4data.sdata
                   _ri++;
                }
             }
-            syncCompanionsAndAI();
+            else if(SOData.data["ai"] != null)
+            {
+               var _legacyAI:Array = SOData.data["ai"] as Array;
+               var _li:int = 0;
+               while(_li < _legacyAI.length)
+               {
+                  if(_legacyAI[_li] != null && int(_legacyAI[_li]) >= 0)
+                  {
+                     COMPANIONS[_li] = new CompanionAssignment(int(_legacyAI[_li]), CompanionAssignment.ROLE_ESCORT, CompanionAssignment.LEADER_MICHAEL);
+                  }
+                  else
+                  {
+                     COMPANIONS[_li] = null;
+                  }
+                  _li++;
+               }
+            }
             checkCaptainShip();
          }
          else
@@ -594,7 +553,6 @@ package f4data.sdata
          }
          SOData.data["money"] = MONEY;
          SOData.data["player"] = PLAYER;
-         SOData.data["ai"] = AI.concat();
          SOData.data["aigame"] = AIGAME;
          var _compList:Array = [];
          if(COMPANIONS)
@@ -631,7 +589,6 @@ package f4data.sdata
          _loc1_["story"] = STORY;
          _loc1_["money"] = MONEY;
          _loc1_["player"] = PLAYER;
-         _loc1_["ai"] = AI.concat();
          _loc1_["aigame"] = AIGAME;
          var _outComps:Array = [];
          if(COMPANIONS)
@@ -684,11 +641,6 @@ package f4data.sdata
                STORY = obj["story"];
                MONEY = obj["money"];
                PLAYER = obj["player"];
-               AI = obj["ai"];
-               if(AI == null)
-               {
-                  AI = [];
-               }
                AIGAME = obj["aigame"];
                HOWTOPLAY = obj["how"];
                SHOWTEXTMENU = obj["menu"];
@@ -710,7 +662,23 @@ package f4data.sdata
                      _oji++;
                   }
                }
-               syncCompanionsAndAI();
+               else if(obj["ai"] != null)
+               {
+                  var _legacyObjAI:Array = obj["ai"] as Array;
+                  var _loi:int = 0;
+                  while(_loi < _legacyObjAI.length)
+                  {
+                     if(_legacyObjAI[_loi] != null && int(_legacyObjAI[_loi]) >= 0)
+                     {
+                        COMPANIONS[_loi] = new CompanionAssignment(int(_legacyObjAI[_loi]), CompanionAssignment.ROLE_ESCORT, CompanionAssignment.LEADER_MICHAEL);
+                     }
+                     else
+                     {
+                        COMPANIONS[_loi] = null;
+                     }
+                     _loi++;
+                  }
+               }
                saveData();
                InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[17]);
                return true;
@@ -743,7 +711,6 @@ package f4data.sdata
             MONEY = 0;
          }
          PLAYER = 0;
-         AI = [];
          COMPANIONS = [];
          AIGAME = true;
          HOWTOPLAY = [0,0,0,0,0,0,0,0,0];
