@@ -29,6 +29,7 @@ scripts/*local*
 # Root accidental Unity generated folders (actual project is in A&B-U/)
 /Packages/
 /ProjectSettings/
+/assets/*.meta
 
 # Build and binary folders
 [Bb]in/
