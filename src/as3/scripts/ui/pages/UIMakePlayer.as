@@ -408,11 +408,11 @@ package ui.pages
          this.txtWings = new TextField();
          this.txtWings.name = "txtWings";
          var tfVal:TextFormat = new TextFormat("Arial", 10, 0xbfbfbf, true);
-         tfVal.align = TextFormatAlign.CENTER;
+         tfVal.align = TextFormatAlign.RIGHT;
          this.txtWings.defaultTextFormat = tfVal;
          this.txtWings.selectable = false;
          this.txtWings.mouseEnabled = false;
-         this.txtWings.text = "";
+         this.txtWings.text = "-";
          this.txtWings.x = 53.05;
          this.txtWings.y = 67.8;
          this.txtWings.width = 48.5;
@@ -428,15 +428,10 @@ package ui.pages
          {
             return;
          }
-         var _dtTemp:MovieClip = _mov.getChildByName("dtTemp") as MovieClip;
-         var _txtHp:TextField = _dtTemp ? _dtTemp.getChildByName("txtHp") as TextField : null;
          var _hull:F4DataOrg = F4DataHole.getAssemblyHull();
-         if(!_txtHp || _txtHp.text == "" || _txtHp.text == "-" || !_hull)
+         if(!_hull)
          {
-            if(this.txtWings.text != "")
-            {
-               this.txtWings.text = "";
-            }
+            this.txtWings.text = "-";
             return;
          }
          var _curWings:int = F4DataHole.countMountedWings();
@@ -452,7 +447,6 @@ package ui.pages
             _color = 0xff4444;
          }
          var _tf:TextFormat = this.txtWings.defaultTextFormat;
-         _tf.align = TextFormatAlign.CENTER;
          if(_tf.color != _color)
          {
             _tf.color = _color;

@@ -69,7 +69,7 @@ package ui.pages
             {
                this.movMC.stop();
                ++this.timer;
-               if(this.timer == 2.5 * 60)
+               if(this.timer == 2.5 * 36)
                {
                   this.alphaAdd = 1;
                   this.timer = 0;

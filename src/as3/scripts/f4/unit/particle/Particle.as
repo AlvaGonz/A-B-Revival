@@ -75,24 +75,10 @@ package f4.unit.particle
          this.flash = true;
          this.flashRect = new Rectangle(0,0,2,2);
          this.lastRect = new Rectangle(0,0,this.cam.rect.width,this.cam.rect.height);
-         if(InitData.TARGETS && InitData.TARGETS.pa1 && InitData.TARGETS.pa1.num > 400 && Math.random() < 0.5)
+         if(InitData.TARGETS.pa1.num > 1000 && Math.random() < 0.3)
          {
             isDeadA1 = true;
          }
-      }
-      
-      override public function startRemoveA1() : void
-      {
-         this.cam = null;
-         this.renderData = null;
-         this.point = null;
-         this.spd = null;
-         this.rect = null;
-         this.flashRect = null;
-         this.lastRect = null;
-         this._rect2 = null;
-         this._bline = null;
-         this._hsv = null;
       }
       
       public function colorFromBmpd(param1:BitmapData) : void
