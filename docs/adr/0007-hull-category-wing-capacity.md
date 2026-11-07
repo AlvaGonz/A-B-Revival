@@ -24,11 +24,15 @@ Ship assembly previously enforced a single global cap of 10 wings regardless of 
    - In `F4DataHole.acceptableOrg`, already-mounted wings (`isMountedWing(org)`) bypass the capacity check. This ensures players can reposition or edit existing wings on over-cap legacy crafts, while strictly blocking the addition of new wings beyond the category cap.
 5. **Rejection Feedback:**
    - Wing addition past the limit returns rejection code `2` in `acceptableOrg`. This seamlessly feeds existing sound triggers in `addPart` (`soundArray[13]`) and drag-drop `linkAct` (`soundArray[18]`). No new sound assets or hooks required.
-6. **Assembly UI Counter (`UIMakePlayer.txtWingHint`):**
-   - Displays `Wings: x/y [Category]` above `[R] Rotate Wing   |   [F] Flip Wing`.
-   - Refreshed in `uiloop` per frame, writing to `TextField.text` only when the formatted text changes to prevent unnecessary layout recalculations.
+6. **Assembly UI Counter & Limit Line (`UIMakePlayer.wingLimitSprite`, `txtWingLimit`):**
+   - Preserves original assembly layout: `txtWingHint` remains a single-line hotkey reminder (`[R] Rotate Wing | [F] Flip Wing`) without layout disruption.
+   - On the left 12-slot parts tray (`$chooseu0..11`), a dynamic horizontal capacity line is drawn at the boundary of the hull's allowable wings (e.g. at slot 4 for Small, slot 6 for Medium, slot 8 for Large, slot 12 for Mega).
+   - Centered directly on top of the limit line, a compact `x/limit` text indicator is rendered in a dark translucent badge with glow filter.
+   - Dynamic coloring: cyan (`0x00ccff`) when within limit, warning gold (`0xffcc00`) when cap is reached, and alert red (`0xff4444`) on over-cap legacy crafts.
+   - Refreshed in `uiloop` per frame, maintaining fast performance and zero layout shift.
 
 ## Consequences
 - Balances craft creation: light interceptors remain agile while mega ships have capacity for heavier configurations.
 - Preserves save compatibility without breaking player hangar crafts.
 - Zero audio or UI asset overhead.
+
