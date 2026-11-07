@@ -577,7 +577,7 @@ package f4.evts
          }
          else
          {
-            ConfigAndStory.ALLPART.levelMoney += this.timer / 60 / 60 * 5656;
+            ConfigAndStory.ALLPART.levelMoney += this.timer / 36 / 60 * 5656;
             ConfigAndStory.ALLPART.levelMoney *= 5;
          }
          InitData.SOUNDC2.allTo(0,-0.1,true);
@@ -857,7 +857,7 @@ package f4.evts
          this.clean();
          var _loc1_:EvtOne = new EvtOne("clock_0");
          _loc1_.data = new Object();
-         _loc1_.data["time"] = 60 * 5;
+         _loc1_.data["time"] = 36 * 5;
          _loc1_.finishActs.push(["lose",0]);
          this.clockEvts.push(_loc1_);
          InitData.SOUNDC2.allEnd(true);
@@ -890,7 +890,7 @@ package f4.evts
       public function frameToTime(param1:int) : String
       {
          var _loc4_:String = null;
-         var _loc2_:int = param1 / 60;
+         var _loc2_:int = param1 / 36;
          var _loc3_:int = _loc2_ / 60;
          _loc2_ -= _loc3_ * 60;
          if(_loc2_ < 10)

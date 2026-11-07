@@ -86,7 +86,7 @@ package f4.unit.ai
          this.unity = param1;
          this.renderLy = new AIURender();
          this.itemArr = [];
-         this.aiPowTime = 120;
+         this.aiPowTime = 72;
          this.canUse = true;
          if(ConfigAndStory.STORY == 99)
          {
@@ -330,7 +330,7 @@ package f4.unit.ai
             if(_loc1_.part.data.hp.x <= 0)
             {
                this.lastHitWho = _loc1_.lastHitWho;
-               targets.deadParta1.addOne1(new DeadPart(_loc1_,0.2,120,this));
+               targets.deadParta1.addOne1(new DeadPart(_loc1_,0.2,72,this));
                if(!this.fromDef)
                {
                   if(!(ConfigAndStory.STORY == 99 && _loc1_.org.useAs == 2 && this == InitData.CORE.playerFly))

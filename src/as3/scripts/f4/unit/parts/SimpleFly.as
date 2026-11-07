@@ -94,7 +94,7 @@ package f4.unit.parts
          var _loc3_:Number = NaN;
          var _loc4_:Particle = null;
          render.runRender(0);
-         if(this.life > 0 && render.inRender && Boolean(this.bulletData.partPoint))
+         if(!InitData.CORE.pause && this.life > 0 && render.inRender && Boolean(this.bulletData.partPoint))
          {
             _loc1_ = move.radFace + this.bulletData.partPoint.y;
             _loc2_ = move.point.x + this.bulletData.partPoint.x * Math.cos(_loc1_);
