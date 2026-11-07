@@ -23,3 +23,5 @@ saves/
 logs/
 game/original copy/
 *.log
+scripts/configure_nvidia_gpu.bat
+scripts/*local*
