@@ -36,3 +36,16 @@ run-game.bat
 ```
 *(Runs with Flashpoint Infinity's standalone Flash Player 32)*.
 
+## Development guardrails
+
+Commits touching ActionScript sources are verified by the version-controlled hook in `.githooks/` (enable once per clone):
+
+```cmd
+scripts\install-hooks.bat
+```
+
+1. `scripts/lint_domain_leakage.py --staged` — domain boundary lint (see `CODING_STANDARDS.md`).
+2. `scripts/recompile.bat` — FFDec compilation check; a broken build blocks the commit.
+
+For token-efficient AS3 navigation use `python scripts/as3_search.py symbol|callers|class <name>`. Full tooling reference: `scripts/README.md`.
+

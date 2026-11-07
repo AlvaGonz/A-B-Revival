@@ -112,6 +112,7 @@ package ui.base
       
       private function mouseDown(param1:MouseEvent) : void
       {
+         this._ui.downAct(this.name);
          if(this.name.indexOf("choose") == -1 && this._btnDis is MovieClip)
          {
             (this._btnDis as MovieClip).gotoAndStop(2);

@@ -180,6 +180,10 @@ package ui.base
       {
       }
       
+      public function downAct(param1:String) : void
+      {
+      }
+      
       public function overAct(param1:String) : void
       {
       }
