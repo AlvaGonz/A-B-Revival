@@ -111,9 +111,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/core/OpOneCore.as": {
-    "mtime": 1794033198.9599102,
-    "seen": 1794033363.0966976,
-    "ast_hash": "d0895a148068cfb66612bd5522e44a0c",
+    "mtime": 1794037076.6329532,
+    "seen": 1794038680.2489128,
+    "ast_hash": "5fa2f101e3555b6976ff5a7f9efff1bd",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -153,9 +153,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/data/Targets.as": {
-    "mtime": 1794024915.9840677,
-    "seen": 1794025587.8549886,
-    "ast_hash": "f0f15d3723fcebd4117ed5d238773604",
+    "mtime": 1794038036.0466886,
+    "seen": 1794038680.2489471,
+    "ast_hash": "bbc0c3bce1461a94b8f721d60ace7be1",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -188,9 +188,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/evts/EvtCtrl.as": {
-    "mtime": 1794025845.9475138,
-    "seen": 1794026231.0669954,
-    "ast_hash": "5ae62d632062393b36048b248c3768a1",
+    "mtime": 1794034923.7345865,
+    "seen": 1794038680.2489755,
+    "ast_hash": "2240856e14042dd99ed074b6995f0c11",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -216,9 +216,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/gfx/RenderData.as": {
-    "mtime": 1794033198.960965,
-    "seen": 1794033363.0967767,
-    "ast_hash": "caeacd705feeceaeecf8bf7c79d2a5f4",
+    "mtime": 1794033387.1037471,
+    "seen": 1794038680.2489965,
+    "ast_hash": "45b9b8ecf699df7deec4f3eb7e6cae63",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -307,9 +307,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/ai/AIUnity.as": {
-    "mtime": 1794033198.9620056,
-    "seen": 1794033363.096845,
-    "ast_hash": "2cb5f1981c87c424edd13fa7a4c152b5",
+    "mtime": 1794034901.9540682,
+    "seen": 1794038680.2490652,
+    "ast_hash": "b9ca815e74bc29572f88a0524583343e",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -426,9 +426,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/parts/RepairPartsCtrl.as": {
-    "mtime": 1793926583.3714986,
-    "seen": 1793928093.5810652,
-    "ast_hash": "6c8e2448f960786b5ad018f068aea9b0",
+    "mtime": 1794038048.8125372,
+    "seen": 1794038680.249154,
+    "ast_hash": "efaf2028894b281583cf5c85d0e4e5da",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -566,9 +566,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/F4DataOrg.as": {
-    "mtime": 1794021826.3655815,
-    "seen": 1794022389.5900338,
-    "ast_hash": "db100c7d7945595061952edf1bfbde45",
+    "mtime": 1794036085.145233,
+    "seen": 1794038680.2492585,
+    "ast_hash": "10ca61a528a3637c33a3ec5dec5dcaec",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -608,9 +608,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/sdata/ConfigAndStory.as": {
-    "mtime": 1794033198.9625287,
-    "seen": 1794033363.097066,
-    "ast_hash": "38cb657e8b4a25a6455ccfe47ece5d62",
+    "mtime": 1794038426.9523697,
+    "seen": 1794038680.24929,
+    "ast_hash": "28b70ddde1e12f6933c4cf06a0ae8ecc",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -643,9 +643,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4ui/f4partmc/F4PartMC.as": {
-    "mtime": 1794025845.6911123,
-    "seen": 1794026231.0674422,
-    "ast_hash": "f1d8e582bc64bebb77473ae97de7cdfb",
+    "mtime": 1794037594.0959356,
+    "seen": 1794038680.249316,
+    "ast_hash": "2a3a49931f7d1da7dddd8f8fbcc8e50e",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -902,9 +902,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/make/MakeUI.as": {
-    "mtime": 1793933103.4152372,
-    "seen": 1793973237.6310654,
-    "ast_hash": "443df1a16bdc7c2143e3fca650d92ead",
+    "mtime": 1794038062.4152634,
+    "seen": 1794038680.2495098,
+    "ast_hash": "4f3121ffc2d73e7972dd9ddb31f212a6",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -916,9 +916,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIChooseFlyAI.as": {
-    "mtime": 1794031561.4256358,
-    "seen": 1794031870.651568,
-    "ast_hash": "aa85233dffe754964112f51bab20aeca",
+    "mtime": 1794038451.4890978,
+    "seen": 1794038680.2495205,
+    "ast_hash": "38ac331055e4f7a314bccae19aa13374",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -937,9 +937,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIGame.as": {
-    "mtime": 1794033250.2657409,
-    "seen": 1794033363.0973077,
-    "ast_hash": "aeaa57329dee07e75c727d62c32074d5",
+    "mtime": 1794037033.9338384,
+    "seen": 1794038680.2495415,
+    "ast_hash": "56aed74f5e5e2f062b383e1a24a60c17",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -965,9 +965,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIMakePlayer.as": {
-    "mtime": 1794033288.6763072,
-    "seen": 1794033363.097327,
-    "ast_hash": "c45a908fdf137fdd42e0f2c8f121b02d",
+    "mtime": 1794038439.764531,
+    "seen": 1794038680.2495615,
+    "ast_hash": "4e1cd7d1d510102773859a656a921801",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1000,9 +1000,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIOptions.as": {
-    "mtime": 1794027190.0638487,
-    "seen": 1794030133.6038835,
-    "ast_hash": "5de72123887c97449e2d28bcf3ecbacf",
+    "mtime": 1794038554.579176,
+    "seen": 1794038680.2495863,
+    "ast_hash": "8b17fc841c3e9318bbafa67e681b7aec",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1056,9 +1056,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/unit/FormChooseFlyAI.as": {
-    "mtime": 1794033326.778916,
-    "seen": 1794033363.0973928,
-    "ast_hash": "15e1f3bc9635e54865bc0e3bc08de93f",
+    "mtime": 1794038086.9280865,
+    "seen": 1794038680.2496262,
+    "ast_hash": "d56e45950ffaa0a971b268451ce91d6a",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1070,30 +1070,30 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/unit/FormPlayerPart.as": {
-    "mtime": 1793924464.2326355,
-    "seen": 1793924520.0693364,
-    "ast_hash": "6e409059c09bea515364ff4852ae91e2",
+    "mtime": 1794036238.1133633,
+    "seen": 1794038680.2496364,
+    "ast_hash": "d74b664e913aa8c80d0cb2e71b7125f3",
     "semantic_hash": "",
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/unit/FormRepair.as": {
-    "mtime": 1793924464.5623748,
-    "seen": 1793924520.0693448,
-    "ast_hash": "380d2ff2d407fc122ddbe05dc3787392",
+    "mtime": 1794036242.1918948,
+    "seen": 1794038680.2496412,
+    "ast_hash": "0b0a61963d595add040ef1db100d769c",
     "semantic_hash": "",
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/unit/FormShop.as": {
-    "mtime": 1793980704.192664,
-    "seen": 1793997166.772434,
-    "ast_hash": "2f4ab9eb22a9cb7af895cb83ab7e83a2",
+    "mtime": 1794036194.8918166,
+    "seen": 1794038680.2496462,
+    "ast_hash": "d0d81a3f4d35a2f51cefad026692ec62",
     "semantic_hash": "",
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/unit/ShowPart.as": {
-    "mtime": 1793926583.859018,
-    "seen": 1793928093.5817575,
-    "ast_hash": "fc5650ba853f59697bf174fe2fb1436a",
+    "mtime": 1794038075.7892935,
+    "seen": 1794038680.2496512,
+    "ast_hash": "bad60d119d8ee8b6d46a75ca2f3940ee",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "GLOSSARY.md": {
-    "mtime": 1794030128.4213657,
-    "seen": 1794030133.6041079,
-    "ast_hash": "0ea0e51e0e44d85715a259766f415f8d",
+    "mtime": 1794035962.1315286,
+    "seen": 1794038680.2496665,
+    "ast_hash": "140c6112fe52cf2d8739bd356e6b8eb4",
     "semantic_hash": ""
   },
   "docs/adr/0001-record-architecture-decisions.md": {
@@ -1152,9 +1152,9 @@
     "semantic_hash": ""
   },
   "scripts/README.md": {
-    "mtime": 1793980704.178611,
-    "seen": 1793997166.7725244,
-    "ast_hash": "178ac4e731e7df6cacba3017fe88e8e9",
+    "mtime": 1794036673.5329251,
+    "seen": 1794038680.2498217,
+    "ast_hash": "e50ace1526ab261d0b91ac02b05306c3",
     "semantic_hash": ""
   },
   "docs/adr/0002-allied-flagship-lifecycle.md": {
@@ -1299,6 +1299,62 @@
     "mtime": 1794033132.6732218,
     "seen": 1794033363.0965989,
     "ast_hash": "39c13939bc4c8262d0cf02c62a8ad9cf",
+    "semantic_hash": ""
+  },
+  "src/as3/scripts/ui/base/UIStyles.as": {
+    "mtime": 1794033387.1073751,
+    "seen": 1794038680.249504,
+    "ast_hash": "d45767575fd22279a3990d93c0d49561",
+    "semantic_hash": "",
+    "language": "language=.ts"
+  },
+  "src/as3/scripts/ui/pages/UIControlsModal.as": {
+    "mtime": 1794033469.2271998,
+    "seen": 1794038680.2495258,
+    "ast_hash": "2a889ed18154fe7e64cba55c1d9f5b7c",
+    "semantic_hash": "",
+    "language": "language=.ts"
+  },
+  "docs/adr/0012-weapon-firing-range-telemetry.md": {
+    "mtime": 1794035976.9955318,
+    "seen": 1794038680.2497325,
+    "ast_hash": "0c88db2aeea083b72210cb2fd8799a31",
+    "semantic_hash": ""
+  },
+  "docs/research/ios-packaging-constraints-and-application-domains.md": {
+    "mtime": 1794036584.0679495,
+    "seen": 1794038680.2497633,
+    "ast_hash": "434e4e0bb04e39512cc828a698223146",
+    "semantic_hash": ""
+  },
+  "docs/research/mobile-feasibility-of-play-modes.md": {
+    "mtime": 1794036436.9096224,
+    "seen": 1794038680.2497869,
+    "ast_hash": "f3125069f56d034cc0a609d6bdb3ab68",
+    "semantic_hash": ""
+  },
+  "docs/research/mobile-performance-benchmarks.md": {
+    "mtime": 1794038224.211042,
+    "seen": 1794038680.249793,
+    "ast_hash": "73a7b31468e36721b95f47250c458cf6",
+    "semantic_hash": ""
+  },
+  "docs/research/modern-resolution-and-asset-rescaling-plan.md": {
+    "mtime": 1794036520.1304631,
+    "seen": 1794038680.2497976,
+    "ast_hash": "2924c8ef22570576d3a30f2ccaa73230",
+    "semantic_hash": ""
+  },
+  "docs/research/rendering-scale-experiments-for-mobile.md": {
+    "mtime": 1794036484.7862854,
+    "seen": 1794038680.2498076,
+    "ast_hash": "806c9a5e80a0981deab2b905f4432b66",
+    "semantic_hash": ""
+  },
+  "docs/research/save-persistence-on-device.md": {
+    "mtime": 1794036740.9408221,
+    "seen": 1794038680.249812,
+    "ast_hash": "e90b2e4ea1d2b6e91689d0c6cad3e4a2",
     "semantic_hash": ""
   }
 }
