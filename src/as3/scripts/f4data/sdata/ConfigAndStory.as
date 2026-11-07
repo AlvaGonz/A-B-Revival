@@ -16,10 +16,41 @@ package f4data.sdata
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
    import fullshit.AbsMain;
-   import f4data.CompanionAssignment;
    
    public class ConfigAndStory
    {
+      public static const LEADER_MICHAEL:int = 0;
+      public static const LEADER_CAPTAIN:int = 1;
+
+      public static const ROLE_ANCHOR:int = 0;
+      public static const ROLE_ESCORT:int = 1;
+      public static const ROLE_EVADE:int = 2;
+      public static const ROLE_SEEK:int = 3;
+      public static const ROLE_SUPPORT:int = 4;
+      public static const ROLE_SHIELD:int = 5;
+
+      public static const ROLE_NAMES:Array = [
+         "ANCHOR",
+         "ESCORT",
+         "EVADE",
+         "HUNT",
+         "SUPPORT",
+         "SHIELD"
+      ];
+
+      public static const LEADER_NAMES:Array = [
+         "MICHAEL",
+         "CAPTAIN"
+      ];
+
+      public static function makeCompanionAssignment(param1:int = -1, param2:int = 1, param3:int = 0) : Object
+      {
+         return {
+            "craftIndex": param1,
+            "role": (param2 >= 0 && param2 <= 5 ? param2 : ROLE_ESCORT),
+            "leader": (param3 == LEADER_CAPTAIN ? LEADER_CAPTAIN : LEADER_MICHAEL)
+         };
+      }
       
       public static const RES_640:int = 0;
       
@@ -417,8 +448,8 @@ package f4data.sdata
          {
             if(COMPANIONS && COMPANIONS[_loc1_] != null)
             {
-               var _cRecord:CompanionAssignment = COMPANIONS[_loc1_] as CompanionAssignment;
-               if(_cRecord && (_cRecord.craftIndex == PLAYER || !ALLPART.plFly[_cRecord.craftIndex]))
+               var _cRecord:Object = COMPANIONS[_loc1_];
+               if(_cRecord && (_cRecord["craftIndex"] == PLAYER || !ALLPART.plFly[_cRecord["craftIndex"]]))
                {
                   COMPANIONS[_loc1_] = null;
                }
@@ -506,7 +537,7 @@ package f4data.sdata
                {
                   if(_rawComps[_ri] != null)
                   {
-                     COMPANIONS[_ri] = CompanionAssignment.fromObject(_rawComps[_ri]);
+                     COMPANIONS[_ri] = makeCompanionAssignment(int(_rawComps[_ri]["craftIndex"]), int(_rawComps[_ri]["role"]), int(_rawComps[_ri]["leader"]));
                   }
                   else
                   {
@@ -523,7 +554,7 @@ package f4data.sdata
                {
                   if(_legacyAI[_li] != null && int(_legacyAI[_li]) >= 0)
                   {
-                     COMPANIONS[_li] = new CompanionAssignment(int(_legacyAI[_li]), CompanionAssignment.ROLE_ESCORT, CompanionAssignment.LEADER_MICHAEL);
+                     COMPANIONS[_li] = makeCompanionAssignment(int(_legacyAI[_li]), ROLE_ESCORT, LEADER_MICHAEL);
                   }
                   else
                   {
@@ -560,13 +591,13 @@ package f4data.sdata
             var _ci:int = 0;
             while(_ci < COMPANIONS.length)
             {
-               if(COMPANIONS[_ci] is CompanionAssignment)
+               if(COMPANIONS[_ci] != null)
                {
-                  _compList.push(CompanionAssignment(COMPANIONS[_ci]).toObject());
-               }
-               else if(COMPANIONS[_ci] != null)
-               {
-                  _compList.push(CompanionAssignment.fromObject(COMPANIONS[_ci]).toObject());
+                  _compList.push({
+                     "craftIndex": int(COMPANIONS[_ci]["craftIndex"]),
+                     "role": int(COMPANIONS[_ci]["role"]),
+                     "leader": int(COMPANIONS[_ci]["leader"])
+                  });
                }
                else
                {
@@ -596,13 +627,13 @@ package f4data.sdata
             var _oi:int = 0;
             while(_oi < COMPANIONS.length)
             {
-               if(COMPANIONS[_oi] is CompanionAssignment)
+               if(COMPANIONS[_oi] != null)
                {
-                  _outComps.push(CompanionAssignment(COMPANIONS[_oi]).toObject());
-               }
-               else if(COMPANIONS[_oi] != null)
-               {
-                  _outComps.push(CompanionAssignment.fromObject(COMPANIONS[_oi]).toObject());
+                  _outComps.push({
+                     "craftIndex": int(COMPANIONS[_oi]["craftIndex"]),
+                     "role": int(COMPANIONS[_oi]["role"]),
+                     "leader": int(COMPANIONS[_oi]["leader"])
+                  });
                }
                else
                {
@@ -653,7 +684,7 @@ package f4data.sdata
                   {
                      if(_objComps[_oji] != null)
                      {
-                        COMPANIONS[_oji] = CompanionAssignment.fromObject(_objComps[_oji]);
+                        COMPANIONS[_oji] = makeCompanionAssignment(int(_objComps[_oji]["craftIndex"]), int(_objComps[_oji]["role"]), int(_objComps[_oji]["leader"]));
                      }
                      else
                      {
@@ -670,7 +701,7 @@ package f4data.sdata
                   {
                      if(_legacyObjAI[_loi] != null && int(_legacyObjAI[_loi]) >= 0)
                      {
-                        COMPANIONS[_loi] = new CompanionAssignment(int(_legacyObjAI[_loi]), CompanionAssignment.ROLE_ESCORT, CompanionAssignment.LEADER_MICHAEL);
+                        COMPANIONS[_loi] = makeCompanionAssignment(int(_legacyObjAI[_loi]), ROLE_ESCORT, LEADER_MICHAEL);
                      }
                      else
                      {

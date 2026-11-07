@@ -1,6 +1,5 @@
 package ui.unit
 {
-   import f4data.CompanionAssignment;
    import f4data.F4DataOrg;
    import f4data.F4ShowData;
    import f4data.sdata.ConfigAndStory;
@@ -164,7 +163,7 @@ package ui.unit
             {
                if(ConfigAndStory.COMPANIONS && _loc11_ < ConfigAndStory.COMPANIONS.length && ConfigAndStory.COMPANIONS[_loc11_] != null)
                {
-                  var _partComp:CompanionAssignment = ConfigAndStory.COMPANIONS[_loc11_] as CompanionAssignment;
+                  var _partComp:Object = ConfigAndStory.COMPANIONS[_loc11_];
                   if(_partComp && _partComp.craftIndex == param1.link.index)
                   {
                      _loc10_ = true;

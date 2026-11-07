@@ -1,6 +1,5 @@
 package f4.unit.parts
 {
-   import f4data.CompanionAssignment;
    import f4data.F4DataHole;
    import f4data.F4DataLinks;
    import f4data.F4DataOrg;
@@ -116,8 +115,8 @@ package f4.unit.parts
             {
                if(ConfigAndStory.COMPANIONS && _loc3_ < ConfigAndStory.COMPANIONS.length && ConfigAndStory.COMPANIONS[_loc3_] != null)
                {
-                  var _cAssign:CompanionAssignment = ConfigAndStory.COMPANIONS[_loc3_] as CompanionAssignment;
-                  if(_cAssign && _cAssign.craftIndex == param1.index)
+                  var _cAssign:Object = ConfigAndStory.COMPANIONS[_loc3_];
+                  if(_cAssign && _cAssign["craftIndex"] == param1.index)
                   {
                      ConfigAndStory.COMPANIONS[_loc3_] = null;
                      delete ConfigAndStory.ALLPART.plFly[param1.index];

@@ -22,7 +22,6 @@ package ui.pages
    import ui.base.UIStyles;
    import ui.unit.FormChooseFlyAI;
    import ui.unit.ShowPart;
-   import f4data.CompanionAssignment;
    
    public class UIChooseFlyAI extends UIBase
    {
@@ -80,7 +79,7 @@ package ui.pages
             var _cLen:int = ConfigAndStory.COMPANIONS ? ConfigAndStory.COMPANIONS.length : 0;
             while(_aiSlot < _cLen)
             {
-               var _cSlotItem:CompanionAssignment = ConfigAndStory.COMPANIONS[_aiSlot] as CompanionAssignment;
+               var _cSlotItem:Object = ConfigAndStory.COMPANIONS[_aiSlot] as Object;
                if(_cSlotItem && _cSlotItem.craftIndex == _capFly.index)
                {
                   ConfigAndStory.COMPANIONS[_aiSlot] = null;
@@ -217,7 +216,7 @@ package ui.pages
          else if(param1.charAt(0) == "a")
          {
             _loc2_ = parseInt(param1.substr(1)) - 1;
-            var _compHover:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as CompanionAssignment : null;
+            var _compHover:Object = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as Object : null;
             if(_compHover && _compHover.craftIndex >= 0)
             {
                _loc4_ = _compHover.craftIndex;
@@ -362,7 +361,7 @@ package ui.pages
          else if(btnStr.charAt(0) == "a")
          {
             aiNum = parseInt(btnStr.substr(1)) - 1;
-            var _compAct:CompanionAssignment = ConfigAndStory.COMPANIONS && aiNum < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[aiNum] as CompanionAssignment : null;
+            var _compAct:Object = ConfigAndStory.COMPANIONS && aiNum < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[aiNum] as Object : null;
             if(_compAct == null || _compAct.craftIndex < 0)
             {
                this.reAI(aiNum);
@@ -435,7 +434,7 @@ package ui.pages
             var _compReadyLen:int = ConfigAndStory.COMPANIONS ? ConfigAndStory.COMPANIONS.length : 0;
             while(i < _compReadyLen)
             {
-               var _cReady:CompanionAssignment = ConfigAndStory.COMPANIONS[i] as CompanionAssignment;
+               var _cReady:Object = ConfigAndStory.COMPANIONS[i] as Object;
                if(_cReady != null && _cReady.craftIndex >= 0)
                {
                   aiNums++;
@@ -492,7 +491,7 @@ package ui.pages
          var _loc3_:int = 0;
          while(_loc3_ < this.ainum)
          {
-            var _c:CompanionAssignment = _loc3_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc3_] as CompanionAssignment : null;
+            var _c:Object = _loc3_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc3_] as Object : null;
             if(_c != null && _c.craftIndex == param1)
             {
                return _loc3_;
@@ -519,7 +518,7 @@ package ui.pages
          var _loc3_:int = 0;
          while(_loc3_ < this.ainum)
          {
-            var _c:CompanionAssignment = _loc3_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc3_] as CompanionAssignment : null;
+            var _c:Object = _loc3_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc3_] as Object : null;
             if(_c != null && _c.craftIndex == param1)
             {
                return true;
@@ -553,10 +552,10 @@ package ui.pages
             _loc5_ = 0;
             while(_loc5_ < this.ainum)
             {
-               var _cAdd:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc5_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc5_] as CompanionAssignment : null;
+               var _cAdd:Object = ConfigAndStory.COMPANIONS && _loc5_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc5_] as Object : null;
                if(_cAdd == null || _cAdd.craftIndex < 0)
                {
-                  var _existingComp:CompanionAssignment = this.getOrCreateCompanion(_loc5_);
+                  var _existingComp:Object = this.getOrCreateCompanion(_loc5_);
                   _existingComp.craftIndex = param1;
                   var _aipad1:MovieClip = _mov.getChildByName("aipad") as MovieClip;
                   var _txtFld1:TextField = _aipad1 ? _aipad1.getChildByName("$a" + (_loc5_ + 1)) as TextField : null;
@@ -593,7 +592,7 @@ package ui.pages
                _loc3_ = this.f4datax.plFly[_loc2_];
                _loc4_ = new F4ShowData(_loc3_);
                _loc4_.initData();
-               var _existingReComp:CompanionAssignment = this.getOrCreateCompanion(param1);
+               var _existingReComp:Object = this.getOrCreateCompanion(param1);
                _existingReComp.craftIndex = _loc2_;
                var _aipad2:MovieClip = _mov.getChildByName("aipad") as MovieClip;
                var _txtFld2:TextField = _aipad2 ? _aipad2.getChildByName("$a" + (param1 + 1)) as TextField : null;
@@ -636,7 +635,7 @@ package ui.pages
          _loc2_ = 0;
          while(_loc2_ < this.ainum)
          {
-            var _cUse:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as CompanionAssignment : null;
+            var _cUse:Object = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as Object : null;
             if(_cUse != null && _cUse.craftIndex == ConfigAndStory.PLAYER)
             {
                ConfigAndStory.COMPANIONS[_loc2_] = null;
@@ -655,7 +654,7 @@ package ui.pages
          while(_loc4_ < this.ainum)
          {
             var _txtFld:TextField = _aipad ? _aipad.getChildByName("$a" + (_loc4_ + 1)) as TextField : null;
-            var _cFill:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc4_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc4_] as CompanionAssignment : null;
+            var _cFill:Object = ConfigAndStory.COMPANIONS && _loc4_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc4_] as Object : null;
             if(_cFill != null && _cFill.craftIndex >= 0 && this.f4datax != null && this.f4datax.plFly != null)
             {
                _loc2_ = this.f4datax.plFly[_cFill.craftIndex];
@@ -729,7 +728,7 @@ package ui.pages
          _loc2_ = 0;
          while(_loc2_ < 5)
          {
-            var _cBest:CompanionAssignment = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as CompanionAssignment : null;
+            var _cBest:Object = ConfigAndStory.COMPANIONS && _loc2_ < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[_loc2_] as Object : null;
             if(_cBest == null || _cBest.craftIndex < 0)
             {
                _loc3_ = this.findBestAI();
@@ -770,16 +769,16 @@ package ui.pages
          this.closeRoleDropdown();
       }
 
-      private function getOrCreateCompanion(param1:int) : CompanionAssignment
+      private function getOrCreateCompanion(param1:int) : Object
       {
          if(!ConfigAndStory.COMPANIONS)
          {
             ConfigAndStory.COMPANIONS = [];
          }
-         var _comp:CompanionAssignment = param1 < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[param1] as CompanionAssignment : null;
+         var _comp:Object = param1 < ConfigAndStory.COMPANIONS.length ? ConfigAndStory.COMPANIONS[param1] as Object : null;
          if(!_comp)
          {
-            _comp = new CompanionAssignment(-1, CompanionAssignment.ROLE_ESCORT, CompanionAssignment.LEADER_MICHAEL);
+            _comp = ConfigAndStory.makeCompanionAssignment(-1, ConfigAndStory.ROLE_ESCORT, ConfigAndStory.LEADER_MICHAEL);
             ConfigAndStory.COMPANIONS[param1] = _comp;
          }
          return _comp;
@@ -881,8 +880,8 @@ package ui.pages
                else
                {
                   _cCont.visible = true;
-                  var _comp:CompanionAssignment = this.getOrCreateCompanion(_i);
-                  var _roleIdx:int = _comp.role >= 0 && _comp.role <= 5 ? _comp.role : CompanionAssignment.ROLE_ESCORT;
+                  var _comp:Object = this.getOrCreateCompanion(_i);
+                  var _roleIdx:int = _comp.role >= 0 && _comp.role <= 5 ? _comp.role : ConfigAndStory.ROLE_ESCORT;
                   var _rTxt:TextField = this._roleLabels[_i] as TextField;
                   if(_rTxt)
                   {
@@ -891,14 +890,14 @@ package ui.pages
                   var _lTxt:TextField = this._leaderLabels[_i] as TextField;
                   if(_lTxt)
                   {
-                     if(_comp.leader == CompanionAssignment.LEADER_CAPTAIN && _hasCaptain)
+                     if(_comp.leader == ConfigAndStory.LEADER_CAPTAIN && _hasCaptain)
                      {
                         _lTxt.text = "[C]";
                         _lTxt.textColor = 0xffcc00;
                      }
                      else
                      {
-                        _comp.leader = CompanionAssignment.LEADER_MICHAEL;
+                        _comp.leader = ConfigAndStory.LEADER_MICHAEL;
                         _lTxt.text = "[M]";
                         _lTxt.textColor = 0x33ccff;
                      }
@@ -1001,7 +1000,7 @@ package ui.pages
          return function(param3:MouseEvent):void
          {
             param3.stopPropagation();
-            var _comp:CompanionAssignment = getOrCreateCompanion(slot);
+            var _comp:Object = getOrCreateCompanion(slot);
             _comp.role = rIdx;
             ConfigAndStory.saveData();
             InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
@@ -1030,22 +1029,22 @@ package ui.pages
          {
             param2.stopPropagation();
             closeRoleDropdown();
-            var _comp:CompanionAssignment = getOrCreateCompanion(slot);
+            var _comp:Object = getOrCreateCompanion(slot);
             var _capFly:F4DataLinks = ConfigAndStory.getCaptainFly();
             if(!_capFly)
             {
-               _comp.leader = CompanionAssignment.LEADER_MICHAEL;
+               _comp.leader = ConfigAndStory.LEADER_MICHAEL;
                InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[18]);
             }
             else
             {
-               if(_comp.leader == CompanionAssignment.LEADER_MICHAEL)
+               if(_comp.leader == ConfigAndStory.LEADER_MICHAEL)
                {
-                  _comp.leader = CompanionAssignment.LEADER_CAPTAIN;
+                  _comp.leader = ConfigAndStory.LEADER_CAPTAIN;
                }
                else
                {
-                  _comp.leader = CompanionAssignment.LEADER_MICHAEL;
+                  _comp.leader = ConfigAndStory.LEADER_MICHAEL;
                }
                InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[14]);
             }

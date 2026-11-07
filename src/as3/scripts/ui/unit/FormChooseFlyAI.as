@@ -1,6 +1,5 @@
 package ui.unit
 {
-   import f4data.CompanionAssignment;
    import f4data.F4DataLinks;
    import f4data.sdata.ConfigAndStory;
    import flash.display.MovieClip;
@@ -42,7 +41,7 @@ package ui.unit
          var _i:int = 0;
          while(_i < ConfigAndStory.COMPANIONS.length)
          {
-            var _c:CompanionAssignment = ConfigAndStory.COMPANIONS[_i] as CompanionAssignment;
+            var _c:Object = ConfigAndStory.COMPANIONS[_i];
             if(_c != null && _c.craftIndex == param1)
             {
                return _i;

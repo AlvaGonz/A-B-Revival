@@ -12,7 +12,6 @@ package f4.data
    import f4.unit.parts.SimpleFly;
    import f4.unit.parts.Unity;
    import f4.unit.swave.SWave;
-   import f4data.CompanionAssignment;
    import f4data.sdata.ConfigAndStory;
    import flash.display.BitmapData;
    import flash.display.MovieClip;
@@ -116,7 +115,7 @@ package f4.data
             var _compCount:int = ConfigAndStory.COMPANIONS ? ConfigAndStory.COMPANIONS.length : 0;
             while(_loc8_ < _compCount)
             {
-               var _compRecord:CompanionAssignment = ConfigAndStory.COMPANIONS[_loc8_] as CompanionAssignment;
+               var _compRecord:Object = ConfigAndStory.COMPANIONS[_loc8_];
                if(_compRecord != null && _compRecord.craftIndex >= 0)
                {
                   var _cRole:int = _compRecord.role;
@@ -126,7 +125,7 @@ package f4.data
                   var _sX:Number = _loc6_ + (_loc8_ + 1) * 80;
                   var _sY:Number = _loc7_;
 
-                  if(_cLeader == CompanionAssignment.LEADER_CAPTAIN && _capUnit != null && _capUnit.unity != null && _capUnit.unity.move != null)
+                  if(_cLeader == ConfigAndStory.LEADER_CAPTAIN && _capUnit != null && _capUnit.unity != null && _capUnit.unity.move != null)
                   {
                      _targetLeaderUnit = _capUnit;
                      _spawnLeaderName = "Captain";

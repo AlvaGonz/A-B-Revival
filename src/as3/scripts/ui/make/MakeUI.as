@@ -1,7 +1,6 @@
 package ui.make
 {
    import f4.data.InitData;
-   import f4data.CompanionAssignment;
    import f4data.F4DataLinks;
    import f4data.sdata.ConfigAndStory;
    import flash.display.DisplayObjectContainer;
@@ -65,7 +64,7 @@ package ui.make
             _loc2_ = 0;
             while(_loc2_ < ConfigAndStory.COMPANIONS.length)
             {
-               var _compEntry:CompanionAssignment = ConfigAndStory.COMPANIONS[_loc2_] as CompanionAssignment;
+               var _compEntry:Object = ConfigAndStory.COMPANIONS[_loc2_];
                if(_compEntry != null && _compEntry.craftIndex >= 0)
                {
                   InitData.CORE.levelData.afa.push(ConfigAndStory.ALLPART.plFly[_compEntry.craftIndex]);
