@@ -36,6 +36,10 @@ scripts/*local*
 # Build and binary folders
 [Bb]in/
 [Oo]bj/
+*.bin.meta
+*.obj.meta
+bin.meta
+obj.meta
 
 # Unity generated files
 [Ll]ibrary/
