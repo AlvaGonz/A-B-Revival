@@ -61,14 +61,12 @@ package f4data
          }
          if(param1.type == F4DataOrg.TYPE_WING)
          {
-            if(this.isMountedWing(param1))
-            {
-               return 0;
-            }
-            if(this.getCurrentWings(param1) >= F4DataOrg.maxWingsForHull(this.getHullOrg()))
+            // Already-mounted wings bypass capacity so grandfathered crafts remain editable (#52 story 9)
+            if(!this.isMountedWing(param1) && F4DataHole.countMountedWings(param1) >= F4DataOrg.maxWingsForHull(this.getHullOrg()))
             {
                return 2;
             }
+            // Universal wing attachment: wings attach to any slot bypassing LR restrictions per commit 728337d
             return 0;
          }
          var _loc2_:* = undefined;

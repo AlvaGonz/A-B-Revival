@@ -600,7 +600,6 @@ package ui.pages
       {
          this.addDtLTempRun();
          this.runzoom();
-         this.updateWingsInDtTemp();
       }
       
       override public function outAct(param1:String) : void
