@@ -48,6 +48,8 @@ package f4.data
       
       public var deadParta1:Array1;
       
+      private var _allPools:Array;
+      
       private var _rect2:Rect2;
       
       private var _ckRect:Rectangle;
@@ -79,6 +81,7 @@ package f4.data
          this.ta1 = new Array1();
          this.outa1 = new Array1();
          this.deadParta1 = new Array1();
+         this._allPools = [this.outa1, this.eba1, this.efa1, this.pba1, this.pfa1, this.pa1, this.swa1, this.swa2, this.ia1, this.ta1, this.deadParta1];
          this.hitRectPoints = new HitRectPoints();
          this._rect2 = StaticShit.RECT2;
          this._ckRect = new Rectangle();
@@ -170,17 +173,16 @@ package f4.data
       public function reset() : void
       {
          this._maptimer = this.levelTimer = 0;
-         this.outa1.removeSelf1();
-         this.eba1.removeSelf1();
-         this.efa1.removeSelf1();
-         this.pba1.removeSelf1();
-         this.pfa1.removeSelf1();
-         this.pa1.removeSelf1();
-         this.swa1.removeSelf1();
-         this.swa2.removeSelf1();
-         this.ia1.removeSelf1();
-         this.ta1.removeSelf1();
-         this.deadParta1.removeSelf1();
+         if(this._allPools)
+         {
+            for each(var pool:Array1 in this._allPools)
+            {
+               if(pool)
+               {
+                  pool.removeSelf1();
+               }
+            }
+         }
          if(InitData.SOUNDC32)
          {
             InitData.SOUNDC32.clean();
