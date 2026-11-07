@@ -17,19 +17,25 @@ if not exist "!TARGET_SWF!" (
 
 :: Locate ADL (AIR Debug Launcher)
 set "ADL_CMD="
-where adl >nul 2>&1
-if !errorlevel! equ 0 (
-    set "ADL_CMD=adl"
+if exist "C:\Dev\AIRSDK_51.5.1\bin\adl.exe" (
+    set "ADL_CMD=C:\Dev\AIRSDK_51.5.1\bin\adl.exe"
+) else if exist "C:\AIRSDK\bin\adl.exe" (
+    set "ADL_CMD=C:\AIRSDK\bin\adl.exe"
+) else if exist "C:\AdobeAIRSDK\bin\adl.exe" (
+    set "ADL_CMD=C:\AdobeAIRSDK\bin\adl.exe"
+) else if exist "C:\Dev\AIRSDK\bin\adl.exe" (
+    set "ADL_CMD=C:\Dev\AIRSDK\bin\adl.exe"
+) else if defined AIR_HOME (
+    if exist "!AIR_HOME!\bin\adl.exe" set "ADL_CMD=!AIR_HOME!\bin\adl.exe"
 ) else (
-    if defined AIR_HOME if exist "!AIR_HOME!\bin\adl.exe" (
-        set "ADL_CMD=!AIR_HOME!\bin\adl.exe"
-    ) else if exist "C:\AIRSDK\bin\adl.exe" (
-        set "ADL_CMD=C:\AIRSDK\bin\adl.exe"
-    ) else if exist "C:\AdobeAIRSDK\bin\adl.exe" (
-        set "ADL_CMD=C:\AdobeAIRSDK\bin\adl.exe"
-    ) else if exist "C:\Dev\AIRSDK\bin\adl.exe" (
-        set "ADL_CMD=C:\Dev\AIRSDK\bin\adl.exe"
+    for /d %%D in ("C:\Dev\AIRSDK*") do (
+        if exist "%%D\bin\adl.exe" set "ADL_CMD=%%D\bin\adl.exe"
     )
+)
+
+if not defined ADL_CMD (
+    where adl >nul 2>&1
+    if !errorlevel! equ 0 set "ADL_CMD=adl"
 )
 
 if not defined ADL_CMD (
@@ -52,4 +58,4 @@ if not defined ADL_CMD (
 
 echo [OK] Found Adobe AIR SDK: !ADL_CMD!
 echo [INFO] Launching !AIR_DESCRIPTOR! with direct renderMode (Stage3D enabled)...
-"!ADL_CMD!" "!AIR_DESCRIPTOR!" "game"
+start "" "!ADL_CMD!" "!AIR_DESCRIPTOR!" "game"
