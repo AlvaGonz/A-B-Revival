@@ -8,12 +8,16 @@ package f4ui.f4partmc
    import flash.display.MovieClip;
    import flash.events.Event;
    import flash.events.MouseEvent;
+   import flash.filters.BitmapFilterQuality;
+   import flash.filters.GlowFilter;
    import fullshit.AbsMain;
    import ui.pages.UIMakePlayer;
    import ui.unit.FormPlayerPart;
    
    public class F4PartMC extends BaseMovePart
    {
+      
+      public static const SNAP_DIST_SQ:Number = 1296; // 36px snap radius (was 50/3 ~= 16.6px)
       
       public static var activePart:F4PartMC = null;
       
@@ -41,6 +45,39 @@ package f4ui.f4partmc
          this.mc.addEventListener(MouseEvent.MOUSE_OUT,this.mouseOut);
       }
       
+      public function setSelected(selected:Boolean) : void
+      {
+         if(selected)
+         {
+            this.mc.filters = [new GlowFilter(0x00e5ff, 1, 8, 8, 3, BitmapFilterQuality.HIGH)];
+         }
+         else
+         {
+            this.mc.filters = [];
+         }
+      }
+      
+      public static function selectPart(param1:F4PartMC) : void
+      {
+         if(activePart && activePart != param1)
+         {
+            activePart.setSelected(false);
+         }
+         activePart = param1;
+         if(activePart)
+         {
+            activePart.setSelected(true);
+            if(activePart.undo)
+            {
+               activePart.undo.updateTouchPartControls();
+            }
+         }
+         else if(UIMakePlayer.currentInstance)
+         {
+            UIMakePlayer.currentInstance.updateTouchPartControls();
+         }
+      }
+
       public function isRemovableType(targetType:int) : Boolean
       {
          return Boolean(this.f4DataLink) && Boolean(this.f4DataLink.f4dataorg) && this.f4DataLink.f4dataorg.type == targetType && this.f4DataLink.f4dataorg.useAs != 2;
@@ -53,16 +90,15 @@ package f4ui.f4partmc
       
       override public function mouseOver(param1:MouseEvent) : void
       {
-         activePart = this;
-         mc.dispatchEvent(new OrgEvent("Org",this.f4DataLink.f4dataorg,true));
+         if(!activePart || !follow)
+         {
+            mc.dispatchEvent(new OrgEvent("Org",this.f4DataLink.f4dataorg,true));
+         }
       }
       
       public function mouseOut(param1:MouseEvent) : void
       {
-         if(activePart == this && !follow)
-         {
-            activePart = null;
-         }
+         // Keep activePart selected so on-screen touch and cyber buttons can operate on it
       }
       
       override public function stageClick(param1:MouseEvent) : void
@@ -76,12 +112,17 @@ package f4ui.f4partmc
             this.changePartAlpha(this,1);
             this.alpharun = false;
             this.hidePoints();
+            if(activePart == this)
+            {
+               this.setSelected(true);
+            }
          }
       }
       
       override public function mouseClick(param1:MouseEvent) : void
       {
-         activePart = this;
+         param1.stopPropagation();
+         selectPart(this);
          if(!this.lock && !follow)
          {
             follow = true;
@@ -158,6 +199,10 @@ package f4ui.f4partmc
       public function removeAllNotBack(param1:F4PartMC, param2:Boolean = true) : void
       {
          var _loc4_:F4DataHole = null;
+         if(activePart == param1)
+         {
+            selectPart(null);
+         }
          param1.mc.addEventListener(MouseEvent.MOUSE_OVER,this.mouseOver);
          param1.stage.removeEventListener(MouseEvent.MOUSE_UP,this.stageClick);
          param1.mc.removeEventListener(MouseEvent.MOUSE_DOWN,this.mouseClick);
@@ -181,6 +226,10 @@ package f4ui.f4partmc
       public function removeAll(param1:F4PartMC, param2:Boolean = true) : void
       {
          var _loc4_:F4DataHole = null;
+         if(activePart == param1)
+         {
+            selectPart(null);
+         }
          param1.stage.removeEventListener(MouseEvent.MOUSE_UP,this.stageClick);
          param1.mc.removeEventListener(MouseEvent.MOUSE_DOWN,this.mouseClick);
          param1.mc.removeEventListener(Event.ENTER_FRAME,this.loop);
@@ -217,6 +266,10 @@ package f4ui.f4partmc
       public function removeAllNoFly(param1:F4PartMC, param2:Boolean = true) : void
       {
          var _loc4_:F4DataHole = null;
+         if(activePart == param1)
+         {
+            selectPart(null);
+         }
          param1.stage.removeEventListener(MouseEvent.MOUSE_UP,this.stageClick);
          param1.mc.removeEventListener(MouseEvent.MOUSE_DOWN,this.mouseClick);
          param1.mc.removeEventListener(Event.ENTER_FRAME,this.loop);
@@ -276,7 +329,7 @@ package f4ui.f4partmc
                }
             }
          }
-         if(_loc4_ > 50 / 3 * 50 / 3)
+         if(_loc4_ > SNAP_DIST_SQ)
          {
             InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[18]);
             this.removeAll(this);
@@ -468,14 +521,16 @@ package f4ui.f4partmc
                }
             }
          }
-         if(_loc6_ > 50 / 3 * 50 / 3)
+         if(_loc6_ > SNAP_DIST_SQ)
          {
-            this.changePartAlpha(param1,0.3);
+            this.changePartAlpha(param1,0.35);
+            param1.mc.filters = [new GlowFilter(0xff4444, 0.8, 8, 8, 2, BitmapFilterQuality.HIGH)];
          }
          else if(_loc7_ >= 0)
          {
             this.showHole(_loc7_,_loc8_.mc);
-            this.changePartAlpha(param1,0.75);
+            this.changePartAlpha(param1,0.85);
+            param1.mc.filters = [new GlowFilter(0x00ff88, 1, 10, 10, 3, BitmapFilterQuality.HIGH)];
          }
       }
       

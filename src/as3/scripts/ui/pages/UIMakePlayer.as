@@ -84,8 +84,29 @@ package ui.pages
       
       public var btnClearEngines:Sprite;
       
+      public static var currentInstance:UIMakePlayer = null;
+      
+      public var touchControlsBar:Sprite;
+      
+      public var btnTouchRotate:Sprite;
+      
+      public var btnTouchFlip:Sprite;
+      
+      public var btnTouchRemove:Sprite;
+      
+      public var btnTouchCenter:Sprite;
+      
+      public var canvasHitArea:Sprite;
+      
+      private var isPanning:Boolean = false;
+      
+      private var panStartX:Number = 0;
+      
+      private var panStartY:Number = 0;
+      
       public function UIMakePlayer(param1:F4DataCPX, param2:DisplayObjectContainer, param3:MovieClip, param4:String, param5:UICtrl, param6:UIBase = null)
       {
+         currentInstance = this;
          ConfigAndStory.checkCaptainShip();
          this.f4datax = param1;
          this.form = new FormPlayerPart(param3.getChildByName("formPart") as MovieClip,param1.plPart);
@@ -116,6 +137,7 @@ package ui.pages
          this.initWingHint();
          this.initWingsInDtTemp();
          this.initClearButtons();
+         this.initTouchControls();
       }
       
       public function initClearButtons() : void
@@ -136,7 +158,7 @@ package ui.pages
          this.updateClearButtons();
       }
       
-      private function createCyberBtn(label:String, xPos:Number, yPos:Number, onClick:Function) : Sprite
+      private function createCyberBtn(label:String, xPos:Number, yPos:Number, onClick:Function, btnW:Number = 52, btnH:Number = 19) : Sprite
       {
          var btn:Sprite = new Sprite();
          btn.x = xPos;
@@ -145,8 +167,8 @@ package ui.pages
          btn.useHandCursor = true;
          btn.mouseChildren = false;
 
-         var w:Number = 52;
-         var h:Number = 19;
+         var w:Number = btnW;
+         var h:Number = btnH;
 
          var drawBtn:Function = function(hover:Boolean, down:Boolean):void
          {
@@ -342,7 +364,7 @@ package ui.pages
          this.txtWingHint = new TextField();
          this.txtWingHint.name = "txtWingHint";
          UIStyles.applyFormat(this.txtWingHint, UIStyles.FONT_BODY, UIStyles.SIZE_HUD, UIStyles.COLOR_SYSTEM_LIGHT, true, TextFieldAutoSize.LEFT);
-         this.txtWingHint.text = "[R] Rotate Wing   |   [F] Flip Wing";
+         this.txtWingHint.text = "Tap: Select | Drag: Move | Drag Pan: Canvas";
          this.txtWingHint.autoSize = TextFieldAutoSize.LEFT;
          this.txtWingHint.selectable = false;
          this.txtWingHint.mouseEnabled = false;
@@ -350,15 +372,186 @@ package ui.pages
          var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
          if(_pic)
          {
-            this.txtWingHint.x = _pic.x + 8;
-            this.txtWingHint.y = _pic.y + _pic.height - 24;
+            this.txtWingHint.x = _pic.x + 6;
+            this.txtWingHint.y = _pic.y + _pic.height - 44;
          }
          else
          {
             this.txtWingHint.x = 10;
-            this.txtWingHint.y = 230;
+            this.txtWingHint.y = 210;
          }
          _showFly.addChild(this.txtWingHint);
+      }
+      
+      public function initTouchControls() : void
+      {
+         var _showFly:MovieClip = _mov.getChildByName("showFly") as MovieClip;
+         if(!_showFly)
+         {
+            return;
+         }
+         var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
+         if(_pic)
+         {
+            this.canvasHitArea = new Sprite();
+            this.canvasHitArea.graphics.beginFill(0x000000, 0);
+            this.canvasHitArea.graphics.drawRect(_pic.x, _pic.y, _pic.width, _pic.height);
+            this.canvasHitArea.graphics.endFill();
+            _showFly.addChildAt(this.canvasHitArea, _showFly.getChildIndex(this.uix));
+            this.canvasHitArea.addEventListener(MouseEvent.MOUSE_DOWN, this.onCanvasMouseDown);
+         }
+         
+         this.touchControlsBar = new Sprite();
+         var barX:Number = _pic ? _pic.x + 4 : 10;
+         var barY:Number = _pic ? _pic.y + _pic.height - 24 : 232;
+         this.touchControlsBar.x = barX;
+         this.touchControlsBar.y = barY;
+         
+         this.btnTouchRotate = this.createCyberBtn("ROTATE", 0, 0, this.onTouchRotateClick, 56, 20);
+         this.btnTouchFlip = this.createCyberBtn("FLIP", 60, 0, this.onTouchFlipClick, 56, 20);
+         this.btnTouchRemove = this.createCyberBtn("REMOVE", 120, 0, this.onTouchRemoveClick, 58, 20);
+         this.btnTouchCenter = this.createCyberBtn("CENTER", 182, 0, this.onTouchCenterClick, 58, 20);
+         
+         this.touchControlsBar.addChild(this.btnTouchRotate);
+         this.touchControlsBar.addChild(this.btnTouchFlip);
+         this.touchControlsBar.addChild(this.btnTouchRemove);
+         this.touchControlsBar.addChild(this.btnTouchCenter);
+         
+         _showFly.addChild(this.touchControlsBar);
+         this.updateTouchPartControls();
+      }
+      
+      public function updateTouchPartControls() : void
+      {
+         if(!this.btnTouchRotate)
+         {
+            return;
+         }
+         var cur:F4PartMC = F4PartMC.activePart;
+         if(!cur)
+         {
+            this.btnTouchRotate.alpha = 0.35;
+            this.btnTouchFlip.alpha = 0.35;
+            this.btnTouchRemove.alpha = 0.35;
+            return;
+         }
+         this.btnTouchRotate.alpha = 1.0;
+         if(cur.f4DataLink && cur.f4DataLink.f4dataorg && cur.f4DataLink.f4dataorg.type == 1)
+         {
+            this.btnTouchFlip.alpha = 1.0;
+         }
+         else
+         {
+            this.btnTouchFlip.alpha = 0.35;
+         }
+         if(!cur.lock && !cur.isRootChassis())
+         {
+            this.btnTouchRemove.alpha = 1.0;
+         }
+         else
+         {
+            this.btnTouchRemove.alpha = 0.35;
+         }
+      }
+      
+      public function onTouchRotateClick(param1:MouseEvent) : void
+      {
+         if(F4PartMC.activePart)
+         {
+            F4PartMC.activePart.rotateCW();
+         }
+         else
+         {
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13]);
+         }
+      }
+      
+      public function onTouchFlipClick(param1:MouseEvent) : void
+      {
+         if(F4PartMC.activePart && F4PartMC.activePart.f4DataLink && F4PartMC.activePart.f4DataLink.f4dataorg && F4PartMC.activePart.f4DataLink.f4dataorg.type == 1)
+         {
+            F4PartMC.activePart.setLR(F4PartMC.activePart.f4DataLink.f4dataorg.lr == 1 ? 0 : 1);
+         }
+         else
+         {
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13]);
+         }
+      }
+      
+      public function onTouchRemoveClick(param1:MouseEvent) : void
+      {
+         if(F4PartMC.activePart && !F4PartMC.activePart.lock && !F4PartMC.activePart.isRootChassis())
+         {
+            var target:F4PartMC = F4PartMC.activePart;
+            F4PartMC.selectPart(null);
+            target.removeAll(target);
+            if(this.form)
+            {
+               this.form.updatePages();
+               this.form.filterX(this.form.filx);
+            }
+            if(!this.nowedit)
+            {
+               this.updateNew();
+            }
+            else
+            {
+               this.updateClearButtons();
+            }
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[18]);
+         }
+         else
+         {
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[13]);
+         }
+      }
+      
+      public function onTouchCenterClick(param1:MouseEvent) : void
+      {
+         var _showFly:MovieClip = _mov.getChildByName("showFly") as MovieClip;
+         if(_showFly)
+         {
+            var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
+            if(_pic)
+            {
+               this.uix.x = _pic.x;
+               this.uix.y = _pic.y;
+            }
+         }
+         this.autoZoom();
+         InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[12]);
+      }
+      
+      private function onCanvasMouseDown(param1:MouseEvent) : void
+      {
+         F4PartMC.selectPart(null);
+         if(stage)
+         {
+            this.isPanning = true;
+            this.panStartX = stage.mouseX - this.uix.x;
+            this.panStartY = stage.mouseY - this.uix.y;
+            stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onCanvasMouseMove);
+            stage.addEventListener(MouseEvent.MOUSE_UP,this.onCanvasMouseUp);
+         }
+      }
+      
+      private function onCanvasMouseMove(param1:MouseEvent) : void
+      {
+         if(this.isPanning && stage)
+         {
+            this.uix.x = stage.mouseX - this.panStartX;
+            this.uix.y = stage.mouseY - this.panStartY;
+         }
+      }
+      
+      private function onCanvasMouseUp(param1:MouseEvent) : void
+      {
+         this.isPanning = false;
+         if(stage)
+         {
+            stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onCanvasMouseMove);
+            stage.removeEventListener(MouseEvent.MOUSE_UP,this.onCanvasMouseUp);
+         }
       }
       
       public function initWingsInDtTemp() : void
@@ -512,6 +705,16 @@ package ui.pages
       
       override public function removeSelf() : UIBase
       {
+         F4PartMC.selectPart(null);
+         if(stage)
+         {
+            stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onCanvasMouseMove);
+            stage.removeEventListener(MouseEvent.MOUSE_UP,this.onCanvasMouseUp);
+         }
+         if(currentInstance == this)
+         {
+            currentInstance = null;
+         }
          super.removeSelf();
          return _last;
       }
@@ -970,6 +1173,14 @@ package ui.pages
          {
             this.txtWingHint.visible = !param1;
          }
+         if(this.touchControlsBar)
+         {
+            this.touchControlsBar.visible = !param1;
+         }
+         if(this.canvasHitArea)
+         {
+            this.canvasHitArea.visible = !param1;
+         }
          if(param1)
          {
             (_mov.getChildByName("txtNew") as TextField).text = "";
@@ -1137,6 +1348,7 @@ package ui.pages
       
       public function cleanMCNotBack() : void
       {
+         F4PartMC.selectPart(null);
          var _loc1_:F4PartMC = null;
          for each(_loc1_ in this.f4datax.plMc)
          {
@@ -1155,6 +1367,7 @@ package ui.pages
       
       public function cleanMC() : void
       {
+         F4PartMC.selectPart(null);
          var _loc1_:F4PartMC = null;
          for each(_loc1_ in this.f4datax.plMc)
          {
@@ -1174,6 +1387,7 @@ package ui.pages
       
       public function resetMC() : void
       {
+         F4PartMC.selectPart(null);
          var _loc1_:F4PartMC = null;
          for each(_loc1_ in this.f4datax.plMc)
          {
@@ -1264,6 +1478,7 @@ package ui.pages
             _loc5_.undo = this;
             _loc5_.delPartAct = this.cleanDt;
             this.autoPlug(_loc5_);
+            F4PartMC.selectPart(_loc5_);
             this.form.filter();
             if(!this.nowedit)
             {
