@@ -61,6 +61,8 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Edge-Anchored Tactical HUD**: Widescreen HUD layout system in `UIGame` that dynamically anchors gauges, radars, and telemetry to 16:9 screen boundaries (`stage.stageWidth` / `stage.stageHeight`).
 
 ## Unity 6000.6 Data-Oriented Architecture & Entity Mappings
+- **Frozen Reference Baseline (`src/as3/`)**: The completed, read-only ActionScript 3 codebase and 60 FPS 1080p Stage3D build, retained exclusively for formula reference, state-machine verification, and vector asset extraction during the Unity migration.
+- **Unity Production Target (`A&B-U/`)**: The primary and exclusive active development target running on Unity 6.6 (6000.6.8f1) URP, executing a multithreaded Burst-compiled zero-alloc simulation loop.
 - **ScriptableObject Part Catalog (`PartDefinitionSO`)**: Immutable Unity asset mapping legacy `F4DataOrg` static part definitions, hardpoints, firing parameters, and cost curves into serialized project assets.
 - **Craft Blueprint Asset (`CraftBlueprintSO`)**: Serialized ship configuration storing chassis selection, attached module definitions, socket offsets, and grandfathered wing allocations (equivalent to `FlyData` / `plMc`).
 - **Unmanaged Ship Entity (`ShipEntity` struct)**: Lightweight, blittable value type encapsulating ship position, rotation, velocity, hull integrity, and energy pools within contiguous `NativeArray<ShipEntity>` buffers.
