@@ -51,6 +51,8 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Coarse-Grained Concurrency (`flash.system.Worker`, `shareable ByteArray`)**: Multithreading architecture restricting AVM2 Workers to decoupled asynchronous workloads (procedural map generation, asset decompression, 10 Hz strategic AI) while keeping per-frame physics on the main thread to avoid IPC marshalling stalls.
 - **Surgical Blitter Optimization (`RenderData.render`)**: Immediate Phase 1 render pipeline overhaul eliminating redundant CPU blur filter passes, bounding trail-fading `colorTransform` to active entity rects, and blitting via direct `copyPixels`, reducing software render time from ~18 ms to <6 ms.
 - **Mission / Director (`MissionData`, `Director`, `LevelData`, `LevelBase`)**: Campaign wave definitions, enemy spawn scripting, objective evaluation, and reward payouts.
+- **Weapon Effective Firing Range (`F4DataOrg.getEffectiveRange`, `range`)**: The maximum theoretical travel distance (in stage pixels) of a projectile emitted by a weapon before its lifetime expires, calculated via the domain kinematic formula \(d = v_0 \cdot t + 0.5 \cdot a \cdot t^2\) using projectile velocity, burst acceleration, and bullet life from `F4DataFire` and `F4DataBullet`.
+- **Weapon Range Metric Display (`Rng: <N>`, `FormShop`, `FormPlayerPart`, `FormRepair`, `ShowPart`)**: Visual telemetry displayed in weapon inventory lists and part inspection cards, allowing players to compare weapon ranges directly alongside firepower and power drain.
 
 ## Tooling Vocabulary
 - **JPEXS (FFDec)**: Open-source Flash decompiler and ActionScript bytecode editor used for unpacking, editing, and repacking `.swf` binaries.

@@ -251,6 +251,19 @@ package f4data
          }
          return WING_CAP_LEGACY;
       }
+      
+      public function getEffectiveRange() : Number
+      {
+         if(this.type != TYPE_GUN || this.firePoints == null || this.firePoints.length == 0 || this.bullet == null || this.fire == null)
+         {
+            return 0;
+         }
+         var _v0:Number = this.fire.spdS + this.fire.spdAdd * this.fire.fireNum * 0.5;
+         var _acc:Number = this.fire.accS + this.fire.accAdd * this.fire.fireNum * 0.5;
+         var _t:Number = this.bullet.life;
+         var _range:Number = _v0 * _t + 0.5 * _acc * _t * _t;
+         return _range > 0 ? _range : 0;
+      }
    }
 }
 
