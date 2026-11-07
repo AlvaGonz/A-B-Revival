@@ -6,9 +6,9 @@
     "semantic_hash": ""
   },
   "src/as3/scripts/Fly4UI.as": {
-    "mtime": 1794025922.7912333,
-    "seen": 1794026231.0668466,
-    "ast_hash": "2dd0c2221edae2f3732ed93aee908f7f",
+    "mtime": 1794030128.5331304,
+    "seen": 1794030133.6030524,
+    "ast_hash": "a6fa007650a1ead597344d8dfa0a52fd",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -216,9 +216,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/gfx/RenderData.as": {
-    "mtime": 1794022450.9193792,
-    "seen": 1794022957.670053,
-    "ast_hash": "7639387f997b4a6e8967afdb35fad9e8",
+    "mtime": 1794030128.653199,
+    "seen": 1794030133.603229,
+    "ast_hash": "caeacd705feeceaeecf8bf7c79d2a5f4",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -286,9 +286,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/ai/AIFunctions.as": {
-    "mtime": 1793924463.9192011,
-    "seen": 1793924520.068202,
-    "ast_hash": "aa5a2889cd2756e0f116f8c54381c6dd",
+    "mtime": 1794030128.7719078,
+    "seen": 1794030133.6032872,
+    "ast_hash": "17dc9f84dc159229cbba1e688c661ca1",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -328,9 +328,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/fire/FireMode.as": {
-    "mtime": 1793924464.1556904,
-    "seen": 1793924520.0682662,
-    "ast_hash": "6eebcb5485f9c69df05e0cff936ace52",
+    "mtime": 1794030129.0259266,
+    "seen": 1794030133.6033225,
+    "ast_hash": "ff5224359dea0ec8765755c0022b2051",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -370,9 +370,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/move/MoveAs.as": {
-    "mtime": 1793924463.9591143,
-    "seen": 1793924520.068324,
-    "ast_hash": "9ecb638934c1852d45a1b96308fa5b55",
+    "mtime": 1794030128.813704,
+    "seen": 1794030133.6033564,
+    "ast_hash": "07113aae53e1f2a57adb00394b8817cf",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -405,9 +405,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/particle/Particle.as": {
-    "mtime": 1794022451.1497757,
-    "seen": 1794022957.670278,
-    "ast_hash": "ff47b44f6c7316c3c7b8c1d1b29bbc0a",
+    "mtime": 1794030128.8806453,
+    "seen": 1794030133.6033854,
+    "ast_hash": "41de3491f992bcd48ed8266fbed11991",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -433,9 +433,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/parts/SimpleFly.as": {
-    "mtime": 1794022451.1922095,
-    "seen": 1794022957.670299,
-    "ast_hash": "38f061dd7ff88c9d5a76a000fad1e80e",
+    "mtime": 1794027798.8768015,
+    "seen": 1794030133.603408,
+    "ast_hash": "e0cf89691c28cb2be3dbd1ea9f6f2fde",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -538,9 +538,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/F4DataBullet.as": {
-    "mtime": 1793924463.7195692,
-    "seen": 1793924520.068558,
-    "ast_hash": "760243317d52f5fa177d5d70f018b21e",
+    "mtime": 1794030128.9819908,
+    "seen": 1794030133.6034937,
+    "ast_hash": "a773f60a678388cae95b0472d2e365d8",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1000,8 +1000,8 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIOptions.as": {
-    "mtime": 1794027068.0779097,
-    "seen": 1794027117.0779078,
+    "mtime": 1794027190.0638487,
+    "seen": 1794030133.6038835,
     "ast_hash": "5de72123887c97449e2d28bcf3ecbacf",
     "semantic_hash": "",
     "language": "language=.ts"
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "GLOSSARY.md": {
-    "mtime": 1794026192.754315,
-    "seen": 1794026231.0678542,
-    "ast_hash": "35a2cede75b3a70400ed9f7e8a7fc6cb",
+    "mtime": 1794030128.4213657,
+    "seen": 1794030133.6041079,
+    "ast_hash": "0ea0e51e0e44d85715a259766f415f8d",
     "semantic_hash": ""
   },
   "docs/adr/0001-record-architecture-decisions.md": {
@@ -1254,9 +1254,9 @@
     "semantic_hash": ""
   },
   "scripts/test_perf_runtime.py": {
-    "mtime": 1794025889.7587714,
-    "seen": 1794026231.0668387,
-    "ast_hash": "d89e1bc492050303da9cfc9a43989093",
+    "mtime": 1794027798.7043417,
+    "seen": 1794030133.603044,
+    "ast_hash": "311079e947d9a8ac1f85f3d18c8fe464",
     "semantic_hash": ""
   },
   "docs/adr/0010-fixed-timestep-simulation-and-runtime-performance-gate.md": {
@@ -1269,6 +1269,30 @@
     "mtime": 1794025815.3737967,
     "seen": 1794026231.067931,
     "ast_hash": "f24b909e626be5e6580241e50290cad4",
+    "semantic_hash": ""
+  },
+  "scripts/record_dev_session.py": {
+    "mtime": 1794027704.7286074,
+    "seen": 1794030133.603037,
+    "ast_hash": "da6b7573a85629da610765d1f18c202f",
+    "semantic_hash": ""
+  },
+  "docs/adr/0011-adobe-air-mobile-target-and-true-60fps-gpu-architecture.md": {
+    "mtime": 1794030052.0496993,
+    "seen": 1794030133.6042032,
+    "ast_hash": "1e5e44e555b1d8c396acd5c3b454a505",
+    "semantic_hash": ""
+  },
+  "docs/research/automated-testing-and-playwright-equivalents-for-flash.md": {
+    "mtime": 1794027704.5683064,
+    "seen": 1794030133.6042333,
+    "ast_hash": "9e4c167f0ab2a49139447800b10f2795",
+    "semantic_hash": ""
+  },
+  "docs/research/multithreading-workers-and-gpu-hardware-acceleration.md": {
+    "mtime": 1794028712.2828913,
+    "seen": 1794030133.604238,
+    "ast_hash": "a7b998fdf68051da89bbe082ff76b041",
     "semantic_hash": ""
   }
 }
