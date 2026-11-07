@@ -798,15 +798,16 @@ package f4.unit.ai
          var _loc2_:Number = (this.unity.move.point.x - param1.x) * (this.unity.move.point.x - param1.x) + (this.unity.move.point.y - param1.y) * (this.unity.move.point.y - param1.y);
          var _loc3_:Number = (this.unity.move.hitRect.width + this.unity.move.hitRect.height) / 2;
          _loc3_ = _loc3_ * _loc3_ * this.aimode.bodyRt2;
+         // The Captain's stand-ground AI profile zeroes bodyFar.y/bodyClose.y; tactical movement owns its thrust.
          if(_loc2_ > _loc3_)
          {
             this.close = this.aimode.bodyFar.x;
-            this.aiPow = this.aimode.bodyFar.y * this._aiLastPowMut;
+            this.aiPow = this._aiLastPowMut;
          }
          else
          {
-            this.close = this.aimode.bodyClose.x;
-            this.aiPow = this.aimode.bodyClose.y;
+            this.close = 1;
+            this.aiPow = 0;
          }
       }
       
