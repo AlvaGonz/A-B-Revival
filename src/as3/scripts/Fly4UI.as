@@ -18,6 +18,7 @@ package
    import fullshit.AbsMain;
    import fullshit.ctrl.KeyCtrl;
    import fullshit.ctrl2.SoundCtrl2;
+   import flash.system.Capabilities;
    import flash.system.System;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
@@ -42,6 +43,8 @@ package
       
       public static const BUILD:String = "BUILD 111214_2";
       
+      public static const SIM_STEP_MS:Number = 27.777778;
+      
       public var key:KeyCtrl;
       
       public var ui_out:Sprite;
@@ -59,6 +62,8 @@ package
       public var alldata:AllData;
       
       private var _lastFrameTimer:uint = 0;
+      
+      private var _simAccumulator:Number = 0;
       
       private var devOverlay:DevMetricsOverlay;
       
@@ -218,6 +223,13 @@ package
          this.soundc32 = InitData.SOUNDC32;
          ConfigAndStory.CKTIME = getTimer();
          ConfigAndStory.makeChange();
+         if(flash.system.Capabilities.isDebugger)
+         {
+            if(!Fly4UI.DEBUG && this.devOverlay)
+            {
+               this.devOverlay.toggle(stage);
+            }
+         }
       }
       
       private function loop(param1:Event) : void
@@ -241,8 +253,8 @@ package
          var _frameDelta:uint = this._lastFrameTimer > 0 ? uint(_t0 - this._lastFrameTimer) : 16;
          this._lastFrameTimer = _t0;
 
-         this.uictrl.run();
          var _t1:uint = uint(getTimer());
+         this.uictrl.run();
          this.core.runGame();
          this.soundc2.runSound2();
          this.soundc32.run();
@@ -317,6 +329,17 @@ class DevMetricsOverlay
             stage.addChild(this.text);
          }
       }
+      var _resStr:String = ConfigAndStory.RESOLUTION == ConfigAndStory.RES_1080 ? "1080p" : (ConfigAndStory.RESOLUTION == ConfigAndStory.RES_720 ? "720p" : "640x480");
+      var _qStr:String = ConfigAndStory.QUALITY == ConfigAndStory.QUALITY_HIGH ? "High" : (ConfigAndStory.QUALITY == ConfigAndStory.QUALITY_LOW ? "Low" : "Med");
+      var _fsStr:String = ConfigAndStory.FULLSCREEN ? "ON" : "OFF";
+      if(Fly4UI.DEBUG)
+      {
+         trace("[DEV_SESSION_START] time=" + ConfigAndStory.TIMEALL + "s res=" + _resStr + " quality=" + _qStr + " fullscreen=" + _fsStr);
+      }
+      else
+      {
+         trace("[DEV_SESSION_END] time=" + ConfigAndStory.TIMEALL + "s");
+      }
       trace(Fly4UI.DEBUG ? "[DEV_MODE] Enabled (FPS, frame time, memory, object counters active)" : "[DEV_MODE] Disabled");
    }
    
@@ -350,9 +373,9 @@ class DevMetricsOverlay
       this.text.text = "FPS: " + _currentFps.toFixed(1) + " (" + frameDelta + "ms) [Logic: " + logicMs + "ms, Render: " + renderMs + "ms] | Mem: " + _memMb + " MB | DObjs: " + this._cachedDObjCount + " | " + _resStr + " | Q:" + _qStr + " | FS:" + _fsStr;
       this.text.appendText("\nBullets: " + _bullets + " | Particles: " + _particles + " | Ships: " + _ships + " | Drops: " + _drops + " | Debris: " + _debris + " | Arrays: " + _arrays);
 
-      if(this._logCounter % 180 == 0)
+      if(this._logCounter % 30 == 0)
       {
-         trace("[PERF_METRICS] time=" + ConfigAndStory.TIMEALL + "s fps=" + _currentFps.toFixed(1) + " frameDelta=" + frameDelta + "ms logic=" + logicMs + "ms render=" + renderMs + "ms mem=" + _memMb + "MB bullets=" + _bullets + " particles=" + _particles + " dObjs=" + this._cachedDObjCount + " arrays=" + _arrays);
+         trace("[PERF_METRICS] time=" + ConfigAndStory.TIMEALL + "s fps=" + _currentFps.toFixed(1) + " frameDelta=" + frameDelta + "ms logic=" + logicMs + "ms render=" + renderMs + "ms mem=" + _memMb + "MB bullets=" + _bullets + " particles=" + _particles + " ships=" + _ships + " drops=" + _drops + " debris=" + _debris + " dObjs=" + this._cachedDObjCount + " arrays=" + _arrays);
       }
    }
    

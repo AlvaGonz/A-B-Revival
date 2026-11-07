@@ -2,6 +2,7 @@ package f4.unit.particle
 {
    import f4.data.InitData;
    import f4.gfx.RenderData;
+   import f4.unit.move.MoveAs;
    import f4.unit.render.Cam;
    import flash.display.BitmapData;
    import flash.geom.Point;
@@ -59,7 +60,7 @@ package f4.unit.particle
          this._rect2 = StaticShit.RECT2;
          this._bline = StaticShit.BLINE;
          this._hsv = StaticShit.RGB;
-         this.life = param9;
+         this.life = Math.round(param9 * (1.0 / MoveAs.SIM_SCALE));
          this.autof = param8;
          this.rect = new Rectangle(0,0,this.w,this.w);
          this.cam = param1;
@@ -111,30 +112,36 @@ package f4.unit.particle
       
       override public function runA1() : void
       {
-         this.point.x += this.spd.x;
-         this.point.y += this.spd.y;
-         if(this.spd.x < 0)
+         var sx:Number = this.spd.x * MoveAs.SIM_SCALE;
+         var sy:Number = this.spd.y * MoveAs.SIM_SCALE;
+         this.point.x += sx;
+         this.point.y += sy;
+         if(sx < 0)
          {
             this.rect.x = this.point.x;
-            this.rect.width = -this.spd.x;
+            this.rect.width = -sx;
          }
          else
          {
-            this.rect.x = this.point.x - this.spd.x;
-            this.rect.width = this.spd.x;
+            this.rect.x = this.point.x - sx;
+            this.rect.width = sx;
          }
-         if(this.spd.y < 0)
+         if(sy < 0)
          {
             this.rect.y = this.point.y;
-            this.rect.height = -this.spd.y;
+            this.rect.height = -sy;
          }
          else
          {
-            this.rect.y = this.point.y - this.spd.y;
-            this.rect.height = this.spd.y;
+            this.rect.y = this.point.y - sy;
+            this.rect.height = sy;
          }
-         this.spd.x *= this.autof;
-         this.spd.y *= this.autof;
+         if(this.autof != 1)
+         {
+            var decay:Number = Math.pow(this.autof, MoveAs.SIM_SCALE);
+            this.spd.x *= decay;
+            this.spd.y *= decay;
+         }
          if(this.life-- <= 0)
          {
             this.alpha -= 20;

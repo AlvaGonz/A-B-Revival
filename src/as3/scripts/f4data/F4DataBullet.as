@@ -1,5 +1,6 @@
 package f4data
 {
+   import f4.unit.move.MoveAs;
    import flash.geom.Point;
    
    public class F4DataBullet
@@ -42,7 +43,7 @@ package f4data
          this.mcName = param1["mcName"];
          this.hp = param1["hp"];
          this.dmg = param1["dmg"];
-         this.life = param1["life"];
+         this.life = Math.round(param1["life"] * (1.0 / MoveAs.SIM_SCALE));
          this.aim = param1["aim"];
          this.deadAct = param1["deadAct"];
          this.btwh = param1["btwh"];
