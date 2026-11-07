@@ -13,6 +13,16 @@ package f4data
       
       public static const TYPE_GUN:int = 3;
       
+      public static const WING_CAP_SMALL:int = 4;
+      
+      public static const WING_CAP_MEDIUM:int = 6;
+      
+      public static const WING_CAP_LARGE:int = 8;
+      
+      public static const WING_CAP_MEGA:int = 12;
+      
+      public static const WING_CAP_LEGACY:int = 10;
+      
       public var type:int = 0;
       
       public var name:String = "name";
@@ -192,6 +202,54 @@ package f4data
             _loc5_ *= 0.11;
          }
          this.cost = Math.ceil((_loc1_ + _loc4_ * (_loc5_ * _loc6_) / 8) * _loc7_ * 0.0065);
+      }
+      
+      public static function wingCategoryForHull(param1:F4DataOrg) : String
+      {
+         if(!param1 || !param1.name)
+         {
+            return "Unknown";
+         }
+         if(param1.name.indexOf("B.Small") == 0)
+         {
+            return "Small";
+         }
+         // B.Med++ hulls do not match "B.Medium"
+         if(param1.name.indexOf("B.Med") == 0)
+         {
+            return "Medium";
+         }
+         if(param1.name.indexOf("B.Large") == 0)
+         {
+            return "Large";
+         }
+         if(param1.name.indexOf("B.Mega") == 0)
+         {
+            return "Mega";
+         }
+         return "Unknown";
+      }
+      
+      public static function maxWingsForHull(param1:F4DataOrg) : int
+      {
+         var _loc2_:String = wingCategoryForHull(param1);
+         if(_loc2_ == "Small")
+         {
+            return WING_CAP_SMALL;
+         }
+         if(_loc2_ == "Medium")
+         {
+            return WING_CAP_MEDIUM;
+         }
+         if(_loc2_ == "Large")
+         {
+            return WING_CAP_LARGE;
+         }
+         if(_loc2_ == "Mega")
+         {
+            return WING_CAP_MEGA;
+         }
+         return WING_CAP_LEGACY;
       }
    }
 }

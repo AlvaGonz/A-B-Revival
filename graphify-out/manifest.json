@@ -265,9 +265,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/make/Maker.as": {
-    "mtime": 1793931387.017593,
-    "seen": 1793932918.3885481,
-    "ast_hash": "212e3f9bf697935351a20528e3841fae",
+    "mtime": 1794013769.5640612,
+    "seen": 1794019772.1462514,
+    "ast_hash": "eace9e373a60527a875a73034263f3b2",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -307,9 +307,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/ai/AIUnity.as": {
-    "mtime": 1794008828.7603247,
-    "seen": 1794008940.8101444,
-    "ast_hash": "6b792e8145aee8719fd50619de5bea66",
+    "mtime": 1794012422.5738947,
+    "seen": 1794019772.1462862,
+    "ast_hash": "15d7841a302821ed6b982aa0d4fe483d",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -552,9 +552,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/F4DataHole.as": {
-    "mtime": 1793929353.6745594,
-    "seen": 1793932918.3889122,
-    "ast_hash": "aad2dfbf3b16f29bfce7e0b488eceb24",
+    "mtime": 1794018742.596125,
+    "seen": 1794019772.146473,
+    "ast_hash": "5fcbd6b431633dc16bf58dd005a15f0d",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -566,9 +566,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/F4DataOrg.as": {
-    "mtime": 1793980704.18461,
-    "seen": 1793997166.7718925,
-    "ast_hash": "76445b3bdf27664470640059dd056c92",
+    "mtime": 1794016477.3827932,
+    "seen": 1794019772.1464837,
+    "ast_hash": "db100c7d7945595061952edf1bfbde45",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -881,9 +881,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/base/BtnBase.as": {
-    "mtime": 1793924463.9192011,
-    "seen": 1793924520.0690753,
-    "ast_hash": "2557cab23f12da787bba0d1431fe3e2b",
+    "mtime": 1794013769.556012,
+    "seen": 1794019772.1467164,
+    "ast_hash": "0ebb426d1c19c00c790d95c319972230",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -895,9 +895,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/base/UIBase.as": {
-    "mtime": 1793924463.727072,
-    "seen": 1793924520.069094,
-    "ast_hash": "8a12de3772012d36c7882a8f84cc2149",
+    "mtime": 1794013769.5550091,
+    "seen": 1794019772.1467268,
+    "ast_hash": "e2cdc1b5ce50b58b07b1bf039128ec07",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -965,9 +965,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIMakePlayer.as": {
-    "mtime": 1793980704.189665,
-    "seen": 1793997166.7722988,
-    "ast_hash": "9d6416500233e49cacf45f8cebebeac3",
+    "mtime": 1794019687.9833143,
+    "seen": 1794019772.14678,
+    "ast_hash": "b39af1cbfd7ce91ccb4d269265f6335b",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1035,9 +1035,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIShop.as": {
-    "mtime": 1793980704.1906643,
-    "seen": 1793997166.7723792,
-    "ast_hash": "c8ca85543c763d87ca48a5f60f361f44",
+    "mtime": 1794013801.3675365,
+    "seen": 1794019772.146831,
+    "ast_hash": "15c8d71aa0467ca921b3ff8a260e64c7",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1098,9 +1098,9 @@
     "language": "language=.ts"
   },
   "README.md": {
-    "mtime": 1793924695.510631,
-    "seen": 1793926505.4419844,
-    "ast_hash": "0c2ca46d5082a5cd5400e08af3df79b6",
+    "mtime": 1794013801.3402698,
+    "seen": 1794019772.1468925,
+    "ast_hash": "dfd34f79c31cbb1ac545fd8c4e7d242f",
     "semantic_hash": ""
   },
   "assets/logo.png": {
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "GLOSSARY.md": {
-    "mtime": 1794008927.092801,
-    "seen": 1794008940.8111832,
-    "ast_hash": "8b6a15c388fb01742e50da7286db882c",
+    "mtime": 1794019758.157475,
+    "seen": 1794019772.1468878,
+    "ast_hash": "16cef46b994a78854c34a793451290d0",
     "semantic_hash": ""
   },
   "docs/adr/0001-record-architecture-decisions.md": {
@@ -1233,6 +1233,12 @@
     "mtime": 1793980704.1136181,
     "seen": 1793997166.7725344,
     "ast_hash": "ab88255f436e437b046fee19feb2bbde",
+    "semantic_hash": ""
+  },
+  "docs/adr/0007-hull-category-wing-capacity.md": {
+    "mtime": 1794019732.3101637,
+    "seen": 1794019772.14693,
+    "ast_hash": "850aed8e7e13a160ca51359967dd6338",
     "semantic_hash": ""
   }
 }
