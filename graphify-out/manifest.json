@@ -6,9 +6,9 @@
     "semantic_hash": ""
   },
   "src/as3/scripts/Fly4UI.as": {
-    "mtime": 1794032482.9178853,
-    "seen": 1794033363.0966122,
-    "ast_hash": "30696dc37bc5781e0f305eda7751d01f",
+    "mtime": 1794057164.0271194,
+    "seen": 1794058487.6329117,
+    "ast_hash": "d52944f4bf6315da538981cdc8d2d65f",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -132,9 +132,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/data/InitData.as": {
-    "mtime": 1793924463.6440692,
-    "seen": 1793924520.067989,
-    "ast_hash": "32072c9c36743e90d1cfb5d149412bf8",
+    "mtime": 1794057819.630518,
+    "seen": 1794058487.6331172,
+    "ast_hash": "3afedeeec270c90874d2e92df3454601",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -202,9 +202,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/gfx/GData.as": {
-    "mtime": 1793931386.9541192,
-    "seen": 1793932918.3885002,
-    "ast_hash": "7ab33adbe10cccf7b6fb7bd07621555b",
+    "mtime": 1794057804.4594805,
+    "seen": 1794058487.633252,
+    "ast_hash": "30ae7eb6b61ca582a98e2c0368f57d0a",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -216,9 +216,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/gfx/RenderData.as": {
-    "mtime": 1794033387.1037471,
-    "seen": 1794038680.2489965,
-    "ast_hash": "45b9b8ecf699df7deec4f3eb7e6cae63",
+    "mtime": 1794058219.9132493,
+    "seen": 1794058487.633277,
+    "ast_hash": "cd01a810a2b7e7dfc7069315d20253bd",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -286,9 +286,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/ai/AIFunctions.as": {
-    "mtime": 1794030128.7719078,
-    "seen": 1794030133.6032872,
-    "ast_hash": "17dc9f84dc159229cbba1e688c661ca1",
+    "mtime": 1794057184.8652558,
+    "seen": 1794058487.6335719,
+    "ast_hash": "f287b322533582d6f9eb8750e99b1f23",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -328,9 +328,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/fire/FireMode.as": {
-    "mtime": 1794053791.0930715,
-    "seen": 1794055390.6599145,
-    "ast_hash": "ba01aaa6d24372287bfe99021eb025f7",
+    "mtime": 1794057191.1369126,
+    "seen": 1794058487.6337583,
+    "ast_hash": "b841876d919ff12b84f986a6b9240d99",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -370,9 +370,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/move/MoveAs.as": {
-    "mtime": 1794030128.813704,
-    "seen": 1794030133.6033564,
-    "ast_hash": "07113aae53e1f2a57adb00394b8817cf",
+    "mtime": 1794057177.973869,
+    "seen": 1794058487.6338153,
+    "ast_hash": "550ecdffc380f1b1ab2573bd6c009c7b",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -405,9 +405,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/particle/Particle.as": {
-    "mtime": 1794053791.1897056,
-    "seen": 1794055390.6600044,
-    "ast_hash": "de1d5427a503e3afd5d92857f6113b3e",
+    "mtime": 1794057206.6038175,
+    "seen": 1794058487.633864,
+    "ast_hash": "aa5a16372c85e28819cf914c4a7d57df",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -454,9 +454,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4/unit/render/BGMoveSimple.as": {
-    "mtime": 1793924464.040657,
-    "seen": 1793924520.0684412,
-    "ast_hash": "74df08965aaa46de366725e909041eff",
+    "mtime": 1794057450.2941267,
+    "seen": 1794058487.6339312,
+    "ast_hash": "98d308fc2d994897a1622b88486041b7",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -538,9 +538,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/F4DataBullet.as": {
-    "mtime": 1794030128.9819908,
-    "seen": 1794030133.6034937,
-    "ast_hash": "a773f60a678388cae95b0472d2e365d8",
+    "mtime": 1794057213.8563452,
+    "seen": 1794058487.6340537,
+    "ast_hash": "c51389ba7418a550e1dee66d7a03e43d",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -608,9 +608,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/f4data/sdata/ConfigAndStory.as": {
-    "mtime": 1794038426.9523697,
-    "seen": 1794038680.24929,
-    "ast_hash": "28b70ddde1e12f6933c4cf06a0ae8ecc",
+    "mtime": 1794057458.0686588,
+    "seen": 1794058487.6342669,
+    "ast_hash": "6d62be2e46eca89284603ccbecb45f72",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -937,9 +937,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIGame.as": {
-    "mtime": 1794055634.9665008,
-    "seen": 1794056644.4170563,
-    "ast_hash": "8cc729f304645c9df89d67295d3d5842",
+    "mtime": 1794057560.9922197,
+    "seen": 1794058487.6348472,
+    "ast_hash": "2934d7d137fa09bb4e5edce5b71569a6",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -965,9 +965,9 @@
     "language": "language=.ts"
   },
   "src/as3/scripts/ui/pages/UIMakePlayer.as": {
-    "mtime": 1794055635.094679,
-    "seen": 1794056644.4170787,
-    "ast_hash": "b079b04ad5ceb7ad9a14b0c47b488fd1",
+    "mtime": 1794057523.5376272,
+    "seen": 1794058487.6348872,
+    "ast_hash": "43c2b916c45f42ca4c4b5c0280fbdbea",
     "semantic_hash": "",
     "language": "language=.ts"
   },
@@ -1122,8 +1122,8 @@
     "semantic_hash": ""
   },
   "GLOSSARY.md": {
-    "mtime": 1794056554.1747758,
-    "seen": 1794056644.417192,
+    "mtime": 1794056854.5450876,
+    "seen": 1794058487.6350853,
     "ast_hash": "6afc3e968cfcb7a3c611e0610606de7b",
     "semantic_hash": ""
   },
@@ -1254,9 +1254,9 @@
     "semantic_hash": ""
   },
   "scripts/test_perf_runtime.py": {
-    "mtime": 1794027798.7043417,
-    "seen": 1794030133.603044,
-    "ast_hash": "311079e947d9a8ac1f85f3d18c8fe464",
+    "mtime": 1794057627.4684587,
+    "seen": 1794058487.6328974,
+    "ast_hash": "ccb1fc4e48805af60cc5b5117e1e8d97",
     "semantic_hash": ""
   },
   "docs/adr/0010-fixed-timestep-simulation-and-runtime-performance-gate.md": {
@@ -1353,6 +1353,18 @@
     "mtime": 1794056392.5381567,
     "seen": 1794056644.4163082,
     "ast_hash": "7c60ecbae2af0b05db2eb0ef12916a97",
+    "semantic_hash": ""
+  },
+  "docs/adr/0013-unified-60fps-1080p-stage3d-baseline.md": {
+    "mtime": 1794057657.7724307,
+    "seen": 1794058487.635213,
+    "ast_hash": "16b8412641be2c7a7d7295d323b43304",
+    "semantic_hash": ""
+  },
+  "docs/research/stage3d-60fps-1080p-benchmark-report.md": {
+    "mtime": 1794058446.4309866,
+    "seen": 1794058487.635482,
+    "ast_hash": "a9eb9f6f9520402b710dd6d669c59481",
     "semantic_hash": ""
   }
 }
