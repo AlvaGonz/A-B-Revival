@@ -515,7 +515,8 @@ package ui.pages
                if(_loc4_[_loc5_] == null)
                {
                   _loc4_[_loc5_] = param1;
-                  var _txtFld1:TextField = (_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (_loc5_ + 1)) as TextField;
+                  var _aipad1:MovieClip = _mov.getChildByName("aipad") as MovieClip;
+                  var _txtFld1:TextField = _aipad1 ? _aipad1.getChildByName("$a" + (_loc5_ + 1)) as TextField : null;
                   if(_txtFld1)
                   {
                      _txtFld1.text = _loc3_.cls;
@@ -550,7 +551,8 @@ package ui.pages
                _loc4_.initData();
                _loc5_ = ConfigAndStory.AI;
                _loc5_[param1] = _loc2_;
-               var _txtFld2:TextField = (_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (param1 + 1)) as TextField;
+               var _aipad2:MovieClip = _mov.getChildByName("aipad") as MovieClip;
+               var _txtFld2:TextField = _aipad2 ? _aipad2.getChildByName("$a" + (param1 + 1)) as TextField : null;
                if(_txtFld2)
                {
                   _txtFld2.text = _loc4_.cls;
@@ -565,7 +567,8 @@ package ui.pages
       {
          var _loc2_:F4DataLinks = null;
          ConfigAndStory.AI[param1] = null;
-         var _txtFld3:TextField = (_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (param1 + 1)) as TextField;
+         var _aipad3:MovieClip = _mov.getChildByName("aipad") as MovieClip;
+         var _txtFld3:TextField = _aipad3 ? _aipad3.getChildByName("$a" + (param1 + 1)) as TextField : null;
          if(_txtFld3)
          {
             _txtFld3.text = "-";
@@ -598,20 +601,38 @@ package ui.pages
          var _loc4_:int = 0;
          var _loc1_:Array = ConfigAndStory.AI;
          var _loc3_:F4ShowData = new F4ShowData(_loc2_);
+         var _aipad:MovieClip = _mov.getChildByName("aipad") as MovieClip;
          _loc4_ = 0;
          while(_loc4_ < this.ainum)
          {
-            if(_loc1_[_loc4_] != null)
+            var _txtFld:TextField = _aipad ? _aipad.getChildByName("$a" + (_loc4_ + 1)) as TextField : null;
+            if(_loc1_ != null && _loc4_ < _loc1_.length && _loc1_[_loc4_] != null && this.f4datax != null && this.f4datax.plFly != null)
             {
                _loc2_ = this.f4datax.plFly[_loc1_[_loc4_]];
-               _loc3_.link = _loc2_;
-               _loc3_.initData();
-               ((_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (_loc4_ + 1)) as TextField).text = _loc3_.cls;
-               this.ais[_loc4_] = _loc1_[_loc4_];
+               if(_loc2_ != null)
+               {
+                  _loc3_.link = _loc2_;
+                  _loc3_.initData();
+                  if(_txtFld != null)
+                  {
+                     _txtFld.text = _loc3_.cls;
+                  }
+                  this.ais[_loc4_] = _loc1_[_loc4_];
+               }
+               else
+               {
+                  if(_txtFld != null)
+                  {
+                     _txtFld.text = "-";
+                  }
+               }
             }
             else
             {
-               ((_mov.getChildByName("aipad") as MovieClip).getChildByName("$a" + (_loc4_ + 1)) as TextField).text = "-";
+               if(_txtFld != null)
+               {
+                  _txtFld.text = "-";
+               }
             }
             _loc4_++;
          }
