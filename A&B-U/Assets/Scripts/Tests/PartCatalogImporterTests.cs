@@ -7,17 +7,27 @@ namespace ABRevival.Tests
     [TestFixture]
     public class PartCatalogImporterTests
     {
-        private const string PartBinPath = "../../../../src/assets/binaryData/8_all.AllData_defPart.bin";
-        private const string FireBinPath = "../../../../src/assets/binaryData/2_all.AllData_defFire.bin";
-        private const string BulletBinPath = "../../../../src/assets/binaryData/11_all.AllData_defBullet.bin";
+        private static string FindRepoRoot()
+        {
+            var dir = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
+            while (dir != null && !Directory.Exists(Path.Combine(dir.FullName, ".git")))
+            {
+                dir = dir.Parent;
+            }
+            return dir?.FullName ?? @"C:\Dev\A&B revival";
+        }
+
+        private static string GetBinaryDataPath(string filename)
+        {
+            return Path.Combine(FindRepoRoot(), "src", "assets", "binaryData", filename);
+        }
 
         [Test]
         public void PartCatalogParser_ParsesAll271Parts_FromFrozenAS3Data()
         {
-            // Resolve relative path to root repo
-            string resolvedPartPath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, PartBinPath));
-            string resolvedFirePath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, FireBinPath));
-            string resolvedBulletPath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, BulletBinPath));
+            string resolvedPartPath = GetBinaryDataPath("8_all.AllData_defPart.bin");
+            string resolvedFirePath = GetBinaryDataPath("2_all.AllData_defFire.bin");
+            string resolvedBulletPath = GetBinaryDataPath("11_all.AllData_defBullet.bin");
 
             Assert.IsTrue(File.Exists(resolvedPartPath), $"Part data file missing: {resolvedPartPath}");
             Assert.IsTrue(File.Exists(resolvedFirePath), $"Fire data file missing: {resolvedFirePath}");
@@ -30,9 +40,9 @@ namespace ABRevival.Tests
         [Test]
         public void PartCatalogParser_ExtractsGunAttributes_AndCalculatesADR0012Range()
         {
-            string resolvedPartPath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, PartBinPath));
-            string resolvedFirePath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, FireBinPath));
-            string resolvedBulletPath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, BulletBinPath));
+            string resolvedPartPath = GetBinaryDataPath("8_all.AllData_defPart.bin");
+            string resolvedFirePath = GetBinaryDataPath("2_all.AllData_defFire.bin");
+            string resolvedBulletPath = GetBinaryDataPath("11_all.AllData_defBullet.bin");
 
             var records = PartCatalogParser.ParseCatalogFromFiles(resolvedPartPath, resolvedFirePath, resolvedBulletPath);
 
@@ -56,9 +66,9 @@ namespace ABRevival.Tests
         [Test]
         public void PartCatalogParser_ExtractsEngineAttributes_ThrustPower()
         {
-            string resolvedPartPath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, PartBinPath));
-            string resolvedFirePath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, FireBinPath));
-            string resolvedBulletPath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, BulletBinPath));
+            string resolvedPartPath = GetBinaryDataPath("8_all.AllData_defPart.bin");
+            string resolvedFirePath = GetBinaryDataPath("2_all.AllData_defFire.bin");
+            string resolvedBulletPath = GetBinaryDataPath("11_all.AllData_defBullet.bin");
 
             var records = PartCatalogParser.ParseCatalogFromFiles(resolvedPartPath, resolvedFirePath, resolvedBulletPath);
 
