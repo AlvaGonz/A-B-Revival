@@ -70,3 +70,4 @@ Historically, *Assembly & Battle* executed on a 36 FPS game loop inside a fixed 
 ### Negative / Trade-Offs
 - Requires touching coordinate bounds and camera aiming logic for 1920×1080 widescreen space.
 - Requires initial boot-time rasterization pass (~300–500 ms on startup) to generate GPU texture atlas from embedded vector definitions.
+
