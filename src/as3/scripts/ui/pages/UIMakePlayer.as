@@ -546,8 +546,7 @@ package ui.pages
          if(this.dtLink != param1)
          {
             _loc2_ = _mov.getChildByName("showDetail") as MovieClip;
-            _loc3_ = new F4ShowData(param1,InitData.SELL);
-            _loc3_.initData();
+            _loc3_ = param1.createShowData(InitData.SELL);
             _loc3_.makeFlyClone();
             ShowPart.addFly(_loc3_,_loc2_);
             this.dtLink = param1;
@@ -571,20 +570,15 @@ package ui.pages
       
       public function addDtLTempRun() : void
       {
-         var _loc1_:F4PartMC = null;
-         var _loc2_:MovieClip = null;
-         var _loc3_:F4ShowData = null;
-         ShowPart.cleanFlyTemp(_mov.getChildByName("dtTemp") as MovieClip);
-         for each(_loc1_ in this.f4datax.plMc)
+         var _loc2_:MovieClip = _mov.getChildByName("dtTemp") as MovieClip;
+         var _loc3_:F4ShowData = F4DataLinks.calculateCraftStats(this.f4datax.plMc);
+         if(_loc3_)
          {
-            if(_loc1_.f4DataLink.f4dataorg.useAs == 2)
-            {
-               _loc2_ = _mov.getChildByName("dtTemp") as MovieClip;
-               _loc3_ = new F4ShowData(_loc1_.f4DataLink,InitData.SELL);
-               _loc3_.initData();
-               ShowPart.addFlyTemp(_loc3_,_loc2_);
-               break;
-            }
+            ShowPart.addFlyTemp(_loc3_,_loc2_);
+         }
+         else
+         {
+            ShowPart.cleanFlyTemp(_loc2_);
          }
          this.updateWingsInDtTemp();
       }
