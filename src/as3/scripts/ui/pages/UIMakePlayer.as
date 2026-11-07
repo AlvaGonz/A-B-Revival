@@ -341,18 +341,39 @@ package ui.pages
          this.txtWingHint.selectable = false;
          this.txtWingHint.mouseEnabled = false;
          this.txtWingHint.filters = [new GlowFilter(0x000000, 0.9, 4, 4, 3, 1)];
+         this.txtWingHint.multiline = true;
+         this.txtWingHint.wordWrap = false;
          var _pic:MovieClip = _showFly.getChildByName("pic") as MovieClip;
          if(_pic)
          {
             this.txtWingHint.x = _pic.x + 8;
-            this.txtWingHint.y = _pic.y + _pic.height - 24;
+            this.txtWingHint.y = _pic.y + _pic.height - 36;
          }
          else
          {
             this.txtWingHint.x = 10;
-            this.txtWingHint.y = 230;
+            this.txtWingHint.y = 216;
          }
          _showFly.addChild(this.txtWingHint);
+         this.updateWingHint();
+      }
+      
+      public function updateWingHint() : void
+      {
+         if(!this.txtWingHint)
+         {
+            return;
+         }
+         var _hull:F4DataOrg = F4DataHole.getAssemblyHull();
+         var _text:String = "[R] Rotate Wing   |   [F] Flip Wing";
+         if(_hull)
+         {
+            _text = "Wings: " + F4DataHole.countMountedWings() + "/" + F4DataOrg.maxWingsForHull(_hull) + " [" + F4DataOrg.wingCategoryForHull(_hull) + "]\n" + _text;
+         }
+         if(this.txtWingHint.text != _text)
+         {
+            this.txtWingHint.text = _text;
+         }
       }
       
       override public function afterFadeIn() : void
@@ -495,6 +516,7 @@ package ui.pages
       {
          this.addDtLTempRun();
          this.runzoom();
+         this.updateWingHint();
       }
       
       override public function outAct(param1:String) : void

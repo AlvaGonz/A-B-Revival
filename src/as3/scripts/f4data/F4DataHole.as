@@ -138,17 +138,13 @@ package f4data
          return false;
       }
 
-      private function getHullOrg() : F4DataOrg
+      public static function getAssemblyHull() : F4DataOrg
       {
-         if(this.parentOrg && this.parentOrg.type == F4DataOrg.TYPE_BODY)
-         {
-            return this.parentOrg;
-         }
          if(ConfigAndStory.ALLPART && ConfigAndStory.ALLPART.plMc)
          {
             for each(var _mc:* in ConfigAndStory.ALLPART.plMc)
             {
-               if(_mc && _mc.f4DataLink && _mc.f4DataLink.f4dataorg && _mc.f4DataLink.parentPart == null && _mc.f4DataLink.f4dataorg.type == F4DataOrg.TYPE_BODY)
+               if(_mc && _mc.f4DataLink && _mc.f4DataLink.f4dataorg && _mc.f4DataLink.f4dataorg.type == F4DataOrg.TYPE_BODY)
                {
                   return _mc.f4DataLink.f4dataorg;
                }
@@ -161,6 +157,20 @@ package f4data
             {
                return _pl.f4dataorg;
             }
+         }
+         return null;
+      }
+
+      private function getHullOrg() : F4DataOrg
+      {
+         if(this.parentOrg && this.parentOrg.type == F4DataOrg.TYPE_BODY)
+         {
+            return this.parentOrg;
+         }
+         var _hull:F4DataOrg = F4DataHole.getAssemblyHull();
+         if(_hull)
+         {
+            return _hull;
          }
          return this.parentOrg;
       }

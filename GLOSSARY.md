@@ -32,6 +32,9 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Camera Viewport Scaling (`Cam.rect`, `RenderData.bmp.scaleX/Y`)**: Dynamic buffer resizing in `RenderData` that reallocates canvas bitmap buffers to match the active distance FOV while mapping mouse aim coordinates via inverse scale factors.
 - **Camera Distance HUD Badge (`UIGame.showCameraDistanceAlert`)**: Ephemeral combat HUD text indicator displaying the newly selected camera distance upon pressing key 'C', auto-fading after 1.5 seconds.
 - **Companion Heal Priority Navigation (`AIUnity`, `Targets.ia1`)**: Tactical AI behavior where friendly wingmen detect dropped repair items (`data[0] == "life"`) on the battlefield, making navigation to the pickup coordinates their primary steering goal while simultaneously engaging hostile craft in weapon range.
+- **Hull Category Wing Capacity (`F4DataOrg.maxWingsForHull`, `F4DataOrg.wingCategoryForHull`)**: Assembly limitation scaling allowable wing attachments by ship chassis size determined by the hull name prefix: Small (`4`), Medium (`6`, including `B.Med++` variants), Large (`8`), Mega (`12`), with a fallback of `10` for unclassified hulls.
+- **Assembly Wing Counter (`UIMakePlayer.txtWingHint`, `updateWingHint`)**: Assembly UI telemetry element dynamically rendering `Wings: x/y [Category]` above the wing rotation/flip controls in the Factory, refreshed each frame on `uiloop`.
+- **Wing Grandfathering (`F4DataHole.isMountedWing`)**: Backward-compatibility policy that permits existing saved crafts with wing counts exceeding the new category limit to load without part stripping, allowing repositioning of existing mounted wings while rejecting additional wing attachments.
 - **Mission / Director (`MissionData`, `Director`, `LevelData`, `LevelBase`)**: Campaign wave definitions, enemy spawn scripting, objective evaluation, and reward payouts.
 
 ## Tooling Vocabulary
