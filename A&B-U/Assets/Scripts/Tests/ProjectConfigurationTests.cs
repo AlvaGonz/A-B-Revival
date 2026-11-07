@@ -16,12 +16,27 @@ namespace ABRevival.Tests
             {
                 dir = dir.Parent;
             }
-            return dir?.FullName ?? @"C:\Dev\A&B revival";
+
+            if (dir == null)
+            {
+                throw new InvalidOperationException("Repository root containing .git directory could not be located.");
+            }
+
+            return dir.FullName;
         }
 
         private static string GetCoreCsprojPath()
         {
             return Path.Combine(FindRepoRoot(), "A&B-U", "Assets", "Scripts", "ABRevival.Core.csproj");
+        }
+
+        private static System.Collections.Generic.List<string> GetCompileRemoves(XDocument doc)
+        {
+            return doc.Descendants("Compile")
+                .Select(e => e.Attribute("Remove")?.Value)
+                .Where(v => !string.IsNullOrEmpty(v))
+                .Select(v => v.Replace('/', '\\'))
+                .ToList();
         }
 
         [Test]
@@ -38,11 +53,7 @@ namespace ABRevival.Tests
             Assert.IsTrue(File.Exists(csprojPath), $"Csproj file missing: {csprojPath}");
 
             XDocument doc = XDocument.Load(csprojPath);
-            var compileRemoves = doc.Descendants("Compile")
-                .Select(e => e.Attribute("Remove")?.Value)
-                .Where(v => !string.IsNullOrEmpty(v))
-                .Select(v => v.Replace('/', '\\'))
-                .ToList();
+            var compileRemoves = GetCompileRemoves(doc);
 
             bool editorExcluded = compileRemoves.Any(v => v.Equals(@"Editor\**", StringComparison.OrdinalIgnoreCase));
             Assert.IsTrue(
@@ -58,11 +69,7 @@ namespace ABRevival.Tests
             Assert.IsTrue(File.Exists(csprojPath), $"Csproj file missing: {csprojPath}");
 
             XDocument doc = XDocument.Load(csprojPath);
-            var compileRemoves = doc.Descendants("Compile")
-                .Select(e => e.Attribute("Remove")?.Value)
-                .Where(v => !string.IsNullOrEmpty(v))
-                .Select(v => v.Replace('/', '\\'))
-                .ToList();
+            var compileRemoves = GetCompileRemoves(doc);
 
             bool testsExcluded = compileRemoves.Any(v => v.Equals(@"Tests\**", StringComparison.OrdinalIgnoreCase));
             Assert.IsTrue(
@@ -72,3 +79,4 @@ namespace ABRevival.Tests
         }
     }
 }
+
