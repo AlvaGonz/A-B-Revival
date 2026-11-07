@@ -37,42 +37,32 @@ boundaries, dependencies, or data flows:
   `graphify path "<A>" "<B>"` for connection paths. These return scoped subgraphs.
 - **Broad overview**: Read `graphify-out/GRAPH_REPORT.md` for God nodes,
   community clusters, and cross-cutting connections.
-- **Targeted Symbol & Callers Search (`as3_search.py`)**:
-  To locate symbols without loading oversized decompiled classes into context:
-  - `python scripts/as3_search.py symbol <name>`: Find class, method, var, and const definitions.
-  - `python scripts/as3_search.py callers <method>`: Find all invocation sites across the codebase.
-  - `python scripts/as3_search.py class <ClassName>`: Emit class synopsis with inheritance and public methods.
-- **Surgical reads only**: Read raw files only after graphify, as3_search, or docs have
-  oriented you, or to edit/debug specific lines. Never read files one by one to
-  explore structure. Include this graphify-first rule in every subagent prompt
-  involving codebase exploration.
-- **Keep graph fresh**: After modifying code or adding documentation, run
-  `graphify update .` (or `/graphify --update`) to keep the graph current.
+- **Targeted AS3 Reference Search (`scripts/as3_search.py`)**: When reverse-engineering the frozen Flash baseline (`src/as3/`, ADR 0015), use `python scripts/as3_search.py symbol <name>|callers <method>|class <ClassName>` instead of loading raw classes into context.
+- **Surgical reads only**: Orient via knowledge graph, docs, or symbol search before opening raw source files. Never read files one by one to explore structure.
+- **Keep graph fresh**: After modifying code or adding documentation, run `graphify update .` (or `/graphify --update`) to keep the graph current.
 
 ### Pre-commit guardrails
 Pre-commit hooks are version-controlled in `.githooks/` and enforce:
 1. `dotnet test "A&B-U/Assets/Scripts/Tests/ABRevival.Tests.csproj"`: Tier 1 fast automated testing gate (ADR 0016) verifying all pure C# domain, simulation, and catalog tests pass with exit code `0`.
-2. `scripts/lint_domain_leakage.py --staged`: Static check against domain leakage if legacy Flash AS3 files are touched (frozen baseline, ADR 0015).
+2. `scripts/lint_shell_scripts.py --staged`: Static check ensuring all Windows `.bat` scripts enforce safe quoting and ampersand escaping.
+3. `scripts/lint_domain_leakage.py --staged`: Static check against domain leakage if legacy Flash AS3 files are touched (frozen baseline, ADR 0015).
 Activate via `scripts/install-hooks.bat` (Windows) or `sh scripts/install-hooks.sh` (Unix).
 
 ### Project documentation (`docs/` & `CONTEXT.md`)
 
-Consult existing documentation whenever you need domain or project context
-before planning or implementing changes:
+Consult existing documentation whenever you need domain or project context before planning or implementing changes:
 
-- **`docs/adr/`**: Architecture Decision Records. Surface conflicts explicitly
-  if an approach contradicts an ADR.
+- **`docs/adr/`**: Architecture Decision Records. Surface conflicts explicitly if an approach contradicts an ADR.
 - **`docs/agents/`**: Operational guides for agent workflows:
   - `docs/agents/domain.md`: How to consume domain documentation.
   - `docs/agents/issue-tracker.md`: Operating issues and wayfinding maps.
   - `docs/agents/triage-labels.md`: Canonical issue triage roles.
 
-## Reglas de Rendimiento Unity 6 (CPU Multicore & GPU TBDR)
-- **Zero-Alloc:** Prohibido usar `LINQ`, `foreach` sobre listas dinámicas o instanciar clases (`new`) en `Update`, `FixedUpdate` o `LateUpdate`.
-- **Concurrencia:** Simula flotas, proyectiles e IA táctica (ADR 0006) con `NativeArray<T>`, `struct` y `IJobParallelFor` decorados con `[BurstCompile]`.
-- **Física 2D:** Reemplaza colisiones heredadas por la API multihilo `Unity.U2D.Physics` (`PhysicsCore2D`) basada en structs.
-- Agrupa piezas modulares en Sprite Atlases (ASTC en móvil, BC7 en PC), ordena con Z-Buffer y usa `unity_RendererUserValue` para daño o facción por pieza sin romper el batching.
-prioriza Vulkan en Android/PC y Metal en iOS.
+## Coding Standards & Performance Constraints
+Consult [`CODING_STANDARDS.md`](CODING_STANDARDS.md) for canonical guidelines:
+- **Unity 6 DOTS Performance Rules**: Section 2 (Zero-alloc, Burst concurrency, PhysicsCore2D, Sprite Atlases).
+- **Domain Encapsulation**: Section 1 (encapsulation on models, no string matching in UI).
+- **Verification Pipeline**: Section 3 (Tier 1 `dotnet test` fast pre-commit gate, Tier 2 headless UTF gate).
 
 ## Engineering Workflow Lifecycle
 This repository strictly follows the visual workflow defined in `assets/matt-pocock-workflow.png`:
