@@ -210,7 +210,7 @@ def main():
     parser = argparse.ArgumentParser(description="A&B Revival Runtime Performance Gate")
     parser.add_argument("--duration", type=int, default=8, help="Run duration in seconds")
     parser.add_argument("--min-fps", type=float, default=20.0, help="Minimum average FPS threshold")
-    parser.add_argument("--max-mem", type=float, default=80.0, help="Maximum memory threshold in MB")
+    parser.add_argument("--max-mem", type=float, default=120.0, help="Maximum memory threshold in MB (1080p FHD baseline)")
     parser.add_argument("--player", type=str, default=None, help="Path to standalone Flash Player")
     parser.add_argument("--swf", type=str, default=DEFAULT_SWF_PATH, help="Path to SWF")
 

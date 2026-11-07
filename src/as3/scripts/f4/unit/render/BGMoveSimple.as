@@ -26,7 +26,9 @@ package f4.unit.render
       
       public function addBGAt(param1:Number, param2:Number, param3:int, param4:Number, param5:uint, param6:uint, param7:uint, param8:int) : void
       {
-         var _loc9_:StarBGUnitSimple = new StarBGUnitSimple(100 / param1,100 / param2,(640 + 100) / param1,(480 + 100) / param1,param1,param2);
+         var _bw:Number = (this.renderData ? this.renderData.W : 1920) + 100;
+         var _bh:Number = (this.renderData ? this.renderData.H : 1080) + 100;
+         var _loc9_:StarBGUnitSimple = new StarBGUnitSimple(100 / param1,100 / param2,_bw / param1,_bh / param2,param1,param2);
          _loc9_.initStars(param3,param4,param5,param6,param7);
          this.starbgs[param8] = _loc9_;
       }

@@ -38,9 +38,9 @@ package f4.gfx
       
       public var UISP:Sprite;
       
-      public var W:int = 640;
+      public var W:int = 1920;
       
-      public var H:int = 480;
+      public var H:int = 1080;
       
       public var FACE:int = 64;
       
@@ -89,7 +89,7 @@ package f4.gfx
       public function RenderData()
       {
          super();
-         this.renderwh = new Point(640,480);
+         this.renderwh = new Point(1920,1080);
       }
       
       public function disBmpds() : void
@@ -172,8 +172,8 @@ package f4.gfx
          this.rect = this.BMPD.rect;
          this.fxrect = this.BMPDBLTFX.rect;
          this.bmp = new Bitmap(this.CANVAS,PixelSnapping.AUTO,true);
-         this.bmp.scaleX = 640 / this.W;
-         this.bmp.scaleY = 480 / this.H;
+         this.bmp.scaleX = 1920.0 / this.W;
+         this.bmp.scaleY = 1080.0 / this.H;
          if(!this.sms)
          {
             this.bmp.transform.colorTransform = new ColorTransform(1.75,1.75,1.75);
@@ -201,18 +201,18 @@ package f4.gfx
       {
          if(param1 == 1)
          {
-            this.W = 832;
-            this.H = 624;
+            this.W = 2496;
+            this.H = 1404;
          }
          else if(param1 == 2)
          {
-            this.W = 960;
-            this.H = 720;
+            this.W = 2880;
+            this.H = 1620;
          }
          else
          {
-            this.W = 640;
-            this.H = 480;
+            this.W = 1920;
+            this.H = 1080;
          }
          this.renderwh.x = this.W;
          this.renderwh.y = this.H;
@@ -270,8 +270,8 @@ package f4.gfx
          if(this.bmp)
          {
             this.bmp.bitmapData = this.CANVAS;
-            this.bmp.scaleX = 640.0 / this.W;
-            this.bmp.scaleY = 480.0 / this.H;
+            this.bmp.scaleX = 1920.0 / this.W;
+            this.bmp.scaleY = 1080.0 / this.H;
          }
       }
       
@@ -280,10 +280,10 @@ package f4.gfx
          this.cam = new Cam(new Rectangle(2000,2000,this.W,this.H),new Point(param1,param2),new Point(2500,2500));
          InitData.MAKER.cam = this.cam;
          this.drawbg = new BGMoveSimple(this.cam);
-         this.drawbg.addBGAt(0.2,0.2,70,1,16777215,15,70,1);
-         this.drawbg.addBGAt(0.4,0.4,50,2,16777215,20,60,3);
-         this.drawbg.addBGAt(0.65,0.65,25,2,16777215,25,50,5);
-         this.drawbg.addBGAt(1,1,25,2,16777215,15,40,7);
+         this.drawbg.addBGAt(0.2,0.2,140,1,16777215,15,70,1);
+         this.drawbg.addBGAt(0.4,0.4,100,2,16777215,20,60,3);
+         this.drawbg.addBGAt(0.65,0.65,50,2,16777215,25,50,5);
+         this.drawbg.addBGAt(1,1,50,2,16777215,15,40,7);
       }
       
       public function camCtrl() : void

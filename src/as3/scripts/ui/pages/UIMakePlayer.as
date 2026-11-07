@@ -137,6 +137,13 @@ package ui.pages
          this.initWingsInDtTemp();
          this.initClearButtons();
          this.initTouchControls();
+         var _stageW:int = InitData.RENDERDATA ? InitData.RENDERDATA.W : 1920;
+         var _stageH:int = InitData.RENDERDATA ? InitData.RENDERDATA.H : 1080;
+         if(_stageW > 640 && _mov != null)
+         {
+            _mov.x = (_stageW - 640) / 2;
+            _mov.y = (_stageH - 480) / 2;
+         }
       }
       
       public function initClearButtons() : void

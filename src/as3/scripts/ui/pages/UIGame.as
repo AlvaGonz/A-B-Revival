@@ -338,6 +338,94 @@ package ui.pages
             _loc11_.next = _loc7_;
             InitData.SOUNDC2.addSound(_loc7_,1,0.01,InitData.SOUNDC2.nowVol);
          }
+         this.repositionHUD();
+      }
+      
+      public function repositionHUD() : void
+      {
+         var w:int = InitData.RENDERDATA ? InitData.RENDERDATA.W : 1920;
+         var h:int = InitData.RENDERDATA ? InitData.RENDERDATA.H : 1080;
+         if(w <= 640 && h <= 480)
+         {
+            return;
+         }
+         if(this.mapPad)
+         {
+            this.mapPad.x = w - 160;
+            this.mapPad.y = 10;
+         }
+         if(this.lifeBar)
+         {
+            this.lifeBar.x = 20;
+            this.lifeBar.y = 20;
+            if(this.lostPartsTxt)
+            {
+               this.lostPartsTxt.x = this.lifeBar.x;
+               this.lostPartsTxt.y = this.lifeBar.y - 18;
+            }
+         }
+         if(this.f1)
+         {
+            this.f1.x = 20;
+            this.f1.y = h - 90;
+         }
+         if(this.f2)
+         {
+            this.f2.x = 100;
+            this.f2.y = h - 90;
+         }
+         if(this.dirs)
+         {
+            this.dirs.x = w / 2;
+            this.dirs.y = h - 50;
+         }
+         if(this.km)
+         {
+            this.km.x = w - 80;
+            this.km.y = h - 45;
+         }
+         if(this.capAlertTxt)
+         {
+            this.capAlertTxt.x = w / 2;
+            this.capAlertTxt.y = 60;
+         }
+         if(this.tacticalModeTxt)
+         {
+            this.tacticalModeTxt.x = w / 2;
+            this.tacticalModeTxt.y = h - 100;
+         }
+         if(this.camDistanceTxt)
+         {
+            this.camDistanceTxt.x = w / 2;
+            this.camDistanceTxt.y = h - 125;
+         }
+         if(this._touchPillsContainer)
+         {
+            var btnAuto:Sprite = this._touchPillsContainer.getChildByName("btnTouchAuto") as Sprite;
+            if(btnAuto)
+            {
+               btnAuto.x = w - 100;
+               btnAuto.y = 24;
+            }
+            var btnCam:Sprite = this._touchPillsContainer.getChildByName("btnTouchCam") as Sprite;
+            if(btnCam)
+            {
+               btnCam.x = w - 160;
+               btnCam.y = 24;
+            }
+            var btnBoost:Sprite = this._touchPillsContainer.getChildByName("btnTouchBoost") as Sprite;
+            if(btnBoost)
+            {
+               btnBoost.x = 40;
+               btnBoost.y = h - 40;
+            }
+            var btnMode:Sprite = this._touchPillsContainer.getChildByName("btnTouchMode") as Sprite;
+            if(btnMode)
+            {
+               btnMode.x = w - 40;
+               btnMode.y = h - 40;
+            }
+         }
       }
       
       public function mouseMove(param1:Boolean, param2:Number) : void

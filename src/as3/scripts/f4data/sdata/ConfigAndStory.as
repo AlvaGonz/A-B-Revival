@@ -312,8 +312,8 @@ package f4data.sdata
          }
          if(InitData.RENDERDATA)
          {
-            InitData.RENDERDATA.W = 640;
-            InitData.RENDERDATA.H = 480;
+            InitData.RENDERDATA.W = 1920;
+            InitData.RENDERDATA.H = 1080;
             InitData.RENDERDATA.init();
          }
          save();
