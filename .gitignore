@@ -20,5 +20,6 @@ graphify-out/.graphify_detect.json
 .scratch/
 scratch/
 saves/
+logs/
 game/original copy/
 *.log
