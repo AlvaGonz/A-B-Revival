@@ -60,7 +60,19 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Normalized Socket Grid**: Grid alignment system in `UIMakePlayer` maintaining standard integer socket pitch and center-screen offsets in 1920×1080, guaranteeing 100% save-file compatibility for legacy and modern ship blueprints.
 - **Edge-Anchored Tactical HUD**: Widescreen HUD layout system in `UIGame` that dynamically anchors gauges, radars, and telemetry to 16:9 screen boundaries (`stage.stageWidth` / `stage.stageHeight`).
 
-## Tooling Vocabulary
+## Unity 6000.6 Data-Oriented Architecture & Entity Mappings
+- **ScriptableObject Part Catalog (`PartDefinitionSO`)**: Immutable Unity asset mapping legacy `F4DataOrg` static part definitions, hardpoints, firing parameters, and cost curves into serialized project assets.
+- **Craft Blueprint Asset (`CraftBlueprintSO`)**: Serialized ship configuration storing chassis selection, attached module definitions, socket offsets, and grandfathered wing allocations (equivalent to `FlyData` / `plMc`).
+- **Unmanaged Ship Entity (`ShipEntity` struct)**: Lightweight, blittable value type encapsulating ship position, rotation, velocity, hull integrity, and energy pools within contiguous `NativeArray<ShipEntity>` buffers.
+- **Mounted Part Slice (`MountedPart` struct)**: Unmanaged struct representing a connected component instance (wing, engine, weapon) on an active ship, tracking local socket offsets and health without heap references.
+- **High-Velocity Projectile Buffer (`ProjectileData` struct)**: Flat value-type record tracking projectile position, velocity, remaining lifetime, damage type, and collision masks, integrated by parallel Burst jobs (`NativeArray<ProjectileData>`).
+- **PhysicsCore2D Multithreaded Collision (`Unity.U2D.Physics`)**: Low-overhead, multithreaded 2D collision detection pipeline processing projectile contact sweeps and hull hitboxes across worker threads.
+- **Captain Tactical AI Job (`TacticalAIJob`, `IJobParallelFor`)**: Burst-compiled parallel job executing ADR 0006 tactical modes (Anchor, Escort, Evade, Seek & Destroy, Fire Support, Shield) over fleet entity arrays.
+- **BatchRendererGroup (BRG) & Instanced Draw Calls**: High-performance URP rendering interface drawing hundreds of modular space combat parts in a single GPU instanced batch using unified Sprite Atlases (ASTC/BC7) and `unity_RendererUserValue` for per-part damage tints.
+- **Zero-Alloc Gameplay Loop**: Architectural discipline prohibiting all dynamic heap allocations (`new`, closures, LINQ, boxing) inside `Update`, `FixedUpdate`, and `LateUpdate`.
+
+## Tooling & IP Vocabulary
+- **Vargames**: Original independent game development studio and sole copyright holder of *Assembly and Battle: The Story in the Space* (2011).
 - **JPEXS (FFDec)**: Open-source Flash decompiler and ActionScript bytecode editor used for unpacking, editing, and repacking `.swf` binaries.
 - **REA (Reverse Engineer Anything)**: Agent-driven reverse engineering and static analysis toolkit connected via Model Context Protocol (MCP).
 - **SWF (Shockwave Flash)**: Compiled binary container holding vector graphics, audio, symbols, and ActionScript 3 ABC (ActionScript Byte Code) tags.

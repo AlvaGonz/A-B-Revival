@@ -25,3 +25,29 @@ game/original copy/
 *.log
 scripts/configure_nvidia_gpu.bat
 scripts/*local*
+
+# Root accidental Unity generated folders (actual project is in A&B-U/)
+/Packages/
+/ProjectSettings/
+
+# Unity generated files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+MemoryCaptures/
+Recordings/
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+sysinfo.txt
+*.apk
+*.aab
+*.unitypackage
+*.sln
+*.slnx
+*.csproj
+*.unityproj
