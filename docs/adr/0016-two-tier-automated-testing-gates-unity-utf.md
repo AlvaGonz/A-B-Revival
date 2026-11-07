@@ -70,3 +70,4 @@ The architecture requires a testing strategy that satisfies two competing demand
 ### Negative / Trade-offs
 - Two test execution contexts must be maintained: `ABRevival.Tests.csproj` (for .NET SDK) and `ABRevival.Tests.asmdef` (for Unity Test Framework).
 - Integration tests involving actual Unity scenes or GameObject hierarchies must run in Tier 2 (UTF) rather than Tier 1.
+
