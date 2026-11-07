@@ -19,6 +19,7 @@ package ui.pages
    import ui.UICtrl;
    import ui.base.BtnBase;
    import ui.base.UIBase;
+   import ui.base.UIStyles;
    
    public class UIOptions extends UIBase
    {
@@ -32,6 +33,12 @@ package ui.pages
       private var txtRes:TextField;
       
       private var isResHovered:Boolean = false;
+
+      private var btnControls:Sprite;
+
+      private var txtControls:TextField;
+
+      private var isControlsHovered:Boolean = false;
       
       private static const DISPLAY_MODES:Array = [
          "Resolution: 640 x 480",
@@ -61,6 +68,7 @@ package ui.pages
             this.selectedDisplayMode = 0;
          }
          this.initResolutionUI();
+         this.initControlsUI();
          super(param1,param2,param3,param4,param5);
       }
       
@@ -160,6 +168,91 @@ package ui.pages
          }
          this.selectedDisplayMode = (this.selectedDisplayMode + 1) % DISPLAY_MODES.length;
          this.updateResolutionUI();
+      }
+
+      private function initControlsUI() : void
+      {
+         this.btnControls = new Sprite();
+         this.btnControls.buttonMode = true;
+         this.btnControls.useHandCursor = true;
+         this.btnControls.x = 318;
+         this.btnControls.y = 352;
+
+         this.txtControls = new TextField();
+         this.txtControls.width = 180;
+         this.txtControls.height = 20;
+         this.txtControls.x = -90;
+         this.txtControls.y = -9;
+         this.txtControls.selectable = false;
+         this.txtControls.mouseEnabled = false;
+
+         UIStyles.applyFormat(this.txtControls, UIStyles.FONT_BODY, 11, 0xFFFFFF, true, TextFormatAlign.CENTER);
+         UIStyles.applyGlow(this.txtControls, 0x000000, 0.8, 3, 2);
+         this.txtControls.text = "CONTROLS / KEYBINDS";
+
+         this.btnControls.addChild(this.txtControls);
+         this.btnControls.addEventListener(MouseEvent.MOUSE_OVER, this.onControlsOver);
+         this.btnControls.addEventListener(MouseEvent.MOUSE_OUT, this.onControlsOut);
+         this.btnControls.addEventListener(MouseEvent.CLICK, this.onControlsClick);
+
+         _mov.addChild(this.btnControls);
+         this.updateControlsUI();
+      }
+
+      private function updateControlsUI() : void
+      {
+         var g:Graphics = this.btnControls.graphics;
+         g.clear();
+         g.beginFill(0x08080a, 0.95);
+
+         if(this.isControlsHovered)
+         {
+            g.lineStyle(1.0, 0x95e0f2, 1.0);
+         }
+         else
+         {
+            var mat:Matrix = new Matrix();
+            mat.createGradientBox(180, 22, 0, -90, -11);
+            g.lineStyle(1.0);
+            g.lineGradientStyle(GradientType.LINEAR, [0xffffff, 0xabbfdc, 0xffffff], [0.15, 0.5, 0.15], [0, 128, 255], mat);
+         }
+
+         g.moveTo(85, -11);
+         g.lineTo(90, -6);
+         g.lineTo(90, 6);
+         g.lineTo(85, 11);
+         g.lineTo(-85, 11);
+         g.lineTo(-90, 6);
+         g.lineTo(-90, -6);
+         g.lineTo(-85, -11);
+         g.lineTo(85, -11);
+         g.endFill();
+
+         if(this.txtControls)
+         {
+            this.txtControls.textColor = this.isControlsHovered ? 0xffffff : 0xbfd7ea;
+         }
+      }
+
+      private function onControlsOver(e:MouseEvent) : void
+      {
+         this.isControlsHovered = true;
+         this.updateControlsUI();
+      }
+
+      private function onControlsOut(e:MouseEvent) : void
+      {
+         this.isControlsHovered = false;
+         this.updateControlsUI();
+      }
+
+      private function onControlsClick(e:MouseEvent) : void
+      {
+         if(InitData.SOUNDC2 && InitData.SOUNDDATA && InitData.SOUNDDATA.soundArray && InitData.SOUNDDATA.soundArray.length > 19)
+         {
+            InitData.SOUNDC2.playSoundOnce(InitData.SOUNDDATA.soundArray[19], 1);
+         }
+         new UIControlsModal(_sp);
       }
       
       override public function afterFadeIn() : void
