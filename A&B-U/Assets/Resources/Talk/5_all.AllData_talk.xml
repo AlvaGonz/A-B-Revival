@@ -1,0 +1,1943 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<talk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<talkOne>
+		<index>0</index>
+		<who>Somebody</who>
+		<word>The main character, Michael, is drinking leisurely.</word>
+	</talkOne>
+	<talkOne>
+		<index>1</index>
+		<who>Somebody</who>
+		<word>Suddenly, the alarm breaks out.</word>
+	</talkOne>
+	<talkOne>
+		<index>2</index>
+		<who>Captain</who>
+		<word>X Army is back for revenge. Everybody ready to fight!</word>
+	</talkOne>
+	<talkOne>
+		<index>3</index>
+		<who>Captain</who>
+		<word>Repeat, X Army is coming, everybody ready to fight!</word>
+	</talkOne>
+	<talkOne>
+		<index>4</index>
+		<who>Wang</who>
+		<word>Damn it! How dare they!</word>
+	</talkOne>
+	<talkOne>
+		<index>5</index>
+		<who>Michael</who>
+		<word>OK, I'll go with you.</word>
+	</talkOne>
+	<talkOne>
+		<index>6</index>
+		<who>Wang</who>
+		<word>Wait, with your crappy craft? Hum... you just sit here and drink your tea. And watch how I crush them up.</word>
+	</talkOne>
+	<talkOne>
+		<index>7</index>
+		<who>Tom</who>
+		<word>Yeah, all because of your poor crafts, what to do? Just wait, again and again, crappy craps, every day stay with this crappy robot, hum...</word>
+	</talkOne>
+	<talkOne>
+		<index>8</index>
+		<who>ROBOT-S1</who>
+		<word>I AM NOT CRAP.</word>
+	</talkOne>
+	<talkOne>
+		<index>9</index>
+		<who>Tom</who>
+		<word>Alright, You are not...</word>
+	</talkOne>
+	<talkOne>
+		<index>10</index>
+		<who>Michael</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>11</index>
+		<who>Captain</who>
+		<word>Hey, you guys! Why can't you just let it go? What's the point for the fighting?  Both of us need better lives right?</word>
+	</talkOne>
+	<talkOne>
+		<index>12</index>
+		<who>Officer XA</who>
+		<word>Ha! You should think of this when you were firing the cannon that day. The commander said, that you must die. Accept the fate!</word>
+	</talkOne>
+	<talkOne>
+		<index>13</index>
+		<who>Captain</who>
+		<word>... If you say so...</word>
+	</talkOne>
+	<talkOne>
+		<index>14</index>
+		<who>Wang</who>
+		<word>Captain!  Don't waste words with these brine washed craps, they've got only one group, you wait here and watch my show.</word>
+	</talkOne>
+	<talkOne>
+		<index>15</index>
+		<who>Captain</who>
+		<word>Fine, but beware of ambushes.</word>
+	</talkOne>
+	<talkOne>
+		<index>16</index>
+		<who>Wang</who>
+		<word>Crap! Another group!!</word>
+	</talkOne>
+	<talkOne>
+		<index>17</index>
+		<who>Captain</who>
+		<word>Fall back!</word>
+	</talkOne>
+	<talkOne>
+		<index>18</index>
+		<who>Pilot XA</who>
+		<word>KILL!!!</word>
+	</talkOne>
+	<talkOne>
+		<index>19</index>
+		<who>Wang</who>
+		<word>Ruined, my craft…</word>
+	</talkOne>
+	<talkOne>
+		<index>20</index>
+		<who>Michael</who>
+		<word>Yeah, feel lucky for you are still alive. But seems we can't win this... shall we make a JUMP?</word>
+	</talkOne>
+	<talkOne>
+		<index>21</index>
+		<who>Tom</who>
+		<word>A JUMP? Let me fasten my seat belts first.</word>
+	</talkOne>
+	<talkOne>
+		<index>22</index>
+		<who>Captain</who>
+		<word>Err...actually, there is no fuel to JUMP...so...</word>
+	</talkOne>
+	<talkOne>
+		<index>23</index>
+		<who>Tom</who>
+		<word>So?...</word>
+	</talkOne>
+	<talkOne>
+		<index>24</index>
+		<who>Wang</who>
+		<word>What the...!... OK It's all my fault, I...I'm going to bump them with my head!</word>
+	</talkOne>
+	<talkOne>
+		<index>25</index>
+		<who>Michael</who>
+		<word>Please calm down. You have no weapons on your craft already, how can you fight?</word>
+	</talkOne>
+	<talkOne>
+		<index>26</index>
+		<who>Wang</who>
+		<word>Damn it! Bump them one by one, hahaha!!!</word>
+	</talkOne>
+	<talkOne>
+		<index>27</index>
+		<who>Michael</who>
+		<word>If you do this, we all die. So please calm down. Look, I have an idea.</word>
+	</talkOne>
+	<talkOne>
+		<index>28</index>
+		<who>Michael</who>
+		<word>I m sure that their officer has JUMP fuel, and...</word>
+	</talkOne>
+	<talkOne>
+		<index>29</index>
+		<who>Tom</who>
+		<word>And?...</word>
+	</talkOne>
+	<talkOne>
+		<index>30</index>
+		<who>Michael</who>
+		<word>That box of fuel is special armored, though the craft was blasted in pieces, the box will not be affected.</word>
+	</talkOne>
+	<talkOne>
+		<index>31</index>
+		<who>Michael</who>
+		<word>So,I'll go and rob it.</word>
+	</talkOne>
+	<talkOne>
+		<index>32</index>
+		<who>Wang</who>
+		<word>Hum, tell me to calm down right?... But you, are you dreaming? How can you fight them all?</word>
+	</talkOne>
+	<talkOne>
+		<index>33</index>
+		<who>Captain</who>
+		<word>Right, for your little craft, you have no chance to beat them all.</word>
+	</talkOne>
+	<talkOne>
+		<index>34</index>
+		<who>Michael</who>
+		<word>I've never said that I wanna fight them all, the only thing what I need is the fuel.</word>
+	</talkOne>
+	<talkOne>
+		<index>35</index>
+		<who>Captain</who>
+		<word>Just say it in clear way, what do you want to do?</word>
+	</talkOne>
+	<talkOne>
+		<index>36</index>
+		<who>Michael</who>
+		<word>OK, I'll go and entice their officer to the cannon's range, then, ha, done.</word>
+	</talkOne>
+	<talkOne>
+		<index>37</index>
+		<who>Captain</who>
+		<word>Hum... Though it's high risked... sounds we still got chance, go, the cannon is ready to fire.</word>
+	</talkOne>
+	<talkOne>
+		<index>38</index>
+		<who>Tom</who>
+		<word>Oh, yes, the final trick.</word>
+	</talkOne>
+	<talkOne>
+		<index>39</index>
+		<who>Wang</who>
+		<word>Hey kid, take care.</word>
+	</talkOne>
+	<talkOne>
+		<index>40</index>
+		<who>Michael</who>
+		<word>Sure.</word>
+	</talkOne>
+	<talkOne>
+		<index>41</index>
+		<who>Michael</who>
+		<word>Hey! You, seems you have confidents in space fighting, dare you fight me?</word>
+	</talkOne>
+	<talkOne>
+		<index>42</index>
+		<who>Officer XA</who>
+		<word>You? That crappy craft? Hahaha...</word>
+	</talkOne>
+	<talkOne>
+		<index>43</index>
+		<who>Michael</who>
+		<word>You are frightened. Ohh...come on! Come on, shy baby.</word>
+	</talkOne>
+	<talkOne>
+		<index>44</index>
+		<who>Officer XA</who>
+		<word>Crappy mouth! Kill you!</word>
+	</talkOne>
+	<talkOne>
+		<index>45</index>
+		<who>Michael</who>
+		<word>You are dead!</word>
+	</talkOne>
+	<talkOne>
+		<index>46</index>
+		<who>Officer XA</who>
+		<word>Are you kidding?</word>
+	</talkOne>
+	<talkOne>
+		<index>47</index>
+		<who>Captain</who>
+		<word>Cannon, fire! Now!</word>
+	</talkOne>
+	<talkOne>
+		<index>48</index>
+		<who>Officer XA</who>
+		<word>Damn! You dirty...</word>
+	</talkOne>
+	<talkOne>
+		<index>49</index>
+		<who>Michael</who>
+		<word>Yeah yeah yeah, just face it.</word>
+	</talkOne>
+	<talkOne>
+		<index>50</index>
+		<who>Wang</who>
+		<word>Ha, that crap!</word>
+	</talkOne>
+	<talkOne>
+		<index>51</index>
+		<who>Tom</who>
+		<word>It really worked! Amazing!</word>
+	</talkOne>
+	<talkOne>
+		<index>52</index>
+		<who>ROBOT-S1</who>
+		<word>HA HA HA HA HA</word>
+	</talkOne>
+	<talkOne>
+		<index>53</index>
+		<who>Captain</who>
+		<word>Hey Wang, please install the fuel quickly, we have no time. They are reinforcing!</word>
+	</talkOne>
+	<talkOne>
+		<index>54</index>
+		<who>Wang</who>
+		<word>OK, going now.</word>
+	</talkOne>
+	<talkOne>
+		<index>55</index>
+		<who>Michael</who>
+		<word>I'll fight them to earn some more time!</word>
+	</talkOne>
+	<talkOne>
+		<index>56</index>
+		<who>Captain</who>
+		<word>Be careful</word>
+	</talkOne>
+	<talkOne>
+		<index>57</index>
+		<who>Wang</who>
+		<word>1 minute! I need 1 minute!</word>
+	</talkOne>
+	<talkOne>
+		<index>58</index>
+		<who>Michael</who>
+		<word>Roger that.</word>
+	</talkOne>
+	<talkOne>
+		<index>59</index>
+		<who>Pilot XA</who>
+		<word>Don't let them run away! Rush, kill!</word>
+	</talkOne>
+	<talkOne>
+		<index>60</index>
+		<who>Michael</who>
+		<word>Yeah, come on!</word>
+	</talkOne>
+	<talkOne>
+		<index>61</index>
+		<who>Captain</who>
+		<word>Ready to JUMP, fall back!</word>
+	</talkOne>
+	<talkOne>
+		<index>62</index>
+		<who>Michael</who>
+		<word>Roger that!</word>
+	</talkOne>
+	<talkOne>
+		<index>63</index>
+		<who>Tom</who>
+		<word>Damn! What a Huge impact! Even the Seat belt was broken...</word>
+	</talkOne>
+	<talkOne>
+		<index>64</index>
+		<who>Michael</who>
+		<word>Ha, it was lucky for us to run away. There were too many.</word>
+	</talkOne>
+	<talkOne>
+		<index>65</index>
+		<who>Captain</who>
+		<word>It seems we are safe... right?</word>
+	</talkOne>
+	<talkOne>
+		<index>66</index>
+		<who>Wang</who>
+		<word>Where are we? Why there are so many junks flying outside?</word>
+	</talkOne>
+	<talkOne>
+		<index>67</index>
+		<who>Captain</who>
+		<word>Have no idea, just a random JUMP.</word>
+	</talkOne>
+	<talkOne>
+		<index>68</index>
+		<who>Tom</who>
+		<word>Hey, please don't be that casual...</word>
+	</talkOne>
+	<talkOne>
+		<index>69</index>
+		<who>Captain</who>
+		<word>Hum? What is that? Something are closing us with a high speed. Crafts? Enemies?</word>
+	</talkOne>
+	<talkOne>
+		<index>70</index>
+		<who>Michael</who>
+		<word>Ahh!! Are they tracking? Impossible!</word>
+	</talkOne>
+	<talkOne>
+		<index>71</index>
+		<who>Captain</who>
+		<word>That shouldn't be, it just not possible to track a random JUMP, let me contact them.</word>
+	</talkOne>
+	<talkOne>
+		<index>72</index>
+		<who>Captain</who>
+		<word>Hello? We came here with a random jump, please don't rush like that.</word>
+	</talkOne>
+	<talkOne>
+		<index>73</index>
+		<who>Captain</who>
+		<word>Seems no reply... they are still coming.</word>
+	</talkOne>
+	<talkOne>
+		<index>74</index>
+		<who>Captain</who>
+		<word>Hey, please stop rushing, or we'll begin to fire!</word>
+	</talkOne>
+	<talkOne>
+		<index>75</index>
+		<who>Captain</who>
+		<word>No reply. Ready to fight!</word>
+	</talkOne>
+	<talkOne>
+		<index>76</index>
+		<who>Michael</who>
+		<word>Crap after craps...</word>
+	</talkOne>
+	<talkOne>
+		<index>77</index>
+		<who>Wang</who>
+		<word>Stop crapping, come on, it's your job to protect us!</word>
+	</talkOne>
+	<talkOne>
+		<index>78</index>
+		<who>Michael</who>
+		<word>I know...</word>
+	</talkOne>
+	<talkOne>
+		<index>79</index>
+		<who>Michael</who>
+		<word>What's your name? who's your boss?</word>
+	</talkOne>
+	<talkOne>
+		<index>80</index>
+		<who>Michael</who>
+		<word>Damn!</word>
+	</talkOne>
+	<talkOne>
+		<index>81</index>
+		<who>Michael</who>
+		<word>That's close, fire with no words... fortunately they are not that strong...</word>
+	</talkOne>
+	<talkOne>
+		<index>82</index>
+		<who>Captain</who>
+		<word>I think there must be a mothership around for that amount of crafts, you'd better search this area through this break. Maybe we can contact their leader with words, then we don't need to fight each other.</word>
+	</talkOne>
+	<talkOne>
+		<index>83</index>
+		<who>Wang</who>
+		<word>Yeah, we can't carry on these kinds of fighting now, you just go around, problems?</word>
+	</talkOne>
+	<talkOne>
+		<index>84</index>
+		<who>ROBOT-S1</who>
+		<word>AROUND AROUND AROUND</word>
+	</talkOne>
+	<talkOne>
+		<index>85</index>
+		<who>Michael</who>
+		<word>Alright, I got it, I'll go.</word>
+	</talkOne>
+	<talkOne>
+		<index>86</index>
+		<who>Michael</who>
+		<word>Yeah! Go around and blast your home!</word>
+	</talkOne>
+	<talkOne>
+		<index>87</index>
+		<who>Michael</who>
+		<word>Wow, enemies!</word>
+	</talkOne>
+	<talkOne>
+		<index>88</index>
+		<who>Michael</who>
+		<word>I'd better go back.</word>
+	</talkOne>
+	<talkOne>
+		<index>89</index>
+		<who>Michael</who>
+		<word>That's too close.</word>
+	</talkOne>
+	<talkOne>
+		<index>90</index>
+		<who>Wang</who>
+		<word>Say...</word>
+	</talkOne>
+	<talkOne>
+		<index>91</index>
+		<who>Captain</who>
+		<word>They are coming again!</word>
+	</talkOne>
+	<talkOne>
+		<index>92</index>
+		<who>Michael</who>
+		<word>What the ... I'll take it!</word>
+	</talkOne>
+	<talkOne>
+		<index>93</index>
+		<who>ROBOT-S1</who>
+		<word>TAKE IT! TAKE IT! TAKE IT!</word>
+	</talkOne>
+	<talkOne>
+		<index>94</index>
+		<who>Michael</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>95</index>
+		<who>Michael</who>
+		<word>Say, who are you anyway? Why did you fire that strong? What's wrong with you? What's wrong with us???</word>
+	</talkOne>
+	<talkOne>
+		<index>96</index>
+		<who>Unknown Cf.</who>
+		<word>...... ATTACK!</word>
+	</talkOne>
+	<talkOne>
+		<index>97</index>
+		<who>Michael</who>
+		<word>Damn! Not again! Crap!</word>
+	</talkOne>
+	<talkOne>
+		<index>98</index>
+		<who>Michael</who>
+		<word>Finally...it's done.</word>
+	</talkOne>
+	<talkOne>
+		<index>99</index>
+		<who>Tom</who>
+		<word>Say, can we JUMP to another place? We'll die if continue staying.</word>
+	</talkOne>
+	<talkOne>
+		<index>100</index>
+		<who>Wang</who>
+		<word>Yeah, nothing to worry about. My craft is totally repaired, Let's crush them into pieces!</word>
+	</talkOne>
+	<talkOne>
+		<index>101</index>
+		<who>Captain</who>
+		<word>In fact, we've run out of JUMP fuel last time. So...</word>
+	</talkOne>
+	<talkOne>
+		<index>102</index>
+		<who>Tom</who>
+		<word>...... Cough</word>
+	</talkOne>
+	<talkOne>
+		<index>103</index>
+		<who>ROBOT-S1</who>
+		<word>COUGH COUGH COUGH</word>
+	</talkOne>
+	<talkOne>
+		<index>104</index>
+		<who>Michael</who>
+		<word>So we are going to find out their home and blast it.</word>
+	</talkOne>
+	<talkOne>
+		<index>105</index>
+		<who>Wang</who>
+		<word>Hey, Yeah! go ahead! I'll take care of the ship.</word>
+	</talkOne>
+	<talkOne>
+		<index>106</index>
+		<who>Captain</who>
+		<word>OK, seems it's the only way, but please keep yourself alive! Don't die.</word>
+	</talkOne>
+	<talkOne>
+		<index>107</index>
+		<who>Michael</who>
+		<word>Got it.</word>
+	</talkOne>
+	<talkOne>
+		<index>108</index>
+		<who>ROBOT-S1</who>
+		<word>DIE DIE DIE</word>
+	</talkOne>
+	<talkOne>
+		<index>109</index>
+		<who>Tom</who>
+		<word>Shut up! You crap!</word>
+	</talkOne>
+	<talkOne>
+		<index>110</index>
+		<who>Michael</who>
+		<word>So... I'll go!</word>
+	</talkOne>
+	<talkOne>
+		<index>111</index>
+		<who>Michael</who>
+		<word>Here I come!!</word>
+	</talkOne>
+	<talkOne>
+		<index>112</index>
+		<who>Michael</who>
+		<word>Hum, still no mothership. I'd better turn back.</word>
+	</talkOne>
+	<talkOne>
+		<index>113</index>
+		<who>Michael</who>
+		<word>I just blasted some groups, but still haven't found their ship. Let me go again!</word>
+	</talkOne>
+	<talkOne>
+		<index>114</index>
+		<who>Captain</who>
+		<word>Alright, take care then.</word>
+	</talkOne>
+	<talkOne>
+		<index>115</index>
+		<who>Wang</who>
+		<word>It comes a premonition...</word>
+	</talkOne>
+	<talkOne>
+		<index>116</index>
+		<who>Tom</who>
+		<word>What was that?</word>
+	</talkOne>
+	<talkOne>
+		<index>117</index>
+		<who>Wang</who>
+		<word>...Suddenly, forgotten.</word>
+	</talkOne>
+	<talkOne>
+		<index>118</index>
+		<who>Tom</who>
+		<word>Ha, aged one, crappy brain.</word>
+	</talkOne>
+	<talkOne>
+		<index>119</index>
+		<who>ROBOT-S1</who>
+		<word>CRPPY BRAIN CRPPY BRAIN CRPPY BRAIN</word>
+	</talkOne>
+	<talkOne>
+		<index>120</index>
+		<who>Wang</who>
+		<word>Damn, forget it , take care.</word>
+	</talkOne>
+	<talkOne>
+		<index>121</index>
+		<who>Michael</who>
+		<word>OK, I'm leaving!</word>
+	</talkOne>
+	<talkOne>
+		<index>122</index>
+		<who>Somebody</who>
+		<word>30 minutes later.</word>
+	</talkOne>
+	<talkOne>
+		<index>123</index>
+		<who>Captain</who>
+		<word>Enemies are attacking!</word>
+	</talkOne>
+	<talkOne>
+		<index>124</index>
+		<who>Wang</who>
+		<word>Damn that premoniton! That...! Yeah!!! I mean No!!!</word>
+	</talkOne>
+	<talkOne>
+		<index>125</index>
+		<who>Tom</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>126</index>
+		<who>ROBOT-S1</who>
+		<word>YEAH YEAH YEAH...</word>
+	</talkOne>
+	<talkOne>
+		<index>127</index>
+		<who>Wang</who>
+		<word>Come get some!</word>
+	</talkOne>
+	<talkOne>
+		<index>128</index>
+		<who>Wang</who>
+		<word>What the ...!! Too many! How could that kid handle it! I... I can't......</word>
+	</talkOne>
+	<talkOne>
+		<index>129</index>
+		<who>Michael</who>
+		<word>I must find out their ship this time!</word>
+	</talkOne>
+	<talkOne>
+		<index>130</index>
+		<who>Michael</who>
+		<word>Alright! Finally, got you!</word>
+	</talkOne>
+	<talkOne>
+		<index>131</index>
+		<who>Michael</who>
+		<word>Hey, who the hell are you! Why did you attack us without a word!</word>
+	</talkOne>
+	<talkOne>
+		<index>132</index>
+		<who>Michael</who>
+		<word>Damn! You are dead!</word>
+	</talkOne>
+	<talkOne>
+		<index>133</index>
+		<who>Michael</who>
+		<word>What the fire power... back up! Dame, it's only me, fall back!</word>
+	</talkOne>
+	<talkOne>
+		<index>134</index>
+		<who>Tom</who>
+		<word>A... are you alright? You're bleeding.</word>
+	</talkOne>
+	<talkOne>
+		<index>135</index>
+		<who>Michael</who>
+		<word>Me? Fin...e...</word>
+	</talkOne>
+	<talkOne>
+		<index>136</index>
+		<who>Captain</who>
+		<word>They are coming!!! Not a small amount!</word>
+	</talkOne>
+	<talkOne>
+		<index>137</index>
+		<who>Wang</who>
+		<word>Damn, why I'm so old!...e...</word>
+	</talkOne>
+	<talkOne>
+		<index>138</index>
+		<who>Captain</who>
+		<word>It seems...</word>
+	</talkOne>
+	<talkOne>
+		<index>139</index>
+		<who>Tom</who>
+		<word>I'll fight!</word>
+	</talkOne>
+	<talkOne>
+		<index>140</index>
+		<who>Wang</who>
+		<word>You? What can you do?</word>
+	</talkOne>
+	<talkOne>
+		<index>141</index>
+		<who>Tom</who>
+		<word>Though I'm not a pilot, but I'm a good gunner, see, I play Color Defense everyday! Take a look at my record!</word>
+	</talkOne>
+	<talkOne>
+		<index>142</index>
+		<who>Captain</who>
+		<word>...... OK, it's not the time for kidding.</word>
+	</talkOne>
+	<talkOne>
+		<index>143</index>
+		<who>Tom</who>
+		<word>I'm serious, take out the Big Gun, and I'll fight with them.</word>
+	</talkOne>
+	<talkOne>
+		<index>144</index>
+		<who>Wang</who>
+		<word>Yeah! You are the man! I know it!</word>
+	</talkOne>
+	<talkOne>
+		<index>145</index>
+		<who>Captain</who>
+		<word>Go and get yourself prepared now!</word>
+	</talkOne>
+	<talkOne>
+		<index>146</index>
+		<who>Captain</who>
+		<word>And don't die.</word>
+	</talkOne>
+	<talkOne>
+		<index>147</index>
+		<who>Tom</who>
+		<word>Promise.</word>
+	</talkOne>
+	<talkOne>
+		<index>148</index>
+		<who>Somebody</who>
+		<word>You can't change the mode or move in this level.</word>
+	</talkOne>
+	<talkOne>
+		<index>149</index>
+		<who>Tom</who>
+		<word>Come on! Let me show you what a professional gunner is!</word>
+	</talkOne>
+	<talkOne>
+		<index>150</index>
+		<who>Tom</who>
+		<word>Seems...It's the end... I can't hanle it any more...</word>
+	</talkOne>
+	<talkOne>
+		<index>151</index>
+		<who>Michael</who>
+		<word>Where's Tom? Where are the enemies?</word>
+	</talkOne>
+	<talkOne>
+		<index>152</index>
+		<who>Wang</who>
+		<word>Tom...is firing the big gun...</word>
+	</talkOne>
+	<talkOne>
+		<index>153</index>
+		<who>Michael</who>
+		<word>God! How could... damn! Prepare the craft for me! Quickly! Or he'll not be back ever!</word>
+	</talkOne>
+	<talkOne>
+		<index>154</index>
+		<who>Captain</who>
+		<word>...... You are wounded...</word>
+	</talkOne>
+	<talkOne>
+		<index>155</index>
+		<who>Michael</who>
+		<word>I'm fine, it's my job!</word>
+	</talkOne>
+	<talkOne>
+		<index>156</index>
+		<who>Wang</who>
+		<word>Got it ! All stuffs ready!</word>
+	</talkOne>
+	<talkOne>
+		<index>157</index>
+		<who>Michael</who>
+		<word>Hang on, Tom! I'm coming!</word>
+	</talkOne>
+	<talkOne>
+		<index>158</index>
+		<who>Tom</who>
+		<word>I thought I was going to die...</word>
+	</talkOne>
+	<talkOne>
+		<index>159</index>
+		<who>Michael</who>
+		<word>OK, let's get back.</word>
+	</talkOne>
+	<talkOne>
+		<index>160</index>
+		<who>Tom</who>
+		<word>Wow, we won! Yes!</word>
+	</talkOne>
+	<talkOne>
+		<index>161</index>
+		<who>Michael</who>
+		<word>Ha, it's still too early to be happy, come on, let's get back first.</word>
+	</talkOne>
+	<talkOne>
+		<index>162</index>
+		<who>Tom</who>
+		<word>Err, it's really too hard for me to fight... almost die...</word>
+	</talkOne>
+	<talkOne>
+		<index>163</index>
+		<who>Wang</who>
+		<word>Alright, alright, you brave craps!</word>
+	</talkOne>
+	<talkOne>
+		<index>164</index>
+		<who>ROBOT-S1</who>
+		<word>BRAVE CRAPS BRAVE CRAPS BRAVE CRAPS</word>
+	</talkOne>
+	<talkOne>
+		<index>165</index>
+		<who>Captain</who>
+		<word>Hum, good to see you're still alive.</word>
+	</talkOne>
+	<talkOne>
+		<index>166</index>
+		<who>Michael</who>
+		<word>I have already known the position of enemies' mothership, maybe we'd better attack instead of defense.</word>
+	</talkOne>
+	<talkOne>
+		<index>167</index>
+		<who>Wang</who>
+		<word>Nice words!</word>
+	</talkOne>
+	<talkOne>
+		<index>168</index>
+		<who>Captain</who>
+		<word>For now, waiting is dying, so I agree with you.</word>
+	</talkOne>
+	<talkOne>
+		<index>169</index>
+		<who>Captain</who>
+		<word>Hum, a little amount of enemies are coming.</word>
+	</talkOne>
+	<talkOne>
+		<index>170</index>
+		<who>Michael</who>
+		<word>A piece of cake, I'll be back soon.</word>
+	</talkOne>
+	<talkOne>
+		<index>171</index>
+		<who>Michael</who>
+		<word>OK, done.</word>
+	</talkOne>
+	<talkOne>
+		<index>172</index>
+		<who>Captain</who>
+		<word>The enemies' mothership is located!</word>
+	</talkOne>
+	<talkOne>
+		<index>173</index>
+		<who>Captain</who>
+		<word>Wait, why it comes X Army too?</word>
+	</talkOne>
+	<talkOne>
+		<index>174</index>
+		<who>Captain</who>
+		<word>Ohhh no!! They are coming to us!</word>
+	</talkOne>
+	<talkOne>
+		<index>175</index>
+		<who>Michael</who>
+		<word>So they are teamed, that's the reason why they fired that hard. For now, the only thing we can do is to fight them back!</word>
+	</talkOne>
+	<talkOne>
+		<index>176</index>
+		<who>Officer XA</who>
+		<word>Ha! It's you! Ready to die?</word>
+	</talkOne>
+	<talkOne>
+		<index>177</index>
+		<who>Michael</who>
+		<word>With your craps? Hum, taste my bullets first!</word>
+	</talkOne>
+	<talkOne>
+		<index>178</index>
+		<who>Michael</who>
+		<word>What the...</word>
+	</talkOne>
+	<talkOne>
+		<index>179</index>
+		<who>Officer XA</who>
+		<word>Doomed!</word>
+	</talkOne>
+	<talkOne>
+		<index>180</index>
+		<who>Michael</who>
+		<word>Why... too many...</word>
+	</talkOne>
+	<talkOne>
+		<index>181</index>
+		<who>Tom</who>
+		<word>Let me fire some bullets!</word>
+	</talkOne>
+	<talkOne>
+		<index>182</index>
+		<who>Wang</who>
+		<word>You... whatever... just have a rest.</word>
+	</talkOne>
+	<talkOne>
+		<index>183</index>
+		<who>Captain</who>
+		<word>It seems...</word>
+	</talkOne>
+	<talkOne>
+		<index>184</index>
+		<who>Captain</who>
+		<word>Hey, they are fighting!!</word>
+	</talkOne>
+	<talkOne>
+		<index>185</index>
+		<who>Wang</who>
+		<word>Wow, it's true! Two groups of craps!</word>
+	</talkOne>
+	<talkOne>
+		<index>186</index>
+		<who>Michael</who>
+		<word>I have no idea, but it's a good chance, shall we give a hand?</word>
+	</talkOne>
+	<talkOne>
+		<index>187</index>
+		<who>Tom</who>
+		<word>To which side?</word>
+	</talkOne>
+	<talkOne>
+		<index>188</index>
+		<who>Captain</who>
+		<word>The X Army really wanna kill us. And the other side, maybe they don't hate us that much, anyway, we can't escape now.</word>
+	</talkOne>
+	<talkOne>
+		<index>189</index>
+		<who>Michael</who>
+		<word>OK, I'm going to fight against the X Army.</word>
+	</talkOne>
+	<talkOne>
+		<index>190</index>
+		<who>Captain</who>
+		<word>Keep yourself alive!</word>
+	</talkOne>
+	<talkOne>
+		<index>191</index>
+		<who>Michael</who>
+		<word>Hey! Captain there! We don't know why you are fighting against X amry, but we decided to help you, 'cause we hate X Army, aren't we? So maybe we can ally temporary. What do you say?</word>
+	</talkOne>
+	<talkOne>
+		<index>192</index>
+		<who>Unknown Cp.</who>
+		<word>Deal!</word>
+	</talkOne>
+	<talkOne>
+		<index>193</index>
+		<who>Michael</who>
+		<word>So he finally talked.</word>
+	</talkOne>
+	<talkOne>
+		<index>194</index>
+		<who>Michael</who>
+		<word>Captain! Please contact them.</word>
+	</talkOne>
+	<talkOne>
+		<index>195</index>
+		<who>Captain</who>
+		<word>OK.</word>
+	</talkOne>
+	<talkOne>
+		<index>196</index>
+		<who>Captain</who>
+		<word>Hello, captain there, please reply.</word>
+	</talkOne>
+	<talkOne>
+		<index>197</index>
+		<who>Cp.Monkey</who>
+		<word>Hello.</word>
+	</talkOne>
+	<talkOne>
+		<index>198</index>
+		<who>Tom</who>
+		<word>Damn, it's a monkey!</word>
+	</talkOne>
+	<talkOne>
+		<index>199</index>
+		<who>Wang</who>
+		<word>What the... I just almost been killed by this crap?</word>
+	</talkOne>
+	<talkOne>
+		<index>200</index>
+		<who>Cp.Monkey</who>
+		<word>Please respect.</word>
+	</talkOne>
+	<talkOne>
+		<index>201</index>
+		<who>Captain</who>
+		<word>Excuse me! Could you tell me why did you attack us that strong at first and ally with X army, but afterwards fight against them?</word>
+	</talkOne>
+	<talkOne>
+		<index>202</index>
+		<who>Cp.Monkey</who>
+		<word>It's my place, jumping here suddenly like you is a kind of invasion. I always fight against the invaders.</word>
+	</talkOne>
+	<talkOne>
+		<index>203</index>
+		<who>Cp.Monkey</who>
+		<word>As for X army, we used to have businesses with them, exchange some parts of the crafts, it was always very smooth. Last business, we prepared huge amount of goods and those costed a lot of time.</word>
+	</talkOne>
+	<talkOne>
+		<index>204</index>
+		<who>Cp.Monkey</who>
+		<word>But they took our goods without paying money! That was ridiculous! How can I just let it go!</word>
+	</talkOne>
+	<talkOne>
+		<index>205</index>
+		<who>Cp.Monkey</who>
+		<word>Since the negotiation dosen't work any more. I think we'd better just fight!</word>
+	</talkOne>
+	<talkOne>
+		<index>206</index>
+		<who>Michael</who>
+		<word>One question, how did you find so many pilots? That amount almost killed me.</word>
+	</talkOne>
+	<talkOne>
+		<index>207</index>
+		<who>Cp.Monkey</who>
+		<word>Ha, I'm a programmer, I coded my AIs myself. What you were fighting with, were computers. Simple to copy simple to use.</word>
+	</talkOne>
+	<talkOne>
+		<index>208</index>
+		<who>Michael</who>
+		<word>Almost died because of the ...computers...</word>
+	</talkOne>
+	<talkOne>
+		<index>209</index>
+		<who>Cp.Monkey</who>
+		<word>Hum, seems you don't have many pilots. Here, take 5 AI chips, you've helped me, then I give you AIs, so we are clear,deal?</word>
+	</talkOne>
+	<talkOne>
+		<index>210</index>
+		<who>Captain</who>
+		<word>OK, deal.</word>
+	</talkOne>
+	<talkOne>
+		<index>211</index>
+		<who>Cp.Monkey</who>
+		<word>Look, they are coming, so, fire back together?</word>
+	</talkOne>
+	<talkOne>
+		<index>212</index>
+		<who>Captain</who>
+		<word>Sure.</word>
+	</talkOne>
+	<talkOne>
+		<index>213</index>
+		<who>Michael</who>
+		<word>I'm not alone any more!</word>
+	</talkOne>
+	<talkOne>
+		<index>214</index>
+		<who>Wang</who>
+		<word>Monkey... AI... What the world.</word>
+	</talkOne>
+	<talkOne>
+		<index>215</index>
+		<who>Cp.Monkey</who>
+		<word>Finally, done. They'll be back, so I'm leaving, bye!</word>
+	</talkOne>
+	<talkOne>
+		<index>216</index>
+		<who>Captain</who>
+		<word>Hold on, if you wanna leave us here in this way, you mean kill us.</word>
+	</talkOne>
+	<talkOne>
+		<index>217</index>
+		<who>Cp.Monkey</who>
+		<word>Hum, so you don't have JUMP fuel?</word>
+	</talkOne>
+	<talkOne>
+		<index>218</index>
+		<who>Captain</who>
+		<word>No, so that's why we could not leave here from the beginning.</word>
+	</talkOne>
+	<talkOne>
+		<index>219</index>
+		<who>Cp.Monkey</who>
+		<word>Alright, I got it. Here's the fuel, bye.</word>
+	</talkOne>
+	<talkOne>
+		<index>220</index>
+		<who>Captain</who>
+		<word>...Thanks, see you... later.</word>
+	</talkOne>
+	<talkOne>
+		<index>221</index>
+		<who>Captain</who>
+		<word>Where's this place?</word>
+	</talkOne>
+	<talkOne>
+		<index>222</index>
+		<who>Wang</who>
+		<word>Who knows, who cares, unknown place without enemies.</word>
+	</talkOne>
+	<talkOne>
+		<index>223</index>
+		<who>Wang</who>
+		<word>But, It comes a premonition...</word>
+	</talkOne>
+	<talkOne>
+		<index>224</index>
+		<who>Tom</who>
+		<word>Damn it! Hold on!</word>
+	</talkOne>
+	<talkOne>
+		<index>225</index>
+		<who>CommanderX</who>
+		<word>HAHAHA, you are damn dead! I'll put all groups together, to ruin you into pieces, and then the monkey! HAHAHAHA...</word>
+	</talkOne>
+	<talkOne>
+		<index>226</index>
+		<who>Tom</who>
+		<word>Really...</word>
+	</talkOne>
+	<talkOne>
+		<index>227</index>
+		<who>ROBOT-S1</who>
+		<word>REALLY REALLY REALLY</word>
+	</talkOne>
+	<talkOne>
+		<index>228</index>
+		<who>Captain</who>
+		<word>Hum, X Guys, my opinion, you will be ruined.</word>
+	</talkOne>
+	<talkOne>
+		<index>229</index>
+		<who>Michael</who>
+		<word>Nice words! Here I go!</word>
+	</talkOne>
+	<talkOne>
+		<index>230</index>
+		<who>Michael</who>
+		<word>You only have these small crafts? Hum.</word>
+	</talkOne>
+	<talkOne>
+		<index>231</index>
+		<who>Officer XA</who>
+		<word>KILL!!!</word>
+	</talkOne>
+	<talkOne>
+		<index>232</index>
+		<who>Michael</who>
+		<word>Too easy.</word>
+	</talkOne>
+	<talkOne>
+		<index>233</index>
+		<who>CommanderX</who>
+		<word>Hum, I have whole army to kill you!</word>
+	</talkOne>
+	<talkOne>
+		<index>234</index>
+		<who>Captain</who>
+		<word>They are coming again!</word>
+	</talkOne>
+	<talkOne>
+		<index>235</index>
+		<who>Michael</who>
+		<word>OK, so just kill them!</word>
+	</talkOne>
+	<talkOne>
+		<index>236</index>
+		<who>ROBOT-S1</who>
+		<word>KILL KILL KILL</word>
+	</talkOne>
+	<talkOne>
+		<index>237</index>
+		<who>Michael</who>
+		<word>Easy one.</word>
+	</talkOne>
+	<talkOne>
+		<index>238</index>
+		<who>CommanderX</who>
+		<word>Come on! Kill them!</word>
+	</talkOne>
+	<talkOne>
+		<index>239</index>
+		<who>Captain</who>
+		<word>Again and again!</word>
+	</talkOne>
+	<talkOne>
+		<index>240</index>
+		<who>Michael</who>
+		<word>Alright. So I'll win again.</word>
+	</talkOne>
+	<talkOne>
+		<index>241</index>
+		<who>Officer XA</who>
+		<word>Kill them!</word>
+	</talkOne>
+	<talkOne>
+		<index>242</index>
+		<who>Michael</who>
+		<word>Piece of cake.</word>
+	</talkOne>
+	<talkOne>
+		<index>243</index>
+		<who>CommanderX</who>
+		<word>Hum, you have some skills, come on! Surrounding!</word>
+	</talkOne>
+	<talkOne>
+		<index>244</index>
+		<who>Captain</who>
+		<word>We've been surrounded.</word>
+	</talkOne>
+	<talkOne>
+		<index>245</index>
+		<who>Michael</who>
+		<word>They came, we kill. Nothing have to be worried about.</word>
+	</talkOne>
+	<talkOne>
+		<index>246</index>
+		<who>Officer XA</who>
+		<word>KILL THEM!</word>
+	</talkOne>
+	<talkOne>
+		<index>247</index>
+		<who>Michael</who>
+		<word>Ha, so easy.</word>
+	</talkOne>
+	<talkOne>
+		<index>248</index>
+		<who>CommanderX</who>
+		<word>Keep on!  Surrounding!</word>
+	</talkOne>
+	<talkOne>
+		<index>249</index>
+		<who>Captain</who>
+		<word>We've been surrounded. Again.</word>
+	</talkOne>
+	<talkOne>
+		<index>250</index>
+		<who>Michael</who>
+		<word>Then, fight again.</word>
+	</talkOne>
+	<talkOne>
+		<index>251</index>
+		<who>CommanderX</who>
+		<word>KILL!!!</word>
+	</talkOne>
+	<talkOne>
+		<index>252</index>
+		<who>Michael</who>
+		<word>Really not a challenge.</word>
+	</talkOne>
+	<talkOne>
+		<index>253</index>
+		<who>CommanderX</who>
+		<word>Keep moving!</word>
+	</talkOne>
+	<talkOne>
+		<index>254</index>
+		<who>Captain</who>
+		<word>Here comes stronger crafts!</word>
+	</talkOne>
+	<talkOne>
+		<index>255</index>
+		<who>Michael</who>
+		<word>No problem.</word>
+	</talkOne>
+	<talkOne>
+		<index>256</index>
+		<who>Officer XA</who>
+		<word>Kill them!</word>
+	</talkOne>
+	<talkOne>
+		<index>257</index>
+		<who>Michael</who>
+		<word>Done!</word>
+	</talkOne>
+	<talkOne>
+		<index>258</index>
+		<who>CommanderX</who>
+		<word>Come on! keep moving, Double the amount!</word>
+	</talkOne>
+	<talkOne>
+		<index>259</index>
+		<who>Captain</who>
+		<word>Here comes much stronger crafts!</word>
+	</talkOne>
+	<talkOne>
+		<index>260</index>
+		<who>Michael</who>
+		<word>You just wait here.</word>
+	</talkOne>
+	<talkOne>
+		<index>261</index>
+		<who>Officer XA</who>
+		<word>KILL!!!</word>
+	</talkOne>
+	<talkOne>
+		<index>262</index>
+		<who>Michael</who>
+		<word>Finished. Again.</word>
+	</talkOne>
+	<talkOne>
+		<index>263</index>
+		<who>CommanderX</who>
+		<word>Come on! keep moving, triple the amount!</word>
+	</talkOne>
+	<talkOne>
+		<index>264</index>
+		<who>Captain</who>
+		<word>Not again!</word>
+	</talkOne>
+	<talkOne>
+		<index>265</index>
+		<who>Michael</who>
+		<word>Just calm down...</word>
+	</talkOne>
+	<talkOne>
+		<index>266</index>
+		<who>Officer XA</who>
+		<word>Kill!!!</word>
+	</talkOne>
+	<talkOne>
+		<index>267</index>
+		<who>Michael</who>
+		<word>Simple and easy.</word>
+	</talkOne>
+	<talkOne>
+		<index>268</index>
+		<who>CommanderX</who>
+		<word>Come on! keep moving, quadruple the amount!</word>
+	</talkOne>
+	<talkOne>
+		<index>269</index>
+		<who>Captain</who>
+		<word>Here comes incredible strong crafts!</word>
+	</talkOne>
+	<talkOne>
+		<index>270</index>
+		<who>Michael</who>
+		<word>Calm down, please...</word>
+	</talkOne>
+	<talkOne>
+		<index>271</index>
+		<who>Officer XA</who>
+		<word>Kill!!!!!</word>
+	</talkOne>
+	<talkOne>
+		<index>272</index>
+		<who>Michael</who>
+		<word>All done!</word>
+	</talkOne>
+	<talkOne>
+		<index>273</index>
+		<who>CommanderX</who>
+		<word>Don't be regretted! You pushed me to ruin you! All of you!!!</word>
+	</talkOne>
+	<talkOne>
+		<index>274</index>
+		<who>Michael</who>
+		<word>No one is afraid of you, really, you will be the dust in space just like your crappy members.</word>
+	</talkOne>
+	<talkOne>
+		<index>275</index>
+		<who>Captain</who>
+		<word>Now he comes himself, be careful.</word>
+	</talkOne>
+	<talkOne>
+		<index>276</index>
+		<who>Wang</who>
+		<word>Yeah, that guy have tough guns, take care.</word>
+	</talkOne>
+	<talkOne>
+		<index>277</index>
+		<who>ROBOT-S1</who>
+		<word>TOUGH GUN  TOUGH GUN  TOUGH GUN</word>
+	</talkOne>
+	<talkOne>
+		<index>278</index>
+		<who>Michael</who>
+		<word>No problem. I'll be back soon.</word>
+	</talkOne>
+	<talkOne>
+		<index>279</index>
+		<who>Michael</who>
+		<word>So, that's all you have.</word>
+	</talkOne>
+	<talkOne>
+		<index>280</index>
+		<who>CommanderX</who>
+		<word>Ahh!! You will be killed first!</word>
+	</talkOne>
+	<talkOne>
+		<index>281</index>
+		<who>Michael</who>
+		<word>Damn, he escaped!</word>
+	</talkOne>
+	<talkOne>
+		<index>282</index>
+		<who>Captain</who>
+		<word>Watch out! Super ship is coming!</word>
+	</talkOne>
+	<talkOne>
+		<index>283</index>
+		<who>Michael</who>
+		<word>Crap, he killed him!</word>
+	</talkOne>
+	<talkOne>
+		<index>284</index>
+		<who>Head Of XA</who>
+		<word>You! You will end up just like him. Hahaha.</word>
+	</talkOne>
+	<talkOne>
+		<index>285</index>
+		<who>Michael</who>
+		<word>What the...!</word>
+	</talkOne>
+	<talkOne>
+		<index>286</index>
+		<who>Wang</who>
+		<word>Wow, the final boss came out! That's wild, so just kill him, Damn!</word>
+	</talkOne>
+	<talkOne>
+		<index>287</index>
+		<who>Tom</who>
+		<word>Didn't you see that cannon? How strong!</word>
+	</talkOne>
+	<talkOne>
+		<index>288</index>
+		<who>Wang</who>
+		<word>Those cannons need a lot of time to cool down to fire another shot, so for now, we will not be killed by that. Thus, he is alone isn't he? We can take this chance to kill him.</word>
+	</talkOne>
+	<talkOne>
+		<index>289</index>
+		<who>Captain</who>
+		<word>Look! There comes a lot of X Army's crafts!</word>
+	</talkOne>
+	<talkOne>
+		<index>290</index>
+		<who>Tom</who>
+		<word>What the, crap, it comes motherships!!</word>
+	</talkOne>
+	<talkOne>
+		<index>291</index>
+		<who>Michael</who>
+		<word>There's no choice, I'll fight.</word>
+	</talkOne>
+	<talkOne>
+		<index>292</index>
+		<who>Michael</who>
+		<word>Hey, you. I don't know where you found these pliots, I'll punch you down.</word>
+	</talkOne>
+	<talkOne>
+		<index>293</index>
+		<who>Head Of XA</who>
+		<word>Whatever, I have as many as I need.</word>
+	</talkOne>
+	<talkOne>
+		<index>294</index>
+		<who>Michael</who>
+		<word>Too tough...</word>
+	</talkOne>
+	<talkOne>
+		<index>295</index>
+		<who>Captain</who>
+		<word>They come again!</word>
+	</talkOne>
+	<talkOne>
+		<index>296</index>
+		<who>Michael</who>
+		<word>Again? Alright.</word>
+	</talkOne>
+	<talkOne>
+		<index>297</index>
+		<who>Michael</who>
+		<word>That was... exhausted!</word>
+	</talkOne>
+	<talkOne>
+		<index>298</index>
+		<who>Captain</who>
+		<word>Again! More!</word>
+	</talkOne>
+	<talkOne>
+		<index>299</index>
+		<who>Michael</who>
+		<word>Really? Infinity?</word>
+	</talkOne>
+	<talkOne>
+		<index>300</index>
+		<who>Michael</who>
+		<word>Too close.....</word>
+	</talkOne>
+	<talkOne>
+		<index>301</index>
+		<who>Captain</who>
+		<word>Again!...</word>
+	</talkOne>
+	<talkOne>
+		<index>302</index>
+		<who>Michael</who>
+		<word>Almost, I... can't carry on...</word>
+	</talkOne>
+	<talkOne>
+		<index>303</index>
+		<who>Michael</who>
+		<word>Finally!</word>
+	</talkOne>
+	<talkOne>
+		<index>304</index>
+		<who>Captain</who>
+		<word>Again! Too... many!!</word>
+	</talkOne>
+	<talkOne>
+		<index>305</index>
+		<who>Michael</who>
+		<word>I'm afraid I can't...</word>
+	</talkOne>
+	<talkOne>
+		<index>306</index>
+		<who>Wang</who>
+		<word>Carry on! Kid, you are the only crap now!</word>
+	</talkOne>
+	<talkOne>
+		<index>307</index>
+		<who>Cp.Monkey</who>
+		<word>Hum, I can't just leave like that, I hate them, you wanna kill them? I'm in.</word>
+	</talkOne>
+	<talkOne>
+		<index>308</index>
+		<who>Captain</who>
+		<word>Right place, right moment, right words.</word>
+	</talkOne>
+	<talkOne>
+		<index>309</index>
+		<who>Wang</who>
+		<word>Yeah! Double the fire power!</word>
+	</talkOne>
+	<talkOne>
+		<index>310</index>
+		<who>Michael</who>
+		<word>Hum, we'll win.</word>
+	</talkOne>
+	<talkOne>
+		<index>311</index>
+		<who>Head Of XA</who>
+		<word>Oh? You come here especially for die? Monkey.</word>
+	</talkOne>
+	<talkOne>
+		<index>312</index>
+		<who>Cp.Monkey</who>
+		<word>You old sucker, you just took my software and went away, where's my money? Where's my parts? Don't you have any idea of credit??</word>
+	</talkOne>
+	<talkOne>
+		<index>313</index>
+		<who>Head Of XA</who>
+		<word>You must kidding me, I took your things? Hahaha.</word>
+	</talkOne>
+	<talkOne>
+		<index>314</index>
+		<who>Cp.Monkey</who>
+		<word>Alright, then wait for my bullets, AI, kill him!</word>
+	</talkOne>
+	<talkOne>
+		<index>315</index>
+		<who>Head Of XA</who>
+		<word>Hum, you are not that weak.</word>
+	</talkOne>
+	<talkOne>
+		<index>316</index>
+		<who>Captain</who>
+		<word>Lots of them! Closing!</word>
+	</talkOne>
+	<talkOne>
+		<index>317</index>
+		<who>Michael</who>
+		<word>I can carry it.</word>
+	</talkOne>
+	<talkOne>
+		<index>318</index>
+		<who>Head Of XA</who>
+		<word>Hum, interesting!</word>
+	</talkOne>
+	<talkOne>
+		<index>319</index>
+		<who>Captain</who>
+		<word>Again, lots of them.</word>
+	</talkOne>
+	<talkOne>
+		<index>320</index>
+		<who>Michael</who>
+		<word>Then I'll do it again.</word>
+	</talkOne>
+	<talkOne>
+		<index>321</index>
+		<who>Head Of XA</who>
+		<word>Hum, really interesting!</word>
+	</talkOne>
+	<talkOne>
+		<index>322</index>
+		<who>Captain</who>
+		<word>Again and again, can you...</word>
+	</talkOne>
+	<talkOne>
+		<index>323</index>
+		<who>Michael</who>
+		<word>Sure!</word>
+	</talkOne>
+	<talkOne>
+		<index>324</index>
+		<who>Head Of XA</who>
+		<word>Hum, come on, I love this game!</word>
+	</talkOne>
+	<talkOne>
+		<index>325</index>
+		<who>Captain</who>
+		<word>The amount... is... huge. It's not just for game I guess...</word>
+	</talkOne>
+	<talkOne>
+		<index>326</index>
+		<who>Michael</who>
+		<word>My courage always rises with the intimidation.</word>
+	</talkOne>
+	<talkOne>
+		<index>327</index>
+		<who>Wang</who>
+		<word>It comes a premonition...</word>
+	</talkOne>
+	<talkOne>
+		<index>328</index>
+		<who>Tom</who>
+		<word>Could you please don't...</word>
+	</talkOne>
+	<talkOne>
+		<index>329</index>
+		<who>Wang</who>
+		<word>Sorry...</word>
+	</talkOne>
+	<talkOne>
+		<index>330</index>
+		<who>Head Of XA</who>
+		<word>HAHA, take a shot!</word>
+	</talkOne>
+	<talkOne>
+		<index>331</index>
+		<who>Wang</who>
+		<word>Ei...</word>
+	</talkOne>
+	<talkOne>
+		<index>332</index>
+		<who>Michael</who>
+		<word>Sinister!</word>
+	</talkOne>
+	<talkOne>
+		<index>333</index>
+		<who>Captain</who>
+		<word>Our company's gone, it seems...</word>
+	</talkOne>
+	<talkOne>
+		<index>334</index>
+		<who>Wang</who>
+		<word>It comes...</word>
+	</talkOne>
+	<talkOne>
+		<index>335</index>
+		<who>Tom</who>
+		<word>Can you just stop talking?</word>
+	</talkOne>
+	<talkOne>
+		<index>336</index>
+		<who>Wang</who>
+		<word>Fine.</word>
+	</talkOne>
+	<talkOne>
+		<index>337</index>
+		<who>Michael</who>
+		<word>We have no choice, the only way is to kill him. Now he can't use his cannon, last chance.</word>
+	</talkOne>
+	<talkOne>
+		<index>338</index>
+		<who>Captain</who>
+		<word>Nice words. So let's do it together.</word>
+	</talkOne>
+	<talkOne>
+		<index>339</index>
+		<who>Michael</who>
+		<word>To conquer or to die.</word>
+	</talkOne>
+	<talkOne>
+		<index>340</index>
+		<who>Michael</who>
+		<word>Hey, listen, we are not afraid of you, and now we are going to kill you!</word>
+	</talkOne>
+	<talkOne>
+		<index>341</index>
+		<who>Head Of XA</who>
+		<word>Hahaha! Nosense, you will be dust before you could ever touch me.</word>
+	</talkOne>
+	<talkOne>
+		<index>342</index>
+		<who>Michael</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>343</index>
+		<who>Michael</who>
+		<word>Seems... can't win...</word>
+	</talkOne>
+	<talkOne>
+		<index>344</index>
+		<who>Wang</who>
+		<word>In fact, I have an idea in mind at the first beginning...</word>
+	</talkOne>
+	<talkOne>
+		<index>345</index>
+		<who>Michael</who>
+		<word>Why do you come here?</word>
+	</talkOne>
+	<talkOne>
+		<index>346</index>
+		<who>Wang</who>
+		<word>Wait a minute.</word>
+	</talkOne>
+	<talkOne>
+		<index>347</index>
+		<who>Wang</who>
+		<word>Hey, sucker, I have some words for you.</word>
+	</talkOne>
+	<talkOne>
+		<index>348</index>
+		<who>Head Of XA</who>
+		<word>Yeah? You come here for die?</word>
+	</talkOne>
+	<talkOne>
+		<index>349</index>
+		<who>Wang</who>
+		<word>Actually, it comes a premonition...</word>
+	</talkOne>
+	<talkOne>
+		<index>350</index>
+		<who>Head Of XA</who>
+		<word>What was that?</word>
+	</talkOne>
+	<talkOne>
+		<index>351</index>
+		<who>Wang</who>
+		<word>That is... I really can't remember it all in details.</word>
+	</talkOne>
+	<talkOne>
+		<index>352</index>
+		<who>Michael</who>
+		<word>...... Are you kidding me?</word>
+	</talkOne>
+	<talkOne>
+		<index>353</index>
+		<who>Head Of XA</who>
+		<word>Whatever, you idiot!  All of you, eat my big shot!</word>
+	</talkOne>
+	<talkOne>
+		<index>354</index>
+		<who>Wang</who>
+		<word>I just guessed, someone has spit to the energy box of his cannon, then it really burst and ...destroyed...</word>
+	</talkOne>
+	<talkOne>
+		<index>355</index>
+		<who>Captain</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>356</index>
+		<who>Michael</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>357</index>
+		<who>Tom</who>
+		<word>...Hey,are you serious?</word>
+	</talkOne>
+	<talkOne>
+		<index>358</index>
+		<who>Wang</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>359</index>
+		<who>Wang</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>360</index>
+		<who>Michael</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>361</index>
+		<who>Captain</who>
+		<word>......</word>
+	</talkOne>
+	<talkOne>
+		<index>362</index>
+		<who>Captain</who>
+		<word>Anyway, we've destroyed X Army!</word>
+	</talkOne>
+	<talkOne>
+		<index>363</index>
+		<who>Michael</who>
+		<word>Wait, I can't accept this. Why did I fight? You wanna the story end up in this way? No! I can't accept!</word>
+	</talkOne>
+	<talkOne>
+		<index>364</index>
+		<who>Tom</who>
+		<word>Err... just let it go... we won, or do you really want to die on that cannon?</word>
+	</talkOne>
+	<talkOne>
+		<index>365</index>
+		<who>Michael</who>
+		<word>Yeah! Let me die! I don't wanna live anymore!</word>
+	</talkOne>
+	<talkOne>
+		<index>366</index>
+		<who>Captain</who>
+		<word>Pease calm down. We are free, do you know?</word>
+	</talkOne>
+	<talkOne>
+		<index>367</index>
+		<who>Michael</who>
+		<word>I wanna die!! Aaaaaaaaaaaaaaaaaaaaaa........</word>
+	</talkOne>
+	<talkOne>
+		<index>368</index>
+		<who>Somebody</who>
+		<word>So,finally, the story ended like this, please have a cup of tea and enjoy the ending music. And please don't leave now, the game will be continued.</word>
+	</talkOne>
+	<talkOne>
+		<index>369</index>
+		<who>Tom</who>
+		<word>Hey Mic, you can pick crafts here. And... ready to fight?</word>
+	</talkOne>
+	<talkOne>
+		<index>370</index>
+		<who>Tom</who>
+		<word>Hey Mic, pick which you like.</word>
+	</talkOne>
+	<talkOne>
+		<index>371</index>
+		<who>Tom</who>
+		<word>Hey Mic, pick 1 for yourself and additional 5 with AI chips.</word>
+	</talkOne>
+	<talkOne>
+		<index>372</index>
+		<who>Tom</who>
+		<word>Got it, take care.</word>
+	</talkOne>
+	<talkOne>
+		<index>373</index>
+		<who>Tom</who>
+		<word>Got it, take care.</word>
+	</talkOne>
+	<talkOne>
+		<index>374</index>
+		<who>Wang</who>
+		<word>Hey, kid, pick one and rush.</word>
+	</talkOne>
+	<talkOne>
+		<index>375</index>
+		<who>Wang</who>
+		<word>Yeah, see you.</word>
+	</talkOne>
+	<talkOne>
+		<index>376</index>
+		<who>ROBOT-S1</who>
+		<word>WELCOME. HERE YOU CAN TRADE PARTS WITH ME. CASH PARTS, PARTS CASH.</word>
+	</talkOne>
+	<talkOne>
+		<index>377</index>
+		<who>ROBOT-S1</who>
+		<word>NOT ENOUGH CASH. LOOSE YOUR HAND.</word>
+	</talkOne>
+	<talkOne>
+		<index>378</index>
+		<who>ROBOT-S1</who>
+		<word>GOOD DEAL.</word>
+	</talkOne>
+	<talkOne>
+		<index>379</index>
+		<who>ROBOT-S1</who>
+		<word>BYE BYE.</word>
+	</talkOne>
+	<talkOne>
+		<index>380</index>
+		<who>ROBOT-S1</who>
+		<word>ALL THESE PARTS ARE BROKEN! GIVE ME CASH I WILL REPAIR THEM.</word>
+	</talkOne>
+	<talkOne>
+		<index>381</index>
+		<who>ROBOT-S1</who>
+		<word>NOT ENOUGH CASH, I WILL NOT REPAIR ANYTHING.</word>
+	</talkOne>
+	<talkOne>
+		<index>382</index>
+		<who>ROBOT-S1</who>
+		<word>BYE BYE.</word>
+	</talkOne>
+	<talkOne>
+		<index>383</index>
+		<who>Wang</who>
+		<word>Hey, kid. Here I can make crafts for you.</word>
+	</talkOne>
+	<talkOne>
+		<index>384</index>
+		<who>Wang</who>
+		<word>Hey, wanna make some new crafts?</word>
+	</talkOne>
+	<talkOne>
+		<index>385</index>
+		<who>Wang</who>
+		<word>Later.</word>
+	</talkOne>
+	<talkOne>
+		<index>386</index>
+		<who>ROBOT-S1</who>
+		<word>GOOD DEAL.</word>
+	</talkOne>
+	<talkOne>
+		<index>387</index>
+		<who>ROBOT-S1</who>
+		<word>NOW YOU HAVE NOTHING. SO I WILL GIVE YOU SOME CASH.</word>
+	</talkOne>
+</talk>

@@ -10,7 +10,7 @@ namespace ABRevival.Tests
         private static string FindRepoRoot()
         {
             var dir = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-            while (dir != null && !Directory.Exists(Path.Combine(dir.FullName, ".git")))
+            while (dir != null && !File.Exists(Path.Combine(dir.FullName, ".git")) && !Directory.Exists(Path.Combine(dir.FullName, ".git")))
             {
                 dir = dir.Parent;
             }
