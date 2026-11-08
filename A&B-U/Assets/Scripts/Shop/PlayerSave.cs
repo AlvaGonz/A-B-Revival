@@ -20,6 +20,9 @@ namespace ABRevival.Core.Persistence
         [DataMember(Order = 0)] public int version = CurrentVersion;
         [DataMember(Order = 1)] public ShopSaveData shop = new ShopSaveData();
         [DataMember(Order = 2)] public List<BlueprintSaveData> blueprints = new List<BlueprintSaveData>();
+
+        /// <summary>Campaign index (the frozen release's STORY). Missing members from version-1 saves default to 0.</summary>
+        [DataMember(Order = 3)] public int storyIndex;
     }
 
     [DataContract]

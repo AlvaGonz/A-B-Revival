@@ -120,6 +120,7 @@ namespace ABRevival.Tests
             Assert.AreEqual(MissionState.Win, first.State, "Story 0 must finish through its windir act.");
             Assert.AreEqual(27, first.SpawnCount);
             Assert.AreEqual(3, first.HookCount);
+            Assert.AreEqual(1, first.PlaceCount);
             Assert.AreEqual(2618, first.CompletionTick);
             Assert.AreEqual(first.Signature, second.Signature, "Identical input must produce identical spawn order and timestamps.");
 
@@ -138,6 +139,41 @@ namespace ABRevival.Tests
                 Assert.AreEqual("toPlace_Wang", first.Spawns[i].eventName);
                 Assert.IsFalse(first.Spawns[i].friendly);
             }
+        }
+
+        [Test]
+        public void MissionRunner_PlaceTransition_FiresAndRunsFinishActs()
+        {
+            using var simulation = new CombatSimulation();
+            simulation.Init(maxShips: 8, maxProjectiles: 8);
+
+            var level = new LevelRecord { storyKey = 1, cameraWidth = 1000f, cameraHeight = 1000f, background = "test" };
+            level.initialActs.Add(SpawnAct("player", LevelSpawnKind.Player, "Wang", friendly: true));
+
+            var place = new LevelEvent
+            {
+                name = "toPlace_Wang",
+                place = new LevelPlaceTransition { pilot = "Wang", x = -10f, y = -10f, width = 20f, height = 20f }
+            };
+            place.finishActs.Add(new LevelAct { name = "windir", kind = LevelActKind.Windir });
+            level.events.Add(place);
+
+            var runner = new MissionRunner(level, simulation);
+            runner.Start();
+            Assert.AreEqual(0, runner.PlaceTransitions.Count, "Nothing may fire before the first tick.");
+
+            runner.Tick();
+
+            Assert.AreEqual(1, runner.PlaceTransitions.Count);
+            var record = runner.PlaceTransitions[0];
+            Assert.AreEqual(1, record.tick);
+            Assert.AreEqual("toPlace_Wang", record.eventName);
+            Assert.AreEqual("Wang", record.pilot);
+            Assert.AreEqual(-10f, record.x, 0.001f);
+            Assert.AreEqual(-10f, record.y, 0.001f);
+            Assert.AreEqual(20f, record.width, 0.001f);
+            Assert.AreEqual(20f, record.height, 0.001f);
+            Assert.AreEqual(MissionState.Win, runner.State, "The place event's finish act must run.");
         }
 
         [Test]
@@ -162,6 +198,11 @@ namespace ABRevival.Tests
             Assert.AreEqual(MissionEndCause.WindirAct, runner.Result.Value.cause);
             Assert.AreEqual("clock_2", runner.Result.Value.objective);
             Assert.AreEqual(2618, runner.Result.Value.tick);
+
+            Assert.AreEqual(1, runner.PlaceTransitions.Count, "Story 0 must fire toPlace_Wang exactly once.");
+            Assert.AreEqual("toPlace_Wang", runner.PlaceTransitions[0].eventName);
+            Assert.AreEqual("Wang", runner.PlaceTransitions[0].pilot);
+            Assert.AreEqual(1788, runner.PlaceTransitions[0].tick);
 
             Assert.IsTrue(runner.TryConsumeReturnToHangar(out var intent));
             Assert.AreEqual(MissionState.Win, intent.state);
@@ -380,6 +421,7 @@ namespace ABRevival.Tests
                 CompletionTick = runner.CurrentTick,
                 SpawnCount = runner.Spawns.Count,
                 HookCount = runner.Hooks.Count,
+                PlaceCount = runner.PlaceTransitions.Count,
                 Spawns = CopySpawns(runner),
                 Signature = BuildSignature(runner)
             };
@@ -433,6 +475,18 @@ namespace ABRevival.Tests
                     .Append(hook.movieIndex)
                     .AppendLine();
             }
+            for (int i = 0; i < runner.PlaceTransitions.Count; i++)
+            {
+                var place = runner.PlaceTransitions[i];
+                builder.Append(place.tick).Append('|')
+                    .Append(place.eventName).Append('|')
+                    .Append(place.pilot).Append('|')
+                    .Append(place.x.ToString("R", CultureInfo.InvariantCulture)).Append('|')
+                    .Append(place.y.ToString("R", CultureInfo.InvariantCulture)).Append('|')
+                    .Append(place.width.ToString("R", CultureInfo.InvariantCulture)).Append('|')
+                    .Append(place.height.ToString("R", CultureInfo.InvariantCulture))
+                    .AppendLine();
+            }
             return builder.ToString();
         }
 
@@ -457,6 +511,7 @@ namespace ABRevival.Tests
             public int CompletionTick;
             public int SpawnCount;
             public int HookCount;
+            public int PlaceCount;
             public MissionSpawnRecord[] Spawns;
             public string Signature;
         }
