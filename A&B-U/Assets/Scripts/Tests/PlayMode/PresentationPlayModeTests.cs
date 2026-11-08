@@ -177,8 +177,6 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual(library.Reticle, root.Q<Image>(CombatHudPresenter.ReticleElement).sprite);
             Assert.AreEqual(library.ModeBadge, root.Q<Image>(CombatHudPresenter.ModeBadgeElement).sprite);
             Assert.AreEqual(library.CameraBadge, root.Q<Image>(CombatHudPresenter.CameraBadgeElement).sprite);
-            Assert.AreEqual(
-                library.DamageTelemetryRow, root.Q<Image>(CombatHudPresenter.TelemetryElement).sprite);
         }
 
         [Test]

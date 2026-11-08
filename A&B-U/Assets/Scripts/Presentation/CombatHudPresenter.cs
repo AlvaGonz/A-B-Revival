@@ -264,7 +264,6 @@ namespace ABRevival.Presentation
             Assign(root, ReticleElement, sprites.Reticle);
             Assign(root, ModeBadgeElement, sprites.ModeBadge);
             Assign(root, CameraBadgeElement, sprites.CameraBadge);
-            Assign(root, TelemetryElement, sprites.DamageTelemetryRow);
         }
 
         private static void Assign(VisualElement root, string name, Sprite sprite)

@@ -21,9 +21,9 @@
         </ui:Image>
 
         <!-- bottom-left: battle-damage telemetry above the pilot bars -->
-        <ui:Image name="hud-telemetry" class="hud-telemetry">
+        <ui:VisualElement name="hud-telemetry" class="hud-telemetry" picking-mode="Ignore">
             <ui:Label name="hud-lost-parts" text="" class="hud-telemetry-text" picking-mode="Ignore" />
-        </ui:Image>
+        </ui:VisualElement>
         <ui:VisualElement name="hud-bars" class="hud-bars" picking-mode="Ignore">
             <ui:VisualElement name="hud-health-bar" class="hud-bar">
                 <ui:Image name="hud-hull-fill" class="hud-bar-fill hud-health-fill" />
