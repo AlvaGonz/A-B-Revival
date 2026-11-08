@@ -51,3 +51,12 @@ Every PNG is imported as a single sprite, `Pixels Per Unit = 1`, custom pivot `(
 the symbol origin (the socket grid origin), full-rect mesh, no mipmaps, no POT rescaling, and
 uncompressed source pixels. Compression happens only in the atlases: BC7 for Standalone,
 ASTC 6x6 for Android and iOS.
+
+## Cinematics
+
+`CinematicExporter` regenerates `Mov1`-`Mov9` from the frozen SWF:
+
+- Unity menu: `Tools > A&B Revival > Export Cinematics`
+- Command line: `scripts\export-cinematics.bat`
+
+FFDec (resolved from `FFDEC_CLI`, then the default Windows install path) renders the frames; Unity's `MediaEncoder` writes 1920x1080 H.264 MP4 files to `Assets/Resources/Cinematics/`.
