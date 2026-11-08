@@ -11,7 +11,7 @@ namespace ABRevival.Presentation
     /// Mirrors <see cref="CombatSimulation"/>'s Init/Tick/Dispose lifecycle while keeping job
     /// handles and native buffer lifetimes out of controllers.
     /// </summary>
-    public sealed class ScheduledCombatSimulation : IDisposable
+    public sealed class ScheduledCombatSimulation : IDisposable, IMissionSimulation
     {
         private const int InnerLoopBatchCount = 32;
 
@@ -58,6 +58,10 @@ namespace ABRevival.Presentation
                 _projectileCount = value;
             }
         }
+
+        /// <summary>Live projectiles for the contact solver. Empty until weapons spawn projectiles.</summary>
+        public Span<ProjectileData> Projectiles =>
+            _projectiles.IsCreated ? _projectiles.AsSpan().Slice(0, _projectileCount) : Span<ProjectileData>.Empty;
 
         /// <summary>
         /// Index of the player-controlled ship. Tactical AI never overwrites this ship's input.

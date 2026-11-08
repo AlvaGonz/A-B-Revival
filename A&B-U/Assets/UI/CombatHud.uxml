@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="flow-cinematic-surface" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: none; background-color: rgb(0, 0, 0);" />
+    <ui:VisualElement name="hud-root" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" picking-mode="Ignore">
+        <ui:Label name="hud-hull-value" text="1000 / 1000" style="position: absolute; left: 24px; top: 24px; font-size: 22px; color: rgb(220, 236, 255);" />
+        <ui:VisualElement name="hud-hull-fill" style="position: absolute; left: 24px; top: 54px; width: 320px; height: 10px; background-color: rgb(90, 200, 120);" />
+        <ui:Label name="hud-lost-parts" text="" style="position: absolute; left: 24px; top: 74px; font-size: 14px; color: rgb(255, 196, 120);" />
+        <ui:Label name="hud-captain-mode" text="AN" style="position: absolute; right: 24px; top: 24px; font-size: 20px; color: rgb(255, 204, 0);" />
+        <ui:Label name="hud-camera-badge" text="[ CAM: SHORT (1.0x) ]" style="position: absolute; left: 0; right: 0; bottom: 30px; font-size: 18px; color: rgb(255, 204, 0); -unity-text-align: middle-center;" />
+    </ui:VisualElement>
+    <ui:Label name="flow-result-label" text="" style="position: absolute; left: 0; top: 420px; right: 0; font-size: 44px; color: rgb(255, 240, 180); -unity-text-align: middle-center; display: none;" />
+</ui:UXML>

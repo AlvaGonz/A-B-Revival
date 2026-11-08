@@ -31,9 +31,31 @@ namespace ABRevival.Presentation
         private ShopPresenter _shopPresenter;
         private Label _messageLabel;
         private readonly PlayerSaveData _payload = new PlayerSaveData();
+        private bool _initialized;
+
+        /// <summary>Current shop money, exposed for boot/save verification.</summary>
+        public int Money => _shop != null ? _shop.Money : 0;
+
+        /// <summary>Raised when the player asks to launch the next story mission.</summary>
+        public event Action LaunchRequested;
 
         private void Start()
         {
+            Initialize(null);
+        }
+
+        /// <summary>
+        /// Builds the hangar UI once and applies a player save. GameFlowController calls this at
+        /// boot; calling it again with a save refreshes the shop, blueprint and story label.
+        /// </summary>
+        public void Initialize(PlayerSaveData save)
+        {
+            if (_initialized)
+            {
+                if (save != null) ApplySave(save);
+                return;
+            }
+
             _document = GetComponent<UIDocument>();
             if (_document == null || _document.rootVisualElement == null)
             {
@@ -63,8 +85,71 @@ namespace ABRevival.Presentation
             if (saveButton != null) saveButton.clicked += Save;
             Button loadButton = root.Q<Button>("load-button");
             if (loadButton != null) loadButton.clicked += Load;
+            Button launchButton = root.Q<Button>("launch-button");
+            if (launchButton != null) launchButton.clicked += OnLaunchClicked;
 
+            _initialized = true;
             OnDomainChanged();
+            SetStoryLabel(_payload.storyIndex);
+            if (save != null) ApplySave(save);
+        }
+
+        /// <summary>Captures the current shop and blueprint into the single player payload.</summary>
+        public void CaptureSave(PlayerSaveData target)
+        {
+            if (target == null || !_initialized) return;
+
+            target.shop = _shop.CreateSave();
+            target.blueprints.Clear();
+            target.blueprints.Add(BlueprintSaveMapper.Capture(_runtimeBlueprint));
+        }
+
+        /// <summary>Restores shop money, stock, owned parts and the mounted blueprint.</summary>
+        public void ApplySave(PlayerSaveData payload)
+        {
+            if (!_initialized || payload == null) return;
+
+            _payload.storyIndex = payload.storyIndex;
+            _shop.LoadFrom(payload.shop);
+            if (payload.blueprints.Count > 0)
+            {
+                BlueprintSaveMapper.Apply(payload.blueprints[0], _runtimeBlueprint);
+            }
+
+            _assembly.Dispose();
+            _assembly = BuildAssembly(_runtimeBlueprint);
+            _assemblyPresenter.Rebind(_assembly, _runtimeBlueprint);
+            OnDomainChanged();
+            SetStoryLabel(payload.storyIndex);
+        }
+
+        /// <summary>Shows or hides the whole hangar overlay.</summary>
+        public void SetVisible(bool visible)
+        {
+            if (_document == null) _document = GetComponent<UIDocument>();
+            if (_document != null && _document.rootVisualElement != null)
+            {
+                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+        }
+
+        /// <summary>Updates the story index shown in the hangar header.</summary>
+        public void SetStory(int storyIndex)
+        {
+            _payload.storyIndex = storyIndex;
+            SetStoryLabel(storyIndex);
+        }
+
+        private void OnLaunchClicked()
+        {
+            LaunchRequested?.Invoke();
+        }
+
+        private void SetStoryLabel(int storyIndex)
+        {
+            if (_document == null || _document.rootVisualElement == null) return;
+            Label storyLabel = _document.rootVisualElement.Q<Label>("story-label");
+            if (storyLabel != null) storyLabel.text = $"STORY {storyIndex}";
         }
 
         private void OnDestroy()

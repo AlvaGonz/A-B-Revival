@@ -21,6 +21,12 @@
     margin-right: 24px;
 }
 
+.hangar-story {
+    font-size: 14px;
+    color: rgb(150, 176, 206);
+    margin-right: 24px;
+}
+
 .hangar-money {
     font-size: 20px;
     -unity-font-style: bold;

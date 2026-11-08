@@ -10,7 +10,7 @@ namespace ABRevival.Presentation.Audio
     /// Original game IP: Vargames (2011).
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class AudioService : MonoBehaviour, IAudioService, IMenuAudio, IAssemblyAudio, ICombatAudio, IMissionAudio
+    public sealed class AudioService : MonoBehaviour, IAudioService, IMenuAudio, IAssemblyAudio, ICombatAudio, IMissionAudio, ITalkAudio
     {
         private const string MixerResourcePath = "Audio/ABRevivalAudioMixer";
         private const string ClipResourceRoot = "Audio/Original/";
@@ -559,6 +559,11 @@ namespace ABRevival.Presentation.Audio
         public void TalkAdvanced()
         {
             PlayTrigger(AudioTrigger.MissionTalkAdvance);
+        }
+
+        public void PlayAdvanceClick()
+        {
+            TalkAdvanced();
         }
 
         public void MissionWon()

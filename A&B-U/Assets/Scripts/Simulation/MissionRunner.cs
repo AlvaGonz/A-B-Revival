@@ -146,7 +146,7 @@ namespace ABRevival.Core.Simulation
         }
 
         private readonly LevelRecord _level;
-        private readonly CombatSimulation _simulation;
+        private readonly IMissionSimulation _simulation;
         private readonly float _tickSeconds;
         private readonly List<LevelEvent> _activeEvents = new List<LevelEvent>();
         private readonly List<TimedEventState> _clockEvents = new List<TimedEventState>();
@@ -165,11 +165,16 @@ namespace ABRevival.Core.Simulation
         private bool _returnToHangarPending;
 
         public MissionRunner(LevelRecord level, CombatSimulation simulation, float tickSeconds = DefaultTickSeconds)
+            : this(level, Wrap(simulation), tickSeconds)
+        {
+        }
+
+        public MissionRunner(LevelRecord level, IMissionSimulation simulation, float tickSeconds = DefaultTickSeconds)
         {
             _level = level ?? throw new ArgumentNullException(nameof(level));
             _simulation = simulation ?? throw new ArgumentNullException(nameof(simulation));
             if (!simulation.IsInitialized)
-                throw new ArgumentException("CombatSimulation must be initialized before creating a MissionRunner.", nameof(simulation));
+                throw new ArgumentException("The simulation must be initialized before creating a MissionRunner.", nameof(simulation));
             if (tickSeconds <= 0f)
                 throw new ArgumentOutOfRangeException(nameof(tickSeconds), "tickSeconds must be greater than zero.");
 
@@ -180,6 +185,35 @@ namespace ABRevival.Core.Simulation
         public MissionRunner(LevelCatalog catalog, int storyIndex, CombatSimulation simulation, float tickSeconds = DefaultTickSeconds)
             : this(catalog != null ? catalog.GetLevel(storyIndex) : throw new ArgumentNullException(nameof(catalog)), simulation, tickSeconds)
         {
+        }
+
+        private static IMissionSimulation Wrap(CombatSimulation simulation)
+        {
+            return simulation != null ? new CombatSimulationTarget(simulation) : null;
+        }
+
+        /// <summary>Adapts the pure simulation to the runner seam without changing its public API.</summary>
+        private sealed class CombatSimulationTarget : IMissionSimulation
+        {
+            private readonly CombatSimulation _simulation;
+
+            public CombatSimulationTarget(CombatSimulation simulation)
+            {
+                _simulation = simulation;
+            }
+
+            public bool IsInitialized => _simulation.IsInitialized;
+            public int MaxShips => _simulation.MaxShips;
+
+            public int ShipCount
+            {
+                get => _simulation.ShipCount;
+                set => _simulation.ShipCount = value;
+            }
+
+            public void SetShip(int index, in ShipEntity ship) => _simulation.SetShip(index, in ship);
+            public ShipEntity GetShip(int index) => _simulation.GetShip(index);
+            public void Tick(float deltaTime) => _simulation.Tick(deltaTime);
         }
 
         public LevelRecord Level => _level;

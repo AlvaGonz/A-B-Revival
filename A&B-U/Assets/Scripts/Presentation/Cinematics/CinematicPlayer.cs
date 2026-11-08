@@ -73,6 +73,27 @@ namespace ABRevival.Presentation.Cinematics
             PrepareCurrent();
         }
 
+        /// <summary>Redirects video output to a render texture (or back to API-only).</summary>
+        public void SetTargetTexture(RenderTexture texture)
+        {
+            targetTexture = texture;
+            if (_videoPlayer == null)
+            {
+                return;
+            }
+
+            if (texture != null)
+            {
+                _videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+                _videoPlayer.targetTexture = texture;
+            }
+            else
+            {
+                _videoPlayer.renderMode = VideoRenderMode.APIOnly;
+                _videoPlayer.targetTexture = null;
+            }
+        }
+
         /// <summary>Advances past the current clip as if it had reached its end.</summary>
         public void Skip()
         {
