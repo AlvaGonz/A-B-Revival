@@ -9,7 +9,7 @@ namespace ABRevival.Core.Hud
     /// Pure combat HUD state established by ADR 0004: hull health, cumulative
     /// battle-damage telemetry, Captain tactical mode code, and the ephemeral
     /// camera-distance badge. The frozen HUD readouts added in ticket #168 (money,
-    /// mission timer, AI count, target distance, energy/shield, pilot name, radar
+    /// mission timer, AI count, target distance, shield, pilot name, radar
     /// bearing, reticle) live here too. No Unity API is used so the Tier 1 gate can
     /// exercise every transition.
     /// </summary>
@@ -33,7 +33,6 @@ namespace ABRevival.Core.Hud
         private float _missionSeconds;
         private int _aiCount;
         private float _enemyDistance;
-        private float _energyFraction = 1f;
         private float _shieldFraction = 1f;
         private string _pilotName = string.Empty;
         private float _radarBearingDegrees;
@@ -61,7 +60,6 @@ namespace ABRevival.Core.Hud
         public float MissionSeconds => _missionSeconds;
         public int AiCount => _aiCount;
         public float EnemyDistance => _enemyDistance;
-        public float EnergyFraction => _energyFraction;
         public float ShieldFraction => _shieldFraction;
         public string PilotName => _pilotName;
         public float RadarBearingDegrees => _radarBearingDegrees;
@@ -87,12 +85,6 @@ namespace ABRevival.Core.Hud
 
             _hullMax = max;
             _hullCurrent = current < 0f ? 0f : current > max ? max : current;
-        }
-
-        /// <summary>Energy bar fill, already normalized by the caller.</summary>
-        public void SetEnergyFraction(float fraction)
-        {
-            _energyFraction = ClampFraction(fraction, nameof(fraction));
         }
 
         /// <summary>Shield/boost bar fill, already normalized by the caller.</summary>
@@ -267,7 +259,6 @@ namespace ABRevival.Core.Hud
                 _missionSeconds,
                 _aiCount,
                 _enemyDistance,
-                _energyFraction,
                 _shieldFraction,
                 _pilotName,
                 _radarBearingDegrees,
@@ -317,7 +308,6 @@ namespace ABRevival.Core.Hud
         public readonly float MissionSeconds;
         public readonly int AiCount;
         public readonly float EnemyDistance;
-        public readonly float EnergyFraction;
         public readonly float ShieldFraction;
         public readonly string PilotName;
         public readonly float RadarBearingDegrees;
@@ -341,7 +331,6 @@ namespace ABRevival.Core.Hud
             float missionSeconds,
             int aiCount,
             float enemyDistance,
-            float energyFraction,
             float shieldFraction,
             string pilotName,
             float radarBearingDegrees,
@@ -367,7 +356,6 @@ namespace ABRevival.Core.Hud
             MissionSeconds = missionSeconds;
             AiCount = aiCount;
             EnemyDistance = enemyDistance;
-            EnergyFraction = energyFraction;
             ShieldFraction = shieldFraction;
             PilotName = pilotName;
             RadarBearingDegrees = radarBearingDegrees;
@@ -383,6 +371,8 @@ namespace ABRevival.Core.Hud
     public static class TacticalModeCodes
     {
         private static readonly string[] Codes = { "AN", "ES", "EV", "SD", "FS", "SH" };
+
+        public static int Count => Codes.Length;
 
         public static string Code(CaptainTacticalMode mode)
         {
@@ -412,11 +402,35 @@ namespace ABRevival.Core.Hud
             return (money < 0 ? 0 : money).ToString("N0", Invariant) + " G";
         }
 
+        // shortcut: cached to 99:59; longer missions fall back to one format per second.
+        private const int MissionTimeCacheSeconds = 100 * 60;
+        private static readonly string[] MissionTimeCache = BuildMissionTimeCache();
+
         /// <summary>Mission clock as mm:ss; hours fold into minutes like the frozen timer.</summary>
         public static string FormatMissionTime(float seconds)
         {
-            int total = seconds > 0f ? (int)Math.Floor(seconds) : 0;
-            return (total / 60).ToString("00", Invariant) + ":" + (total % 60).ToString("00", Invariant);
+            return FormatMissionTime(seconds > 0f ? (int)Math.Floor(seconds) : 0);
+        }
+
+        /// <summary>Mission clock as mm:ss from a cached table so the HUD never allocates in Update.</summary>
+        public static string FormatMissionTime(int totalSeconds)
+        {
+            if (totalSeconds < 0) totalSeconds = 0;
+            if (totalSeconds < MissionTimeCache.Length) return MissionTimeCache[totalSeconds];
+            return (totalSeconds / 60).ToString("00", Invariant) + ":" +
+                   (totalSeconds % 60).ToString("00", Invariant);
+        }
+
+        private static string[] BuildMissionTimeCache()
+        {
+            var cache = new string[MissionTimeCacheSeconds];
+            for (int second = 0; second < cache.Length; second++)
+            {
+                cache[second] = (second / 60).ToString("00", Invariant) + ":" +
+                                (second % 60).ToString("00", Invariant);
+            }
+
+            return cache;
         }
 
         public static string FormatAiCount(int count)
@@ -442,8 +456,18 @@ namespace ABRevival.Core.Hud
 
         public static string FormatModeBadge(bool captainPresent, CaptainTacticalMode mode)
         {
-            return "TACTICAL " + (captainPresent ? TacticalModeCodes.Code(mode) : "--");
+            if (!captainPresent) return "TACTICAL --";
+            int index = (int)mode;
+            if (index < 0 || index >= TacticalModeCodes.Count)
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, "Unknown Captain tactical mode.");
+            return ModeBadges[index];
         }
+
+        private static readonly string[] ModeBadges =
+        {
+            "TACTICAL AN", "TACTICAL ES", "TACTICAL EV",
+            "TACTICAL SD", "TACTICAL FS", "TACTICAL SH"
+        };
 
         public static string FormatLostParts(in CombatHudSnapshot snapshot)
         {

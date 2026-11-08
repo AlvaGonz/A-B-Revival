@@ -210,6 +210,62 @@ namespace ABRevival.Tests
         }
 
         [Test]
+        public void CraftComposition_PlayerBlueprint_UsesSocketsMirroringAndLayerOrder()
+        {
+            PartMountTable table = ParseCommitted();
+            Span<MountedPartData> parts = stackalloc MountedPartData[5];
+            parts[0] = new MountedPartData { partId = 0, category = PartCategory.Body };
+            parts[1] = new MountedPartData { partId = 133, category = PartCategory.Engine };
+            parts[2] = new MountedPartData { partId = 173, category = PartCategory.Wing };
+            parts[3] = new MountedPartData { partId = 222, category = PartCategory.Wing, mirrored = true };
+            parts[4] = new MountedPartData { partId = 71, category = PartCategory.Gun };
+
+            Span<CraftPartPlacement> placements = stackalloc CraftPartPlacement[8];
+            int count = CraftComposition.BuildPlayer(parts, table, placements);
+            Assert.AreEqual(5, count);
+
+            // Engine, hull, wings, gun; the body is the second layer, not the first paint.
+            Assert.AreEqual(PartCategory.Engine, placements[0].category);
+            Assert.AreEqual(PartCategory.Body, placements[1].category);
+            Assert.AreEqual(PartCategory.Wing, placements[2].category);
+            Assert.AreEqual(PartCategory.Wing, placements[3].category);
+            Assert.AreEqual(PartCategory.Gun, placements[4].category);
+
+            Assert.Less(placements[0].localOffset.y, 0f, "The engine must sit aft.");
+            Assert.Greater(placements[4].localOffset.y, 0f, "The gun must sit forward when no free socket remains.");
+            Assert.IsFalse(placements[2].mirrored, "The left wing keeps its art orientation.");
+            Assert.IsTrue(placements[3].mirrored, "The right wing variant is mirrored.");
+        }
+
+        [Test]
+        public void FireFormula_MatchesTheFrozenDisplayValues()
+        {
+            PartMountTable table = ParseCommitted();
+            List<PartDefinitionRecord> parts = PartCatalogParser.ParseCatalogFromFiles(
+                BinaryDataPath("8_all.AllData_defPart.bin"),
+                BinaryDataPath("2_all.AllData_defFire.bin"),
+                BinaryDataPath("11_all.AllData_defBullet.bin"));
+
+            PartDefinitionRecord gun1 = parts.Find(part => part.partId == 71);
+            PartDefinitionRecord gun43 = parts.Find(part => part.partId == 113);
+            PartDefinitionRecord gun51 = parts.Find(part => part.partId == 121);
+            Assert.IsNotNull(gun1);
+            Assert.IsNotNull(gun43);
+            Assert.IsNotNull(gun51);
+
+            Span<float2> muzzles = stackalloc float2[8];
+            Assert.AreEqual(1, table.CopyFirePoints(71, muzzles));
+            Assert.AreEqual(3, table.CopyFirePoints(113, muzzles));
+            Assert.AreEqual(2, table.CopyFirePoints(121, muzzles));
+
+            // Frozen FormShop.f4linkToArray: firePoints * firePowRate * bulletPow / 300000.
+            Assert.AreEqual(340f, gun1.CalculateFirePowerRate(), 0.01f);
+            Assert.AreEqual(904f, gun1.CalculateBulletPower(), 0.01f);
+            Assert.AreEqual(1.0245f, gun1.CalculateDisplayFirePower(1), 0.0001f);
+            Assert.AreEqual(30.081f, gun43.CalculateDisplayFirePower(3), 0.001f);
+        }
+
+        [Test]
         public void BulletTable_MapsEveryFrozenBulletToArt()
         {
             string path = DataPath("BulletSprites.txt");

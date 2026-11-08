@@ -125,6 +125,8 @@ namespace ABRevival.Tests.PlayMode
                 Assert.Greater(view.ActiveParticleCount, 0, "Component-loss impacts must spawn particles.");
                 view.Render(0f);
                 Assert.Greater(view.InstanceCount, 200, "The four frozen starfield layers must submit instances.");
+                Assert.LessOrEqual(view.InstanceCount, view.Capacity,
+                    "Projectile trails must fit inside the render capacity budget.");
                 for (int i = 0; i < 5; i++) view.Render(DeltaTime);
                 allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
                 for (int i = 0; i < 30; i++) view.Render(DeltaTime);
@@ -132,6 +134,65 @@ namespace ABRevival.Tests.PlayMode
                 Assert.AreEqual(0, allocatedBytes,
                     $"Starfield and combat effects allocated {allocatedBytes} bytes over 30 frames.");
                 Assert.Greater(view.StarCount, 0, "The frozen parallax starfield must have stars.");
+            }
+            finally
+            {
+                if (renderer != null) renderer.enabled = false;
+                UnityEngine.Object.DestroyImmediate(go);
+                solver.Dispose();
+                simulation.Dispose();
+            }
+        }
+
+        [Test]
+        public void EngineTrail_EmitsAtRestThroughFractionalAccumulation()
+        {
+            if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null)
+                Assert.Ignore("BatchRendererGroup requires a graphics device; skipped in -nographics runs.");
+
+            SpriteUvTable table = LoadCommittedTable();
+            var simulation = new ScheduledCombatSimulation();
+            var solver = new ProjectileContactSolver(maxHulls: 1, maxPartsPerHull: 1, maxProjectiles: 1);
+            var go = new GameObject("mission-trail-test");
+            BatchSpriteRenderer renderer = null;
+
+            try
+            {
+                simulation.Init(maxShips: 1, maxProjectiles: 1);
+                simulation.ShipCount = 1;
+                simulation.SetShip(0, Ship(0f, 0f, factionId: 0));
+
+                Span<HullPartDefinition> parts = stackalloc HullPartDefinition[1];
+                parts[0] = new HullPartDefinition
+                {
+                    part = new MountedPartData
+                    {
+                        partId = 133,
+                        category = PartCategory.Engine,
+                        health = 100f,
+                        maxHealth = 100f,
+                        localOffset = new float2(0f, -40f)
+                    },
+                    hitRadius = 10f
+                };
+
+                int hull = solver.RegisterHull(float2.zero, 0f, factionId: 0);
+                solver.SetHullParts(hull, parts);
+
+                renderer = go.AddComponent<BatchSpriteRenderer>();
+                var view = go.AddComponent<MissionSpriteView>();
+                view.StarfieldEnabled = false;
+                view.EffectsEnabled = true;
+                view.Initialize(table, null, capacity: 8);
+                Assert.IsTrue(view.BeginMission(simulation, solver, new[] { hull }, playerIndex: 0, capacity: 8));
+
+                for (int frame = 0; frame < 30; frame++)
+                    view.Render(DeltaTime);
+
+                Assert.Greater(view.ActiveParticleCount, 0,
+                    "A resting engine must still emit through fractional accumulation.");
+                Assert.LessOrEqual(view.InstanceCount, view.Capacity,
+                    "Projectile trails must fit inside the render capacity budget.");
             }
             finally
             {

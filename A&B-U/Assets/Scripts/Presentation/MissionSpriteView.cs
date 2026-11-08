@@ -59,6 +59,7 @@ namespace ABRevival.Presentation
         private int _starCount;
         private EffectParticle[] _particles;
         private int _particleCount;
+        private float[] _trailRemainders = Array.Empty<float>();
         private uint _randomState = 0x9E3779B9u;
         private float _viewWidth = CameraDistancePresets.DesignWidth;
         private float _viewHeight = CameraDistancePresets.DesignHeight;
@@ -126,7 +127,8 @@ namespace ABRevival.Presentation
                     _uvTable = SpriteUvTable.Parse(_uvTableData.text);
                 }
 
-                Initialize(_uvTable, _atlas, capacity);
+                // One instance per part, one per projectile and one trail per projectile.
+                Initialize(_uvTable, _atlas, capacity + simulation.MaxProjectiles);
             }
             catch (Exception exception)
             {
@@ -141,6 +143,9 @@ namespace ABRevival.Presentation
             _simulation = simulation;
             _solver = solver;
             _shipToHull = shipToHull;
+            int trailSlots = simulation.MaxShips * CraftAssembly.MaxCapacity;
+            if (_trailRemainders.Length < trailSlots) _trailRemainders = new float[trailSlots];
+            else Array.Clear(_trailRemainders, 0, _trailRemainders.Length);
             _particleCount = 0;
             _active = true;
             Render(0f);
@@ -154,6 +159,7 @@ namespace ABRevival.Presentation
             _solver = null;
             _shipToHull = null;
             _particleCount = 0;
+            Array.Clear(_trailRemainders, 0, _trailRemainders.Length);
 
             if (_renderer == null) return;
             _renderer.ClearInstances();
@@ -248,22 +254,11 @@ namespace ABRevival.Presentation
                 {
                     if (!_solver.IsPartMounted(hull, partIndex)) continue;
                     MountedPartData part = _solver.GetPart(hull, partIndex);
-                    if (Layer(part.category) != layer) continue;
+                    if (CraftComposition.Layer(part.category) != layer) continue;
                     AddPart(in ship, in part);
                     if (EffectsEnabled && part.category == PartCategory.Engine)
-                        SpawnEngineTrail(in ship, in part, deltaTime);
+                        SpawnEngineTrail(hull, partIndex, in ship, in part, deltaTime);
                 }
-            }
-        }
-
-        private static int Layer(PartCategory category)
-        {
-            switch (category)
-            {
-                case PartCategory.Engine: return 0;
-                case PartCategory.Body: return 1;
-                case PartCategory.Wing: return 2;
-                default: return 3;
             }
         }
 
@@ -472,13 +467,19 @@ namespace ABRevival.Presentation
             }
         }
 
-        private void SpawnEngineTrail(in ShipEntity ship, in MountedPartData part, float deltaTime)
+        private void SpawnEngineTrail(int hull, int partIndex, in ShipEntity ship, in MountedPartData part, float deltaTime)
         {
             if (deltaTime <= 0f || _mountTable == null) return;
 
+            int emitter = (hull * CraftAssembly.MaxCapacity) + partIndex;
+            if ((uint)emitter >= (uint)_trailRemainders.Length) return;
+
             float speed = math.length(ship.velocity);
             float rate = 12f + (speed * 0.05f);
-            int count = (int)(rate * deltaTime);
+            // Emit fractionally: (int)(rate * dt) would truncate to zero below ~960 px/s.
+            float pending = _trailRemainders[emitter] + (rate * deltaTime);
+            int count = (int)pending;
+            _trailRemainders[emitter] = pending - count;
             if (count <= 0) return;
 
             float cos = math.cos(ship.rotation);
@@ -486,21 +487,28 @@ namespace ABRevival.Presentation
             float2 origin = new float2(
                 ship.position.x + (cos * part.localOffset.x) - (sin * part.localOffset.y),
                 ship.position.y + (sin * part.localOffset.x) + (cos * part.localOffset.y));
-            float2 exhaust = _mountTable.ExhaustPoint(part.partId, origin);
+
+            float2 exhaustLocal = _mountTable.ExhaustLocal(part.partId);
+            float2 exhaust = origin + new float2(
+                (cos * exhaustLocal.x) - (sin * exhaustLocal.y),
+                (sin * exhaustLocal.x) + (cos * exhaustLocal.y));
+
             float2 forward = ShipEntity.Forward(ship.rotation);
-            float2 stretch = new float2(-sin, cos);
+            float2 lateral = new float2(cos, sin);
             bool friendly = ship.factionId == 0;
             var color = friendly
                 ? new Color32(90, 220, 255, 200)
                 : new Color32(255, 130, 70, 200);
+            int available = _particles.Length - _particleCount;
+            if (count > available) count = available;
 
-            for (int i = 0; i < count && _particleCount < _particles.Length; i++)
+            for (int i = 0; i < count; i++)
             {
                 float spread = (NextFloat() * 2f - 1f) * 24f;
                 _particles[_particleCount++] = new EffectParticle
                 {
-                    position = exhaust + (stretch * ((NextFloat() * 2f - 1f) * 2f)),
-                    velocity = (-forward * (30f + (speed * 0.25f))) + (stretch * spread) + (ship.velocity * 0.35f),
+                    position = exhaust + (lateral * ((NextFloat() * 2f - 1f) * 2f)),
+                    velocity = (-forward * (30f + (speed * 0.25f))) + (lateral * spread) + (ship.velocity * 0.35f),
                     life = 0.18f + (NextFloat() * 0.18f),
                     maxLife = 0.36f,
                     size = 2f + (NextFloat() * 2f),

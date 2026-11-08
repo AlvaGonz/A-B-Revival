@@ -53,6 +53,7 @@ namespace ABRevival.Presentation
         private CraftBlueprintSO _runtimeBlueprint;
         private List<PartDefinitionSO> _definitions;
         private int[][] _defaultGifts;
+        private PartMountTable _mountTable;
         private AssemblyPresenter _assemblyPresenter;
         private ShopPresenter _shopPresenter;
         private PlayerSaveData _payload = new PlayerSaveData();
@@ -60,6 +61,9 @@ namespace ABRevival.Presentation
 
         /// <summary>Current shop money, exposed for boot/save verification.</summary>
         public int Money => _shop != null ? _shop.Money : 0;
+
+        /// <summary>The live assembly presenter, exposed for PlayMode tab/preview verification.</summary>
+        public AssemblyPresenter Assembly => _assemblyPresenter;
 
         /// <summary>True when the shop has a stock row for the part (save reconciliation telemetry).</summary>
         public bool IsUnlocked(int partId) => _shop != null && _shop.IsUnlocked(partId);
@@ -111,6 +115,7 @@ namespace ABRevival.Presentation
             _catalog = BuildCatalog(_definitions);
             _defaultGifts = BuildDefaultGifts(_definitions);
             _shop = new ShopState(_catalog, startingMoney);
+            _mountTable = LoadMountTable();
 
             _runtimeBlueprint = blueprint != null ? Instantiate(blueprint) : CreateDefaultBlueprint();
             _assembly = BuildAssembly(_runtimeBlueprint);
@@ -118,7 +123,7 @@ namespace ABRevival.Presentation
             VisualElement root = _document.rootVisualElement;
             ApplySkin(root);
             _assemblyPresenter = new AssemblyPresenter(
-                root, _assembly, _runtimeBlueprint, _definitions, _shop, OnDomainChanged);
+                root, _assembly, _runtimeBlueprint, _definitions, _shop, OnDomainChanged, _mountTable);
             _shopPresenter = new ShopPresenter(
                 root, _shop, OnDomainChanged, _definitions,
                 buttonAdd,
@@ -371,10 +376,10 @@ namespace ABRevival.Presentation
                 mass = source.hullMass
             });
 
-            AddDefaultPart(mounted, FindPartDefinition(133), 0f, 8f);
+            AddDefaultPart(mounted, FindPartDefinition(133), 0f, -16f);
             AddDefaultPart(mounted, FindPartDefinition(173), -14f, 0f);
-            AddDefaultPart(mounted, FindPartDefinition(174), 14f, 0f);
-            AddDefaultPart(mounted, FindPartDefinition(71), 0f, -16f);
+            AddDefaultPart(mounted, FindPartDefinition(222), 14f, 0f);
+            AddDefaultPart(mounted, FindPartDefinition(71), 0f, 8f);
 
             source.mountedParts = mounted.ToArray();
             return source;
@@ -392,8 +397,23 @@ namespace ABRevival.Presentation
                 mass = definition.mass,
                 thrust = definition.thrust,
                 energyDraw = definition.energyDraw,
-                localOffset = new Unity.Mathematics.float2(x, y)
+                localOffset = new Unity.Mathematics.float2(x, y),
+                mirrored = definition.lr == 1
             });
+        }
+
+        private static PartMountTable LoadMountTable()
+        {
+            try
+            {
+                TextAsset table = Resources.Load<TextAsset>("Data/PartMounts");
+                return table != null ? PartMountTable.Parse(table.text) : null;
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"[Hangar] Part mount table unavailable: {exception.Message}");
+                return null;
+            }
         }
 
     }

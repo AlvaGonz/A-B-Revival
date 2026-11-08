@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 REM ============================================================================
 REM A&B Revival - Unity Automated Test Runner (ADR 0016)
 REM Tier 1: Fast standalone CLI (.NET SDK) - ~150ms inner loop
-REM Tier 2: Headless Unity UTF EditMode/PlayMode - Full engine integration
+REM Tier 2: Headless Unity UTF EditMode and PlayMode - Full engine integration
 REM Handles ampersand '&' in repository path cleanly.
 REM ============================================================================
 
@@ -58,6 +58,16 @@ if %UNITY_EXIT% EQU 0 (
     echo [TestRunner] Tier 2 Unity EditMode tests passed!
 ) else (
     echo [TestRunner ERROR] Unity EditMode tests exited with code %UNITY_EXIT%. See reports\unity-editmode.log.
+    exit /b %UNITY_EXIT%
+)
+
+echo [TestRunner] Running Tier 2 Headless Unity UTF PlayMode tests...
+"%UNITY_EXE%" -batchmode -projectPath "%PROJECT_DIR%" -runTests -testPlatform PlayMode -testResults "%REPO_ROOT%\reports\unity-playmode-results.xml" -logFile "%REPO_ROOT%\reports\unity-playmode.log"
+set UNITY_EXIT=%ERRORLEVEL%
+if %UNITY_EXIT% EQU 0 (
+    echo [TestRunner] Tier 2 Unity PlayMode tests passed!
+) else (
+    echo [TestRunner ERROR] Unity PlayMode tests exited with code %UNITY_EXIT%. See reports\unity-playmode.log.
     exit /b %UNITY_EXIT%
 )
 goto :EOF

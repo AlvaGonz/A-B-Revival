@@ -10,7 +10,7 @@ namespace ABRevival.Presentation
     /// <summary>
     /// UI Toolkit HUD presenter for ADR 0004/0005 rebuilt on the frozen 2011 layout
     /// (ticket #168): money plate and pause/help, radar with distance and mission timer,
-    /// AI x N, telemetry, pilot portrait with health/shield/energy and name, minimap with
+    /// AI x N, telemetry, pilot portrait with health and shield bars and name, minimap with
     /// the Captain portrait, mouse reticle, and the tactical/camera badges.
     /// Elements and sprites are cached once; unchanged values are not rewritten, so the
     /// steady-state per-frame path allocates nothing.
@@ -30,15 +30,18 @@ namespace ABRevival.Presentation
         public const string AiCountElement = "hud-ai-count-value";
         public const string TelemetryElement = "hud-telemetry";
         public const string LostPartsElement = "hud-lost-parts";
+        public const string BarsElement = "hud-bars";
         public const string HullValueElement = "hud-hull-value";
         public const string HullFillElement = "hud-hull-fill";
         public const string ShieldFillElement = "hud-shield-fill";
-        public const string EnergyFillElement = "hud-energy-fill";
         public const string PilotPortraitElement = "hud-pilot-portrait";
+        public const string PilotBackingElement = "hud-pilot-backing";
+        public const string PilotHealthPipElement = "hud-pilot-health-pip";
         public const string PilotNameElement = "hud-pilot-name";
         public const string MinimapElement = "hud-minimap";
         public const string CaptainTileElement = "hud-captain-tile";
         public const string CaptainPortraitElement = "hud-captain-portrait";
+        public const string CaptainBackingElement = "hud-captain-backing";
         public const string CaptainModeElement = "hud-captain-mode";
         public const string CaptainHealthElement = "hud-captain-health";
         public const string ModeBadgeElement = "hud-mode-badge";
@@ -59,7 +62,6 @@ namespace ABRevival.Presentation
         private readonly Label _cameraBadgeText;
         private readonly VisualElement _hullFill;
         private readonly VisualElement _shieldFill;
-        private readonly VisualElement _energyFill;
         private readonly VisualElement _captainTile;
         private readonly VisualElement _captainHealth;
         private readonly VisualElement _cameraBadge;
@@ -77,20 +79,18 @@ namespace ABRevival.Presentation
         private bool _lastCaptainPresent;
         private CaptainTacticalMode _lastCaptainMode;
         private float _lastCaptainHealth = -1f;
-        private string _lastCameraBadgeText;
         private bool _lastCameraBadgeVisible;
+        private float _lastCameraBadgeAlpha = -1f;
         private int _lastMoney = int.MinValue;
         private int _lastMissionSecond = -1;
         private int _lastAiCount = int.MinValue;
         private int _lastDistance = int.MinValue;
-        private float _lastEnergy = -1f;
         private float _lastShield = -1f;
         private string _lastPilotName;
         private float _lastRadarBearing = float.NaN;
         private bool _hasReticle;
         private float _lastReticleX;
         private float _lastReticleY;
-        private string _lastModeBadge;
         private CameraDistancePreset _lastCameraBadgePreset = (CameraDistancePreset)(-1);
 
         public CombatHudPresenter(VisualElement root, HudSpriteLibrary sprites = null)
@@ -110,7 +110,6 @@ namespace ABRevival.Presentation
             _cameraBadgeText = Require<Label>(root, CameraBadgeTextElement);
             _hullFill = Require<VisualElement>(root, HullFillElement);
             _shieldFill = Require<VisualElement>(root, ShieldFillElement);
-            _energyFill = Require<VisualElement>(root, EnergyFillElement);
             _captainTile = Require<VisualElement>(root, CaptainTileElement);
             _captainHealth = Require<VisualElement>(root, CaptainHealthElement);
             _cameraBadge = Require<VisualElement>(root, CameraBadgeElement);
@@ -157,6 +156,8 @@ namespace ABRevival.Presentation
                 _captainTile.visible = snapshot.CaptainPresent;
                 if (snapshot.CaptainPresent)
                     _captainMode.text = snapshot.CaptainModeCode;
+                _modeBadgeText.text = HudTextFormatter.FormatModeBadge(
+                    snapshot.CaptainPresent, snapshot.CaptainMode);
             }
 
             if (snapshot.CaptainHealthFraction != _lastCaptainHealth)
@@ -191,12 +192,6 @@ namespace ABRevival.Presentation
                 _distance.text = HudTextFormatter.FormatDistance(distance);
             }
 
-            if (snapshot.EnergyFraction != _lastEnergy)
-            {
-                _lastEnergy = snapshot.EnergyFraction;
-                _energyFill.style.width = Length.Percent(snapshot.EnergyFraction * 100f);
-            }
-
             if (snapshot.ShieldFraction != _lastShield)
             {
                 _lastShield = snapshot.ShieldFraction;
@@ -215,13 +210,6 @@ namespace ABRevival.Presentation
                 _radarArrow.style.rotate = new Rotate(Angle.Degrees(snapshot.RadarBearingDegrees));
             }
 
-            string modeBadge = HudTextFormatter.FormatModeBadge(snapshot.CaptainPresent, snapshot.CaptainMode);
-            if (!string.Equals(modeBadge, _lastModeBadge, StringComparison.Ordinal))
-            {
-                _lastModeBadge = modeBadge;
-                _modeBadgeText.text = modeBadge;
-            }
-
             if (snapshot.CameraPreset != _lastCameraBadgePreset)
             {
                 _lastCameraBadgePreset = snapshot.CameraPreset;
@@ -235,7 +223,17 @@ namespace ABRevival.Presentation
             }
 
             if (snapshot.CameraBadgeVisible)
-                _cameraBadge.style.opacity = snapshot.CameraBadgeAlpha;
+            {
+                if (snapshot.CameraBadgeAlpha != _lastCameraBadgeAlpha)
+                {
+                    _lastCameraBadgeAlpha = snapshot.CameraBadgeAlpha;
+                    _cameraBadge.style.opacity = snapshot.CameraBadgeAlpha;
+                }
+            }
+            else
+            {
+                _lastCameraBadgeAlpha = -1f;
+            }
 
             if (!_hasReticle || snapshot.ReticleX != _lastReticleX || snapshot.ReticleY != _lastReticleY)
             {
@@ -256,14 +254,25 @@ namespace ABRevival.Presentation
             Assign(root, RadarArrowElement, sprites.RadarArrow);
             Assign(root, AiCountPanelElement, sprites.AiCount);
             Assign(root, MinimapElement, sprites.Minimap);
+            Assign(root, TelemetryElement, sprites.DamageTelemetryRow);
             Assign(root, PilotPortraitElement, sprites.PilotPortrait);
+            Assign(root, PilotBackingElement, sprites.PortraitBacking);
+            Assign(root, PilotHealthPipElement, sprites.PortraitHealthPip);
             Assign(root, CaptainPortraitElement, sprites.CaptainPortrait);
+            Assign(root, CaptainBackingElement, sprites.PortraitBacking);
             Assign(root, HullFillElement, sprites.HealthBar);
             Assign(root, ShieldFillElement, sprites.ShieldBar);
-            Assign(root, EnergyFillElement, sprites.EnergyBar);
             Assign(root, ReticleElement, sprites.Reticle);
             Assign(root, ModeBadgeElement, sprites.ModeBadge);
             Assign(root, CameraBadgeElement, sprites.CameraBadge);
+            if (sprites.BarFrame != null)
+                ApplyBackground(root, BarsElement, sprites.BarFrame);
+        }
+
+        private static void ApplyBackground(VisualElement root, string name, Sprite sprite)
+        {
+            VisualElement element = root.Q(name);
+            if (element != null) element.style.backgroundImage = new StyleBackground(sprite);
         }
 
         private static void Assign(VisualElement root, string name, Sprite sprite)

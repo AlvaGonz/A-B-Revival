@@ -36,3 +36,7 @@ MonoBehaviour:
   muzzleSpeedAdd: 0
   accelerationAdd: 0
   angleAddDegrees: 0
+  accAngS: 0
+  bulletHp: 1
+  bulletDeadAct: 6
+  bulletBtwh: 5

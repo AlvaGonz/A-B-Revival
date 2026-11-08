@@ -199,7 +199,6 @@ namespace ABRevival.Tests
             state.SetMissionSeconds(92.4f);
             state.SetAiCount(3);
             state.SetEnemyDistance(812.6f);
-            state.SetEnergyFraction(0.5f);
             state.SetShieldFraction(0.25f);
             state.SetPilotName("Michael");
             state.SetRadarBearing(-90f);
@@ -211,7 +210,6 @@ namespace ABRevival.Tests
             Assert.AreEqual(92.4f, snapshot.MissionSeconds, 0.0001f);
             Assert.AreEqual(3, snapshot.AiCount);
             Assert.AreEqual(812.6f, snapshot.EnemyDistance, 0.0001f);
-            Assert.AreEqual(0.5f, snapshot.EnergyFraction, 0.0001f);
             Assert.AreEqual(0.25f, snapshot.ShieldFraction, 0.0001f);
             Assert.AreEqual("Michael", snapshot.PilotName);
             Assert.AreEqual(-90f, snapshot.RadarBearingDegrees, 0.0001f);
@@ -237,20 +235,18 @@ namespace ABRevival.Tests
             state.SetMissionSeconds(-1f);
             state.SetAiCount(-2);
             state.SetEnemyDistance(-3f);
-            state.SetEnergyFraction(2f);
             state.SetShieldFraction(-1f);
 
             Assert.AreEqual(0, state.Money);
             Assert.AreEqual(0f, state.MissionSeconds, 0.0001f);
             Assert.AreEqual(0, state.AiCount);
             Assert.AreEqual(0f, state.EnemyDistance, 0.0001f);
-            Assert.AreEqual(1f, state.EnergyFraction, 0.0001f);
             Assert.AreEqual(0f, state.ShieldFraction, 0.0001f);
 
             Assert.AreEqual("0 G", HudTextFormatter.FormatMoney(0));
             Assert.AreEqual("00:00", HudTextFormatter.FormatMissionTime(-1f));
             Assert.Throws<ArgumentException>(() => state.SetMissionSeconds(float.NaN));
-            Assert.Throws<ArgumentException>(() => state.SetEnergyFraction(float.NaN));
+            Assert.Throws<ArgumentException>(() => state.SetShieldFraction(float.NaN));
         }
 
         [Test]

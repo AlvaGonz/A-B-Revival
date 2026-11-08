@@ -42,6 +42,120 @@ namespace ABRevival.Core.Data
     /// </summary>
     public static class CraftComposition
     {
+        /// <summary>Render layer order used by the hangar preview and the mission (ADR 0019).</summary>
+        public static int Layer(PartCategory category)
+        {
+            switch (category)
+            {
+                case PartCategory.Engine: return 0;
+                case PartCategory.Body: return 1;
+                case PartCategory.Wing: return 2;
+                default: return 3;
+            }
+        }
+
+        /// <summary>
+        /// Resolves a player blueprint (body plus mounted parts) with the same socket,
+        /// mirroring and layer rules as the mission. <see cref="CraftPartPlacement.partIndex"/>
+        /// is the index into <paramref name="parts"/>; output is sorted engine, hull, wing, gun.
+        /// </summary>
+        public static int BuildPlayer(
+            ReadOnlySpan<MountedPartData> parts,
+            PartMountTable mounts,
+            Span<CraftPartPlacement> output)
+        {
+            if (parts.Length == 0 || output.Length == 0) return 0;
+
+            int bodyIndex = -1;
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (parts[i].category != PartCategory.Body) continue;
+                bodyIndex = i;
+                break;
+            }
+
+            if (bodyIndex < 0) bodyIndex = 0;
+
+            MountedPartData body = parts[bodyIndex];
+            PartMountSymbol bodySymbol = null;
+            if (mounts != null && mounts.TryGetPart(body.partId, out PartMountEntry bodyEntry))
+                bodySymbol = mounts.GetSymbol(bodyEntry.mcName);
+
+            int count = 0;
+            output[count++] = new CraftPartPlacement(
+                bodyIndex, body.partId, PartCategory.Body, float2.zero, 0f, body.mirrored);
+
+            ulong usedHoles = 0;
+            int siblingIndex = 0;
+            for (int i = 0; i < parts.Length && count < output.Length; i++)
+            {
+                if (i == bodyIndex) continue;
+
+                MountedPartData part = parts[i];
+                float2 offset;
+                if (mounts == null ||
+                    !TryTakeHole(bodySymbol, part.category, part.mirrored, ref usedHoles, out int holeIndex) ||
+                    !mounts.TryResolveSocket(body.partId, holeIndex, part.partId, body.mirrored, out offset))
+                {
+                    // No decodable matching marker: keep an explicit hangar offset when there is
+                    // one, otherwise use the closest derivable layout. Never silently centre.
+                    offset = math.lengthsq(part.localOffset) > 1e-4f
+                        ? part.localOffset
+                        : PartMountTable.FallbackOffset(bodySymbol, part.category, siblingIndex);
+                }
+
+                output[count++] = new CraftPartPlacement(
+                    i, part.partId, part.category, offset, part.localRotation, part.mirrored);
+                siblingIndex++;
+            }
+
+            SortByLayer(output.Slice(0, count));
+            return count;
+        }
+
+        private static bool TryTakeHole(
+            PartMountSymbol bodySymbol,
+            PartCategory category,
+            bool mirrored,
+            ref ulong usedHoles,
+            out int holeIndex)
+        {
+            holeIndex = -1;
+            if (bodySymbol == null || bodySymbol.holes == null) return false;
+
+            int wantedLr = mirrored ? 1 : 0;
+            for (int i = 0; i < bodySymbol.holes.Length && i < 64; i++)
+            {
+                PartMountHole hole = bodySymbol.holes[i];
+                if (hole == null || (usedHoles & (1UL << i)) != 0) continue;
+                if (!hole.Accepts(category)) continue;
+                if (hole.lr != 2 && hole.lr != wantedLr) continue;
+
+                usedHoles |= 1UL << i;
+                holeIndex = i;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void SortByLayer(Span<CraftPartPlacement> placements)
+        {
+            for (int i = 1; i < placements.Length; i++)
+            {
+                CraftPartPlacement item = placements[i];
+                int layer = Layer(item.category);
+                int j = i - 1;
+                while (j >= 0 && Layer(placements[j].category) > layer)
+                {
+                    placements[j + 1] = placements[j];
+                    j--;
+                }
+
+                placements[j + 1] = item;
+            }
+        }
+
         public static int Build(
             CraftStatRecord craft,
             PartMountTable mounts,

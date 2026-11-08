@@ -26,7 +26,7 @@ namespace ABRevival.Core.Hud
         [SerializeField] private Sprite _portraitBacking;
         [SerializeField] private Sprite _healthBar;
         [SerializeField] private Sprite _shieldBar;
-        [SerializeField] private Sprite _energyBar;
+        [SerializeField] private Sprite _barFrame;
         [SerializeField] private Sprite _reticle;
         [SerializeField] private Sprite _modeBadge;
         [SerializeField] private Sprite _cameraBadge;
@@ -45,7 +45,7 @@ namespace ABRevival.Core.Hud
         public Sprite PortraitBacking => _portraitBacking;
         public Sprite HealthBar => _healthBar;
         public Sprite ShieldBar => _shieldBar;
-        public Sprite EnergyBar => _energyBar;
+        public Sprite BarFrame => _barFrame;
         public Sprite Reticle => _reticle;
         public Sprite ModeBadge => _modeBadge;
         public Sprite CameraBadge => _cameraBadge;
