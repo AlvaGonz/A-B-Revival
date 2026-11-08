@@ -28,7 +28,6 @@ namespace ABRevival.Core.Data
         public float health;
         public float thrust;
         public float turnFly;
-        public int lr;
         public float energyDraw;
         public int cost;
 
@@ -243,7 +242,6 @@ namespace ABRevival.Core.Data
                     record.health = ParseFloat(el.Element("maxhp")?.Value, 0f, invCulture);
                     record.thrust = ParseFloat(el.Element("powFly")?.Value, 0f, invCulture);
                     record.turnFly = ParseFloat(el.Element("turnFly")?.Value, 0f, invCulture);
-                    record.lr = ParseInt(el.Element("lr")?.Value, 2);
                     record.energyDraw = 0f; // Original Flash baseline managed energy at craft/hull level
 
                     var fireDef = default(FireDef);
