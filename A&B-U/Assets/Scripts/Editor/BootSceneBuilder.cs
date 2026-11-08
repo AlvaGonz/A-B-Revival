@@ -47,6 +47,12 @@ namespace ABRevival.Editor
             var audioObject = new GameObject("Audio");
             Component audio = AddPresentationComponent(audioObject, "ABRevival.Presentation.Audio.AudioService");
 
+            // UI Toolkit buttons need an EventSystem with an input module; without this,
+            // the hangar's Launch Mission button never receives a click.
+            var eventSystemObject = new GameObject("EventSystem");
+            eventSystemObject.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            eventSystemObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+
             var hangarObject = new GameObject("Hangar");
             UIDocument hangarDocument = hangarObject.AddComponent<UIDocument>();
             SetReference(hangarDocument, "m_PanelSettings", panelSettings);
