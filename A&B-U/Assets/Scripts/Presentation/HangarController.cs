@@ -371,10 +371,10 @@ namespace ABRevival.Presentation
                 mass = source.hullMass
             });
 
-            AddDefaultPart(mounted, FindPartDefinition(133), 0f, 10f);
-            AddDefaultPart(mounted, FindPartDefinition(173), -18f, 0f);
-            AddDefaultPart(mounted, FindPartDefinition(174), 18f, 0f);
-            AddDefaultPart(mounted, FindPartDefinition(71), 0f, -18f);
+            AddDefaultPart(mounted, FindPartDefinition(133), 0f, 8f);
+            AddDefaultPart(mounted, FindPartDefinition(173), -14f, 0f);
+            AddDefaultPart(mounted, FindPartDefinition(174), 14f, 0f);
+            AddDefaultPart(mounted, FindPartDefinition(71), 0f, -16f);
 
             source.mountedParts = mounted.ToArray();
             return source;

@@ -17,7 +17,8 @@ namespace ABRevival.Presentation
     {
         private const float CanvasWidth = 564f;
         private const float CanvasHeight = 458f;
-        private const float PreviewFill = 0.7f;
+        private const float PreviewAreaFill = 0.65f;
+        private const float PreviewMaxDimensionFill = 0.94f;
         private const float PreviewMinScale = 0.15f;
         private const float PreviewMaxScale = 24f;
 
@@ -287,10 +288,13 @@ namespace ABRevival.Presentation
 
             float boundsWidth = Mathf.Max(1f, maxX - minX);
             float boundsHeight = Mathf.Max(1f, maxY - minY);
-            float scale = Mathf.Min(
-                CanvasWidth * PreviewFill / boundsWidth,
-                CanvasHeight * PreviewFill / boundsHeight);
-            scale = Mathf.Clamp(scale, PreviewMinScale, PreviewMaxScale);
+            // Fill ~65% of the panel area; the dimension cap keeps wide builds inside the frame.
+            float areaScale = Mathf.Sqrt(
+                PreviewAreaFill * CanvasWidth * CanvasHeight / (boundsWidth * boundsHeight));
+            float fitScale = Mathf.Min(
+                CanvasWidth * PreviewMaxDimensionFill / boundsWidth,
+                CanvasHeight * PreviewMaxDimensionFill / boundsHeight);
+            float scale = Mathf.Clamp(Mathf.Min(areaScale, fitScale), PreviewMinScale, PreviewMaxScale);
 
             float centerX = CanvasWidth * 0.5f;
             float centerY = CanvasHeight * 0.5f;
@@ -586,9 +590,9 @@ namespace ABRevival.Presentation
             switch (category)
             {
                 case PartCategory.Body: return float2.zero;
-                case PartCategory.Wing: return new float2(slotIndex % 2 == 0 ? -22f : 22f, 0f);
-                case PartCategory.Engine: return new float2(0f, 10f);
-                case PartCategory.Gun: return new float2(0f, -18f);
+                case PartCategory.Wing: return new float2(slotIndex % 2 == 0 ? -16f : 16f, 0f);
+                case PartCategory.Engine: return new float2(0f, 8f);
+                case PartCategory.Gun: return new float2(0f, -16f);
                 default: return float2.zero;
             }
         }
