@@ -472,6 +472,7 @@ namespace ABRevival.Presentation
             _hud?.State.SetCaptainPresence(_captainIndex >= 0);
             _hud?.State.SetCaptainMode(CaptainTacticalMode.Anchor);
             if (_cameraRig != null) _hud?.State.SetCameraDistance(_cameraRig.Preset);
+            FeedStaticHudValues();
 
             _accumulator = 0f;
             _resultElapsed = 0f;
@@ -953,30 +954,125 @@ namespace ABRevival.Presentation
         {
             if (_hud == null || _runner == null || _simulation == null) return;
 
+            CombatHudState state = _hud.State;
+            state.SetMoney(_save != null ? _save.shop.money : 0);
+            state.SetMissionSeconds(_runner.CurrentTick * _runner.TickSeconds);
+            state.SetAiCount(0);
+            state.SetEnemyDistance(0f);
+
             int playerIndex = _runner.PlayerShipIndex;
             if (playerIndex >= 0 && playerIndex < _simulation.ShipCount)
             {
                 if (_solver != null && _playerHull >= 0 && _playerHull < _solver.HullCount)
                 {
-                    _hud.State.SetHullHealth(_solver.GetHullHealth(_playerHull), _playerHullMax);
+                    state.SetHullHealth(_solver.GetHullHealth(_playerHull), _playerHullMax);
                 }
                 else
                 {
                     var player = _simulation.GetShip(playerIndex);
-                    _hud.State.SetHullHealth(player.health, player.maxHealth);
+                    state.SetHullHealth(player.health, player.maxHealth);
                 }
+
+                ShipEntity ship = _simulation.GetShip(playerIndex);
+                state.SetEnergyFraction(Fraction(ship.energy, ship.maxEnergy));
+                state.SetShieldFraction(PlayerShieldFraction());
+                state.SetRadarBearing(math.degrees(-ship.rotation));
+                CountLivingHostiles(playerIndex, ship.position, out int hostiles, out float nearest);
+                state.SetAiCount(hostiles);
+                state.SetEnemyDistance(nearest);
             }
 
             if (_captainIndex >= 0 && _captainIndex < _simulation.ShipCount)
             {
                 var captain = _simulation.GetShip(_captainIndex);
-                _hud.State.SetCaptainPresence(true);
-                _hud.State.SetCaptainMode((CaptainTacticalMode)captain.tacticalMode);
+                state.SetCaptainPresence(true);
+                state.SetCaptainMode((CaptainTacticalMode)captain.tacticalMode);
+                state.SetCaptainHealth(captain.health, captain.maxHealth);
             }
             else
             {
-                _hud.State.SetCaptainPresence(false);
+                state.SetCaptainPresence(false);
             }
+        }
+
+        /// <summary>
+        /// Values that only change between missions: credits from the save and the pilot
+        /// name resolved from the level's player spawn.
+        /// </summary>
+        private void FeedStaticHudValues()
+        {
+            if (_hud == null) return;
+
+            CombatHudState state = _hud.State;
+            state.SetMoney(_save != null ? _save.shop.money : 0);
+            state.SetPilotName(PlayerPilotName());
+            state.SetMissionSeconds(0f);
+            state.SetAiCount(0);
+            state.SetEnemyDistance(0f);
+            state.SetEnergyFraction(1f);
+            state.SetShieldFraction(1f);
+            state.SetCaptainHealth(1f, 1f);
+            state.SetRadarBearing(0f);
+        }
+
+        private string PlayerPilotName()
+        {
+            if (_runner == null) return string.Empty;
+
+            var spawns = _runner.Spawns;
+            for (int i = 0; i < spawns.Count; i++)
+            {
+                if (spawns[i].shipIndex != _runner.PlayerShipIndex) continue;
+                if (!string.IsNullOrEmpty(spawns[i].pilot)) return spawns[i].pilot;
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>Living hostile count and the distance to the nearest one, in world pixels.</summary>
+        private void CountLivingHostiles(int playerIndex, float2 playerPosition, out int count, out float nearest)
+        {
+            count = 0;
+            nearest = 0f;
+
+            int shipCount = _simulation.ShipCount;
+            for (int shipIndex = 0; shipIndex < shipCount; shipIndex++)
+            {
+                if (shipIndex == playerIndex) continue;
+                if (!_runner.IsCraftAlive(shipIndex)) continue;
+                if (_simulation.GetShip(shipIndex).factionId == 0) continue;
+
+                count++;
+                float distance = math.distance(playerPosition, _simulation.GetShip(shipIndex).position);
+                if (nearest <= 0f || distance < nearest) nearest = distance;
+            }
+        }
+
+        /// <summary>
+        /// Shield bar: remaining integrity of the player's non-chassis parts. Full when the
+        /// craft carries no modular parts or the contact layer is unavailable.
+        /// </summary>
+        private float PlayerShieldFraction()
+        {
+            if (_solver == null || _playerHull < 0 || _playerHull >= _solver.HullCount) return 1f;
+
+            int partCount = _solver.GetHullPartCount(_playerHull);
+            float remaining = 0f;
+            float total = 0f;
+            for (int i = 0; i < partCount; i++)
+            {
+                MountedPartData part = _solver.GetPart(_playerHull, i);
+                if (part.category == PartCategory.Body) continue;
+                remaining += math.max(0f, part.health);
+                total += part.maxHealth;
+            }
+
+            return total > 0f ? math.clamp(remaining / total, 0f, 1f) : 1f;
+        }
+
+        private static float Fraction(float current, float max)
+        {
+            return max > 0f ? math.clamp(current / max, 0f, 1f) : 1f;
         }
 
         private int FindCaptainIndex()

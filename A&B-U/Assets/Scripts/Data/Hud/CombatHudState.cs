@@ -8,7 +8,9 @@ namespace ABRevival.Core.Hud
     /// <summary>
     /// Pure combat HUD state established by ADR 0004: hull health, cumulative
     /// battle-damage telemetry, Captain tactical mode code, and the ephemeral
-    /// camera-distance badge. No Unity API is used here so the Tier 1 gate can
+    /// camera-distance badge. The frozen HUD readouts added in ticket #168 (money,
+    /// mission timer, AI count, target distance, energy/shield, pilot name, radar
+    /// bearing, reticle) live here too. No Unity API is used so the Tier 1 gate can
     /// exercise every transition.
     /// </summary>
     public sealed class CombatHudState
@@ -24,8 +26,19 @@ namespace ABRevival.Core.Hud
         private int _lostModules;
         private bool _captainPresent;
         private CaptainTacticalMode _captainMode = CaptainTacticalMode.Anchor;
+        private float _captainHealthFraction = 1f;
         private CameraDistancePreset _cameraPreset = CameraDistancePreset.Short;
         private float _cameraBadgeRemaining;
+        private int _money;
+        private float _missionSeconds;
+        private int _aiCount;
+        private float _enemyDistance;
+        private float _energyFraction = 1f;
+        private float _shieldFraction = 1f;
+        private string _pilotName = string.Empty;
+        private float _radarBearingDegrees;
+        private float _reticleX = CameraDistancePresets.DesignWidth * 0.5f;
+        private float _reticleY = CameraDistancePresets.DesignHeight * 0.5f;
 
         public float HullCurrent => _hullCurrent;
         public float HullMax => _hullMax;
@@ -39,9 +52,21 @@ namespace ABRevival.Core.Hud
 
         public bool CaptainPresent => _captainPresent;
         public CaptainTacticalMode CaptainMode => _captainMode;
+        public float CaptainHealthFraction => _captainHealthFraction;
 
         public CameraDistancePreset CameraPreset => _cameraPreset;
         public bool CameraBadgeVisible => _cameraBadgeRemaining > 0f;
+
+        public int Money => _money;
+        public float MissionSeconds => _missionSeconds;
+        public int AiCount => _aiCount;
+        public float EnemyDistance => _enemyDistance;
+        public float EnergyFraction => _energyFraction;
+        public float ShieldFraction => _shieldFraction;
+        public string PilotName => _pilotName;
+        public float RadarBearingDegrees => _radarBearingDegrees;
+        public float ReticleX => _reticleX;
+        public float ReticleY => _reticleY;
 
         public float CameraBadgeAlpha
         {
@@ -62,6 +87,25 @@ namespace ABRevival.Core.Hud
 
             _hullMax = max;
             _hullCurrent = current < 0f ? 0f : current > max ? max : current;
+        }
+
+        /// <summary>Energy bar fill, already normalized by the caller.</summary>
+        public void SetEnergyFraction(float fraction)
+        {
+            _energyFraction = ClampFraction(fraction, nameof(fraction));
+        }
+
+        /// <summary>Shield/boost bar fill, already normalized by the caller.</summary>
+        public void SetShieldFraction(float fraction)
+        {
+            _shieldFraction = ClampFraction(fraction, nameof(fraction));
+        }
+
+        public void SetCaptainHealth(float current, float max)
+        {
+            if (float.IsNaN(current) || float.IsNaN(max))
+                throw new ArgumentException("Captain health cannot be NaN.");
+            _captainHealthFraction = max > 0f ? ClampFraction(current / max, nameof(current)) : 0f;
         }
 
         /// <summary>Records a destroyed modular part from its legacy domain category.</summary>
@@ -119,6 +163,56 @@ namespace ABRevival.Core.Hud
             _captainMode = mode;
         }
 
+        /// <summary>Save-file credits shown on the top-left money plate.</summary>
+        public void SetMoney(int money)
+        {
+            _money = money < 0 ? 0 : money;
+        }
+
+        /// <summary>Elapsed mission time in seconds, fed from the mission tick count.</summary>
+        public void SetMissionSeconds(float seconds)
+        {
+            if (float.IsNaN(seconds))
+                throw new ArgumentException("Mission time cannot be NaN.", nameof(seconds));
+            _missionSeconds = seconds < 0f ? 0f : seconds;
+        }
+
+        /// <summary>Living hostile count shown on the AI x N plate.</summary>
+        public void SetAiCount(int count)
+        {
+            _aiCount = count < 0 ? 0 : count;
+        }
+
+        /// <summary>Distance to the nearest living hostile, in world pixels.</summary>
+        public void SetEnemyDistance(float distance)
+        {
+            if (float.IsNaN(distance))
+                throw new ArgumentException("Distance cannot be NaN.", nameof(distance));
+            _enemyDistance = distance < 0f ? 0f : distance;
+        }
+
+        public void SetPilotName(string name)
+        {
+            _pilotName = name ?? string.Empty;
+        }
+
+        /// <summary>Player heading used to rotate the radar arrow; degrees, clockwise.</summary>
+        public void SetRadarBearing(float degrees)
+        {
+            if (float.IsNaN(degrees))
+                throw new ArgumentException("Radar bearing cannot be NaN.", nameof(degrees));
+            _radarBearingDegrees = degrees;
+        }
+
+        /// <summary>Reticle position in HUD design pixels (top-left origin).</summary>
+        public void SetReticlePosition(float x, float y)
+        {
+            if (float.IsNaN(x) || float.IsNaN(y))
+                throw new ArgumentException("Reticle position cannot be NaN.");
+            _reticleX = x;
+            _reticleY = y;
+        }
+
         /// <summary>
         /// Applies a persisted preset without showing the ephemeral badge. Used at
         /// mission start when CONFIG[6] is restored (ADR 0005).
@@ -165,9 +259,27 @@ namespace ABRevival.Core.Hud
                 _lostModules,
                 _captainPresent,
                 _captainMode,
+                _captainHealthFraction,
                 _cameraPreset,
                 CameraBadgeVisible,
-                CameraBadgeAlpha);
+                CameraBadgeAlpha,
+                _money,
+                _missionSeconds,
+                _aiCount,
+                _enemyDistance,
+                _energyFraction,
+                _shieldFraction,
+                _pilotName,
+                _radarBearingDegrees,
+                _reticleX,
+                _reticleY);
+        }
+
+        private static float ClampFraction(float value, string parameter)
+        {
+            if (float.IsNaN(value))
+                throw new ArgumentException("Fraction cannot be NaN.", parameter);
+            return value < 0f ? 0f : value > 1f ? 1f : value;
         }
 
         private static bool IsKnownMode(CaptainTacticalMode mode)
@@ -196,10 +308,21 @@ namespace ABRevival.Core.Hud
         public readonly bool CaptainPresent;
         public readonly CaptainTacticalMode CaptainMode;
         public readonly string CaptainModeCode;
+        public readonly float CaptainHealthFraction;
         public readonly CameraDistancePreset CameraPreset;
         public readonly bool CameraBadgeVisible;
         public readonly float CameraBadgeAlpha;
         public readonly string CameraBadgeText;
+        public readonly int Money;
+        public readonly float MissionSeconds;
+        public readonly int AiCount;
+        public readonly float EnemyDistance;
+        public readonly float EnergyFraction;
+        public readonly float ShieldFraction;
+        public readonly string PilotName;
+        public readonly float RadarBearingDegrees;
+        public readonly float ReticleX;
+        public readonly float ReticleY;
 
         internal CombatHudSnapshot(
             float hullCurrent,
@@ -210,9 +333,20 @@ namespace ABRevival.Core.Hud
             int lostModules,
             bool captainPresent,
             CaptainTacticalMode captainMode,
+            float captainHealthFraction,
             CameraDistancePreset cameraPreset,
             bool cameraBadgeVisible,
-            float cameraBadgeAlpha)
+            float cameraBadgeAlpha,
+            int money,
+            float missionSeconds,
+            int aiCount,
+            float enemyDistance,
+            float energyFraction,
+            float shieldFraction,
+            string pilotName,
+            float radarBearingDegrees,
+            float reticleX,
+            float reticleY)
         {
             HullCurrent = hullCurrent;
             HullMax = hullMax;
@@ -224,10 +358,21 @@ namespace ABRevival.Core.Hud
             CaptainPresent = captainPresent;
             CaptainMode = captainMode;
             CaptainModeCode = TacticalModeCodes.Code(captainMode);
+            CaptainHealthFraction = captainHealthFraction;
             CameraPreset = cameraPreset;
             CameraBadgeVisible = cameraBadgeVisible;
             CameraBadgeAlpha = cameraBadgeAlpha;
             CameraBadgeText = CameraDistancePresets.BadgeText(cameraPreset);
+            Money = money;
+            MissionSeconds = missionSeconds;
+            AiCount = aiCount;
+            EnemyDistance = enemyDistance;
+            EnergyFraction = energyFraction;
+            ShieldFraction = shieldFraction;
+            PilotName = pilotName;
+            RadarBearingDegrees = radarBearingDegrees;
+            ReticleX = reticleX;
+            ReticleY = reticleY;
         }
 
         public bool HasLostParts => LostGuns + LostWings + LostEngines + LostModules > 0;
@@ -254,9 +399,50 @@ namespace ABRevival.Core.Hud
     /// </summary>
     public static class HudTextFormatter
     {
+        private static readonly System.Globalization.CultureInfo Invariant =
+            System.Globalization.CultureInfo.InvariantCulture;
+
         public static string FormatHull(float current, float max)
         {
-            return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0} / {1:0}", current, max);
+            return string.Format(Invariant, "{0:0} / {1:0}", current, max);
+        }
+
+        public static string FormatMoney(int money)
+        {
+            return (money < 0 ? 0 : money).ToString("N0", Invariant) + " G";
+        }
+
+        /// <summary>Mission clock as mm:ss; hours fold into minutes like the frozen timer.</summary>
+        public static string FormatMissionTime(float seconds)
+        {
+            int total = seconds > 0f ? (int)Math.Floor(seconds) : 0;
+            return (total / 60).ToString("00", Invariant) + ":" + (total % 60).ToString("00", Invariant);
+        }
+
+        public static string FormatAiCount(int count)
+        {
+            return "AI x " + (count < 0 ? 0 : count).ToString(Invariant);
+        }
+
+        public static string FormatDistance(float distance)
+        {
+            return FormatDistance(RoundedDistance(distance));
+        }
+
+        public static string FormatDistance(int distance)
+        {
+            return (distance < 0 ? 0 : distance).ToString(Invariant);
+        }
+
+        public static int RoundedDistance(float distance)
+        {
+            double rounded = Math.Round(distance > 0f ? distance : 0f, MidpointRounding.AwayFromZero);
+            return (int)rounded;
+        }
+
+        public static string FormatModeBadge(bool captainPresent, CaptainTacticalMode mode)
+        {
+            return "TACTICAL " + (captainPresent ? TacticalModeCodes.Code(mode) : "--");
         }
 
         public static string FormatLostParts(in CombatHudSnapshot snapshot)

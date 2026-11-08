@@ -1,0 +1,291 @@
+/* Combat HUD (frozen 2011 layout, ADR 0004/0005).
+ * Authored in the 640x480 frozen stage and scaled by 2.25 so the art is 1:1 at the
+ * ADR 0013 1920x1080 design canvas. Positions follow UI_Game symbol 510. */
+
+.hud-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* ---- top-left: money, pause, help ---- */
+
+.hud-money-panel {
+    position: absolute;
+    left: 11px;
+    top: 14px;
+    width: 353px;
+    height: 56px;
+}
+
+.hud-money-text {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    top: 2px;
+    bottom: 2px;
+    font-size: 30px;
+    color: rgb(110, 232, 244);
+    -unity-text-align: middle-center;
+}
+
+.hud-icon-button {
+    position: absolute;
+    top: 14px;
+    width: 56px;
+    height: 56px;
+}
+
+.hud-pause {
+    left: 371px;
+}
+
+.hud-help {
+    left: 443px;
+}
+
+/* ---- top-right: radar, distance, mission timer, AI count ---- */
+
+.hud-radar {
+    position: absolute;
+    right: 9px;
+    top: 11px;
+    width: 216px;
+    height: 268px;
+}
+
+.hud-radar-arrow {
+    position: absolute;
+    left: 67px;
+    top: 54px;
+    width: 101px;
+    height: 70px;
+    transform-origin: center;
+}
+
+.hud-radar-readout {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 180px;
+    height: 45px;
+    font-size: 26px;
+    color: rgb(220, 236, 255);
+    -unity-text-align: middle-center;
+}
+
+.hud-radar-timer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 225px;
+    height: 43px;
+    font-size: 24px;
+    color: rgb(110, 232, 244);
+    -unity-text-align: middle-center;
+}
+
+.hud-ai-count {
+    position: absolute;
+    right: 9px;
+    top: 280px;
+    width: 216px;
+    height: 56px;
+}
+
+.hud-badge-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-size: 30px;
+    color: rgb(240, 248, 255);
+    -unity-text-align: middle-center;
+}
+
+/* ---- bottom-left: pilot portrait, bars, telemetry ---- */
+
+.hud-pilot-tile {
+    position: absolute;
+    left: 11px;
+    bottom: 0;
+    width: 110px;
+}
+
+.hud-pilot-portrait {
+    width: 110px;
+    height: 115px;
+}
+
+.hud-pilot-name {
+    width: 110px;
+    height: 32px;
+    font-size: 24px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+.hud-telemetry {
+    position: absolute;
+    left: 99px;
+    bottom: 124px;
+    width: 410px;
+    height: 74px;
+}
+
+.hud-telemetry-text {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 0;
+    bottom: 0;
+    font-size: 22px;
+    color: rgb(255, 196, 120);
+    -unity-text-align: middle-center;
+}
+
+.hud-bars {
+    position: absolute;
+    left: 99px;
+    bottom: 36px;
+    width: 410px;
+}
+
+.hud-bar {
+    height: 16px;
+    margin-bottom: 13px;
+    background-color: rgba(4, 8, 12, 0.9);
+    border-width: 2px;
+    border-color: rgb(188, 204, 216);
+}
+
+.hud-bar-last {
+    margin-bottom: 0;
+}
+
+.hud-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.hud-health-fill {
+    background-color: rgb(200, 32, 40);
+}
+
+.hud-shield-fill {
+    background-color: rgb(150, 200, 40);
+}
+
+.hud-energy-fill {
+    background-color: rgb(40, 180, 210);
+}
+
+.hud-hull-value {
+    position: absolute;
+    right: 8px;
+    top: 0;
+    height: 16px;
+    font-size: 15px;
+    color: rgb(255, 236, 236);
+    -unity-text-align: middle-right;
+}
+
+/* ---- bottom-right: minimap and Captain portrait ---- */
+
+.hud-minimap {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 383px;
+    height: 396px;
+}
+
+.hud-captain-tile {
+    position: absolute;
+    right: 405px;
+    bottom: 0;
+    width: 110px;
+}
+
+.hud-captain-portrait {
+    width: 110px;
+    height: 115px;
+}
+
+.hud-captain-health-track {
+    width: 110px;
+    height: 16px;
+    background-color: rgba(24, 28, 34, 0.9);
+}
+
+.hud-captain-health {
+    height: 16px;
+    width: 100%;
+    background-color: rgb(200, 32, 40);
+}
+
+.hud-captain-code {
+    width: 110px;
+    height: 32px;
+    font-size: 24px;
+    color: rgb(255, 204, 0);
+    -unity-text-align: middle-center;
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+/* ---- bottom-center: tactical-mode and camera-distance badges ---- */
+
+.hud-badges {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 18px;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.hud-mode-badge {
+    width: 216px;
+    height: 56px;
+    margin-right: 9px;
+}
+
+.hud-camera-badge {
+    width: 216px;
+    height: 56px;
+    margin-left: 9px;
+}
+
+.hud-badge-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-size: 22px;
+    color: rgb(140, 240, 250);
+    -unity-text-align: middle-center;
+}
+
+/* ADR 0005 badge wording is long; 17px keeps it inside the 216px plate. */
+.hud-camera-badge .hud-badge-label {
+    font-size: 17px;
+}
+
+/* ---- center reticle ---- */
+
+.hud-reticle {
+    position: absolute;
+    left: 899px;
+    top: 500px;
+    width: 122px;
+    height: 81px;
+    translate: -39px -40px;
+}
