@@ -24,7 +24,7 @@ namespace ABRevival.Tests
                 dir = dir.Parent;
             }
 
-            throw new InvalidOperationException("Repository root containing .git directory could not be located.");
+            throw new InvalidOperationException("Repository root containing a .git file or directory could not be located.");
         }
 
         private static string GetCoreCsprojPath()
