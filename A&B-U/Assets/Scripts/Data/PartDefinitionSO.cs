@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Mathematics;
+using ABRevival.Core.Simulation;
 
 namespace ABRevival.Core.Data
 {
@@ -28,7 +29,7 @@ namespace ABRevival.Core.Data
         public float CalculateEffectiveRange()
         {
             if (category != PartCategory.Gun) return 0f;
-            return (projectileVelocity * bulletLifetime) + (0.5f * burstAcceleration * bulletLifetime * bulletLifetime);
+            return Ballistics.EffectiveRange(projectileVelocity, burstAcceleration, bulletLifetime);
         }
     }
 }

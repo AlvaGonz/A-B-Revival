@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
+using ABRevival.Core.Simulation;
 
 namespace ABRevival.Core.Data
 {
@@ -35,7 +36,7 @@ namespace ABRevival.Core.Data
         public float CalculateEffectiveRange()
         {
             if (category != PartCategory.Gun) return 0f;
-            return (projectileVelocity * bulletLifetime) + (0.5f * burstAcceleration * bulletLifetime * bulletLifetime);
+            return Ballistics.EffectiveRange(projectileVelocity, burstAcceleration, bulletLifetime);
         }
 
         public void PopulateScriptableObject(PartDefinitionSO so)
