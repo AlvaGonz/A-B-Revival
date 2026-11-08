@@ -58,6 +58,7 @@ namespace ABRevival.Editor
             Component talk = AddPresentationComponent(talkObject, "ABRevival.Presentation.TalkScreen");
 
             var combatObject = new GameObject("Combat");
+            combatObject.transform.position = new Vector3(0f, 0f, -10f);
             var camera = combatObject.AddComponent<Camera>();
             camera.orthographic = true;
             camera.clearFlags = CameraClearFlags.SolidColor;
@@ -65,6 +66,8 @@ namespace ABRevival.Editor
             camera.tag = "MainCamera";
             combatObject.AddComponent<AudioListener>();
             Component cameraRig = AddPresentationComponent(combatObject, "ABRevival.Presentation.CombatCameraRig");
+            Component batchRenderer = AddPresentationComponent(combatObject, "ABRevival.Presentation.BatchSpriteRenderer");
+            Component spriteView = AddPresentationComponent(combatObject, "ABRevival.Presentation.MissionSpriteView");
             UIDocument hudDocument = combatObject.AddComponent<UIDocument>();
             SetReference(hudDocument, "m_PanelSettings", panelSettings);
             SetReference(hudDocument, "sourceAsset", hudUxml);
@@ -91,12 +94,22 @@ namespace ABRevival.Editor
             SetReference(hud, "_document", hudDocument);
             SetReference(hud, "_cameraRig", cameraRig);
 
+            Texture2D partsAtlas = LoadRequired<Texture2D>(PartsAtlasBuilder.AtlasPath);
+            TextAsset partsUvTable = LoadRequired<TextAsset>(PartsAtlasBuilder.UvTablePath);
+            Shader spriteShader = LoadRequired<Shader>("Assets/Scripts/Presentation/Shaders/InstancedSprite.shader");
+            SetReference(batchRenderer, "_spriteShader", spriteShader);
+            SetReference(batchRenderer, "_atlas", partsAtlas);
+            SetReference(spriteView, "_renderer", batchRenderer);
+            SetReference(spriteView, "_atlas", partsAtlas);
+            SetReference(spriteView, "_uvTableData", partsUvTable);
+
             var flowSerialized = new SerializedObject(flow);
             SetReference(flowSerialized, "_hangar", hangar);
             SetReference(flowSerialized, "_talkScreen", talk);
             SetReference(flowSerialized, "_cinematicPlayer", cinematic);
             SetReference(flowSerialized, "_hud", hud);
             SetReference(flowSerialized, "_cameraRig", cameraRig);
+            SetReference(flowSerialized, "_spriteView", spriteView);
             SetReference(flowSerialized, "_flight", flight);
             SetReference(flowSerialized, "_audio", audio);
             SetReference(flowSerialized, "_flowDocument", hudDocument);

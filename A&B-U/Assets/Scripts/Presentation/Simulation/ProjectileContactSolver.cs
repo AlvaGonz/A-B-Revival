@@ -337,6 +337,14 @@ namespace ABRevival.Presentation
             return partIndex < _hullPartCounts[hullIndex] && _partMounted[globalPartIndex];
         }
 
+        /// <summary>Number of parts registered for a hull, including detached ones.</summary>
+        public int GetHullPartCount(int hullIndex)
+        {
+            ThrowIfDisposed();
+            ThrowIfHullOutOfRange(hullIndex);
+            return _hullPartCounts[hullIndex];
+        }
+
         public float GetHullHealth(int hullIndex)
         {
             ThrowIfDisposed();

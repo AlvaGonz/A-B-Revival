@@ -168,6 +168,11 @@ namespace ABRevival.Editor
                 RebuildAtlas(PartsAtlasPath, PartsOutput);
                 RebuildAtlas(UiAtlasPath, UiOutput);
 
+                if (!PartsAtlasBuilder.Build())
+                {
+                    throw new InvalidOperationException("The BRG parts atlas could not be rebuilt.");
+                }
+
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
 

@@ -165,6 +165,15 @@ namespace ABRevival.Presentation
                 _cullingState.InstanceCount = 0;
         }
 
+        /// <summary>Per-instance tint last written at <paramref name="index"/> (test/telemetry read-back).</summary>
+        public uint GetUserValue(int index)
+        {
+            ThrowIfNotConfigured();
+            if ((uint)index >= (uint)_instanceCount)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            return _userValues[index];
+        }
+
         /// <summary>
         /// Uploads only the dirty instance range to the GPU. Call after adding or
         /// updating instances; this path performs no managed heap allocations.

@@ -36,6 +36,7 @@ namespace ABRevival.Presentation
         [SerializeField] private CinematicPlayer _cinematicPlayer;
         [SerializeField] private CombatHudBehaviour _hud;
         [SerializeField] private CombatCameraRig _cameraRig;
+        [SerializeField] private MissionSpriteView _spriteView;
         [SerializeField] private PlayerFlightController _flight;
         [SerializeField] private AudioService _audio;
         [SerializeField] private UIDocument _flowDocument;
@@ -380,6 +381,12 @@ namespace ABRevival.Presentation
             SetupCombat();
 
             _flight?.BeginMission(_simulation, _runner.PlayerShipIndex, _hud, _cameraRig);
+            _spriteView?.BeginMission(
+                _simulation,
+                _solver,
+                _shipToHull,
+                _runner.PlayerShipIndex,
+                (_maxShips * _contactPartsPerHull) + _maxProjectiles);
 
             _captainIndex = FindCaptainIndex();
             _hud?.State.SetHullHealth(1f, 1f);
@@ -609,6 +616,23 @@ namespace ABRevival.Presentation
             }
 
             UpdateHud();
+            RenderMissionFrame();
+        }
+
+        /// <summary>
+        /// Focuses the camera on the player and submits one BRG frame. Runs once per
+        /// rendered frame, never per simulation substep.
+        /// </summary>
+        private void RenderMissionFrame()
+        {
+            int playerIndex = _runner != null ? _runner.PlayerShipIndex : -1;
+            if (_simulation != null && playerIndex >= 0 && playerIndex < _simulation.ShipCount)
+            {
+                ShipEntity player = _simulation.GetShip(playerIndex);
+                _cameraRig?.Focus(new Vector2(player.position.x, player.position.y));
+            }
+
+            _spriteView?.Render();
         }
 
         private void StepMission()
@@ -765,6 +789,7 @@ namespace ABRevival.Presentation
         private void DisposeMission()
         {
             _flight?.EndMission();
+            _spriteView?.EndMission();
             _runner = null;
             _weapons = null;
             _damageHandoff = null;

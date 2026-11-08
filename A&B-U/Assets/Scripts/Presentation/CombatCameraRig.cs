@@ -51,6 +51,19 @@ namespace ABRevival.Presentation
             return _preset;
         }
 
+        /// <summary>
+        /// Centers the orthographic camera on a world point, preserving its depth. The
+        /// frozen baseline follows the player craft, so mission coordinates stay 1:1.
+        /// </summary>
+        public void Focus(Vector2 worldPosition)
+        {
+            if (_camera == null) return;
+
+            Transform cameraTransform = _camera.transform;
+            Vector3 position = cameraTransform.position;
+            cameraTransform.position = new Vector3(worldPosition.x, worldPosition.y, position.z);
+        }
+
         /// <summary>Display pixels -> scaled design-space viewport pixels.</summary>
         public Vector2 ScreenToViewport(Vector2 screen, Vector2 screenSize)
         {

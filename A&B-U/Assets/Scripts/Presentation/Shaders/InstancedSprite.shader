@@ -18,7 +18,7 @@ Shader "ABRevival/InstancedSprite"
         Pass
         {
             Name "ABRevivalSprite"
-            Tags { "LightMode" = "UniversalForward" }
+            Tags { "LightMode" = "Universal2D" }
 
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
