@@ -196,6 +196,62 @@ namespace ABRevival.Tests.PlayMode
         }
 
         [Test]
+        public void CaptainFiresInEveryTacticalMode()
+        {
+            using var simulation = new ScheduledCombatSimulation();
+            simulation.Init(maxShips: 2, maxProjectiles: 64);
+            simulation.PlayerIndex = -1;
+            simulation.ShipCount = 2;
+
+            simulation.SetShip(0, new ShipEntity
+            {
+                position = float2.zero,
+                rotation = 0f,
+                mass = 100f,
+                health = 1000f,
+                maxHealth = 1000f,
+                thrustPower = 0f,
+                turnSpeed = 0f,
+                drag = 0f,
+                factionId = 0
+            });
+            simulation.SetShip(1, new ShipEntity
+            {
+                position = new float2(0f, 300f),
+                rotation = 0f,
+                mass = 100f,
+                health = 1000f,
+                maxHealth = 1000f,
+                thrustPower = 0f,
+                turnSpeed = 0f,
+                drag = 0f,
+                factionId = 1
+            });
+
+            var weapons = new WeaponSystem(simulation, simulation);
+            Span<WeaponMount> mounts = stackalloc WeaponMount[1];
+            mounts[0] = new WeaponMount { spec = ReferenceGun(), localOffset = float2.zero, localRotation = 0f };
+            weapons.RegisterCraft(0, mounts);
+
+            for (int mode = 0; mode < 6; mode++)
+            {
+                ShipEntity captain = simulation.GetShip(0);
+                captain.tacticalMode = mode;
+                simulation.SetShip(0, captain);
+
+                int before = weapons.ShotsFired;
+                for (int tick = 0; tick < 300; tick++)
+                {
+                    weapons.TickAi(0, simulation.GetShip(1).position);
+                    simulation.Tick(DeltaTime);
+                }
+
+                Assert.Greater(weapons.ShotsFired, before,
+                    $"ADR 0006 mode {(CaptainTacticalMode)mode} must still fire.");
+            }
+        }
+
+        [Test]
         public void AiFirePath_60Ticks_ZeroManagedAllocations()
         {
             using var simulation = new ScheduledCombatSimulation();
