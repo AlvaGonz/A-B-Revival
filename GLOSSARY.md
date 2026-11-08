@@ -82,6 +82,15 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Captain Tactical AI Job (`TacticalAIJob`, `IJobParallelFor`)**: Burst-compiled parallel job executing ADR 0006 tactical modes (Anchor, Escort, Evade, Seek & Destroy, Fire Support, Shield) over fleet entity arrays.
 - **BatchRendererGroup (BRG) & Instanced Draw Calls**: High-performance URP rendering interface drawing hundreds of modular space combat parts in a single GPU instanced batch using unified Sprite Atlases (ASTC/BC7) and `unity_RendererUserValue` for per-part damage tints.
 - **Zero-Alloc Gameplay Loop**: Architectural discipline prohibiting all dynamic heap allocations (`new`, closures, LINQ, boxing) inside `Update`, `FixedUpdate`, and `LateUpdate`.
+- **Center (`UIChooseFlyAI`)**: The hub screen for craft selection: left preview, selected-craft stats (`Inuse`), companion slots, `Reset`/`Best`, the `INFO`/`READY`/`SHOP`/`FACTORY`/`BACK` actions, and the paginated craft table with `Player` and `AI` columns. It is not the Shop and not the Factory.
+- **Factory (`UIMakePlayer`)**: The assembly/merge/edit screen reached from Center, where parts are mounted, merged and removed.
+- **Shop (`UIShop`)**: The purchase/sale screen reached from Center, separate from the dashboard.
+- **Booster Fuel (`powNum`, `pow` HUD bar, `powb` readiness)**: Temporary speed-boost resource consumed by the afterburner (`Space`) and replenished by `fuel` pickups. Displayed below hull health; distinct from shield and armor.
+- **Keyboard Control Mode**: Hull movement on `WASD`; the mouse points the turrets and left click fires. The default control mode, switchable with `Q` in battle and from Options.
+- **Mouse Control Mode**: Cursor distance from the craft sets throttle; left click fires; turrets auto-target the closest enemy within the range of the highest-range mounted weapon.
+- **Turret Aim**: Gun mounts rotate independently of the hull, up to a full 360°, toward the player's mouse target or an AI target. Wings, engines and armor stay hull-fixed.
+
+
 - **Sound Catalog (`SoundCatalog`)**: Pure C# catalogue preserving the frozen `SoundData` effect and music ids, clip names, mixer bus assignments, semantic trigger names, and original playback volumes.
 - **Runtime Audio Service (`AudioService`)**: Unity presentation service that preloads the extracted bank, owns the Music/SFX/UI voice pools, and reproduces the original music fade, duck and silence-floor behaviour.
 - **Audio Mixer (`ABRevivalAudioMixer`)**: Minimal Unity mixer with Music, SFX, and UI groups, created by `AudioAssetFactory` and addressed by `AudioService`.
