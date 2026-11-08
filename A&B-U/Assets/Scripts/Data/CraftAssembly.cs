@@ -48,6 +48,8 @@ namespace ABRevival.Core.Data
         public int PartCount => _partCount;
         public int WingCount => _wingCount;
         public int BodyCount => _bodyCount;
+        public int MaxWingCapacity => _maxAllowedWings;
+        public bool IsOverWingCapacity => _wingCount > _maxAllowedWings;
         public AggregateCraftStats CurrentStats => _currentStats;
 
         /// <summary>

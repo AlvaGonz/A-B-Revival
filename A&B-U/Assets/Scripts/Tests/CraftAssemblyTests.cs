@@ -59,6 +59,7 @@ namespace ABRevival.Tests
         {
             // Small hull limit = 4 wings (ADR 0007)
             var assembly = new CraftAssembly("B.Sml.Fighter", isGrandfathered: false);
+            Assert.AreEqual(4, assembly.MaxWingCapacity);
             var wing = new MountedPartData { category = PartCategory.Wing, mass = 5f, health = 20f };
 
             for (int i = 0; i < 4; i++)
