@@ -16,11 +16,10 @@ using UnityEngine.Video;
 namespace ABRevival.Presentation
 {
     /// <summary>
-    /// Story-0 game loop seam: Boot -> Hangar -> Briefing -> Mission -> Result -> Return.
-    /// Owns the single player save, drives the assembly/shop presenters through
-    /// <see cref="HangarController"/>, resolves story cues, steps the Burst-scheduled
-    /// simulation with the PhysicsCore2D contact layer, feeds the HUD, consumes the
-    /// mission result exactly once and advances STORY on a win.
+    /// Story-0 game loop seam: Boot -> Center -> Briefing -> Mission -> Result -> Return.
+    /// Owns the single player save, drives <see cref="CenterController"/>, resolves story cues,
+    /// steps the Burst-scheduled simulation with the PhysicsCore2D contact layer, feeds the HUD,
+    /// consumes the mission result exactly once and advances STORY on a win.
     /// Original game IP: Vargames (2011).
     /// </summary>
     [DisallowMultipleComponent]
@@ -39,7 +38,7 @@ namespace ABRevival.Presentation
         private const string DefFireResourcePath = "Data/2_all.AllData_defFire";
         private const string DefBulletResourcePath = "Data/11_all.AllData_defBullet";
 
-        [SerializeField] private HangarController _hangar;
+        [SerializeField] private CenterController _center;
         [SerializeField] private TalkScreen _talkScreen;
         [SerializeField] private CinematicPlayer _cinematicPlayer;
         [SerializeField] private CombatHudBehaviour _hud;
@@ -118,7 +117,7 @@ namespace ABRevival.Presentation
             _combatInput = GetComponent<MouseCombatFireInput>();
             if (_combatInput == null) _combatInput = gameObject.AddComponent<MouseCombatFireInput>();
 
-            if (_hangar != null) _hangar.LaunchRequested += LaunchMission;
+            if (_center != null) _center.Changed += OnCenterChanged;
             if (_talkScreen != null)
             {
                 _talkScreen.Completed += OnTalkCompleted;
@@ -134,12 +133,12 @@ namespace ABRevival.Presentation
         private void Start()
         {
             EnsureOverlayReferences();
-            EnterHangar(firstBoot: true);
+            EnterCenter(firstBoot: true);
         }
 
         private void OnDestroy()
         {
-            if (_hangar != null) _hangar.LaunchRequested -= LaunchMission;
+            if (_center != null) _center.Changed -= OnCenterChanged;
             if (_talkScreen != null) _talkScreen.Completed -= OnTalkCompleted;
             if (_flight != null)
             {
@@ -179,12 +178,12 @@ namespace ABRevival.Presentation
                         State = GameFlowState.Return;
                     break;
                 case GameFlowState.Return:
-                    EnterHangar(firstBoot: false);
+                    EnterCenter(firstBoot: false);
                     break;
             }
         }
 
-        // ---------------- Boot / hangar ----------------
+        // ---------------- Boot / center ----------------
 
         private void LoadSave()
         {
@@ -228,7 +227,7 @@ namespace ABRevival.Presentation
         {
             try
             {
-                _hangar?.CaptureSave(payload);
+                _center?.CaptureSave(payload);
                 PlayerSaveCodec.SaveToFile(_savePath, payload);
             }
             catch (Exception exception)
@@ -237,7 +236,13 @@ namespace ABRevival.Presentation
             }
         }
 
-        private void EnterHangar(bool firstBoot)
+        /// <summary>Center edits (Player pick, companions, blueprint) persist immediately.</summary>
+        private void OnCenterChanged()
+        {
+            Autosave(_save);
+        }
+
+        private void EnterCenter(bool firstBoot)
         {
             DisposeMission();
             _briefingTalkActive = false;
@@ -252,23 +257,23 @@ namespace ABRevival.Presentation
             _talkScreen?.SetVisible(false);
             if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
 
-            if (_hangar != null)
+            if (_center != null)
             {
-                if (firstBoot) _hangar.Initialize(_save);
-                else _hangar.SetStory(_save.storyIndex);
-                _hangar.SetVisible(true);
+                if (firstBoot) _center.Initialize(_save);
+                else _center.SetStory(_save.storyIndex);
+                _center.SetVisible(true);
             }
 
             _assemblyAudio?.PlayAssemblyMusic();
-            State = GameFlowState.Hangar;
+            State = GameFlowState.Center;
         }
 
         // ---------------- Briefing ----------------
 
-        /// <summary>Launches the mission for the current STORY index. Also the hangar button handler.</summary>
+        /// <summary>Launches the mission for the current STORY index. The dedicated Ready screen (#178) calls it.</summary>
         public void LaunchMission()
         {
-            if (State != GameFlowState.Hangar) return;
+            if (State != GameFlowState.Center) return;
 
             try
             {
@@ -280,8 +285,8 @@ namespace ABRevival.Presentation
                 return;
             }
 
-            _hangar?.CaptureSave(_save);
-            _hangar?.SetVisible(false);
+            _center?.CaptureSave(_save);
+            _center?.SetVisible(false);
             SetFlowVisible(false);
             _resultTalkPending = false;
             _lastResult = null;
@@ -616,14 +621,15 @@ namespace ABRevival.Presentation
         }
 
         /// <summary>
-        /// Composes the player's assembled blueprint through the shared hangar/mission resolver:
+        /// Composes the player's assembled blueprint through the shared Center/mission resolver:
         /// socket offsets, mirroring, and engine/hull/wing/gun layer order.
         /// </summary>
         private int BuildPlayerParts(Span<HullPartDefinition> parts, in ShipEntity ship)
         {
             if (_save.blueprints == null || _save.blueprints.Count == 0) return 0;
 
-            BlueprintSaveData blueprint = _save.blueprints[0];
+            int playerBlueprint = Math.Clamp(_save.playerBlueprintIndex, 0, _save.blueprints.Count - 1);
+            BlueprintSaveData blueprint = _save.blueprints[playerBlueprint];
             if (blueprint?.mountedParts == null) return 0;
 
             Span<MountedPartData> mounted = stackalloc MountedPartData[_contactPartsPerHull];
@@ -641,7 +647,7 @@ namespace ABRevival.Presentation
 
             if (bodyIndex < 0)
             {
-                // The hangar may save a gun-only blueprint; the chassis is still part of the craft.
+                // Center may save a gun-only blueprint; the chassis is still part of the craft.
                 if (mountedCount >= mounted.Length) return 0;
                 for (int i = mountedCount; i > 0; i--) mounted[i] = mounted[i - 1];
                 float hullHealth = blueprint.hullHealth > 0f ? blueprint.hullHealth : ship.maxHealth;
@@ -773,7 +779,7 @@ namespace ABRevival.Presentation
         /// <summary>Maps each assembled gun part to a fire port at its socket offset.</summary>
         private void RegisterPlayerWeapons(int shipIndex, ReadOnlySpan<HullPartDefinition> parts)
         {
-            if (_hangar == null) return;
+            if (_center == null) return;
 
             Span<WeaponMount> mounts = stackalloc WeaponMount[_contactPartsPerHull];
             Span<float2> muzzles = stackalloc float2[8];
@@ -784,7 +790,7 @@ namespace ABRevival.Presentation
                 MountedPartData part = parts[i].part;
                 if (part.category != PartCategory.Gun) continue;
 
-                PartDefinitionSO definition = _hangar.FindPartDefinition(part.partId);
+                PartDefinitionSO definition = _center.FindPartDefinition(part.partId);
                 if (definition == null) continue;
 
                 FireModeSpec spec = definition.CreateWeaponSpec();
@@ -825,7 +831,7 @@ namespace ABRevival.Presentation
             CraftStatRecord craft,
             ReadOnlySpan<CraftPartPlacement> placements)
         {
-            if (_hangar == null || craft == null || craft.weaponMounts == null) return;
+            if (_center == null || craft == null || craft.weaponMounts == null) return;
 
             Span<WeaponMount> mounts = stackalloc WeaponMount[_contactPartsPerHull];
             Span<float2> muzzles = stackalloc float2[8];
@@ -836,7 +842,7 @@ namespace ABRevival.Presentation
                 CraftWeaponMount mount = craft.weaponMounts[i];
                 if ((uint)mount.partIndex >= (uint)placements.Length) continue;
 
-                PartDefinitionSO definition = _hangar.FindPartDefinition(mount.partId);
+                PartDefinitionSO definition = _center.FindPartDefinition(mount.partId);
                 if (definition == null) continue;
 
                 FireModeSpec spec = definition.CreateWeaponSpec();
@@ -1315,7 +1321,7 @@ namespace ABRevival.Presentation
     public enum GameFlowState
     {
         Boot = 0,
-        Hangar = 1,
+        Center = 1,
         Briefing = 2,
         Mission = 3,
         Result = 4,

@@ -1,0 +1,959 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using ABRevival.Core.Data;
+using ABRevival.Core.Persistence;
+using ABRevival.Core.Shop;
+using Unity.Mathematics;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+namespace ABRevival.Presentation
+{
+    /// <summary>
+    /// Scene entry point for Center (the frozen UIChooseFlyAI dashboard): craft preview,
+    /// F4ShowData stat card, Player/AI assignment, companion grades, Reset/Best, pagination
+    /// and the INFO / READY / SHOP / FACTORY / BACK navigation targets.
+    /// The center never owns a save file; it mutates the single payload owned by
+    /// <see cref="GameFlowController"/>.
+    /// Original game IP: Vargames (2011).
+    /// </summary>
+    [RequireComponent(typeof(UIDocument))]
+    public sealed class CenterController : MonoBehaviour
+    {
+        private const int PageSize = 8;
+        private const int CompanionSlotCount = CompanionRoster.SlotCount;
+
+        [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
+        [SerializeField] private int startingMoney = 2000;
+
+        [Header("Center sprites (frozen 2011 UI library)")]
+        [SerializeField] private Sprite centerBackground;
+        [SerializeField] private Sprite centerHeader;
+        [SerializeField] private Sprite previewFrame;
+        [SerializeField] private Sprite panel;
+        [SerializeField] private Sprite buttonPlate;
+        [SerializeField] private Sprite buttonReady;
+        [SerializeField] private Sprite gradePlate;
+        [SerializeField] private Sprite helpButton;
+
+        private UIDocument _document;
+        private ShopCatalog _catalog;
+        private ShopState _shop;
+        private PartMountTable _mountTable;
+        private Dictionary<int, PartDefinitionSO> _byId;
+        private List<PartDefinitionSO> _definitions;
+        private PlayerSaveData _payload = new PlayerSaveData();
+
+        private readonly List<CraftBlueprintSO> _fleet = new List<CraftBlueprintSO>();
+        private readonly List<CraftAssembly> _assemblies = new List<CraftAssembly>();
+        private readonly CompanionRoster _roster = new CompanionRoster();
+        private readonly Button[] _gradeButtons = new Button[CompanionSlotCount];
+
+        private VisualElement _screen;
+        private VisualElement _placeholder;
+        private VisualElement _previewClip;
+        private VisualElement _previewCanvas;
+        private VisualElement _companionSlots;
+        private ScrollView _craftList;
+        private Label _battleLabel;
+        private Label _moneyLabel;
+        private Label _previewName;
+        private Label _statName;
+        private Label _statHp;
+        private Label _statFire;
+        private Label _statSpeed;
+        private Label _statSteering;
+        private Label _statClass;
+        private Label _statParts;
+        private Label _statValue;
+        private Label _inuseLabel;
+        private Label _instructionLabel;
+        private Label _pageLabel;
+        private Label _placeholderTitle;
+        private Button _resetButton;
+        private Button _bestButton;
+        private Button _helpButton;
+        private Button _infoButton;
+        private Button _readyButton;
+        private Button _shopButton;
+        private Button _factoryButton;
+        private Button _backButton;
+        private Button _placeholderBack;
+        private Button _firstButton;
+        private Button _previousButton;
+        private Button _nextButton;
+        private Button _lastButton;
+
+        private int _playerIndex;
+        private int _selectedIndex;
+        private int _page;
+        private bool _initialized;
+        private Vector2 _lastPreviewSize;
+
+        /// <summary>Raised after a Center action mutates the save payload.</summary>
+        public event Action Changed;
+
+        /// <summary>Current shop money, exposed for boot/save verification.</summary>
+        public int Money => _shop != null ? _shop.Money : 0;
+
+        /// <summary>The selected Player craft index into the saved fleet.</summary>
+        public int PlayerCraftIndex => _playerIndex;
+
+        /// <summary>The craft currently shown in the preview and stat card.</summary>
+        public int SelectedCraftIndex => _selectedIndex;
+
+        public int FleetCount => _fleet.Count;
+
+        public int PreviewPartCount => _previewCanvas != null ? _previewCanvas.childCount : 0;
+
+        public int PageIndex => _page;
+
+        public CompanionRoster Companions => _roster;
+
+        public string PlaceholderTitle => _placeholderTitle != null ? _placeholderTitle.text : string.Empty;
+
+        /// <summary>True when the shop has a stock row for the part (save reconciliation telemetry).</summary>
+        public bool IsUnlocked(int partId) => _shop != null && _shop.IsUnlocked(partId);
+
+        /// <summary>
+        /// Resolves a mounted part's authored definition. Mission loadout conversion uses it
+        /// to turn an assembled gun part into fire-control parameters.
+        /// </summary>
+        public PartDefinitionSO FindPartDefinition(int partId)
+        {
+            if (_definitions == null) return null;
+            for (int i = 0; i < _definitions.Count; i++)
+            {
+                PartDefinitionSO definition = _definitions[i];
+                if (definition != null && definition.partId == partId) return definition;
+            }
+
+            return null;
+        }
+
+        private void Start()
+        {
+            Initialize(null);
+        }
+
+        /// <summary>
+        /// Builds the Center UI once and applies a player save. GameFlowController calls this at
+        /// boot; calling it again with a save refreshes the fleet, companions and money.
+        /// </summary>
+        public void Initialize(PlayerSaveData save)
+        {
+            if (_initialized)
+            {
+                if (save != null) ApplySave(save);
+                return;
+            }
+
+            _document = GetComponent<UIDocument>();
+            if (_document == null || _document.rootVisualElement == null)
+            {
+                Debug.LogError("[Center] UIDocument with a source UXML is required.");
+                return;
+            }
+
+            _definitions = ResolveDefinitions();
+            _byId = new Dictionary<int, PartDefinitionSO>(_definitions.Count);
+            for (int i = 0; i < _definitions.Count; i++)
+                _byId[_definitions[i].partId] = _definitions[i];
+
+            _catalog = BuildCatalog(_definitions);
+            _shop = new ShopState(_catalog, startingMoney);
+            _mountTable = LoadMountTable();
+
+            VisualElement root = _document.rootVisualElement;
+            ApplySkin(root);
+            Bind(root);
+
+            _initialized = true;
+            if (save != null)
+            {
+                ApplySave(save);
+            }
+            else
+            {
+                RebuildFleet(null);
+                ReconcileShop(0);
+                _selectedIndex = 0;
+                RefreshAll();
+            }
+        }
+
+        /// <summary>Captures the shop, every fleet craft, the Player pick and companion slots.</summary>
+        public void CaptureSave(PlayerSaveData target)
+        {
+            if (target == null || !_initialized) return;
+
+            target.shop = _shop.CreateSave();
+            target.blueprints.Clear();
+            for (int i = 0; i < _fleet.Count; i++)
+                target.blueprints.Add(BlueprintSaveMapper.Capture(_fleet[i]));
+
+            target.playerBlueprintIndex = _playerIndex;
+            target.companions = _roster.ToSave();
+        }
+
+        /// <summary>Restores shop, fleet, Player pick and companions, then reconciles catalog stock.</summary>
+        public void ApplySave(PlayerSaveData payload)
+        {
+            if (!_initialized || payload == null) return;
+
+            _payload = payload;
+            _shop.LoadFrom(payload.shop);
+            RebuildFleet(payload.blueprints);
+
+            _playerIndex = ClampCraftIndex(payload.playerBlueprintIndex);
+            _selectedIndex = _playerIndex;
+            _roster.Load(payload.companions, _playerIndex, _fleet.Count);
+            _page = 0;
+
+            ReconcileShop(payload.storyIndex);
+            RefreshAll();
+        }
+
+        /// <summary>Shows or hides the whole Center overlay.</summary>
+        public void SetVisible(bool visible)
+        {
+            if (_document == null) _document = GetComponent<UIDocument>();
+            if (_document != null && _document.rootVisualElement != null)
+            {
+                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+        }
+
+        /// <summary>Updates the BATTLE-n label from the saved STORY index.</summary>
+        public void SetStory(int storyIndex)
+        {
+            _payload.storyIndex = storyIndex;
+            RefreshHeader();
+        }
+
+        // ---------------- Center actions ----------------
+
+        public void SelectCraft(int index)
+        {
+            if (index < 0 || index >= _fleet.Count) return;
+            _selectedIndex = index;
+            RefreshSelected();
+            RefreshTable();
+        }
+
+        /// <summary>Assigns a fleet craft as Player, clearing it from any companion slot.</summary>
+        public bool AssignPlayer(int index)
+        {
+            if (index < 0 || index >= _fleet.Count || !_assemblies[index].IsValid) return false;
+
+            _roster.Remove(index);
+            _playerIndex = index;
+            _selectedIndex = index;
+            CommitChange();
+            return true;
+        }
+
+        /// <summary>Toggles a craft in the first free companion slot (frozen BAI button).</summary>
+        public bool ToggleCompanion(int index)
+        {
+            if (index < 0 || index >= _fleet.Count || index == _playerIndex) return false;
+
+            bool changed = _roster.Contains(index)
+                ? _roster.Remove(index)
+                : _roster.AssignFirstFree(index);
+            if (changed) CommitChange();
+            return changed;
+        }
+
+        public bool RemoveCompanion(int slot)
+        {
+            if (!_roster.RemoveAt(slot)) return false;
+            CommitChange();
+            return true;
+        }
+
+        public void ResetCompanions()
+        {
+            if (_roster.AssignedCount == 0) return;
+            _roster.Clear();
+            CommitChange();
+        }
+
+        /// <summary>Fills every empty companion slot with the highest-value unassigned craft.</summary>
+        public void FillBestCompanions()
+        {
+            bool changed = false;
+            while (_roster.AssignedCount < CompanionSlotCount)
+            {
+                int best = -1;
+                int bestValue = -1;
+                for (int i = 0; i < _fleet.Count; i++)
+                {
+                    if (i == _playerIndex || _roster.Contains(i) || !_assemblies[i].IsValid) continue;
+                    int value = StatsFor(i).value;
+                    if (value <= bestValue) continue;
+                    best = i;
+                    bestValue = value;
+                }
+
+                if (best < 0) break;
+                if (!_roster.AssignFirstFree(best)) break;
+                changed = true;
+            }
+
+            if (changed) CommitChange();
+        }
+
+        public void NextPage() => GoToPage(_page + 1);
+        public void PreviousPage() => GoToPage(_page - 1);
+        public void FirstPage() => GoToPage(0);
+        public void LastPage() => GoToPage(PageCount - 1);
+
+        public void GoToPage(int page)
+        {
+            int clamped = Mathf.Clamp(page, 0, PageCount - 1);
+            if (clamped == _page) return;
+            _page = clamped;
+            RefreshTable();
+        }
+
+        /// <summary>Opens the placeholder shell that #175-#178 replace with real sections.</summary>
+        public void OpenPlaceholder(string title)
+        {
+            if (_screen != null) _screen.style.display = DisplayStyle.None;
+            if (_placeholder != null) _placeholder.style.display = DisplayStyle.Flex;
+            if (_placeholderTitle != null) _placeholderTitle.text = title;
+        }
+
+        public void ShowCenter()
+        {
+            if (_screen != null) _screen.style.display = DisplayStyle.Flex;
+            if (_placeholder != null) _placeholder.style.display = DisplayStyle.None;
+        }
+
+        // ---------------- Binding / skin ----------------
+
+        private void Bind(VisualElement root)
+        {
+            _screen = root.Q("center-screen");
+            _placeholder = root.Q("center-placeholder");
+            _previewClip = root.Q("preview-clip");
+            _previewCanvas = root.Q("preview-canvas");
+            _companionSlots = root.Q("companion-slots");
+            _craftList = root.Q<ScrollView>("craft-list");
+
+            _battleLabel = root.Q<Label>("battle-label");
+            _moneyLabel = root.Q<Label>("money-label");
+            _previewName = root.Q<Label>("preview-name");
+            _statName = root.Q<Label>("stat-name");
+            _statHp = root.Q<Label>("stat-hp");
+            _statFire = root.Q<Label>("stat-fire");
+            _statSpeed = root.Q<Label>("stat-speed");
+            _statSteering = root.Q<Label>("stat-steering");
+            _statClass = root.Q<Label>("stat-class");
+            _statParts = root.Q<Label>("stat-parts");
+            _statValue = root.Q<Label>("stat-value");
+            _inuseLabel = root.Q<Label>("inuse-label");
+            _instructionLabel = root.Q<Label>("instruction-label");
+            _pageLabel = root.Q<Label>("page-label");
+            _placeholderTitle = root.Q<Label>("placeholder-title");
+
+            _resetButton = root.Q<Button>("reset-button");
+            _bestButton = root.Q<Button>("best-button");
+            _helpButton = root.Q<Button>("help-button");
+            _infoButton = root.Q<Button>("info-button");
+            _readyButton = root.Q<Button>("ready-button");
+            _shopButton = root.Q<Button>("shop-button");
+            _factoryButton = root.Q<Button>("factory-button");
+            _backButton = root.Q<Button>("back-button");
+            _placeholderBack = root.Q<Button>("placeholder-back");
+            _firstButton = root.Q<Button>("first-button");
+            _previousButton = root.Q<Button>("prev-button");
+            _nextButton = root.Q<Button>("next-button");
+            _lastButton = root.Q<Button>("last-button");
+
+            for (int i = 0; i < CompanionSlotCount; i++)
+                _gradeButtons[i] = root.Q<Button>("grade-" + i);
+
+            if (_resetButton != null) _resetButton.clicked += ResetCompanions;
+            if (_bestButton != null) _bestButton.clicked += FillBestCompanions;
+            if (_helpButton != null) _helpButton.clicked += () => OpenPlaceholder("HELP");
+            if (_infoButton != null) _infoButton.clicked += () => OpenPlaceholder("INFO");
+            if (_readyButton != null) _readyButton.clicked += () => OpenPlaceholder("READY");
+            if (_shopButton != null) _shopButton.clicked += () => OpenPlaceholder("SHOP");
+            if (_factoryButton != null) _factoryButton.clicked += () => OpenPlaceholder("FACTORY");
+            if (_backButton != null) _backButton.clicked += () => OpenPlaceholder("MAIN MENU");
+            if (_placeholderBack != null) _placeholderBack.clicked += ShowCenter;
+            if (_firstButton != null) _firstButton.clicked += FirstPage;
+            if (_previousButton != null) _previousButton.clicked += PreviousPage;
+            if (_nextButton != null) _nextButton.clicked += NextPage;
+            if (_lastButton != null) _lastButton.clicked += LastPage;
+
+            for (int i = 0; i < CompanionSlotCount; i++)
+            {
+                int slot = i;
+                if (_gradeButtons[i] != null) _gradeButtons[i].clicked += () => RemoveCompanion(slot);
+            }
+
+            if (_craftList != null) _craftList.verticalScrollerVisibility = ScrollerVisibility.Hidden;
+            if (_previewClip != null) _previewClip.RegisterCallback<GeometryChangedEvent>(OnPreviewGeometryChanged);
+        }
+
+        private void ApplySkin(VisualElement root)
+        {
+            SetBackground(root, "center-root", centerBackground);
+            SetBackground(root, "center-header", centerHeader);
+            SetBackground(root, "preview-frame", previewFrame);
+            SetBackground(root, "craft-table", panel);
+            SetBackground(root, "help-button", helpButton);
+            SetBackground(root, "ready-button", buttonReady);
+            SetBackground(root, "center-placeholder", panel);
+            SetBackground(root, "placeholder-panel", panel);
+
+            SetBackground(root, "info-button", buttonPlate);
+            SetBackground(root, "shop-button", buttonPlate);
+            SetBackground(root, "factory-button", buttonPlate);
+            SetBackground(root, "back-button", buttonPlate);
+            SetBackground(root, "reset-button", buttonPlate);
+            SetBackground(root, "best-button", buttonPlate);
+            SetBackground(root, "first-button", buttonPlate);
+            SetBackground(root, "prev-button", buttonPlate);
+            SetBackground(root, "next-button", buttonPlate);
+            SetBackground(root, "last-button", buttonPlate);
+            SetBackground(root, "placeholder-back", buttonPlate);
+
+            for (int i = 0; i < CompanionSlotCount; i++)
+                SetBackground(root, "grade-" + i, gradePlate);
+        }
+
+        private static void SetBackground(VisualElement root, string name, Sprite sprite)
+        {
+            VisualElement element = root.Q(name);
+            if (element != null && sprite != null)
+                element.style.backgroundImage = new StyleBackground(sprite);
+        }
+
+        // ---------------- Refresh ----------------
+
+        private void CommitChange()
+        {
+            CaptureSave(_payload);
+            RefreshAll();
+            Changed?.Invoke();
+        }
+
+        private void RefreshAll()
+        {
+            if (!_initialized) return;
+            RefreshHeader();
+            RefreshTable();
+            RefreshSelected();
+            RefreshCompanions();
+        }
+
+        private void RefreshHeader()
+        {
+            if (_battleLabel != null) _battleLabel.text = "BATTLE-" + (_payload.storyIndex + 1);
+            if (_moneyLabel != null) _moneyLabel.text = Money.ToString("N0", CultureInfo.InvariantCulture) + " G";
+        }
+
+        private void RefreshSelected()
+        {
+            if (_fleet.Count == 0) return;
+            _selectedIndex = ClampCraftIndex(_selectedIndex);
+
+            CraftShowStats stats = StatsFor(_selectedIndex);
+            if (_statName != null) _statName.text = stats.name;
+            if (_statHp != null) _statHp.text = stats.hp.ToString(CultureInfo.InvariantCulture);
+            if (_statFire != null) _statFire.text = stats.fire.ToString("0.00", CultureInfo.InvariantCulture);
+            if (_statSpeed != null) _statSpeed.text = stats.speed.ToString("0.0", CultureInfo.InvariantCulture);
+            if (_statSteering != null) _statSteering.text = stats.steering.ToString("0.0", CultureInfo.InvariantCulture);
+            if (_statClass != null) _statClass.text = stats.cls;
+            if (_statParts != null) _statParts.text = stats.parts.ToString(CultureInfo.InvariantCulture);
+            if (_statValue != null) _statValue.text = stats.value.ToString(CultureInfo.InvariantCulture);
+            if (_previewName != null) _previewName.text = stats.name;
+            if (_inuseLabel != null)
+                _inuseLabel.style.display = IsInUse(_selectedIndex) ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (_instructionLabel != null)
+            {
+                _instructionLabel.text = _assemblies[_selectedIndex].IsValid
+                    ? "Pick crafts here and ready to fight!"
+                    : "This craft needs a hull before it can launch.";
+            }
+
+            RefreshPreview();
+        }
+
+        private void RefreshCompanions()
+        {
+            bool hasCompanions = _roster.AssignedCount > 0;
+            if (_companionSlots != null)
+                _companionSlots.style.display = hasCompanions ? DisplayStyle.Flex : DisplayStyle.None;
+
+            for (int slot = 0; slot < CompanionSlotCount; slot++)
+            {
+                Button button = _gradeButtons[slot];
+                if (button == null) continue;
+
+                int craftIndex = _roster.CraftIndex(slot);
+                bool assigned = craftIndex >= 0;
+                button.text = assigned ? StatsFor(craftIndex).cls : "-";
+                button.SetEnabled(assigned);
+                button.tooltip = assigned ? "Remove companion " + (slot + 1) : "Empty companion slot";
+            }
+        }
+
+        private void RefreshTable()
+        {
+            if (_craftList == null) return;
+
+            _page = Mathf.Clamp(_page, 0, PageCount - 1);
+            _craftList.Clear();
+
+            int start = _page * PageSize;
+            int end = Mathf.Min(start + PageSize, _fleet.Count);
+            for (int index = start; index < end; index++)
+                _craftList.Add(CreateCraftRow(index));
+
+            if (_fleet.Count == 0)
+                _craftList.Add(new Label("NO CRAFTS") { name = "craft-empty" });
+
+            if (_pageLabel != null) _pageLabel.text = (_page + 1) + " / " + PageCount;
+            if (_firstButton != null) _firstButton.SetEnabled(_page > 0);
+            if (_previousButton != null) _previousButton.SetEnabled(_page > 0);
+            if (_nextButton != null) _nextButton.SetEnabled(_page < PageCount - 1);
+            if (_lastButton != null) _lastButton.SetEnabled(_page < PageCount - 1);
+        }
+
+        private VisualElement CreateCraftRow(int index)
+        {
+            var row = new VisualElement { name = "craft-row-" + index };
+            row.AddToClassList("craft-row");
+            row.AddToClassList(index % 2 == 0 ? "craft-row-even" : "craft-row-odd");
+            if (index == _selectedIndex) row.AddToClassList("craft-row-selected");
+            if (IsInUse(index)) row.AddToClassList("craft-row-inuse");
+            row.RegisterCallback<PointerDownEvent>(_ => SelectCraft(index));
+
+            AddCell(row, index.ToString(CultureInfo.InvariantCulture), "col-index");
+            AddCell(row, CraftName(index), "col-name");
+
+            var playerCell = new Button(() => AssignPlayer(index))
+            {
+                name = "player-cell",
+                text = index == _playerIndex ? "1" : "0",
+                tooltip = "Use this craft"
+            };
+            playerCell.AddToClassList("cell-button");
+            playerCell.AddToClassList("col-player");
+            if (index == _playerIndex) playerCell.AddToClassList("cell-active");
+            row.Add(playerCell);
+
+            int slot = _roster.SlotOf(index);
+            var aiCell = new Button(() => ToggleCompanion(index))
+            {
+                name = "ai-cell",
+                text = slot >= 0 ? (slot + 1).ToString(CultureInfo.InvariantCulture) : "AI",
+                tooltip = slot >= 0 ? "Remove from companion slot" : "Assign as AI companion"
+            };
+            aiCell.AddToClassList("cell-button");
+            aiCell.AddToClassList("col-ai");
+            if (slot >= 0) aiCell.AddToClassList("cell-active");
+            row.Add(aiCell);
+
+            return row;
+        }
+
+        private static void AddCell(VisualElement row, string text, string className)
+        {
+            var label = new Label(text);
+            label.AddToClassList("cell");
+            label.AddToClassList(className);
+            row.Add(label);
+        }
+
+        private void RefreshPreview()
+        {
+            if (_previewCanvas == null || _previewClip == null || _fleet.Count == 0) return;
+
+            _previewCanvas.Clear();
+            CraftAssembly assembly = _assemblies[ClampCraftIndex(_selectedIndex)];
+
+            Span<MountedPartData> parts = stackalloc MountedPartData[CraftAssembly.MaxCapacity];
+            int partCount = 0;
+            for (int i = 0; i < CraftAssembly.MaxCapacity; i++)
+            {
+                if (!assembly.IsSlotOccupied(i)) continue;
+                MountedPartData part = assembly.GetPart(i);
+                if (_byId.TryGetValue(part.partId, out PartDefinitionSO definition))
+                    part.mirrored = definition.lr == 1;
+                parts[partCount++] = part;
+            }
+
+            if (partCount == 0) return;
+
+            Span<CraftPartPlacement> placements = stackalloc CraftPartPlacement[CraftAssembly.MaxCapacity];
+            int placementCount = CraftComposition.BuildPlayer(parts.Slice(0, partCount), _mountTable, placements);
+            if (placementCount == 0) return;
+
+            float canvasWidth = _previewClip.resolvedStyle.width;
+            float canvasHeight = _previewClip.resolvedStyle.height;
+            if (float.IsNaN(canvasWidth) || float.IsNaN(canvasHeight) || canvasWidth <= 1f || canvasHeight <= 1f)
+            {
+                canvasWidth = 494f;
+                canvasHeight = 510f;
+            }
+
+            float minX = float.MaxValue;
+            float maxX = float.MinValue;
+            float minY = float.MaxValue;
+            float maxY = float.MinValue;
+            for (int i = 0; i < placementCount; i++)
+            {
+                CraftPartPlacement placement = placements[i];
+                if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
+                Sprite sprite = definition.partSprite;
+                if (sprite == null) continue;
+
+                Vector2 contentCenter = ContentCenter(definition, sprite);
+                if (placement.mirrored) contentCenter.x = -contentCenter.x;
+                Vector2 contentSize = ContentSize(definition, sprite);
+                float x = placement.localOffset.x + contentCenter.x;
+                float y = placement.localOffset.y + contentCenter.y;
+                minX = Mathf.Min(minX, x - (contentSize.x * 0.5f));
+                maxX = Mathf.Max(maxX, x + (contentSize.x * 0.5f));
+                minY = Mathf.Min(minY, y - (contentSize.y * 0.5f));
+                maxY = Mathf.Max(maxY, y + (contentSize.y * 0.5f));
+            }
+
+            if (minX > maxX) return;
+
+            float boundsWidth = Mathf.Max(1f, maxX - minX);
+            float boundsHeight = Mathf.Max(1f, maxY - minY);
+            float areaScale = Mathf.Sqrt(0.65f * canvasWidth * canvasHeight / (boundsWidth * boundsHeight));
+            float fitScale = Mathf.Min(canvasWidth * 0.94f / boundsWidth, canvasHeight * 0.94f / boundsHeight);
+            float scale = Mathf.Clamp(Mathf.Min(areaScale, fitScale), 0.15f, 24f);
+
+            float centerX = canvasWidth * 0.5f;
+            float centerY = canvasHeight * 0.5f;
+            float boundsCenterX = (minX + maxX) * 0.5f;
+            float boundsCenterY = (minY + maxY) * 0.5f;
+
+            for (int i = 0; i < placementCount; i++)
+            {
+                CraftPartPlacement placement = placements[i];
+                if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
+                Sprite sprite = definition.partSprite;
+                if (sprite == null) continue;
+
+                float width = sprite.rect.width * scale;
+                float height = sprite.rect.height * scale;
+                Vector2 contentCenter = ContentCenter(definition, sprite);
+                if (placement.mirrored) contentCenter.x = -contentCenter.x;
+                var element = new VisualElement { name = "preview-part-" + placement.partId, pickingMode = PickingMode.Ignore };
+                element.style.position = Position.Absolute;
+                element.style.width = width;
+                element.style.height = height;
+                element.style.left = centerX + ((placement.localOffset.x + contentCenter.x - boundsCenterX) * scale) - (width * 0.5f);
+                element.style.top = centerY - ((placement.localOffset.y + contentCenter.y - boundsCenterY) * scale) - (height * 0.5f);
+                element.style.backgroundImage = new StyleBackground(sprite);
+                element.style.rotate = new StyleRotate(
+                    new Rotate(new Angle(placement.localRotation * Mathf.Rad2Deg, AngleUnit.Degree)));
+                if (placement.mirrored)
+                    element.style.scale = new StyleScale(new Scale(new Vector3(-1f, 1f, 1f)));
+                _previewCanvas.Add(element);
+            }
+        }
+
+        private void OnPreviewGeometryChanged(GeometryChangedEvent evt)
+        {
+            var size = new Vector2(evt.newRect.width, evt.newRect.height);
+            if (Mathf.Approximately(size.x, _lastPreviewSize.x) && Mathf.Approximately(size.y, _lastPreviewSize.y)) return;
+            _lastPreviewSize = size;
+            RefreshPreview();
+        }
+
+        private static Vector2 ContentCenter(PartDefinitionSO definition, Sprite sprite)
+        {
+            Vector4 content = definition.spriteContentRect;
+            if (content.z <= 0f || content.w <= 0f) return Vector2.zero;
+            return new Vector2(
+                content.x + (content.z * 0.5f) - (sprite.rect.width * 0.5f),
+                content.y + (content.w * 0.5f) - (sprite.rect.height * 0.5f));
+        }
+
+        private static Vector2 ContentSize(PartDefinitionSO definition, Sprite sprite)
+        {
+            Vector4 content = definition.spriteContentRect;
+            return content.z > 0f && content.w > 0f
+                ? new Vector2(content.z, content.w)
+                : sprite.rect.size;
+        }
+
+        // ---------------- Craft catalog / seed fleet ----------------
+
+        public CraftShowStats StatsFor(int index)
+        {
+            if (_fleet.Count == 0) return new CraftShowStats();
+            index = ClampCraftIndex(index);
+
+            CraftAssembly assembly = _assemblies[index];
+            Span<CraftPartStat> parts = stackalloc CraftPartStat[CraftAssembly.MaxCapacity];
+            int count = 0;
+            for (int i = 0; i < CraftAssembly.MaxCapacity; i++)
+            {
+                if (!assembly.IsSlotOccupied(i)) continue;
+                MountedPartData part = assembly.GetPart(i);
+                if (!_byId.TryGetValue(part.partId, out PartDefinitionSO definition)) continue;
+
+                float fire = definition.category == PartCategory.Gun
+                    ? definition.CalculateDisplayFirePower(FirePointCount(definition.partId))
+                    : 0f;
+                parts[count++] = new CraftPartStat(
+                    definition.category, definition.mass, definition.health,
+                    definition.thrust, definition.turnFly, definition.cost, fire);
+            }
+
+            CraftBlueprintSO blueprint = _fleet[index];
+            return CraftShowData.Evaluate(
+                blueprint.craftName, blueprint.hullName,
+                blueprint.hullMass, blueprint.hullHealth, parts.Slice(0, count));
+        }
+
+        public string CraftName(int index)
+        {
+            if (index < 0 || index >= _fleet.Count) return string.Empty;
+            CraftBlueprintSO blueprint = _fleet[index];
+            return string.IsNullOrEmpty(blueprint.craftName) ? blueprint.hullName : blueprint.craftName;
+        }
+
+        public bool IsInUse(int index)
+        {
+            return index == _playerIndex || _roster.Contains(index);
+        }
+
+        private int PageCount => Mathf.Max(1, (_fleet.Count + PageSize - 1) / PageSize);
+
+        private int ClampCraftIndex(int index)
+        {
+            return _fleet.Count == 0 ? 0 : Mathf.Clamp(index, 0, _fleet.Count - 1);
+        }
+
+        private void RebuildFleet(List<BlueprintSaveData> saved)
+        {
+            for (int i = 0; i < _assemblies.Count; i++) _assemblies[i]?.Dispose();
+            _assemblies.Clear();
+
+            for (int i = 0; i < _fleet.Count; i++)
+            {
+                if (_fleet[i] != null) Destroy(_fleet[i]);
+            }
+            _fleet.Clear();
+
+            if (saved != null)
+            {
+                for (int i = 0; i < saved.Count; i++)
+                {
+                    var blueprint = ScriptableObject.CreateInstance<CraftBlueprintSO>();
+                    BlueprintSaveMapper.Apply(saved[i], blueprint);
+                    if (string.IsNullOrEmpty(blueprint.hullName))
+                    {
+                        PartDefinitionSO body = FirstMountedBody(blueprint);
+                        if (body != null)
+                        {
+                            blueprint.hullName = body.partName;
+                            blueprint.hullCategory = CraftBlueprintSO.GetHullCategoryForName(body.partName);
+                            blueprint.hullMass = body.mass;
+                            blueprint.hullHealth = body.health;
+                        }
+                    }
+                    _fleet.Add(blueprint);
+                }
+            }
+
+            if (_fleet.Count == 0) _fleet.Add(CreatePlayerCraft());
+            if (_fleet.Count == 1) SeedAiCandidates(_fleet);
+
+            for (int i = 0; i < _fleet.Count; i++) _assemblies.Add(BuildAssembly(_fleet[i]));
+        }
+
+        private PartDefinitionSO FirstMountedBody(CraftBlueprintSO blueprint)
+        {
+            if (blueprint.mountedParts == null) return null;
+            for (int i = 0; i < blueprint.mountedParts.Length; i++)
+            {
+                MountedPartData part = blueprint.mountedParts[i];
+                if (part.category != PartCategory.Body) continue;
+                PartDefinitionSO definition = FindPartDefinition(part.partId);
+                if (definition != null) return definition;
+            }
+
+            return null;
+        }
+
+        private void SeedAiCandidates(List<CraftBlueprintSO> fleet)
+        {
+            fleet.Add(CreateBlueprint("Wingman 01", 1, 173, 222, 134, 72));
+            fleet.Add(CreateBlueprint("Wingman 02", 2, 174, 223, 135, 73));
+            fleet.Add(CreateBlueprint("Wingman 03", 3, 175, 224, 136, 74));
+            fleet.Add(CreateBlueprint("Wingman 04", 7, 176, 225, 137, 140, 72, 78));
+            fleet.Add(CreateBlueprint("Wingman 05", 10, 177, 226, 138, 141, 80, 81));
+            fleet.Add(CreateBlueprint("Wingman 06", 11, 178, 227, 139, 142, 82, 83));
+            fleet.Add(CreateBlueprint("Wingman 07", 18, 181, 230, 143, 144, 84, 85));
+            fleet.Add(CreateBlueprint("Wingman 08", 19, 182, 231, 145, 146, 86, 87));
+            fleet.Add(CreateBlueprint("Wingman 09", 36, 186, 235, 143, 144, 84, 85));
+        }
+
+        private CraftBlueprintSO CreatePlayerCraft()
+        {
+            return CreateBlueprint("Michael's", 0, 173, 222, 133, 71);
+        }
+
+        private CraftBlueprintSO CreateBlueprint(string name, int bodyPartId, params int[] partIds)
+        {
+            PartDefinitionSO body = FindPartDefinition(bodyPartId) ?? FindPartDefinition(0);
+            var blueprint = ScriptableObject.CreateInstance<CraftBlueprintSO>();
+            blueprint.craftName = name;
+            if (body == null)
+            {
+                blueprint.hullName = "B.Small.01";
+                blueprint.hullCategory = HullCategory.Small;
+                blueprint.hullMass = 100f;
+                blueprint.hullHealth = 1300f;
+                blueprint.mountedParts = Array.Empty<MountedPartData>();
+                return blueprint;
+            }
+
+            blueprint.hullName = body.partName;
+            blueprint.hullCategory = CraftBlueprintSO.GetHullCategoryForName(body.partName);
+            blueprint.hullMass = body.mass;
+            blueprint.hullHealth = body.health;
+
+            var mounted = new List<MountedPartData>(partIds.Length + 1) { FromDefinition(body) };
+            for (int i = 0; i < partIds.Length; i++)
+            {
+                PartDefinitionSO definition = FindPartDefinition(partIds[i]);
+                if (definition == null || definition.category == PartCategory.Body) continue;
+                mounted.Add(FromDefinition(definition));
+            }
+
+            blueprint.mountedParts = mounted.ToArray();
+            return blueprint;
+        }
+
+        private static MountedPartData FromDefinition(PartDefinitionSO definition)
+        {
+            return new MountedPartData
+            {
+                partId = definition.partId,
+                category = definition.category,
+                health = definition.health,
+                maxHealth = definition.health,
+                mass = definition.mass,
+                thrust = definition.thrust,
+                energyDraw = definition.energyDraw,
+                mirrored = definition.lr == 1
+            };
+        }
+
+        private CraftAssembly BuildAssembly(CraftBlueprintSO source)
+        {
+            var assembly = new CraftAssembly(source.hullName, source.hullMass, source.hullHealth, source.isGrandfathered);
+            if (source.mountedParts != null)
+            {
+                for (int i = 0; i < source.mountedParts.Length; i++)
+                {
+                    MountedPartData part = source.mountedParts[i];
+                    AssemblyError error = assembly.TryMountPart(part, out _);
+                    if (error != AssemblyError.None)
+                        Debug.LogWarning($"[Center] Blueprint part {part.partId} was not mounted: {error}.");
+                }
+            }
+
+            return assembly;
+        }
+
+        private static ShopCatalog BuildCatalog(IReadOnlyList<PartDefinitionSO> definitions)
+        {
+            var parts = new List<ShopPart>(definitions.Count);
+            for (int i = 0; i < definitions.Count; i++)
+            {
+                PartDefinitionSO definition = definitions[i];
+                if (definition != null)
+                    parts.Add(new ShopPart(definition.partId, definition.partName, definition.category, definition.cost));
+            }
+
+            return new ShopCatalog(parts);
+        }
+
+        private List<PartDefinitionSO> ResolveDefinitions()
+        {
+            var definitions = new List<PartDefinitionSO>();
+            if (catalogParts != null)
+            {
+                for (int i = 0; i < catalogParts.Length; i++)
+                {
+                    if (catalogParts[i] != null) definitions.Add(catalogParts[i]);
+                }
+            }
+
+            if (definitions.Count == 0)
+                Debug.LogError("[Center] No PartDefinitionSO catalog assigned; the fleet and shop are empty.");
+
+            return definitions;
+        }
+
+        private void ReconcileShop(int storyIndex)
+        {
+            var hullNames = new List<string>(_fleet.Count);
+            for (int i = 0; i < _fleet.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(_fleet[i].hullName)) hullNames.Add(_fleet[i].hullName);
+            }
+
+            _shop.ReconcileStock(BuildDefaultGifts(_definitions), storyIndex, hullNames);
+        }
+
+        private static int[][] BuildDefaultGifts(IReadOnlyList<PartDefinitionSO> definitions)
+        {
+            var partIds = new int[definitions.Count];
+            for (int i = 0; i < definitions.Count; i++) partIds[i] = definitions[i].partId;
+            return new[] { partIds };
+        }
+
+        private int FirePointCount(int partId)
+        {
+            return _mountTable != null && _mountTable.TryGetPart(partId, out PartMountEntry entry) &&
+                   _mountTable.TryGetSymbol(entry.mcName, out PartMountSymbol symbol)
+                ? symbol.firePoints.Length
+                : 0;
+        }
+
+        private static PartMountTable LoadMountTable()
+        {
+            try
+            {
+                TextAsset table = Resources.Load<TextAsset>("Data/PartMounts");
+                return table != null ? PartMountTable.Parse(table.text) : null;
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"[Center] Part mount table unavailable: {exception.Message}");
+                return null;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            for (int i = 0; i < _assemblies.Count; i++) _assemblies[i]?.Dispose();
+            _assemblies.Clear();
+
+            for (int i = 0; i < _fleet.Count; i++)
+            {
+                if (_fleet[i] != null) Destroy(_fleet[i]);
+            }
+            _fleet.Clear();
+        }
+    }
+}

@@ -20,7 +20,7 @@ namespace ABRevival.Editor
     public static class BootSceneBuilder
     {
         private const string ScenePath = "Assets/Scenes/Boot.unity";
-        private const string HangarUxmlPath = "Assets/UI/Hangar.uxml";
+        private const string CenterUxmlPath = "Assets/UI/Center.uxml";
         private const string HudUxmlPath = "Assets/UI/CombatHud.uxml";
         private const string PanelSettingsPath = "Assets/UI/HangarPanelSettings.asset";
         private const string PortraitPath = "Assets/Resources/Talk/TalkPortraitCatalog.asset";
@@ -28,7 +28,6 @@ namespace ABRevival.Editor
         private const string OpeningClipPath = "Assets/Resources/Cinematics/Mov1.mp4";
         private const string CatalogFolder = "Assets/Data/Parts";
         private const string UiSpriteFolder = "Assets/Art/Sprites/UI";
-        private const string PartSpriteFolder = "Assets/Art/Sprites/Parts";
         private const string PresentationAssembly = ", ABRevival.Presentation";
 
         [MenuItem("Tools/A&B Revival/Build Boot Scene")]
@@ -38,7 +37,7 @@ namespace ABRevival.Editor
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             PanelSettings panelSettings = LoadRequired<PanelSettings>(PanelSettingsPath);
-            VisualTreeAsset hangarUxml = LoadRequired<VisualTreeAsset>(HangarUxmlPath);
+            VisualTreeAsset centerUxml = LoadRequired<VisualTreeAsset>(CenterUxmlPath);
             VisualTreeAsset hudUxml = LoadRequired<VisualTreeAsset>(HudUxmlPath);
             UnityEngine.Object portraits = LoadRequired<UnityEngine.Object>(PortraitPath);
             TextAsset talkData = LoadRequired<TextAsset>(TalkDataPath);
@@ -48,17 +47,17 @@ namespace ABRevival.Editor
             Component audio = AddPresentationComponent(audioObject, "ABRevival.Presentation.Audio.AudioService");
 
             // UI Toolkit buttons need an EventSystem with an input module; without this,
-            // the hangar's Launch Mission button never receives a click.
+            // Center's navigation buttons never receive a click.
             var eventSystemObject = new GameObject("EventSystem");
             eventSystemObject.AddComponent<UnityEngine.EventSystems.EventSystem>();
             eventSystemObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
 
-            var hangarObject = new GameObject("Hangar");
-            UIDocument hangarDocument = hangarObject.AddComponent<UIDocument>();
-            SetReference(hangarDocument, "m_PanelSettings", panelSettings);
-            SetReference(hangarDocument, "sourceAsset", hangarUxml);
-            hangarDocument.sortingOrder = 0;
-            Component hangar = AddPresentationComponent(hangarObject, "ABRevival.Presentation.HangarController");
+            var centerObject = new GameObject("Center");
+            UIDocument centerDocument = centerObject.AddComponent<UIDocument>();
+            SetReference(centerDocument, "m_PanelSettings", panelSettings);
+            SetReference(centerDocument, "sourceAsset", centerUxml);
+            centerDocument.sortingOrder = 0;
+            Component center = AddPresentationComponent(centerObject, "ABRevival.Presentation.CenterController");
 
             var talkObject = new GameObject("Talk");
             UIDocument talkDocument = talkObject.AddComponent<UIDocument>();
@@ -102,8 +101,8 @@ namespace ABRevival.Editor
 
             SetReference(hud, "_document", hudDocument);
             SetReference(hud, "_cameraRig", cameraRig);
-            SetCatalog(hangar);
-            SetHangarSprites(hangar);
+            SetCatalog(center);
+            SetCenterSprites(center);
 
             Texture2D partsAtlas = LoadRequired<Texture2D>(PartsAtlasBuilder.AtlasPath);
             TextAsset partsUvTable = LoadRequired<TextAsset>(PartsAtlasBuilder.UvTablePath);
@@ -115,7 +114,7 @@ namespace ABRevival.Editor
             SetReference(spriteView, "_uvTableData", partsUvTable);
 
             var flowSerialized = new SerializedObject(flow);
-            SetReference(flowSerialized, "_hangar", hangar);
+            SetReference(flowSerialized, "_center", center);
             SetReference(flowSerialized, "_talkScreen", talk);
             SetReference(flowSerialized, "_cinematicPlayer", cinematic);
             SetReference(flowSerialized, "_hud", hud);
@@ -179,10 +178,10 @@ namespace ABRevival.Editor
         }
 
         /// <summary>
-        /// Assigns every generated PartDefinitionSO to the hangar, sorted by legacy part id so
+        /// Assigns every generated PartDefinitionSO to Center, sorted by legacy part id so
         /// the scene is deterministic across import runs.
         /// </summary>
-        private static void SetCatalog(Component hangar)
+        private static void SetCatalog(Component center)
         {
             string[] guids = AssetDatabase.FindAssets("t:PartDefinitionSO", new[] { CatalogFolder });
             var parts = new List<PartDefinitionSO>(guids.Length);
@@ -193,11 +192,11 @@ namespace ABRevival.Editor
             }
             parts.Sort((left, right) => left.partId.CompareTo(right.partId));
 
-            var serialized = new SerializedObject(hangar);
+            var serialized = new SerializedObject(center);
             SerializedProperty catalog = serialized.FindProperty("catalogParts");
             if (catalog == null)
             {
-                throw new InvalidOperationException("[BootSceneBuilder] HangarController is missing catalogParts.");
+                throw new InvalidOperationException("[BootSceneBuilder] CenterController is missing catalogParts.");
             }
 
             catalog.arraySize = parts.Count;
@@ -205,40 +204,24 @@ namespace ABRevival.Editor
                 catalog.GetArrayElementAtIndex(i).objectReferenceValue = parts[i];
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
-            Debug.Log($"[BootSceneBuilder] Assigned {parts.Count} PartDefinitionSO assets to the hangar.");
+            Debug.Log($"[BootSceneBuilder] Assigned {parts.Count} PartDefinitionSO assets to Center.");
         }
 
         /// <summary>
-        /// Wires the original 2011 UI sprites into the hangar controller's serialized fields.
-        /// The runtime never guesses an asset path; missing art fails the scene build.
+        /// Wires the original 2011 UI sprites into Center's serialized fields. The runtime never
+        /// guesses an asset path; missing art fails the scene build.
         /// </summary>
-        private static void SetHangarSprites(Component hangar)
+        private static void SetCenterSprites(Component center)
         {
-            var serialized = new SerializedObject(hangar);
-            SetSprite(serialized, "hangarBackground", UiSpriteFolder, "ui_0312_hangar_background.png");
-            SetSprite(serialized, "hangarHeader", UiSpriteFolder, "ui_0107_hangar_header.png");
-            SetSprite(serialized, "hangarFrame", UiSpriteFolder, "ui_0315_hangar_frame.png");
-            SetSprite(serialized, "hangarPanel", UiSpriteFolder, "ui_0325_hangar_panel.png");
-            SetSprite(serialized, "hangarTableHeader", UiSpriteFolder, "ui_0325_hangar_table_header.png");
-            SetSprite(serialized, "hangarStatsCard", UiSpriteFolder, "ui_0384_hangar_stats_card.png");
-            SetSprite(serialized, "buttonMerge", UiSpriteFolder, "ui_0364_hangar_button_merge.png");
-            SetSprite(serialized, "buttonNew", UiSpriteFolder, "ui_0361_hangar_button_new.png");
-            SetSprite(serialized, "buttonBackToCenter", UiSpriteFolder, "ui_0324_hangar_button_back_to_center.png");
-            SetSprite(serialized, "buttonPartsCrafts", UiSpriteFolder, "ui_0404_hangar_button_parts_crafts.png");
-            SetSprite(serialized, "buttonLaunch", UiSpriteFolder, "ui_0585_hangar_button_launch.png");
-            SetSprite(serialized, "buttonAccept", UiSpriteFolder, "ui_0170_hangar_button_accept.png");
-            SetSprite(serialized, "buttonReset", UiSpriteFolder, "ui_0167_hangar_button_reset.png");
-            SetSprite(serialized, "buttonAdd", UiSpriteFolder, "ui_0356_hangar_button_add.png");
-            SetSprite(serialized, "categoryAll", UiSpriteFolder, "ui_0124_hangar_category_all.png");
-            SetSprite(serialized, "categoryBody", UiSpriteFolder, "ui_0136_hangar_category_body.png");
-            SetSprite(serialized, "categoryWing", UiSpriteFolder, "ui_0133_hangar_category_wing.png");
-            SetSprite(serialized, "categoryEngine", UiSpriteFolder, "ui_0130_hangar_category_engine.png");
-            SetSprite(serialized, "categoryGun", UiSpriteFolder, "ui_0127_hangar_category_gun.png");
-            SetSprite(serialized, "thumbnailBody", PartSpriteFolder, "part_000_Body_1.png");
-            SetSprite(serialized, "thumbnailWing", PartSpriteFolder, "part_173_Wing_1.png");
-            SetSprite(serialized, "thumbnailEngine", PartSpriteFolder, "part_133_Pow_1.png");
-            SetSprite(serialized, "thumbnailGun", PartSpriteFolder, "part_071_Gun_1.png");
-            SetSprite(serialized, "thumbnailModule", PartSpriteFolder, "part_001_Body_2.png");
+            var serialized = new SerializedObject(center);
+            SetSprite(serialized, "centerBackground", UiSpriteFolder, "ui_0312_hangar_background.png");
+            SetSprite(serialized, "centerHeader", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "previewFrame", UiSpriteFolder, "ui_0315_hangar_frame.png");
+            SetSprite(serialized, "panel", UiSpriteFolder, "ui_0325_hangar_panel.png");
+            SetSprite(serialized, "buttonPlate", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "buttonReady", UiSpriteFolder, "ui_0585_hangar_button_launch.png");
+            SetSprite(serialized, "gradePlate", UiSpriteFolder, "ui_0061_hud_portrait_backing.png");
+            SetSprite(serialized, "helpButton", UiSpriteFolder, "ui_0073_hud_button_help.png");
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 

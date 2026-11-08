@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Center.uss" />
+    <ui:VisualElement name="center-root" class="center-root">
+        <ui:VisualElement name="center-screen" class="center-screen">
+            <ui:VisualElement name="center-header" class="center-header">
+                <ui:VisualElement class="header-left">
+                    <ui:VisualElement name="center-title-plate" class="title-plate">
+                        <ui:Label name="center-title" text="Center" class="center-title" />
+                    </ui:VisualElement>
+                    <ui:Label name="battle-label" text="BATTLE-1" class="battle-label" />
+                </ui:VisualElement>
+                <ui:VisualElement class="header-right">
+                    <ui:Label name="money-label" text="0 G" class="money-label" />
+                    <ui:Button name="help-button" class="sprite-button help-button" tooltip="Help" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="center-body">
+                <ui:VisualElement class="preview-column">
+                    <ui:VisualElement name="preview-frame" class="preview-frame">
+                        <ui:VisualElement name="preview-clip" class="preview-clip">
+                            <ui:VisualElement name="preview-canvas" class="preview-canvas" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:Label name="preview-name" text="-" class="preview-name" />
+                    <ui:Label name="inuse-label" text="In use" class="inuse-label" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="stats-column">
+                    <ui:VisualElement name="stats-card" class="stats-card">
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Name" class="stat-key" />
+                            <ui:Label name="stat-name" text="-" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Hp" class="stat-key" />
+                            <ui:Label name="stat-hp" text="0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Fire pow." class="stat-key" />
+                            <ui:Label name="stat-fire" text="0.00" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Speed" class="stat-key" />
+                            <ui:Label name="stat-speed" text="0.0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Steering" class="stat-key" />
+                            <ui:Label name="stat-steering" text="0.0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Class" class="stat-key" />
+                            <ui:Label name="stat-class" text="F" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Parts" class="stat-key" />
+                            <ui:Label name="stat-parts" text="0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Value" class="stat-key" />
+                            <ui:Label name="stat-value" text="0" class="stat-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement name="companion-slots" class="companion-slots">
+                        <ui:Button name="grade-0" text="B" class="grade-button" tooltip="Companion 1" />
+                        <ui:Button name="grade-1" text="B" class="grade-button" tooltip="Companion 2" />
+                        <ui:Button name="grade-2" text="B" class="grade-button" tooltip="Companion 3" />
+                        <ui:Button name="grade-3" text="C" class="grade-button" tooltip="Companion 4" />
+                        <ui:Button name="grade-4" text="B" class="grade-button" tooltip="Companion 5" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="companion-actions">
+                        <ui:Button name="reset-button" text="Reset" class="text-button" />
+                        <ui:Button name="best-button" text="Best" class="text-button" />
+                    </ui:VisualElement>
+
+                    <ui:Label name="instruction-label" text="Pick crafts here and ready to fight!" class="instruction" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="actions-column">
+                    <ui:Button name="info-button" text="INFO" class="sprite-button nav-button" tooltip="Info" />
+                    <ui:Button name="ready-button" text="" class="sprite-button nav-button nav-ready" tooltip="Ready" />
+                    <ui:Button name="shop-button" text="SHOP" class="sprite-button nav-button" tooltip="Shop" />
+                    <ui:Button name="factory-button" text="FACTORY" class="sprite-button nav-button" tooltip="Factory" />
+                    <ui:Button name="back-button" text="BACK" class="sprite-button nav-button" tooltip="Back" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="craft-table" class="craft-table">
+                <ui:VisualElement name="table-header" class="table-header">
+                    <ui:Label text="Index" class="cell col-index" />
+                    <ui:Label text="Name" class="cell col-name" />
+                    <ui:Label text="Player" class="cell col-player" />
+                    <ui:Label text="AI" class="cell col-ai" />
+                </ui:VisualElement>
+                <ui:ScrollView name="craft-list" class="craft-list" />
+                <ui:VisualElement class="table-footer">
+                    <ui:Button name="first-button" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
+                    <ui:Button name="prev-button" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
+                    <ui:Label name="page-label" text="1 / 1" class="page-label" />
+                    <ui:Button name="next-button" text="&gt;" class="sprite-button page-button" tooltip="Next page" />
+                    <ui:Button name="last-button" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="center-placeholder" class="center-placeholder">
+            <ui:VisualElement name="placeholder-panel" class="placeholder-panel">
+                <ui:Label name="placeholder-title" text="INFO" class="placeholder-title" />
+                <ui:Label name="placeholder-body" text="This section is delivered by its own ticket." class="placeholder-body" />
+                <ui:Button name="placeholder-back" text="BACK" class="text-button placeholder-back" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

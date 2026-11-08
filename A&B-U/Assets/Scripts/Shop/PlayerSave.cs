@@ -27,6 +27,28 @@ namespace ABRevival.Core.Persistence
 
         /// <summary>ADR 0005 camera distance preset restored at boot and saved whenever C cycles it.</summary>
         [DataMember(Order = 4)] public CameraDistancePreset cameraPreset;
+
+        /// <summary>Center (UIChooseFlyAI) selected Player craft, an index into <see cref="blueprints"/>.</summary>
+        [DataMember(Order = 5)] public int playerBlueprintIndex;
+
+        /// <summary>Center companion slots 0..4. Empty slots keep <c>craftIndex = -1</c>.</summary>
+        [DataMember(Order = 6)] public List<CompanionSaveData> companions = new List<CompanionSaveData>();
+    }
+
+    /// <summary>One AI companion slot from Center, mirroring the frozen COMPANIONS record.</summary>
+    [DataContract]
+    public struct CompanionSaveData
+    {
+        [DataMember(Order = 0)] public int craftIndex;
+        [DataMember(Order = 1)] public int role;
+        [DataMember(Order = 2)] public int leader;
+
+        public static CompanionSaveData Empty => new CompanionSaveData
+        {
+            craftIndex = -1,
+            role = 1,
+            leader = 0
+        };
     }
 
     [DataContract]
@@ -147,6 +169,7 @@ namespace ABRevival.Core.Persistence
                 save.shop.stock ??= new List<ShopStockSave>();
                 save.shop.ownedParts ??= new List<int>();
                 save.blueprints ??= new List<BlueprintSaveData>();
+                save.companions ??= new List<CompanionSaveData>();
                 if ((int)save.cameraPreset < 0 || (int)save.cameraPreset >= CameraDistancePresets.Count)
                     save.cameraPreset = CameraDistancePreset.Short;
                 return save;

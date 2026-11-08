@@ -1,0 +1,436 @@
+/* Center (frozen 2011 UIChooseFlyAI): 1920x1080 full-bleed dashboard.
+   Sprite backgrounds are assigned at runtime from CenterController serialized fields. */
+
+.center-root {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(2, 4, 8);
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.center-screen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 20px 26px 18px 26px;
+    flex-direction: column;
+}
+
+.center-header {
+    height: 10%;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px 10px 8px;
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 168, 214, 0.55);
+}
+
+.header-left {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+}
+
+.title-plate {
+    width: 270px;
+    height: 64px;
+    justify-content: center;
+    align-items: center;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.center-title {
+    font-size: 30px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgb(0, 226, 255);
+    -unity-text-align: middle-center;
+}
+
+.battle-label {
+    margin-left: 28px;
+    font-size: 30px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgb(224, 240, 250);
+}
+
+.header-right {
+    flex-direction: row;
+    align-items: center;
+}
+
+.money-label {
+    margin-right: 24px;
+    font-size: 28px;
+    -unity-font-style: bold;
+    color: rgb(255, 214, 90);
+}
+
+.help-button {
+    width: 56px;
+    height: 56px;
+}
+
+.center-body {
+    flex-grow: 1;
+    flex-direction: row;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.preview-column {
+    width: 31%;
+    margin-right: 16px;
+    flex-direction: column;
+}
+
+.preview-frame {
+    flex-grow: 1;
+    padding: 26px;
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgba(1, 3, 6, 0.92);
+}
+
+.preview-clip {
+    flex-grow: 1;
+    background-color: rgb(0, 0, 0);
+    overflow: hidden;
+}
+
+.preview-canvas {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.preview-name {
+    height: 44px;
+    margin-top: 6px;
+    font-size: 30px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.inuse-label {
+    height: 34px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+    color: rgb(255, 214, 90);
+    background-color: rgba(0, 64, 82, 0.55);
+    border-width: 1px;
+    border-color: rgba(0, 226, 255, 0.65);
+}
+
+.stats-column {
+    flex-grow: 1;
+    margin-right: 16px;
+    flex-direction: column;
+}
+
+.stats-card {
+    flex-grow: 1;
+    padding: 16px 24px;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.stat-row {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 160, 205, 0.34);
+}
+
+.stat-key {
+    width: 42%;
+    font-size: 23px;
+    -unity-font-style: bold;
+    color: rgb(164, 216, 240);
+}
+
+.stat-value {
+    flex-grow: 1;
+    font-size: 24px;
+    -unity-text-align: middle-right;
+    color: rgb(0, 226, 255);
+}
+
+.companion-slots {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 76px;
+    margin-top: 8px;
+}
+
+.grade-button {
+    width: 58px;
+    height: 58px;
+    margin-left: 8px;
+    margin-right: 8px;
+    border-width: 0;
+    padding: 0;
+    border-radius: 29px;
+    -unity-font-style: bold;
+    font-size: 28px;
+    -unity-text-align: middle-center;
+    color: rgb(226, 244, 252);
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.grade-button:disabled {
+    opacity: 0.35;
+}
+
+.companion-actions {
+    height: 46px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.text-button {
+    min-width: 108px;
+    height: 38px;
+    margin-left: 8px;
+    margin-right: 8px;
+    border-width: 0;
+    padding: 0 10px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.instruction {
+    height: 38px;
+    margin-top: 4px;
+    font-size: 20px;
+    -unity-text-align: middle-center;
+    color: rgb(186, 220, 238);
+}
+
+.actions-column {
+    width: 21%;
+    flex-direction: column;
+}
+
+.sprite-button {
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-and-crop;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.sprite-button:hover {
+    -unity-background-image-tint-color: rgb(190, 232, 255);
+}
+
+.sprite-button:active {
+    -unity-background-image-tint-color: rgb(120, 190, 220);
+}
+
+.nav-button {
+    flex-grow: 1;
+    margin-bottom: 12px;
+    font-size: 32px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.nav-button:disabled {
+    opacity: 0.35;
+}
+
+.craft-table {
+    height: 34%;
+    padding: 8px 12px;
+    -unity-background-scale-mode: scale-and-crop;
+    -unity-background-image-tint-color: rgb(58, 72, 86);
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.table-header {
+    height: 42px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px;
+    background-color: rgba(0, 34, 48, 0.92);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 200, 236, 0.65);
+}
+
+.table-header .cell {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(148, 204, 230);
+}
+
+.craft-list {
+    flex-grow: 1;
+}
+
+.craft-row {
+    height: 30px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 190, 230, 0.38);
+}
+
+.craft-row-even {
+    background-color: rgba(0, 118, 150, 0.28);
+}
+
+.craft-row-odd {
+    background-color: rgba(0, 58, 82, 0.30);
+}
+
+.craft-row:hover {
+    background-color: rgba(0, 170, 210, 0.38);
+}
+
+.craft-row-selected {
+    background-color: rgba(0, 196, 236, 0.34);
+}
+
+.craft-row-inuse .col-name {
+    color: rgb(255, 214, 90);
+}
+
+.craft-row .cell {
+    font-size: 19px;
+    color: rgb(204, 232, 246);
+}
+
+.col-index {
+    width: 110px;
+}
+
+.col-name {
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+.col-player {
+    width: 130px;
+}
+
+.col-ai {
+    width: 130px;
+}
+
+.cell-button {
+    width: 92px;
+    height: 24px;
+    border-width: 1px;
+    border-color: rgba(0, 170, 214, 0.75);
+    background-color: rgba(4, 22, 32, 0.72);
+    -unity-font-style: bold;
+    font-size: 16px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.cell-button:hover {
+    border-color: rgb(120, 232, 255);
+    color: rgb(210, 248, 255);
+}
+
+.cell-button.cell-active {
+    background-color: rgba(0, 128, 164, 0.65);
+    color: rgb(255, 232, 140);
+}
+
+.table-footer {
+    height: 52px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-button {
+    width: 64px;
+    height: 38px;
+    margin-left: 8px;
+    margin-right: 8px;
+    border-width: 1px;
+    border-color: rgba(0, 170, 214, 0.65);
+    background-color: rgba(4, 22, 32, 0.72);
+    -unity-font-style: bold;
+    font-size: 20px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.page-label {
+    width: 140px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(224, 240, 250);
+}
+
+.center-placeholder {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(2, 4, 8);
+}
+
+.placeholder-panel {
+    width: 760px;
+    height: 420px;
+    padding: 40px;
+    justify-content: center;
+    align-items: center;
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgba(2, 8, 13, 0.94);
+}
+
+.placeholder-title {
+    height: 80px;
+    font-size: 46px;
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.placeholder-body {
+    height: 70px;
+    font-size: 22px;
+    -unity-text-align: middle-center;
+    color: rgb(186, 220, 238);
+}
+
+.placeholder-back {
+    margin-top: 20px;
+    min-width: 180px;
+    height: 48px;
+}
