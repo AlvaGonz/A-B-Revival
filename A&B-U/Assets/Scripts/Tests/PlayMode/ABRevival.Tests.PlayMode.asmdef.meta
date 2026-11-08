@@ -1,11 +1,7 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
 guid: 81c4c997418920b44894fc7bbdbfe584
-=======
-guid: fd88beb7bfcbc5c4e9f725ec3a182a90
 AssemblyDefinitionImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
->>>>>>> 12a93ae (feat(audio): extract sound bank, mixer groups and trigger service (closes #158))

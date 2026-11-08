@@ -1,6 +1,11 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
 guid: 811a93fa80ce7484e855bf4d58ecd54b
-=======
-guid: 0701c9b5760fb9c419a12877d63a09e4
->>>>>>> 12a93ae (feat(audio): extract sound bank, mixer groups and trigger service (closes #158))
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
