@@ -2,7 +2,9 @@
     "name": "ABRevival.Editor",
     "rootNamespace": "ABRevival.Editor",
     "references": [
-        "ABRevival.Core"
+        "ABRevival.Core",
+        "Unity.InputSystem",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [
         "Editor"

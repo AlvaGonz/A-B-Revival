@@ -37,7 +37,7 @@ namespace ABRevival.Tests
         public void CraftAssembly_TryMountPart_RejectsWhenFull()
         {
             var assembly = new CraftAssembly("B.Mega.Carrier", hullMass: 200f, hullHealth: 1000f, isGrandfathered: true);
-            var dummyPart = new MountedPartData { category = PartCategory.Body, health = 10f, mass = 1f };
+            var dummyPart = new MountedPartData { category = PartCategory.Engine, health = 10f, mass = 1f };
 
             for (int i = 0; i < CraftAssembly.MaxCapacity; i++)
             {
@@ -55,10 +55,23 @@ namespace ABRevival.Tests
         }
 
         [Test]
+        public void CraftAssembly_TryMountPart_RejectsASecondBody()
+        {
+            // ADR 0007: the Body part is the chassis; a craft cannot have two hulls.
+            var assembly = new CraftAssembly("B.Med.01");
+            var body = new MountedPartData { partId = 0, category = PartCategory.Body, mass = 20f };
+
+            Assert.AreEqual(AssemblyError.None, assembly.TryMountPart(body, out _));
+            Assert.AreEqual(AssemblyError.MultipleHulls, assembly.TryMountPart(body, out _));
+            Assert.AreEqual(1, assembly.BodyCount);
+        }
+
+        [Test]
         public void CraftAssembly_TryMountPart_RejectsExcessWings_SmallHull()
         {
             // Small hull limit = 4 wings (ADR 0007)
             var assembly = new CraftAssembly("B.Sml.Fighter", isGrandfathered: false);
+            Assert.AreEqual(4, assembly.MaxWingCapacity);
             var wing = new MountedPartData { category = PartCategory.Wing, mass = 5f, health = 20f };
 
             for (int i = 0; i < 4; i++)
@@ -145,8 +158,8 @@ namespace ABRevival.Tests
         public void CraftAssembly_CurrentStats_IncrementalAccumulation()
         {
             var assembly = new CraftAssembly("B.Med.01", hullMass: 50f, hullHealth: 200f);
-            var partA = new MountedPartData { mass = 10f, health = 20f, thrust = 50f, energyDraw = 5f };
-            var partB = new MountedPartData { mass = 15f, health = 30f, thrust = 100f, energyDraw = 15f };
+            var partA = new MountedPartData { category = PartCategory.Engine, mass = 10f, health = 20f, thrust = 50f, energyDraw = 5f };
+            var partB = new MountedPartData { category = PartCategory.Gun, mass = 15f, health = 30f, thrust = 100f, energyDraw = 15f };
 
             assembly.TryMountPart(partA, out int slotA);
             assembly.TryMountPart(partB, out int slotB);

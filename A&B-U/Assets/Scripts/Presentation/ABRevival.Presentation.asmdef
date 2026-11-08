@@ -1,0 +1,17 @@
+{
+    "name": "ABRevival.Presentation",
+    "rootNamespace": "ABRevival.Presentation",
+    "references": [
+        "ABRevival.Core",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
+using ABRevival.Core.Simulation;
 
 namespace ABRevival.Core.Data
 {
@@ -15,26 +16,50 @@ namespace ABRevival.Core.Data
     {
         public int partId;
         public string partName;
+        public string mcName;
         public PartCategory category;
         public float mass;
         public float health;
         public float thrust;
+        public float turnFly;
         public float energyDraw;
+        public int cost;
 
-        // Weapon attributes (Category == Gun)
+        // Weapon attributes (Category == Gun), raw frozen frame units.
         public float projectileVelocity;
         public float burstAcceleration;
         public float bulletLifetime;
         public float bulletDamage;
 
+        // Fire-control attributes from F4DataFire (raw frozen frame units).
+        public int fireNum;
+        public int fireFrame;
+        public int fireStop;
+        public int fireEx;
+        public float spreadDegrees;
+        public float muzzleSpeedAdd;
+        public float accelerationAdd;
+        public float angleAddDegrees;
+
         /// <summary>
         /// Calculates theoretical weapon effective firing range using ADR 0012 formula:
-        /// d = v0 * t + 0.5 * a * t^2
+        /// d = v0 * t + 0.5 * a * t^2, with the burst-average muzzle speed and acceleration.
         /// </summary>
         public float CalculateEffectiveRange()
         {
             if (category != PartCategory.Gun) return 0f;
-            return (projectileVelocity * bulletLifetime) + (0.5f * burstAcceleration * bulletLifetime * bulletLifetime);
+            float v0 = projectileVelocity + (muzzleSpeedAdd * fireNum * 0.5f);
+            float acc = burstAcceleration + (accelerationAdd * fireNum * 0.5f);
+            return Ballistics.EffectiveRange(v0, acc, bulletLifetime);
+        }
+
+        /// <summary>Converts the raw catalog values into Unity seconds and pixels per second.</summary>
+        public FireModeSpec CreateWeaponSpec()
+        {
+            return FireModeSpec.FromCatalog(
+                fireNum, fireFrame, fireStop, fireEx, spreadDegrees,
+                projectileVelocity, muzzleSpeedAdd, burstAcceleration, accelerationAdd,
+                angleAddDegrees, bulletLifetime, bulletDamage);
         }
 
         public void PopulateScriptableObject(PartDefinitionSO so)
@@ -47,10 +72,19 @@ namespace ABRevival.Core.Data
             so.health = health;
             so.thrust = thrust;
             so.energyDraw = energyDraw;
+            so.cost = cost;
             so.projectileVelocity = projectileVelocity;
             so.burstAcceleration = burstAcceleration;
             so.bulletLifetime = bulletLifetime;
             so.bulletDamage = bulletDamage;
+            so.fireNum = fireNum;
+            so.fireFrame = fireFrame;
+            so.fireStop = fireStop;
+            so.fireEx = fireEx;
+            so.spreadDegrees = spreadDegrees;
+            so.muzzleSpeedAdd = muzzleSpeedAdd;
+            so.accelerationAdd = accelerationAdd;
+            so.angleAddDegrees = angleAddDegrees;
         }
     }
 
@@ -65,13 +99,52 @@ namespace ABRevival.Core.Data
         private struct FireDef
         {
             public float spdS;
+            public float spdAdd;
             public float accS;
+            public float accAdd;
+            public float accAngS;
+            public float angAdd;
+            public float fireAcc;
+            public int fireNum;
+            public int fireFrame;
+            public int fireStop;
+            public int fireEx;
+
+            /// <summary>F4DataFire.firePowRate, evaluated with the legacy formula.</summary>
+            public float FirePowerRate
+            {
+                get
+                {
+                    float window = fireEx / (float)fireFrame;
+                    float burst = window > 0f
+                        ? (0.5f * accAngS + spdS * 15f) * fireNum / window
+                        : 0f;
+                    float rate = burst + 1000f / (fireFrame + fireStop);
+                    return float.IsNaN(rate) || float.IsInfinity(rate) ? 0f : rate;
+                }
+            }
         }
 
         private struct BulletDef
         {
             public float dmg;
             public float life;
+            public float hp;
+            public float deadAct;
+            public float btwh;
+
+            /// <summary>F4DataBullet.bulletPow, using the 60 FPS life rescale from readFromObj.</summary>
+            public float BulletPower
+            {
+                get
+                {
+                    float lifeAt60 = life * (60f / 36f);
+                    // shortcut: non-normal bullet symbols carry their hit box in the SWF symbol.
+                    // btwh is the exported fallback; assets without it use the frozen 2 px default.
+                    float hit = btwh > 0f ? btwh : 2f;
+                    return dmg * (lifeAt60 + 1f) + hp + deadAct + (hit + hit) * 8f;
+                }
+            }
         }
 
         public static List<PartDefinitionRecord> ParseCatalogFromFiles(string partPath, string firePath, string bulletPath)
@@ -95,9 +168,20 @@ namespace ABRevival.Core.Data
                 foreach (var el in fireDoc.Descendants("fireOne"))
                 {
                     int index = ParseInt(el.Element("index")?.Value, 0);
-                    float spdS = ParseFloat(el.Element("spdS")?.Value, 0f, invCulture);
-                    float accS = ParseFloat(el.Element("accS")?.Value, 0f, invCulture);
-                    fireLookup[index] = new FireDef { spdS = spdS, accS = accS };
+                    fireLookup[index] = new FireDef
+                    {
+                        spdS = ParseFloat(el.Element("spdS")?.Value, 0f, invCulture),
+                        spdAdd = ParseFloat(el.Element("spdAdd")?.Value, 0f, invCulture),
+                        accS = ParseFloat(el.Element("accS")?.Value, 0f, invCulture),
+                        accAdd = ParseFloat(el.Element("accAdd")?.Value, 0f, invCulture),
+                        accAngS = ParseFloat(el.Element("accAngS")?.Value, 0f, invCulture),
+                        angAdd = ParseFloat(el.Element("angAdd")?.Value, 0f, invCulture),
+                        fireAcc = ParseFloat(el.Element("fireAcc")?.Value, 0f, invCulture),
+                        fireNum = ParseInt(el.Element("fireNum")?.Value, 0),
+                        fireFrame = ParseInt(el.Element("fireFrame")?.Value, 0),
+                        fireStop = ParseInt(el.Element("fireStop")?.Value, 0),
+                        fireEx = ParseInt(el.Element("fireEx")?.Value, 0)
+                    };
                 }
             }
 
@@ -111,7 +195,14 @@ namespace ABRevival.Core.Data
                     int index = ParseInt(el.Element("index")?.Value, 0);
                     float dmg = ParseFloat(el.Element("dmg")?.Value, 0f, invCulture);
                     float life = ParseFloat(el.Element("life")?.Value, 0f, invCulture);
-                    bulletLookup[index] = new BulletDef { dmg = dmg, life = life };
+                    bulletLookup[index] = new BulletDef
+                    {
+                        dmg = dmg,
+                        life = life,
+                        hp = ParseFloat(el.Element("hp")?.Value, 0f, invCulture),
+                        deadAct = ParseFloat(el.Element("deadAct")?.Value, 0f, invCulture),
+                        btwh = ParseFloat(el.Element("btwh")?.Value, 0f, invCulture)
+                    };
                 }
             }
 
@@ -126,6 +217,7 @@ namespace ABRevival.Core.Data
 
                     record.partId = ParseInt(el.Element("index")?.Value, 0);
                     record.partName = el.Element("name")?.Value ?? string.Empty;
+                    record.mcName = el.Element("mcName")?.Value ?? string.Empty;
 
                     int typeInt = ParseInt(el.Element("type")?.Value, 0);
                     record.category = typeInt switch
@@ -140,31 +232,76 @@ namespace ABRevival.Core.Data
                     record.mass = ParseFloat(el.Element("mass")?.Value, 0f, invCulture);
                     record.health = ParseFloat(el.Element("maxhp")?.Value, 0f, invCulture);
                     record.thrust = ParseFloat(el.Element("powFly")?.Value, 0f, invCulture);
+                    record.turnFly = ParseFloat(el.Element("turnFly")?.Value, 0f, invCulture);
                     record.energyDraw = 0f; // Original Flash baseline managed energy at craft/hull level
+
+                    var fireDef = default(FireDef);
+                    var bulletDef = default(BulletDef);
+                    bool hasFire = false;
+                    bool hasBullet = false;
 
                     if (record.category == PartCategory.Gun)
                     {
                         int fireIdx = ParseInt(el.Element("fire")?.Value, 0);
                         int bulletIdx = ParseInt(el.Element("bullet")?.Value, 0);
 
-                        if (fireLookup.TryGetValue(fireIdx, out var fDef))
+                        if (fireLookup.TryGetValue(fireIdx, out fireDef))
                         {
-                            record.projectileVelocity = fDef.spdS;
-                            record.burstAcceleration = fDef.accS;
+                            hasFire = true;
+                            record.projectileVelocity = fireDef.spdS;
+                            record.burstAcceleration = fireDef.accS;
+                            record.fireNum = fireDef.fireNum;
+                            record.fireFrame = fireDef.fireFrame;
+                            record.fireStop = fireDef.fireStop;
+                            record.fireEx = fireDef.fireEx;
+                            record.spreadDegrees = fireDef.fireAcc;
+                            record.muzzleSpeedAdd = fireDef.spdAdd;
+                            record.accelerationAdd = fireDef.accAdd;
+                            record.angleAddDegrees = fireDef.angAdd;
                         }
 
-                        if (bulletLookup.TryGetValue(bulletIdx, out var bDef))
+                        if (bulletLookup.TryGetValue(bulletIdx, out bulletDef))
                         {
-                            record.bulletLifetime = bDef.life;
-                            record.bulletDamage = bDef.dmg;
+                            hasBullet = true;
+                            record.bulletLifetime = bulletDef.life;
+                            record.bulletDamage = bulletDef.dmg;
                         }
                     }
 
+                    record.cost = CalculateLegacyCost(record, hasFire, fireDef, hasBullet, bulletDef);
                     results.Add(record);
                 }
             }
 
             return results;
+        }
+
+        /// <summary>
+        /// F4DataOrg.makeCost in its frozen form. The XML does not carry holes, fire-point
+        /// positions, or the bullet hit box, so the metadata-dependent terms use the frozen
+        /// defaults: one fire point for a gun, no holes, and btwh (or 2 px) for the bullet.
+        /// The resulting price is non-zero and uses every parsed legacy term.
+        /// </summary>
+        private static int CalculateLegacyCost(
+            PartDefinitionRecord record,
+            bool hasFire,
+            FireDef fireDef,
+            bool hasBullet,
+            BulletDef bulletDef)
+        {
+            float healthTerm = record.health * 24f;
+            float turnRatio = record.mass > 0f ? record.turnFly / record.mass : 0f;
+            float thrustRatio = record.mass > 0f ? record.thrust / record.mass : 0f;
+
+            float firePoints = record.category == PartCategory.Gun && hasFire && hasBullet ? 1f : 0f;
+            float firePower = hasFire ? fireDef.FirePowerRate : 0f;
+            if (record.category == PartCategory.Body) firePower *= 0.11f;
+            float bulletPower = hasBullet ? bulletDef.BulletPower : 0f;
+
+            float multiplier = 1f + (turnRatio * 74f) + (thrustRatio * 54f);
+            float total = (healthTerm + firePoints * firePower * bulletPower) * multiplier * 0.0065f;
+            if (float.IsNaN(total) || float.IsInfinity(total) || total <= 0f) return 0;
+            return (int)Math.Ceiling(total);
         }
 
         private static int ParseInt(string value, int fallback)

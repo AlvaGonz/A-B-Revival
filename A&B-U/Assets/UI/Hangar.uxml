@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Hangar.uss" />
+    <ui:VisualElement name="hangar-root" class="hangar-root">
+        <ui:VisualElement class="hangar-header">
+            <ui:Label name="hangar-title" text="HANGAR" class="hangar-title" />
+            <ui:Label name="story-label" text="STORY 0" class="hangar-story" />
+            <ui:Label name="money-label" text="0 G" class="hangar-money" />
+            <ui:Button name="launch-button" text="Launch Mission" class="header-button" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="hangar-columns">
+            <ui:VisualElement name="assembly-panel" class="hangar-panel">
+                <ui:Label text="ASSEMBLY" class="panel-title" />
+                <ui:Label name="hull-label" text="Hull: -" class="hull-label" />
+                <ui:Label name="wing-label" text="Wings: 0/0" class="wing-label" />
+                <ui:Label name="stats-label" text="Hp 0   Mass 0   Thrust 0   Energy 0" class="stats-label" />
+                <ui:Label name="assembly-error" text="" class="error-label" />
+
+                <ui:Label text="Owned Parts" class="section-title" />
+                <ui:ScrollView name="owned-parts-list" class="hangar-list" />
+
+                <ui:Label text="Mounted Parts" class="section-title" />
+                <ui:ScrollView name="mounted-parts-list" class="hangar-list" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="shop-panel" class="hangar-panel">
+                <ui:Label text="SHOP" class="panel-title" />
+                <ui:Label name="stack-total-label" text="Stack total: 0 G" class="stack-label" />
+                <ui:Label name="shop-error" text="" class="error-label" />
+
+                <ui:Label text="Stock" class="section-title" />
+                <ui:ScrollView name="shop-stock-list" class="hangar-list" />
+                <ui:Button name="checkout-button" text="Buy Stack" class="checkout-button" />
+                <ui:Button name="clear-stack-button" text="Clear Stack" class="clear-stack-button" />
+
+                <ui:Label text="Sell" class="section-title" />
+                <ui:ScrollView name="owned-sell-list" class="hangar-list" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,175 @@
+.hangar-root {
+    flex-grow: 1;
+    background-color: rgb(8, 12, 22);
+    padding: 18px;
+}
+
+.hangar-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(61, 82, 116);
+}
+
+.hangar-title {
+    font-size: 26px;
+    -unity-font-style: bold;
+    color: rgb(220, 236, 255);
+    letter-spacing: 4px;
+    margin-right: 24px;
+}
+
+.hangar-story {
+    font-size: 14px;
+    color: rgb(150, 176, 206);
+    margin-right: 24px;
+}
+
+.hangar-money {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(255, 204, 0);
+    margin-right: 24px;
+}
+
+.hangar-message {
+    flex-grow: 1;
+    font-size: 13px;
+    color: rgb(150, 176, 206);
+}
+
+.header-button {
+    width: 80px;
+    height: 28px;
+    margin-left: 8px;
+    background-color: rgb(24, 42, 68);
+    color: rgb(200, 222, 255);
+    border-color: rgb(61, 82, 116);
+}
+
+.hangar-columns {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.hangar-panel {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-right: 10px;
+    margin-left: 10px;
+    padding: 12px;
+    background-color: rgb(13, 19, 32);
+    border-width: 1px;
+    border-color: rgb(48, 66, 94);
+}
+
+.panel-title {
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgb(188, 214, 245);
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+}
+
+.hull-label {
+    font-size: 15px;
+    color: rgb(210, 225, 245);
+}
+
+.wing-label {
+    font-size: 15px;
+    -unity-font-style: bold;
+    color: rgb(191, 191, 191);
+}
+
+.wing-label.stat-warning {
+    color: rgb(255, 204, 0);
+}
+
+.wing-label.stat-danger {
+    color: rgb(255, 68, 68);
+}
+
+.stats-label {
+    font-size: 13px;
+    color: rgb(160, 180, 205);
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.error-label {
+    font-size: 13px;
+    color: rgb(255, 96, 96);
+    min-height: 16px;
+}
+
+.section-title {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: rgb(130, 165, 210);
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+.hangar-list {
+    flex-grow: 1;
+    max-height: 260px;
+    border-width: 1px;
+    border-color: rgb(38, 55, 80);
+    background-color: rgb(10, 15, 26);
+}
+
+.row {
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 6px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(28, 40, 60);
+}
+
+.row-name {
+    flex-grow: 1;
+    font-size: 13px;
+    color: rgb(196, 214, 235);
+}
+
+.row Label {
+    flex-grow: 1;
+    font-size: 13px;
+    color: rgb(196, 214, 235);
+}
+
+.row-action {
+    width: 70px;
+    height: 24px;
+    margin-left: 6px;
+    font-size: 12px;
+    background-color: rgb(30, 56, 88);
+    color: rgb(210, 230, 255);
+    border-color: rgb(66, 96, 136);
+}
+
+.stack-label {
+    font-size: 15px;
+    color: rgb(255, 204, 0);
+    margin-bottom: 4px;
+}
+
+.checkout-button {
+    height: 32px;
+    margin-top: 8px;
+    -unity-font-style: bold;
+    background-color: rgb(38, 88, 62);
+    color: rgb(220, 255, 230);
+    border-color: rgb(64, 130, 92);
+}
+
+.clear-stack-button {
+    height: 28px;
+    margin-top: 6px;
+    background-color: rgb(60, 34, 34);
+    color: rgb(245, 210, 210);
+    border-color: rgb(110, 56, 56);
+}

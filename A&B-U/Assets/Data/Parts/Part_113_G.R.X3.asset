@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fe825abbfd24194d8de7bafafa03507, type: 3}
+  m_Name: Part_113_G.R.X3
+  m_EditorClassIdentifier: ABRevival.Core::ABRevival.Core.Data.PartDefinitionSO
+  partId: 113
+  partName: G.R.X3
+  category: 3
+  cost: 19941
+  health: 2700
+  mass: 90
+  thrust: 0
+  energyDraw: 0
+  projectileVelocity: 2
+  burstAcceleration: 0.15
+  bulletLifetime: 115
+  bulletDamage: 380
+  fireNum: 1
+  fireFrame: 1
+  fireStop: 90
+  fireEx: 1
+  spreadDegrees: 3
+  muzzleSpeedAdd: 0
+  accelerationAdd: 0
+  angleAddDegrees: 0

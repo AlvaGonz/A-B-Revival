@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9d0bfeaecd6deeed9227b5710b2cc2, type: 3}
+  m_Name: TalkPortraitCatalog
+  m_EditorClassIdentifier: 
+  portraitsBySpeakerId:
+  - {fileID: 21300000, guid: f73080001656e9b1dc2e4fa64fd94190, type: 3}
+  - {fileID: 21300000, guid: 5093c5b9f3b3e0ac0cf1c68ec98733ea, type: 3}
+  - {fileID: 21300000, guid: 45c9ee3b03d1f32b087ee886c0451c61, type: 3}
+  - {fileID: 21300000, guid: 738877aef6fcbfd86b450092a55ec792, type: 3}
+  - {fileID: 21300000, guid: 168ed1c02e0c78b5d5cfeaa3b19c6541, type: 3}
+  - {fileID: 21300000, guid: 33545d56393f582172c7e529d10ab723, type: 3}
+  - {fileID: 21300000, guid: 2cdc5fafce2e90191470f84989d58c7b, type: 3}
+  - {fileID: 21300000, guid: 498e106575dfa8b4d6effdab04c70217, type: 3}
+  - {fileID: 21300000, guid: a297156623e9318164a65cac0265e391, type: 3}
+  - {fileID: 21300000, guid: 9b36ad51d5c75bb7fc2941e81864ba46, type: 3}
+  - {fileID: 21300000, guid: f8ba3f257bde0ad64f926970e62e931d, type: 3}
+  - {fileID: 21300000, guid: 2bb015585c410a5dec848ac39abe0981, type: 3}
+  - {fileID: 21300000, guid: 289d6aa4c5dfac5f13ffe6cbb7d5cef5, type: 3}
