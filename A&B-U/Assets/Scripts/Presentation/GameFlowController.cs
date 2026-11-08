@@ -36,6 +36,7 @@ namespace ABRevival.Presentation
         [SerializeField] private CinematicPlayer _cinematicPlayer;
         [SerializeField] private CombatHudBehaviour _hud;
         [SerializeField] private CombatCameraRig _cameraRig;
+        [SerializeField] private PlayerFlightController _flight;
         [SerializeField] private AudioService _audio;
         [SerializeField] private UIDocument _flowDocument;
         [SerializeField] private VideoClip[] _briefingClips = Array.Empty<VideoClip>();
@@ -75,6 +76,7 @@ namespace ABRevival.Presentation
         public int StoryIndex => _save != null ? _save.storyIndex : 0;
         public MissionRunner Runner => _runner;
         public ScheduledCombatSimulation Simulation => _simulation;
+        public PlayerFlightController Flight => _flight;
         public ProjectileContactSolver ContactSolver => _solver;
         public MissionResult? LastResult => _lastResult;
         public string SavePath => _savePath;
@@ -365,6 +367,8 @@ namespace ABRevival.Presentation
 
             TryCreateContactSolver();
 
+            _flight?.BeginMission(_simulation, _runner.PlayerShipIndex, _hud, _cameraRig);
+
             _captainIndex = FindCaptainIndex();
             _hud?.State.SetHullHealth(1f, 1f);
             _hud?.State.SetCaptainPresence(_captainIndex >= 0);
@@ -416,6 +420,7 @@ namespace ABRevival.Presentation
 
         private void StepMission()
         {
+            _flight?.Tick(FixedStepSeconds);
             _runner.Tick();
 
             if (_solver == null) return;
@@ -491,17 +496,27 @@ namespace ABRevival.Presentation
                 var player = _simulation.GetShip(playerIndex);
                 player.rotation = -math.PI * 0.5f;
                 _simulation.SetShip(playerIndex, player);
-                _simulation.SetInput(playerIndex, new ShipInput { throttle = 1f, steering = 0f });
+
+                var flightInput = new ShipInput { throttle = 1f, steering = 0f };
+                if (_flight != null) _flight.BeginDeterministicFlight(in flightInput);
+                else _simulation.SetInput(playerIndex, in flightInput);
             }
 
             _accumulator = 0f;
-            for (int i = 0; i < ForceWinTickLimit && _runner.State == MissionState.InProgress; i++)
+            try
             {
-                StepMission();
-                if (TryConsumeMissionResult()) return true;
-            }
+                for (int i = 0; i < ForceWinTickLimit && _runner.State == MissionState.InProgress; i++)
+                {
+                    StepMission();
+                    if (TryConsumeMissionResult()) return true;
+                }
 
-            return _runner.State != MissionState.InProgress;
+                return _runner.State != MissionState.InProgress;
+            }
+            finally
+            {
+                _flight?.EndDeterministicFlight();
+            }
         }
 
         private void UpdateHud()
@@ -543,6 +558,7 @@ namespace ABRevival.Presentation
 
         private void DisposeMission()
         {
+            _flight?.EndMission();
             _runner = null;
             if (_solver != null)
             {

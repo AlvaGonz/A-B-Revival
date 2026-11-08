@@ -79,6 +79,10 @@ namespace ABRevival.Editor
             var flowObject = new GameObject("GameFlow");
             Component flow = AddPresentationComponent(flowObject, "ABRevival.Presentation.GameFlowController");
 
+            var flightObject = new GameObject("Flight");
+            Component flight = AddPresentationComponent(
+                flightObject, "ABRevival.Presentation.PlayerFlightController");
+
             SetReference(talk, "_document", talkDocument);
             SetReference(talk, "_portraits", portraits);
             SetReference(talk, "_talkData", talkData);
@@ -93,6 +97,7 @@ namespace ABRevival.Editor
             SetReference(flowSerialized, "_cinematicPlayer", cinematic);
             SetReference(flowSerialized, "_hud", hud);
             SetReference(flowSerialized, "_cameraRig", cameraRig);
+            SetReference(flowSerialized, "_flight", flight);
             SetReference(flowSerialized, "_audio", audio);
             SetReference(flowSerialized, "_flowDocument", hudDocument);
 
