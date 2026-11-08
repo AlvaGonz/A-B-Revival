@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using ABRevival.Core.Camera;
 using ABRevival.Core.Data;
@@ -60,6 +61,7 @@ namespace ABRevival.Presentation
         private TalkScript _talkScript;
         private LevelCatalog _catalog;
         private CraftCatalog _craftCatalog;
+        private PartMountTable _mountTable;
         private LevelRecord _level;
         private string _savePath;
 
@@ -443,12 +445,41 @@ namespace ABRevival.Presentation
             return _craftCatalog;
         }
 
+        /// <summary>
+        /// Loads the frozen H/F/L marker table once. It drives socket composition, muzzle
+        /// points and engine exhaust points for every hull, player and AI alike.
+        /// </summary>
+        private PartMountTable ResolveMountTable()
+        {
+            if (_mountTable != null) return _mountTable;
+
+            try
+            {
+                TextAsset table = Resources.Load<TextAsset>("Data/PartMounts");
+                if (table == null)
+                {
+                    Debug.LogWarning("[GameFlow] Part mount table missing from Resources/Data; AI parts share the hull centre.");
+                    return null;
+                }
+
+                _mountTable = PartMountTable.Parse(table.text);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"[GameFlow] Part mount table unavailable: {exception.Message}");
+                _mountTable = null;
+            }
+
+            return _mountTable;
+        }
+
         // ---------------- Mission ----------------
 
         private void StartMission()
         {
             DisposeMission();
 
+            _mountTable = ResolveMountTable();
             _simulation = new ScheduledCombatSimulation();
             _simulation.Init(_maxShips, _maxProjectiles);
             _runner = new MissionRunner(_level, _simulation, ResolveCraftCatalog());
@@ -472,6 +503,7 @@ namespace ABRevival.Presentation
             _hud?.State.SetCaptainPresence(_captainIndex >= 0);
             _hud?.State.SetCaptainMode(CaptainTacticalMode.Anchor);
             if (_cameraRig != null) _hud?.State.SetCameraDistance(_cameraRig.Preset);
+            FeedStaticHudValues();
 
             _accumulator = 0f;
             _resultElapsed = 0f;
@@ -544,9 +576,28 @@ namespace ABRevival.Presentation
             _runner.TryGetCraftStats(shipIndex, out CraftStatRecord craft);
 
             Span<HullPartDefinition> parts = stackalloc HullPartDefinition[_contactPartsPerHull];
-            int partCount = isPlayer ? BuildPlayerParts(parts, ship) : BuildCraftParts(parts, craft);
+            Span<CraftPartPlacement> placements = stackalloc CraftPartPlacement[_contactPartsPerHull];
+            int partCount;
+            int placementCount = 0;
+
+            if (isPlayer)
+            {
+                partCount = BuildPlayerParts(parts, ship);
+            }
+            else
+            {
+                placementCount = _mountTable != null
+                    ? CraftComposition.Build(craft, _mountTable, placements)
+                    : 0;
+                partCount = BuildCraftParts(parts, craft, placements.Slice(0, placementCount));
+            }
+
             if (partCount == 0)
-                partCount = AddBodyPart(parts, 0, craft != null ? craft.health : ship.maxHealth, float2.zero);
+                partCount = AddBodyPart(
+                    parts, 0,
+                    craft != null ? craft.health : ship.maxHealth,
+                    float2.zero,
+                    craft != null ? craft.hullPartId : 0);
 
             int hull = _solver.RegisterHull(ship.position, ship.rotation, ship.factionId);
             _solver.SetHullParts(hull, parts.Slice(0, partCount));
@@ -561,10 +612,15 @@ namespace ABRevival.Presentation
             }
             else
             {
-                RegisterCraftWeapons(shipIndex, craft);
+                RegisterCraftWeapons(shipIndex, craft, placements.Slice(0, placementCount));
             }
         }
 
+        /// <summary>
+        /// Composes the player's assembled blueprint from the hull's H markers. The hangar does
+        /// not persist socket indices yet, so each part takes the first compatible free hole;
+        /// the stored offset is only used when the hull exposes no matching marker.
+        /// </summary>
         private int BuildPlayerParts(Span<HullPartDefinition> parts, in ShipEntity ship)
         {
             if (_save.blueprints == null || _save.blueprints.Count == 0) return 0;
@@ -572,35 +628,112 @@ namespace ABRevival.Presentation
             BlueprintSaveData blueprint = _save.blueprints[0];
             if (blueprint?.mountedParts == null) return 0;
 
-            int count = 0;
-            bool hasBody = false;
-            for (int i = 0; i < blueprint.mountedParts.Count && count < parts.Length; i++)
+            var converted = new List<MountedPartData>(blueprint.mountedParts.Count);
+            for (int i = 0; i < blueprint.mountedParts.Count; i++)
+                converted.Add(blueprint.mountedParts[i].ToMountedPart());
+
+            int bodyIndex = -1;
+            for (int i = 0; i < converted.Count; i++)
             {
-                MountedPartData part = blueprint.mountedParts[i].ToMountedPart();
-                if (part.category == PartCategory.Body) hasBody = true;
-                count = AddMountedPart(parts, count, in part);
+                if (converted[i].category != PartCategory.Body) continue;
+                bodyIndex = i;
+                break;
             }
 
-            // The hangar may save a gun-only blueprint; the chassis is still part of the craft.
-            if (!hasBody)
+            int count = 0;
+            MountedPartData body;
+            if (bodyIndex >= 0)
             {
+                body = converted[bodyIndex];
+                body.localOffset = float2.zero;
+                body.localRotation = 0f;
+                body.mirrored = IsMirrored(body.partId);
+                count = AddMountedPart(parts, count, in body);
+            }
+            else
+            {
+                // The hangar may save a gun-only blueprint; the chassis is still part of the craft.
                 float hullHealth = blueprint.hullHealth > 0f ? blueprint.hullHealth : ship.maxHealth;
                 count = AddBodyPart(parts, count, hullHealth, float2.zero);
+                body = new MountedPartData { partId = 0, category = PartCategory.Body };
+            }
+
+            PartMountSymbol bodySymbol = _mountTable != null && _mountTable.TryGetPart(body.partId, out PartMountEntry bodyEntry)
+                ? _mountTable.GetSymbol(bodyEntry.mcName)
+                : null;
+            ulong usedHoles = 0;
+            int siblingIndex = 0;
+
+            for (int i = 0; i < converted.Count && count < parts.Length; i++)
+            {
+                if (i == bodyIndex) continue;
+                MountedPartData part = converted[i];
+                part.mirrored = IsMirrored(part.partId);
+
+                if (_mountTable == null ||
+                    !TryTakeHole(bodySymbol, part.category, part.mirrored, ref usedHoles, out int holeIndex) ||
+                    !_mountTable.TryResolveSocket(body.partId, holeIndex, part.partId, false, out float2 offset))
+                {
+                    // No decodable matching marker: keep an explicit hangar offset when there is
+                    // one, otherwise use the closest derivable layout. Never silently centre.
+                    offset = math.lengthsq(part.localOffset) > 1e-4f
+                        ? part.localOffset
+                        : PartMountTable.FallbackOffset(bodySymbol, part.category, siblingIndex);
+                }
+
+                part.localOffset = offset;
+                part.localRotation = 0f;
+                count = AddMountedPart(parts, count, in part);
+                siblingIndex++;
             }
 
             return count;
         }
 
-        private static int BuildCraftParts(Span<HullPartDefinition> parts, CraftStatRecord craft)
+        private bool IsMirrored(int partId)
+        {
+            return _mountTable != null && _mountTable.TryGetPart(partId, out PartMountEntry entry) && entry.lr == 1;
+        }
+
+        private static bool TryTakeHole(
+            PartMountSymbol bodySymbol,
+            PartCategory category,
+            bool mirrored,
+            ref ulong usedHoles,
+            out int holeIndex)
+        {
+            holeIndex = -1;
+            if (bodySymbol == null || bodySymbol.holes == null) return false;
+
+            int wantedLr = mirrored ? 1 : 0;
+            for (int i = 0; i < bodySymbol.holes.Length && i < 64; i++)
+            {
+                PartMountHole hole = bodySymbol.holes[i];
+                if (hole == null || (usedHoles & (1UL << i)) != 0) continue;
+                if (!hole.Accepts(category)) continue;
+                if (hole.lr != 2 && hole.lr != wantedLr) continue;
+
+                usedHoles |= 1UL << i;
+                holeIndex = i;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static int BuildCraftParts(
+            Span<HullPartDefinition> parts,
+            CraftStatRecord craft,
+            ReadOnlySpan<CraftPartPlacement> placements)
         {
             if (craft == null || craft.parts == null) return 0;
 
             int count = 0;
-            for (int i = 0; i < craft.parts.Length && count < parts.Length; i++)
+            for (int i = 0; i < placements.Length && count < parts.Length; i++)
             {
-                CraftPartRecord source = craft.parts[i];
-                // shortcut: defFly carries no socket positions; AI parts share the hull centre
-                // until the SWF H-marker table is exported.
+                CraftPartPlacement placement = placements[i];
+                if ((uint)placement.partIndex >= (uint)craft.parts.Length) continue;
+                CraftPartRecord source = craft.parts[placement.partIndex];
                 parts[count++] = new HullPartDefinition
                 {
                     part = new MountedPartData
@@ -611,7 +744,9 @@ namespace ABRevival.Presentation
                         maxHealth = math.max(1f, source.health),
                         mass = source.mass,
                         thrust = source.thrust,
-                        localOffset = float2.zero
+                        localOffset = placement.localOffset,
+                        localRotation = placement.localRotation,
+                        mirrored = placement.mirrored
                     },
                     hitRadius = HitRadius(source.category)
                 };
@@ -634,7 +769,12 @@ namespace ABRevival.Presentation
             return count + 1;
         }
 
-        private static int AddBodyPart(Span<HullPartDefinition> parts, int count, float health, float2 offset)
+        private static int AddBodyPart(
+            Span<HullPartDefinition> parts,
+            int count,
+            float health,
+            float2 offset,
+            int partId = 0)
         {
             if (count >= parts.Length) return count;
 
@@ -642,6 +782,7 @@ namespace ABRevival.Presentation
             {
                 part = new MountedPartData
                 {
+                    partId = partId,
                     category = PartCategory.Body,
                     health = math.max(1f, health),
                     maxHealth = math.max(1f, health),
@@ -652,6 +793,11 @@ namespace ABRevival.Presentation
             return count + 1;
         }
 
+        /// <summary>
+        /// Frozen collision radii in gameplay pixels. Mount art is drawn at 2x for 1080p
+        /// readability, but hitboxes stay on ADR 0017's frozen gameplay scale so damage and
+        /// balance are unchanged from the reference release.
+        /// </summary>
         private static float HitRadius(PartCategory category)
         {
             return category switch
@@ -683,10 +829,15 @@ namespace ABRevival.Presentation
                 FireModeSpec spec = definition.CreateWeaponSpec();
                 if (spec.lifetime <= 0f) continue;
 
+                spec.projectileType = BulletId(part.partId);
+                float2 muzzle = _mountTable != null
+                    ? _mountTable.MuzzleOffset(part.partId, part.localOffset)
+                    : part.localOffset;
+
                 mounts[mountCount++] = new WeaponMount
                 {
                     spec = spec,
-                    localOffset = part.localOffset,
+                    localOffset = muzzle,
                     localRotation = part.localRotation
                 };
             }
@@ -695,10 +846,14 @@ namespace ABRevival.Presentation
         }
 
         /// <summary>
-        /// Registers every frozen gun socket on an AI craft. The Captain uses the same path in
-        /// all six tactical modes (ADR 0006); hostiles use it after their pursuit steering.
+        /// Registers every frozen gun socket on an AI craft at its composed F-marker muzzle.
+        /// The Captain uses the same path in all six tactical modes (ADR 0006); hostiles use it
+        /// after their pursuit steering.
         /// </summary>
-        private void RegisterCraftWeapons(int shipIndex, CraftStatRecord craft)
+        private void RegisterCraftWeapons(
+            int shipIndex,
+            CraftStatRecord craft,
+            ReadOnlySpan<CraftPartPlacement> placements)
         {
             if (_hangar == null || craft == null || craft.weaponMounts == null) return;
 
@@ -707,23 +862,38 @@ namespace ABRevival.Presentation
 
             for (int i = 0; i < craft.weaponMounts.Length && mountCount < mounts.Length; i++)
             {
-                PartDefinitionSO definition = _hangar.FindPartDefinition(craft.weaponMounts[i].partId);
+                CraftWeaponMount mount = craft.weaponMounts[i];
+                if ((uint)mount.partIndex >= (uint)placements.Length) continue;
+
+                PartDefinitionSO definition = _hangar.FindPartDefinition(mount.partId);
                 if (definition == null) continue;
 
                 FireModeSpec spec = definition.CreateWeaponSpec();
                 if (spec.lifetime <= 0f) continue;
 
-                // shortcut: muzzle offsets live in the SWF F-marker layers, not defFly.
-                // Autonomous ports fire from the hull centre until that table is exported.
+                CraftPartPlacement placement = placements[mount.partIndex];
+                float2 muzzle = _mountTable != null
+                    ? _mountTable.MuzzleOffset(mount.partId, placement.localOffset)
+                    : placement.localOffset;
+
+                spec.projectileType = BulletId(mount.partId);
+
                 mounts[mountCount++] = new WeaponMount
                 {
                     spec = spec,
-                    localOffset = float2.zero,
-                    localRotation = 0f
+                    localOffset = muzzle,
+                    localRotation = placement.localRotation
                 };
             }
 
             if (mountCount > 0) _weapons.RegisterCraft(shipIndex, mounts.Slice(0, mountCount));
+        }
+
+        private int BulletId(int partId)
+        {
+            return _mountTable != null && _mountTable.TryGetPart(partId, out PartMountEntry entry) && entry.bulletId > 0
+                ? entry.bulletId
+                : 1;
         }
 
         private void SyncHullPoses()
@@ -762,14 +932,14 @@ namespace ABRevival.Presentation
             }
 
             UpdateHud();
-            RenderMissionFrame();
+            RenderMissionFrame(deltaTime);
         }
 
         /// <summary>
         /// Focuses the camera on the player and submits one BRG frame. Runs once per
         /// rendered frame, never per simulation substep.
         /// </summary>
-        private void RenderMissionFrame()
+        private void RenderMissionFrame(float deltaTime)
         {
             int playerIndex = _runner != null ? _runner.PlayerShipIndex : -1;
             if (_simulation != null && playerIndex >= 0 && playerIndex < _simulation.ShipCount)
@@ -778,7 +948,7 @@ namespace ABRevival.Presentation
                 _cameraRig?.Focus(new Vector2(player.position.x, player.position.y));
             }
 
-            _spriteView?.Render();
+            _spriteView?.Render(deltaTime);
         }
 
         private void StepMission()
@@ -796,11 +966,13 @@ namespace ABRevival.Presentation
             ContactStepResult contacts = _solver.Step(_simulation.Projectiles, FixedStepSeconds);
             _damageHandoff?.Apply(_solver, _hud?.State, this);
 
-            if (contacts.hitCount == 0 || _combatAudio == null) return;
+            if (contacts.hitCount == 0) return;
 
             var hits = _solver.Hits;
             for (int i = 0; i < hits.Length; i++)
             {
+                _spriteView?.SpawnImpact(hits[i].point, hits[i].partDetached, hits[i].hullDestroyed);
+                if (_combatAudio == null) continue;
                 if (hits[i].hullDestroyed) _combatAudio.Explosion(1f);
                 else if (hits[i].partDetached) _combatAudio.ComponentLost();
             }
@@ -953,30 +1125,125 @@ namespace ABRevival.Presentation
         {
             if (_hud == null || _runner == null || _simulation == null) return;
 
+            CombatHudState state = _hud.State;
+            state.SetMoney(_save != null ? _save.shop.money : 0);
+            state.SetMissionSeconds(_runner.CurrentTick * _runner.TickSeconds);
+            state.SetAiCount(0);
+            state.SetEnemyDistance(0f);
+
             int playerIndex = _runner.PlayerShipIndex;
             if (playerIndex >= 0 && playerIndex < _simulation.ShipCount)
             {
                 if (_solver != null && _playerHull >= 0 && _playerHull < _solver.HullCount)
                 {
-                    _hud.State.SetHullHealth(_solver.GetHullHealth(_playerHull), _playerHullMax);
+                    state.SetHullHealth(_solver.GetHullHealth(_playerHull), _playerHullMax);
                 }
                 else
                 {
                     var player = _simulation.GetShip(playerIndex);
-                    _hud.State.SetHullHealth(player.health, player.maxHealth);
+                    state.SetHullHealth(player.health, player.maxHealth);
                 }
+
+                ShipEntity ship = _simulation.GetShip(playerIndex);
+                state.SetEnergyFraction(Fraction(ship.energy, ship.maxEnergy));
+                state.SetShieldFraction(PlayerShieldFraction());
+                state.SetRadarBearing(math.degrees(-ship.rotation));
+                CountLivingHostiles(playerIndex, ship.position, out int hostiles, out float nearest);
+                state.SetAiCount(hostiles);
+                state.SetEnemyDistance(nearest);
             }
 
             if (_captainIndex >= 0 && _captainIndex < _simulation.ShipCount)
             {
                 var captain = _simulation.GetShip(_captainIndex);
-                _hud.State.SetCaptainPresence(true);
-                _hud.State.SetCaptainMode((CaptainTacticalMode)captain.tacticalMode);
+                state.SetCaptainPresence(true);
+                state.SetCaptainMode((CaptainTacticalMode)captain.tacticalMode);
+                state.SetCaptainHealth(captain.health, captain.maxHealth);
             }
             else
             {
-                _hud.State.SetCaptainPresence(false);
+                state.SetCaptainPresence(false);
             }
+        }
+
+        /// <summary>
+        /// Values that only change between missions: credits from the save and the pilot
+        /// name resolved from the level's player spawn.
+        /// </summary>
+        private void FeedStaticHudValues()
+        {
+            if (_hud == null) return;
+
+            CombatHudState state = _hud.State;
+            state.SetMoney(_save != null ? _save.shop.money : 0);
+            state.SetPilotName(PlayerPilotName());
+            state.SetMissionSeconds(0f);
+            state.SetAiCount(0);
+            state.SetEnemyDistance(0f);
+            state.SetEnergyFraction(1f);
+            state.SetShieldFraction(1f);
+            state.SetCaptainHealth(1f, 1f);
+            state.SetRadarBearing(0f);
+        }
+
+        private string PlayerPilotName()
+        {
+            if (_runner == null) return string.Empty;
+
+            var spawns = _runner.Spawns;
+            for (int i = 0; i < spawns.Count; i++)
+            {
+                if (spawns[i].shipIndex != _runner.PlayerShipIndex) continue;
+                if (!string.IsNullOrEmpty(spawns[i].pilot)) return spawns[i].pilot;
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>Living hostile count and the distance to the nearest one, in world pixels.</summary>
+        private void CountLivingHostiles(int playerIndex, float2 playerPosition, out int count, out float nearest)
+        {
+            count = 0;
+            nearest = 0f;
+
+            int shipCount = _simulation.ShipCount;
+            for (int shipIndex = 0; shipIndex < shipCount; shipIndex++)
+            {
+                if (shipIndex == playerIndex) continue;
+                if (!_runner.IsCraftAlive(shipIndex)) continue;
+                if (_simulation.GetShip(shipIndex).factionId == 0) continue;
+
+                count++;
+                float distance = math.distance(playerPosition, _simulation.GetShip(shipIndex).position);
+                if (nearest <= 0f || distance < nearest) nearest = distance;
+            }
+        }
+
+        /// <summary>
+        /// Shield bar: remaining integrity of the player's non-chassis parts. Full when the
+        /// craft carries no modular parts or the contact layer is unavailable.
+        /// </summary>
+        private float PlayerShieldFraction()
+        {
+            if (_solver == null || _playerHull < 0 || _playerHull >= _solver.HullCount) return 1f;
+
+            int partCount = _solver.GetHullPartCount(_playerHull);
+            float remaining = 0f;
+            float total = 0f;
+            for (int i = 0; i < partCount; i++)
+            {
+                MountedPartData part = _solver.GetPart(_playerHull, i);
+                if (part.category == PartCategory.Body) continue;
+                remaining += math.max(0f, part.health);
+                total += part.maxHealth;
+            }
+
+            return total > 0f ? math.clamp(remaining / total, 0f, 1f) : 1f;
+        }
+
+        private static float Fraction(float current, float max)
+        {
+            return max > 0f ? math.clamp(current / max, 0f, 1f) : 1f;
         }
 
         private int FindCaptainIndex()

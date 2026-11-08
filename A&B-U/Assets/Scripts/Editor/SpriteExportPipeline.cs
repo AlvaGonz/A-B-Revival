@@ -24,17 +24,15 @@ namespace ABRevival.Editor
         private const string FireBin = "../src/assets/binaryData/2_all.AllData_defFire.bin";
         private const string BulletBin = "../src/assets/binaryData/11_all.AllData_defBullet.bin";
         private const string PartSwf = "../src/assets/binaryData/4_all.AllData_data.bin";
-        private const string UiSwf = "../src/assets/binaryData/9_all.AllData_ui.bin";
 
         private const string PartsOutput = "Assets/Art/Sprites/Parts";
-        private const string UiOutput = "Assets/Art/Sprites/UI";
+        private const string MountsOutput = "Assets/Art/Sprites/PartMounts";
+        private const string BulletsOutput = "Assets/Art/Sprites/Bullets";
         private const string AtlasOutput = "Assets/Art/Atlases";
         private const string PartsAtlasPath = AtlasOutput + "/PartsAtlas.spriteatlasv2";
-        private const string UiAtlasPath = AtlasOutput + "/UiAtlas.spriteatlasv2";
         private const int AtlasMaxSize = 2048;
 
         private static readonly Regex SymbolClassLine = new Regex("^(\\d+);\"(.*)\"$", RegexOptions.Compiled);
-        private static readonly Regex ImageFileName = new Regex("^(\\d+)$", RegexOptions.Compiled);
         private static readonly Regex HiddenLayerTag = new Regex(
             "(?s)<item type=\"PlaceObject2Tag\"[^>]*name=\"[LHPF][^\"]*\"[^>]*>.*?</item>",
             RegexOptions.Compiled);
@@ -65,8 +63,7 @@ namespace ABRevival.Editor
                 string fireBin = Resolve(projectRoot, FireBin);
                 string bulletBin = Resolve(projectRoot, BulletBin);
                 string partSwf = Resolve(projectRoot, PartSwf);
-                string uiSwf = Resolve(projectRoot, UiSwf);
-                AssertFilesExist(partBin, fireBin, bulletBin, partSwf, uiSwf);
+                AssertFilesExist(partBin, fireBin, bulletBin, partSwf);
 
                 string ffdec = ResolveFfdec();
                 Debug.Log($"[SpriteExportPipeline] FFDec: {ffdec}");
@@ -139,34 +136,14 @@ namespace ABRevival.Editor
                 }
                 RemoveStalePngs(Path.Combine(projectRoot, PartsOutput), expectedParts);
 
-                string uiTemp = Path.Combine(tempRoot, "ui");
-                Directory.CreateDirectory(uiTemp);
-                RunFfdec(ffdec, "-format image:png -export image " + Quote(uiTemp) + " " + Quote(uiSwf));
-
-                var expectedUi = new HashSet<string>(StringComparer.Ordinal);
-                int exportedUi = 0;
-                foreach (string image in Directory.GetFiles(uiTemp, "*.png"))
-                {
-                    string id = Path.GetFileNameWithoutExtension(image);
-                    Match match = ImageFileName.Match(id);
-                    if (!match.Success)
-                    {
-                        throw new InvalidOperationException("Unexpected FFDec image name: " + id);
-                    }
-
-                    string fileName = SpriteNaming.UiImageFile(
-                        int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture));
-                    expectedUi.Add(fileName);
-                    CopyIfChanged(image, Path.Combine(projectRoot, UiOutput, fileName));
-                    exportedUi++;
-                }
-                RemoveStalePngs(Path.Combine(projectRoot, UiOutput), expectedUi);
+                int exportedMounts = ExportMountArt(
+                    ffdec, renderSwf, symbolIds, canonicalBySymbol, bulletBin, projectRoot, tempRoot);
 
                 AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
                 ApplyImportSettings(PartsOutput);
-                ApplyImportSettings(UiOutput);
+                ApplyImportSettings(MountsOutput);
+                ApplyImportSettings(BulletsOutput);
                 RebuildAtlas(PartsAtlasPath, PartsOutput);
-                RebuildAtlas(UiAtlasPath, UiOutput);
 
                 if (!PartsAtlasBuilder.Build())
                 {
@@ -177,9 +154,8 @@ namespace ABRevival.Editor
                 AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
 
                 Debug.Log(
-                    $"[SpriteExportPipeline] Exported {exportedParts} part sprites " +
-                    $"({canonicalBySymbol.Count} symbols, {records.Count} catalog ids) and " +
-                    $"{exportedUi} UI images. Atlases: {PartsAtlasPath}, {UiAtlasPath}.");
+                    $"[SpriteExportPipeline] Exported {exportedParts} part thumbnails and {exportedMounts} mount sprites " +
+                    $"({canonicalBySymbol.Count} symbols, {records.Count} catalog ids). Atlases: {PartsAtlasPath}.");
                 return true;
             }
             catch (Exception exception)
@@ -193,7 +169,188 @@ namespace ABRevival.Editor
             }
         }
 
-        private static void ApplyImportSettings(string folder)
+        /// <summary>
+        /// Exports the in-game frame-0 mount art at <see cref="SpriteNaming.MountZoom"/> and
+        /// rotates it a quarter turn counter-clockwise. The frozen wrapper symbol draws its
+        /// SHOW frame nose-east (the 0-radian frame of <c>MC2BMPD</c>); Unity headings are
+        /// nose-up, so the same pixels are stored unrotated by 90 degrees. Bullet art uses the
+        /// same rule; ids whose frozen symbol is the procedural <c>normal</c> disc use a baked
+        /// copy of that original disc rather than a synthetic white cell.
+        /// </summary>
+        private static int ExportMountArt(
+            string ffdec,
+            string renderSwf,
+            Dictionary<string, int> symbolIds,
+            Dictionary<string, int> canonicalBySymbol,
+            string bulletBin,
+            string projectRoot,
+            string tempRoot)
+        {
+            List<BulletArtRecord> bullets = BulletCatalog.ParseFromFile(bulletBin);
+            var bulletSymbols = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                BulletArtRecord bullet = bullets[i];
+                if (bullet.mcName == "normal" || bulletSymbols.ContainsKey(bullet.mcName)) continue;
+                if (!symbolIds.TryGetValue(bullet.mcName, out int bulletId))
+                    throw new InvalidOperationException($"Bullet symbol '{bullet.mcName}' was not exported by FFDec.");
+                bulletSymbols.Add(bullet.mcName, bulletId);
+            }
+
+            var ids = new List<string>(canonicalBySymbol.Count + bulletSymbols.Count);
+            foreach (var symbol in canonicalBySymbol)
+                ids.Add(symbolIds[symbol.Key].ToString(CultureInfo.InvariantCulture));
+            foreach (var symbol in bulletSymbols)
+                ids.Add(symbol.Value.ToString(CultureInfo.InvariantCulture));
+            ids.Sort(StringComparer.Ordinal);
+
+            string mountsTemp = Path.Combine(tempRoot, "mounts");
+            Directory.CreateDirectory(mountsTemp);
+            RunFfdec(
+                ffdec,
+                "-selectid " + string.Join(",", ids.ToArray()) +
+                " -format sprite:png -zoom " + SpriteNaming.MountZoom +
+                " -ignorebackground -export sprite " + Quote(mountsTemp) + " " + Quote(renderSwf));
+
+            var expectedMounts = new HashSet<string>(StringComparer.Ordinal);
+            int exported = 0;
+            foreach (var symbol in canonicalBySymbol)
+            {
+                string fileName = SpriteNaming.PartMountFile(symbol.Value, symbol.Key);
+                expectedMounts.Add(fileName);
+
+                string sourcePng = Path.Combine(FindSpriteFolder(mountsTemp, symbolIds[symbol.Key]), "1.png");
+                if (!File.Exists(sourcePng))
+                    throw new InvalidOperationException($"FFDec did not render mount art for symbol '{symbol.Key}'.");
+                CopyRotatedCounterClockwise(sourcePng, Path.Combine(projectRoot, MountsOutput, fileName));
+                exported++;
+            }
+            RemoveStalePngs(Path.Combine(projectRoot, MountsOutput), expectedMounts);
+
+            var expectedBullets = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var symbol in bulletSymbols)
+            {
+                string fileName = SpriteNaming.BulletSpriteFile(symbol.Key);
+                expectedBullets.Add(fileName);
+
+                string sourcePng = Path.Combine(FindSpriteFolder(mountsTemp, symbol.Value), "1.png");
+                if (!File.Exists(sourcePng))
+                    throw new InvalidOperationException($"FFDec did not render bullet art for symbol '{symbol.Key}'.");
+                CopyRotatedCounterClockwise(sourcePng, Path.Combine(projectRoot, BulletsOutput, fileName));
+            }
+
+            string normalFile = SpriteNaming.BulletSpriteFile("normal");
+            expectedBullets.Add(normalFile);
+            WriteBytesIfChanged(
+                Path.Combine(projectRoot, BulletsOutput, normalFile),
+                BakeNormalBulletDisc());
+
+            RemoveStalePngs(Path.Combine(projectRoot, BulletsOutput), expectedBullets);
+            return exported;
+        }
+
+        private static void CopyRotatedCounterClockwise(string source, string destination)
+        {
+            byte[] bytes = File.ReadAllBytes(source);
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false, false);
+            try
+            {
+                if (!ImageConversion.LoadImage(texture, bytes, false))
+                    throw new InvalidDataException("Could not decode exported sprite " + source);
+
+                int width = texture.width;
+                int height = texture.height;
+                Color32[] sourcePixels = texture.GetPixels32();
+                int destWidth = height;
+                int destHeight = width;
+                var destPixels = new Color32[destWidth * destHeight];
+
+                for (int y = 0; y < destHeight; y++)
+                {
+                    for (int x = 0; x < destWidth; x++)
+                    {
+                        // Visual top-left rotation: dst(x, y) = src(width - 1 - y, x).
+                        int sourceX = width - 1 - y;
+                        int sourceY = x;
+                        destPixels[((destHeight - 1 - y) * destWidth) + x] =
+                            sourcePixels[((height - 1 - sourceY) * width) + sourceX];
+                    }
+                }
+
+                var rotated = new Texture2D(destWidth, destHeight, TextureFormat.RGBA32, false, false);
+                try
+                {
+                    rotated.SetPixels32(destPixels);
+                    rotated.Apply(false, false);
+                    WriteBytesIfChanged(destination, rotated.EncodeToPNG());
+                }
+                finally
+                {
+                    UnityEngine.Object.DestroyImmediate(rotated);
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
+        }
+
+        /// <summary>Frozen <c>GData.packBulletDisc("normal", 8, 0x00CCFF)</c>, baked at the mount-art density.</summary>
+        private static byte[] BakeNormalBulletDisc()
+        {
+            const int size = 32;
+            const float falloff = 12f;
+            const float center = size * 0.5f;
+
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false, false);
+            try
+            {
+                var pixels = new Color32[size * size];
+                for (int y = 0; y < size; y++)
+                {
+                    for (int x = 0; x < size; x++)
+                    {
+                        float dx = x + 0.5f - center;
+                        float dy = y + 0.5f - center;
+                        float distance = Mathf.Sqrt((dx * dx) + (dy * dy));
+                        float alpha = distance <= falloff ? 1f - (distance / falloff) : 0f;
+                        pixels[(y * size) + x] = new Color32(0, 204, 255, (byte)Mathf.RoundToInt(alpha * 255f));
+                    }
+                }
+
+                texture.SetPixels32(pixels);
+                texture.Apply(false, false);
+                return texture.EncodeToPNG();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
+        }
+
+        private static void WriteBytesIfChanged(string destination, byte[] bytes)
+        {
+            string directory = Path.GetDirectoryName(destination);
+            if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+            if (File.Exists(destination))
+            {
+                byte[] existing = File.ReadAllBytes(destination);
+                if (existing.Length == bytes.Length)
+                {
+                    bool equal = true;
+                    for (int i = 0; i < bytes.Length; i++)
+                    {
+                        if (existing[i] == bytes[i]) continue;
+                        equal = false;
+                        break;
+                    }
+                    if (equal) return;
+                }
+            }
+            File.WriteAllBytes(destination, bytes);
+        }
+
+        internal static void ApplyImportSettings(string folder)
         {
             if (!AssetDatabase.IsValidFolder(folder)) return;
 
@@ -258,7 +415,7 @@ namespace ABRevival.Editor
             return true;
         }
 
-        private static void RebuildAtlas(string atlasPath, string packableFolder)
+        internal static void RebuildAtlas(string atlasPath, string packableFolder)
         {
             if (AssetDatabase.IsValidFolder(AtlasOutput) == false)
             {
@@ -340,7 +497,7 @@ namespace ABRevival.Editor
             return cleanSwf;
         }
 
-        private static Dictionary<string, int> ReadSymbolIds(string csvPath)
+        internal static Dictionary<string, int> ReadSymbolIds(string csvPath)
         {
             var result = new Dictionary<string, int>(StringComparer.Ordinal);
             foreach (string line in File.ReadAllLines(csvPath))
@@ -374,7 +531,7 @@ namespace ABRevival.Editor
             }
         }
 
-        private static void CopyIfChanged(string source, string destination)
+        internal static void CopyIfChanged(string source, string destination)
         {
             string directory = Path.GetDirectoryName(destination);
             if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
@@ -413,7 +570,7 @@ namespace ABRevival.Editor
             }
         }
 
-        private static string ResolveFfdec()
+        internal static string ResolveFfdec()
         {
             string fromEnvironment = Environment.GetEnvironmentVariable("FFDEC_CLI");
             if (!string.IsNullOrEmpty(fromEnvironment) && File.Exists(fromEnvironment)) return fromEnvironment;
@@ -430,7 +587,7 @@ namespace ABRevival.Editor
             return "ffdec-cli";
         }
 
-        private static void RunFfdec(string executable, string arguments)
+        internal static void RunFfdec(string executable, string arguments)
         {
             var startInfo = new ProcessStartInfo(executable, arguments)
             {

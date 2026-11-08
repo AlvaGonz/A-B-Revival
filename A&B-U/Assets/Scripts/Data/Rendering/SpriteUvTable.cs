@@ -159,7 +159,8 @@ namespace ABRevival.Core.Rendering
             IReadOnlyList<PartSpriteMapping> mappings,
             IReadOnlyDictionary<string, SpritePixelSize> spriteSizes,
             int atlasWidth = SpriteAtlasLayout.DefaultWidth,
-            int atlasHeight = SpriteAtlasLayout.DefaultHeight)
+            int atlasHeight = SpriteAtlasLayout.DefaultHeight,
+            IReadOnlyList<string> extraSymbols = null)
         {
             if (mappings == null) throw new ArgumentNullException(nameof(mappings));
             if (spriteSizes == null) throw new ArgumentNullException(nameof(spriteSizes));
@@ -180,6 +181,18 @@ namespace ABRevival.Core.Rendering
                 symbols.Add(new SpriteSymbolSize(mapping.fileName, size.Width, size.Height));
             }
 
+            if (extraSymbols != null)
+            {
+                for (int i = 0; i < extraSymbols.Count; i++)
+                {
+                    string symbol = extraSymbols[i];
+                    if (string.IsNullOrEmpty(symbol) || !seen.Add(symbol)) continue;
+                    if (!spriteSizes.TryGetValue(symbol, out SpritePixelSize size))
+                        throw new InvalidOperationException($"Exported sprite missing for '{symbol}'.");
+                    symbols.Add(new SpriteSymbolSize(symbol, size.Width, size.Height));
+                }
+            }
+
             return SpriteAtlasLayout.Pack(symbols, atlasWidth, atlasHeight);
         }
 
@@ -187,9 +200,10 @@ namespace ABRevival.Core.Rendering
             IReadOnlyList<PartSpriteMapping> mappings,
             IReadOnlyDictionary<string, SpritePixelSize> spriteSizes,
             int atlasWidth = SpriteAtlasLayout.DefaultWidth,
-            int atlasHeight = SpriteAtlasLayout.DefaultHeight)
+            int atlasHeight = SpriteAtlasLayout.DefaultHeight,
+            IReadOnlyList<string> extraSymbols = null)
         {
-            List<SpriteSymbolRect> layout = BuildLayout(mappings, spriteSizes, atlasWidth, atlasHeight);
+            List<SpriteSymbolRect> layout = BuildLayout(mappings, spriteSizes, atlasWidth, atlasHeight, extraSymbols);
             var rectBySymbol = new Dictionary<string, SpriteSymbolRect>(layout.Count, StringComparer.Ordinal);
             for (int i = 0; i < layout.Count; i++)
                 rectBySymbol[layout[i].Symbol] = layout[i];
@@ -205,6 +219,17 @@ namespace ABRevival.Core.Rendering
 
             AppendRow(text, -1, rectBySymbol[WhiteSymbol]);
 
+            if (extraSymbols != null)
+            {
+                for (int i = 0; i < extraSymbols.Count; i++)
+                {
+                    string symbol = extraSymbols[i];
+                    if (string.IsNullOrEmpty(symbol) || !rectBySymbol.TryGetValue(symbol, out SpriteSymbolRect rect))
+                        continue;
+                    AppendSymbolRow(text, rect);
+                }
+            }
+
             var partIds = new HashSet<int>();
             for (int i = 0; i < mappings.Count; i++)
             {
@@ -215,6 +240,15 @@ namespace ABRevival.Core.Rendering
             }
 
             return text.ToString();
+        }
+
+        private static void AppendSymbolRow(StringBuilder text, in SpriteSymbolRect rect)
+        {
+            text.Append("symbol=").Append(rect.Symbol).Append(';')
+                .Append(rect.X.ToString(CultureInfo.InvariantCulture)).Append(';')
+                .Append(rect.Y.ToString(CultureInfo.InvariantCulture)).Append(';')
+                .Append(rect.Width.ToString(CultureInfo.InvariantCulture)).Append(';')
+                .Append(rect.Height.ToString(CultureInfo.InvariantCulture)).Append('\n');
         }
 
         private static void AppendRow(StringBuilder text, int partId, in SpriteSymbolRect rect)
@@ -238,6 +272,7 @@ namespace ABRevival.Core.Rendering
 
         private readonly SpriteUvRect[] _byPart;
         private readonly SpriteUvRect _white;
+        private readonly Dictionary<string, SpriteUvRect> _bySymbol;
 
         public int AtlasWidth { get; }
         public int AtlasHeight { get; }
@@ -246,11 +281,17 @@ namespace ABRevival.Core.Rendering
         public SpriteUvRect White => _white;
         public bool HasWhite => _white.IsValid;
 
-        private SpriteUvTable(SpriteUvRect[] byPart, SpriteUvRect white, int symbolCount, int atlasWidth, int atlasHeight)
+        private SpriteUvTable(
+            SpriteUvRect[] byPart,
+            SpriteUvRect white,
+            Dictionary<string, SpriteUvRect> bySymbol,
+            int atlasWidth,
+            int atlasHeight)
         {
             _byPart = byPart;
             _white = white;
-            SymbolCount = symbolCount;
+            _bySymbol = bySymbol;
+            SymbolCount = bySymbol.Count;
             AtlasWidth = atlasWidth;
             AtlasHeight = atlasHeight;
         }
@@ -262,6 +303,16 @@ namespace ABRevival.Core.Rendering
                 rect = _byPart[partId];
                 return true;
             }
+
+            rect = default;
+            return false;
+        }
+
+        /// <summary>Resolves an explicit symbol row (bullet art, effects) by atlas file name.</summary>
+        public bool TryGetSymbol(string symbol, out SpriteUvRect rect)
+        {
+            if (!string.IsNullOrEmpty(symbol) && _bySymbol.TryGetValue(symbol, out rect))
+                return true;
 
             rect = default;
             return false;
@@ -283,7 +334,7 @@ namespace ABRevival.Core.Rendering
             bool whiteSeen = false;
             SpriteUvRect white = default;
             var rows = new List<KeyValuePair<int, (string symbol, int x, int y, int width, int height)>>();
-            var symbols = new HashSet<string>(StringComparer.Ordinal);
+            var symbolRects = new Dictionary<string, SpriteUvRect>(StringComparer.Ordinal);
             int maxPartId = -1;
 
             string[] lines = text.Split('\n');
@@ -308,6 +359,31 @@ namespace ABRevival.Core.Rendering
                 if (atlasWidth <= 0)
                     throw new FormatException("The UV table must declare atlas=WxH before its rows.");
 
+                if (line.StartsWith("symbol=", StringComparison.Ordinal))
+                {
+                    string[] symbolCells = line.Split(';');
+                    if (symbolCells.Length != 5 ||
+                        !int.TryParse(symbolCells[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int sx) ||
+                        !int.TryParse(symbolCells[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out int sy) ||
+                        !int.TryParse(symbolCells[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out int sw) ||
+                        !int.TryParse(symbolCells[4], NumberStyles.Integer, CultureInfo.InvariantCulture, out int sh))
+                    {
+                        throw new FormatException($"Malformed symbol row on line {i + 1}.");
+                    }
+
+                    string symbolName = symbolCells[0].Substring(7);
+                    if (symbolName.Length == 0 || sw <= 0 || sh <= 0 || sx < 0 || sy < 0 ||
+                        sx + sw > atlasWidth || sy + sh > atlasHeight)
+                    {
+                        throw new FormatException($"Symbol row out of atlas bounds on line {i + 1}.");
+                    }
+                    if (symbolRects.ContainsKey(symbolName))
+                        throw new FormatException($"Duplicate atlas symbol '{symbolName}' on line {i + 1}.");
+
+                    symbolRects.Add(symbolName, new SpriteUvRect(sx, sy, sw, sh, atlasWidth, atlasHeight));
+                    continue;
+                }
+
                 string[] cells = line.Split(';');
                 if (cells.Length != 6)
                     throw new FormatException($"Malformed UV row on line {i + 1}.");
@@ -330,14 +406,20 @@ namespace ABRevival.Core.Rendering
                     throw new FormatException($"UV row out of atlas bounds on line {i + 1}.");
                 }
 
-                symbols.Add(symbol);
                 var rect = new SpriteUvRect(x, y, width, height, atlasWidth, atlasHeight);
+                if (symbolRects.TryGetValue(symbol, out SpriteUvRect existing) &&
+                    (existing.X != x || existing.Y != y || existing.Width != width || existing.Height != height))
+                {
+                    throw new FormatException($"Symbol '{symbol}' has conflicting atlas rects on line {i + 1}.");
+                }
+                symbolRects[symbol] = rect;
                 if (partId < 0)
                 {
                     if (symbol != SpriteUvTableBuilder.WhiteSymbol)
                         throw new FormatException($"Only '{SpriteUvTableBuilder.WhiteSymbol}' may use a negative part id.");
                     whiteSeen = true;
                     white = rect;
+                    symbolRects[symbol] = rect;
                     continue;
                 }
 
@@ -358,7 +440,7 @@ namespace ABRevival.Core.Rendering
                 byPart[partId] = new SpriteUvRect(row.x, row.y, row.width, row.height, atlasWidth, atlasHeight);
             }
 
-            return new SpriteUvTable(byPart, white, symbols.Count, atlasWidth, atlasHeight);
+            return new SpriteUvTable(byPart, white, symbolRects, atlasWidth, atlasHeight);
         }
     }
 

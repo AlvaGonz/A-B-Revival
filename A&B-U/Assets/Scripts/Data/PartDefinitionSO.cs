@@ -16,6 +16,15 @@ namespace ABRevival.Core.Data
         public float thrust;
         public float energyDraw;
 
+        [Header("Hangar Table (F4DataOrg original columns)")]
+        public float turnFly;
+        public int lr;
+
+        [Header("Hangar Presentation")]
+        public Sprite partSprite;
+        [Tooltip("Opaque sprite rect in texture pixels (x, y, width, height); zero falls back to the full sprite rect.")]
+        public Vector4 spriteContentRect;
+
         [Header("Weapon Attributes (Category == Gun)")]
         public float projectileVelocity;
         public float burstAcceleration;

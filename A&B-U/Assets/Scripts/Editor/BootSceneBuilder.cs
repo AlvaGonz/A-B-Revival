@@ -20,7 +20,6 @@ namespace ABRevival.Editor
     public static class BootSceneBuilder
     {
         private const string ScenePath = "Assets/Scenes/Boot.unity";
-        private const string SampleScenePath = "Assets/Scenes/SampleScene.unity";
         private const string HangarUxmlPath = "Assets/UI/Hangar.uxml";
         private const string HudUxmlPath = "Assets/UI/CombatHud.uxml";
         private const string PanelSettingsPath = "Assets/UI/HangarPanelSettings.asset";
@@ -28,6 +27,8 @@ namespace ABRevival.Editor
         private const string TalkDataPath = "Assets/Resources/Talk/5_all.AllData_talk.xml";
         private const string OpeningClipPath = "Assets/Resources/Cinematics/Mov1.mp4";
         private const string CatalogFolder = "Assets/Data/Parts";
+        private const string UiSpriteFolder = "Assets/Art/Sprites/UI";
+        private const string PartSpriteFolder = "Assets/Art/Sprites/Parts";
         private const string PresentationAssembly = ", ABRevival.Presentation";
 
         [MenuItem("Tools/A&B Revival/Build Boot Scene")]
@@ -102,6 +103,7 @@ namespace ABRevival.Editor
             SetReference(hud, "_document", hudDocument);
             SetReference(hud, "_cameraRig", cameraRig);
             SetCatalog(hangar);
+            SetHangarSprites(hangar);
 
             Texture2D partsAtlas = LoadRequired<Texture2D>(PartsAtlasBuilder.AtlasPath);
             TextAsset partsUvTable = LoadRequired<TextAsset>(PartsAtlasBuilder.UvTablePath);
@@ -132,8 +134,7 @@ namespace ABRevival.Editor
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[]
             {
-                new EditorBuildSettingsScene(ScenePath, true),
-                new EditorBuildSettingsScene(SampleScenePath, true)
+                new EditorBuildSettingsScene(ScenePath, true)
             };
 
             AssetDatabase.SaveAssets();
@@ -205,6 +206,51 @@ namespace ABRevival.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             Debug.Log($"[BootSceneBuilder] Assigned {parts.Count} PartDefinitionSO assets to the hangar.");
+        }
+
+        /// <summary>
+        /// Wires the original 2011 UI sprites into the hangar controller's serialized fields.
+        /// The runtime never guesses an asset path; missing art fails the scene build.
+        /// </summary>
+        private static void SetHangarSprites(Component hangar)
+        {
+            var serialized = new SerializedObject(hangar);
+            SetSprite(serialized, "hangarBackground", UiSpriteFolder, "ui_0312_hangar_background.png");
+            SetSprite(serialized, "hangarHeader", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "hangarFrame", UiSpriteFolder, "ui_0315_hangar_frame.png");
+            SetSprite(serialized, "hangarPanel", UiSpriteFolder, "ui_0325_hangar_panel.png");
+            SetSprite(serialized, "hangarTableHeader", UiSpriteFolder, "ui_0325_hangar_table_header.png");
+            SetSprite(serialized, "hangarStatsCard", UiSpriteFolder, "ui_0384_hangar_stats_card.png");
+            SetSprite(serialized, "buttonMerge", UiSpriteFolder, "ui_0364_hangar_button_merge.png");
+            SetSprite(serialized, "buttonNew", UiSpriteFolder, "ui_0361_hangar_button_new.png");
+            SetSprite(serialized, "buttonBackToCenter", UiSpriteFolder, "ui_0324_hangar_button_back_to_center.png");
+            SetSprite(serialized, "buttonPartsCrafts", UiSpriteFolder, "ui_0404_hangar_button_parts_crafts.png");
+            SetSprite(serialized, "buttonLaunch", UiSpriteFolder, "ui_0585_hangar_button_launch.png");
+            SetSprite(serialized, "buttonAccept", UiSpriteFolder, "ui_0170_hangar_button_accept.png");
+            SetSprite(serialized, "buttonReset", UiSpriteFolder, "ui_0167_hangar_button_reset.png");
+            SetSprite(serialized, "buttonAdd", UiSpriteFolder, "ui_0356_hangar_button_add.png");
+            SetSprite(serialized, "categoryAll", UiSpriteFolder, "ui_0124_hangar_category_all.png");
+            SetSprite(serialized, "categoryBody", UiSpriteFolder, "ui_0136_hangar_category_body.png");
+            SetSprite(serialized, "categoryWing", UiSpriteFolder, "ui_0133_hangar_category_wing.png");
+            SetSprite(serialized, "categoryEngine", UiSpriteFolder, "ui_0130_hangar_category_engine.png");
+            SetSprite(serialized, "categoryGun", UiSpriteFolder, "ui_0127_hangar_category_gun.png");
+            SetSprite(serialized, "thumbnailBody", PartSpriteFolder, "part_000_Body_1.png");
+            SetSprite(serialized, "thumbnailWing", PartSpriteFolder, "part_173_Wing_1.png");
+            SetSprite(serialized, "thumbnailEngine", PartSpriteFolder, "part_133_Pow_1.png");
+            SetSprite(serialized, "thumbnailGun", PartSpriteFolder, "part_071_Gun_1.png");
+            SetSprite(serialized, "thumbnailModule", PartSpriteFolder, "part_001_Body_2.png");
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetSprite(SerializedObject serialized, string property, string folder, string file)
+        {
+            SerializedProperty field = serialized.FindProperty(property);
+            if (field == null)
+            {
+                throw new InvalidOperationException("[BootSceneBuilder] Missing serialized sprite field " + property);
+            }
+
+            field.objectReferenceValue = LoadRequired<Sprite>(folder + "/" + file);
         }
 
         private static void SetReference(SerializedObject serialized, string property, UnityEngine.Object value)

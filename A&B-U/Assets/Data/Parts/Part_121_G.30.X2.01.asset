@@ -20,6 +20,10 @@ MonoBehaviour:
   mass: 55
   thrust: 0
   energyDraw: 0
+  turnFly: 0
+  lr: 2
+  partSprite: {fileID: 21300000, guid: 6bd57cc4aba97a546945bb9e0a9c14e4, type: 3}
+  spriteContentRect: {x: 4, y: 5, z: 12, w: 12}
   projectileVelocity: 15
   burstAcceleration: 0
   bulletLifetime: 40

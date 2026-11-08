@@ -1,12 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="CombatHud.uss" />
     <ui:VisualElement name="flow-cinematic-surface" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: none; background-color: rgb(0, 0, 0);" />
-    <ui:VisualElement name="hud-root" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" picking-mode="Ignore">
-        <ui:Label name="hud-hull-value" text="1000 / 1000" style="position: absolute; left: 24px; top: 24px; font-size: 22px; color: rgb(220, 236, 255);" />
-        <ui:VisualElement name="hud-hull-fill" style="position: absolute; left: 24px; top: 54px; width: 320px; height: 10px; background-color: rgb(90, 200, 120);" />
-        <ui:Label name="hud-lost-parts" text="" style="position: absolute; left: 24px; top: 74px; font-size: 14px; color: rgb(255, 196, 120);" />
-        <ui:Label name="hud-captain-mode" text="AN" style="position: absolute; right: 24px; top: 24px; font-size: 20px; color: rgb(255, 204, 0);" />
-        <ui:Label name="hud-camera-badge" text="[ CAM: SHORT (1.0x) ]" style="position: absolute; left: 0; right: 0; bottom: 30px; font-size: 18px; color: rgb(255, 204, 0); -unity-text-align: middle-center;" />
+    <ui:VisualElement name="hud-root" class="hud-root" picking-mode="Ignore">
+        <!-- top-left: money readout, pause and help (both are visual parity only until pause exists as a flow state) -->
+        <ui:Image name="hud-money-panel" class="hud-money-panel">
+            <ui:Label name="hud-money" text="0 G" class="hud-money-text" picking-mode="Ignore" />
+        </ui:Image>
+        <ui:Image name="hud-pause-button" class="hud-icon-button hud-pause" />
+        <ui:Image name="hud-help-button" class="hud-icon-button hud-help" />
+
+        <!-- top-right: circular radar, distance, mission timer, AI count -->
+        <ui:Image name="hud-radar" class="hud-radar">
+            <ui:Image name="hud-radar-arrow" class="hud-radar-arrow" />
+            <ui:Label name="hud-radar-distance" text="0" class="hud-radar-readout" picking-mode="Ignore" />
+            <ui:Label name="hud-mission-timer" text="00:00" class="hud-radar-timer" picking-mode="Ignore" />
+        </ui:Image>
+        <ui:Image name="hud-ai-count" class="hud-ai-count">
+            <ui:Label name="hud-ai-count-value" text="AI x 0" class="hud-badge-text" picking-mode="Ignore" />
+        </ui:Image>
+
+        <!-- bottom-left: battle-damage telemetry above the pilot bars -->
+        <ui:VisualElement name="hud-telemetry" class="hud-telemetry" picking-mode="Ignore">
+            <ui:Label name="hud-lost-parts" text="" class="hud-telemetry-text" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement name="hud-bars" class="hud-bars" picking-mode="Ignore">
+            <ui:VisualElement name="hud-health-bar" class="hud-bar">
+                <ui:Image name="hud-hull-fill" class="hud-bar-fill hud-health-fill" />
+            </ui:VisualElement>
+            <ui:VisualElement name="hud-shield-bar" class="hud-bar">
+                <ui:Image name="hud-shield-fill" class="hud-bar-fill hud-shield-fill" />
+            </ui:VisualElement>
+            <ui:VisualElement name="hud-energy-bar" class="hud-bar hud-bar-last">
+                <ui:Image name="hud-energy-fill" class="hud-bar-fill hud-energy-fill" />
+            </ui:VisualElement>
+            <ui:Label name="hud-hull-value" text="1000 / 1000" class="hud-hull-value" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement name="hud-pilot-tile" class="hud-pilot-tile" picking-mode="Ignore">
+            <ui:Image name="hud-pilot-portrait" class="hud-pilot-portrait" scale-mode="ScaleAndCrop" />
+            <ui:Label name="hud-pilot-name" text="" class="hud-pilot-name" />
+        </ui:VisualElement>
+
+        <!-- bottom-right: minimap with the Captain portrait beside it -->
+        <ui:Image name="hud-minimap" class="hud-minimap" />
+        <ui:VisualElement name="hud-captain-tile" class="hud-captain-tile" picking-mode="Ignore">
+            <ui:Image name="hud-captain-portrait" class="hud-captain-portrait" scale-mode="ScaleAndCrop" />
+            <ui:VisualElement name="hud-captain-health-track" class="hud-captain-health-track">
+                <ui:VisualElement name="hud-captain-health" class="hud-captain-health" />
+            </ui:VisualElement>
+            <ui:Label name="hud-captain-mode" text="AN" class="hud-captain-code" />
+        </ui:VisualElement>
+
+        <!-- bottom-center: tactical-mode and camera-distance badges -->
+        <ui:VisualElement name="hud-badges" class="hud-badges" picking-mode="Ignore">
+            <ui:Image name="hud-mode-badge" class="hud-mode-badge">
+                <ui:Label name="hud-mode-badge-text" text="TACTICAL AN" class="hud-badge-label" />
+            </ui:Image>
+            <ui:Image name="hud-camera-badge" class="hud-camera-badge">
+                <ui:Label name="hud-camera-badge-text" text="CAM SHORT 1.0x" class="hud-badge-label" />
+            </ui:Image>
+        </ui:VisualElement>
+
+        <!-- center: mouse-aim reticle -->
+        <ui:Image name="hud-reticle" class="hud-reticle" />
     </ui:VisualElement>
     <ui:Label name="flow-result-label" text="" style="position: absolute; left: 0; top: 420px; right: 0; font-size: 44px; color: rgb(255, 240, 180); -unity-text-align: middle-center; display: none;" />
 </ui:UXML>

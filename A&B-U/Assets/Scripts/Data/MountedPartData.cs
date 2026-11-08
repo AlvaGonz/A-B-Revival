@@ -15,6 +15,9 @@ namespace ABRevival.Core.Data
         public float energyDraw;
         public float2 localOffset;
         public float localRotation;
+
+        /// <summary>Right-hand part variant: the frozen baseline draws its art with scaleX = -1.</summary>
+        public bool mirrored;
     }
 
     public struct AggregateCraftStats

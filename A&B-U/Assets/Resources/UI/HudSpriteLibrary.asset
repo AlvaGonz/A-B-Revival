@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87571a97ac52b434891d0127a58d5fef, type: 3}
+  m_Name: HudSpriteLibrary
+  m_EditorClassIdentifier: ABRevival.Core::ABRevival.Core.Hud.HudSpriteLibrary
+  _moneyPanel: {fileID: 21300000, guid: c1a8dee8f6955f04e8695c968e72d736, type: 3}
+  _pauseButton: {fileID: 21300000, guid: 3f7e50c152aba534c8df9d10e3726eff, type: 3}
+  _helpButton: {fileID: 21300000, guid: bece3220e5468d44ab775e73af9ef982, type: 3}
+  _radar: {fileID: 21300000, guid: 67fae34b9a405e3459f9dc6f32085f88, type: 3}
+  _radarArrow: {fileID: 21300000, guid: c631c62af9ec3ca45a2c61be18ba285c, type: 3}
+  _aiCount: {fileID: 21300000, guid: 7a5a94b2b7a235c4bafd196b0de7470f, type: 3}
+  _minimap: {fileID: 21300000, guid: f1dd416750bcc4f42afd71ecc039e6bc, type: 3}
+  _pilotPortrait: {fileID: 21300000, guid: 738877aef6fcbfd86b450092a55ec792, type: 3}
+  _captainPortrait: {fileID: 21300000, guid: 5093c5b9f3b3e0ac0cf1c68ec98733ea, type: 3}
+  _portraitBacking: {fileID: 21300000, guid: 0589974a818868546b5c6d01f4a74628, type: 3}
+  _healthBar: {fileID: 21300000, guid: ba9668a7c3896a74db727e4036bdb8b6, type: 3}
+  _shieldBar: {fileID: 21300000, guid: 2a1a90f56502a214bb060fc5d8fb033f, type: 3}
+  _energyBar: {fileID: 21300000, guid: 0be4dfd59ebbfa04691dc346a0f25655, type: 3}
+  _reticle: {fileID: 21300000, guid: 2160ff10d7691bf4da6d3da20208e717, type: 3}
+  _modeBadge: {fileID: 21300000, guid: 7a5a94b2b7a235c4bafd196b0de7470f, type: 3}
+  _cameraBadge: {fileID: 21300000, guid: 2713a365096440645add0c530931a260, type: 3}
+  _damageTelemetryRow: {fileID: 21300000, guid: 79defe34ee0a2fe46a0cd3655955e010, type: 3}
+  _portraitHealthPip: {fileID: 21300000, guid: 06b23c5934abca64788377070c81d2c2, type: 3}

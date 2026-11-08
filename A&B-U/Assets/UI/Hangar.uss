@@ -1,175 +1,494 @@
+/* Frozen 2011 hangar screen: dark metal cabinet, cyan telemetry, table rows.
+   Sprite backgrounds are assigned at runtime from HangarController serialized fields. */
+
 .hangar-root {
     flex-grow: 1;
-    background-color: rgb(8, 12, 22);
-    padding: 18px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(2, 4, 8);
+}
+
+.hangar-screen {
+    width: 1280px;
+    height: 960px;
+    padding: 10px;
+    -unity-background-scale-mode: stretch-to-fill;
 }
 
 .hangar-header {
+    height: 64px;
     flex-direction: row;
     align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom-width: 1px;
-    border-bottom-color: rgb(61, 82, 116);
+    padding-left: 18px;
+    padding-right: 18px;
+    margin-bottom: 8px;
+    -unity-background-scale-mode: stretch-to-fill;
 }
 
 .hangar-title {
-    font-size: 26px;
+    flex-grow: 1;
+    font-size: 24px;
     -unity-font-style: bold;
-    color: rgb(220, 236, 255);
-    letter-spacing: 4px;
-    margin-right: 24px;
+    letter-spacing: 2px;
+    color: rgb(0, 206, 255);
 }
 
 .hangar-story {
-    font-size: 14px;
-    color: rgb(150, 176, 206);
-    margin-right: 24px;
+    font-size: 18px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgb(176, 216, 240);
+    margin-right: 22px;
 }
 
 .hangar-money {
-    font-size: 20px;
+    font-size: 22px;
     -unity-font-style: bold;
-    color: rgb(255, 204, 0);
-    margin-right: 24px;
+    color: rgb(255, 214, 90);
+    margin-right: 16px;
 }
 
-.hangar-message {
-    flex-grow: 1;
-    font-size: 13px;
-    color: rgb(150, 176, 206);
-}
-
-.header-button {
-    width: 80px;
-    height: 28px;
-    margin-left: 8px;
-    background-color: rgb(24, 42, 68);
-    color: rgb(200, 222, 255);
-    border-color: rgb(61, 82, 116);
-}
-
-.hangar-columns {
+.hangar-main {
+    height: 570px;
     flex-direction: row;
-    flex-grow: 1;
 }
 
-.hangar-panel {
-    flex-grow: 1;
-    flex-basis: 0;
+.preview-column {
+    width: 600px;
     margin-right: 10px;
-    margin-left: 10px;
-    padding: 12px;
-    background-color: rgb(13, 19, 32);
-    border-width: 1px;
-    border-color: rgb(48, 66, 94);
 }
 
-.panel-title {
-    font-size: 18px;
-    -unity-font-style: bold;
-    color: rgb(188, 214, 245);
-    margin-bottom: 8px;
-    letter-spacing: 2px;
+.hangar-frame {
+    width: 596px;
+    height: 490px;
+    padding: 16px;
+    -unity-background-scale-mode: stretch-to-fill;
 }
 
-.hull-label {
-    font-size: 15px;
-    color: rgb(210, 225, 245);
+.preview-clip {
+    width: 564px;
+    height: 458px;
+    overflow: hidden;
 }
 
-.wing-label {
-    font-size: 15px;
-    -unity-font-style: bold;
-    color: rgb(191, 191, 191);
+.preview-canvas {
+    width: 564px;
+    height: 458px;
 }
 
-.wing-label.stat-warning {
-    color: rgb(255, 204, 0);
-}
-
-.wing-label.stat-danger {
-    color: rgb(255, 68, 68);
-}
-
-.stats-label {
-    font-size: 13px;
-    color: rgb(160, 180, 205);
+.preview-name {
+    height: 26px;
     margin-top: 4px;
-    margin-bottom: 4px;
+    font-size: 17px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(0, 206, 255);
 }
 
-.error-label {
-    font-size: 13px;
-    color: rgb(255, 96, 96);
-    min-height: 16px;
+.preview-actions {
+    height: 32px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
+}
+
+.sprite-button {
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.sprite-button:hover {
+    -unity-background-image-tint-color: rgb(190, 232, 255);
+}
+
+.sprite-button:active {
+    -unity-background-image-tint-color: rgb(120, 190, 220);
+}
+
+.button-launch {
+    width: 125px;
+    height: 49px;
+}
+
+.button-merge {
+    width: 51px;
+    height: 21px;
+    margin-right: 6px;
+}
+
+.button-new {
+    width: 51px;
+    height: 21px;
+    margin-right: 6px;
+}
+
+.button-back-to-center {
+    width: 160px;
+    height: 49px;
+    margin-top: 10px;
+    align-self: center;
+}
+
+.button-parts-crafts {
+    width: 147px;
+    height: 42px;
+    margin-top: 8px;
+    align-self: center;
+}
+
+.button-accept {
+    width: 125px;
+    height: 49px;
+    margin-right: 8px;
+}
+
+.button-reset {
+    width: 123px;
+    height: 36px;
+}
+
+.shop-column {
+    flex-grow: 1;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .section-title {
-    font-size: 14px;
+    height: 24px;
+    font-size: 17px;
     -unity-font-style: bold;
-    color: rgb(130, 165, 210);
+    letter-spacing: 2px;
+    color: rgb(0, 206, 255);
+    margin-bottom: 2px;
+}
+
+.data-list {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+    background-color: rgba(2, 8, 13, 0.72);
+}
+
+.shop-list {
+    flex-basis: 0;
+}
+
+.sell-list {
+    height: 118px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.shop-footer {
+    height: 52px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 2px;
+}
+
+.stack-total {
+    height: 24px;
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-right;
+    color: rgb(255, 214, 90);
+}
+
+.stats-column {
+    width: 300px;
+    margin-left: 10px;
+}
+
+.stats-card {
+    flex-grow: 1;
+    padding: 10px;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.stats-veil {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    top: 4px;
+    bottom: 4px;
+    background-color: rgb(2, 6, 11);
+}
+
+.stat-row {
+    height: 44px;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 160, 205, 0.30);
+}
+
+.stat-key {
+    width: 92px;
+    font-size: 17px;
+    -unity-font-style: bold;
+    color: rgb(160, 214, 238);
+}
+
+.stat-value {
+    flex-grow: 1;
+    font-size: 18px;
+    -unity-text-align: middle-right;
+    color: rgb(0, 226, 255);
+}
+
+.hull-label {
+    height: 28px;
+    margin-top: 8px;
+    font-size: 15px;
+    -unity-font-style: bold;
+    color: rgb(230, 242, 250);
+}
+
+.wing-label {
+    height: 22px;
+    font-size: 14px;
+    color: rgb(150, 205, 230);
+}
+
+.wing-label.stat-warning {
+    color: rgb(255, 214, 90);
+}
+
+.wing-label.stat-danger {
+    color: rgb(255, 96, 96);
+}
+
+.error-label {
+    height: 18px;
+    font-size: 13px;
+    color: rgb(255, 96, 96);
+    margin-top: 4px;
+}
+
+.table-area {
+    height: 278px;
     margin-top: 10px;
+    padding: 8px 10px;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.table-tabs {
+    height: 32px;
+    flex-direction: row;
+    align-items: center;
     margin-bottom: 4px;
 }
 
-.hangar-list {
+.tab-button {
+    width: 70px;
+    height: 32px;
+    margin-right: 6px;
+    opacity: 0.55;
+}
+
+.tab-button.tab-active {
+    opacity: 1;
+}
+
+.table-header {
+    height: 26px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 4px;
+    padding-right: 4px;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.table-header .col {
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: rgb(140, 198, 226);
+}
+
+.parts-table {
     flex-grow: 1;
-    max-height: 260px;
-    border-width: 1px;
-    border-color: rgb(38, 55, 80);
-    background-color: rgb(10, 15, 26);
+    margin-top: 4px;
+}
+
+.crafts-list {
+    flex-grow: 1;
+    margin-top: 4px;
 }
 
 .row {
+    height: 30px;
     flex-direction: row;
     align-items: center;
-    padding: 4px 6px;
-    border-bottom-width: 1px;
-    border-bottom-color: rgb(28, 40, 60);
+    padding-left: 4px;
+    padding-right: 4px;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 190, 230, 0.45);
 }
 
-.row-name {
-    flex-grow: 1;
-    font-size: 13px;
-    color: rgb(196, 214, 235);
+.row-even {
+    background-color: rgba(0, 118, 150, 0.34);
+}
+
+.row-odd {
+    background-color: rgba(0, 58, 82, 0.32);
+}
+
+.row:hover {
+    background-color: rgba(0, 170, 210, 0.40);
 }
 
 .row Label {
-    flex-grow: 1;
     font-size: 13px;
-    color: rgb(196, 214, 235);
+    color: rgb(204, 232, 246);
+}
+
+.col-index {
+    width: 64px;
+}
+
+.col-name {
+    flex-grow: 1;
+    min-width: 120px;
+}
+
+.col-type {
+    width: 62px;
+}
+
+.col-lr {
+    width: 52px;
+}
+
+.col-hp {
+    width: 78px;
+    -unity-text-align: middle-right;
+}
+
+.col-steering {
+    width: 86px;
+    -unity-text-align: middle-right;
+}
+
+.col-engine {
+    width: 82px;
+    -unity-text-align: middle-right;
+}
+
+.col-mass {
+    width: 74px;
+    -unity-text-align: middle-right;
+}
+
+.col-fire {
+    width: 92px;
+    -unity-text-align: middle-right;
+}
+
+.col-action {
+    width: 82px;
+}
+
+.shop-row {
+    height: 44px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 190, 230, 0.40);
+}
+
+.shop-row-even {
+    background-color: rgba(0, 118, 150, 0.34);
+}
+
+.shop-row-odd {
+    background-color: rgba(0, 58, 82, 0.32);
+}
+
+.shop-row:hover {
+    background-color: rgba(0, 170, 210, 0.40);
+}
+
+.shop-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.shop-name {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 6px;
+    font-size: 14px;
+    color: rgb(210, 236, 248);
+}
+
+.shop-price {
+    width: 66px;
+    flex-shrink: 0;
+    margin-right: 6px;
+    font-size: 14px;
+    -unity-text-align: middle-right;
+    color: rgb(255, 214, 90);
+}
+
+.shop-stock {
+    width: 40px;
+    flex-shrink: 0;
+    margin-right: 4px;
+    font-size: 13px;
+    -unity-text-align: middle-right;
+    color: rgb(150, 205, 230);
+}
+
+.shop-stack {
+    width: 34px;
+    flex-shrink: 0;
+    margin-right: 4px;
+    font-size: 14px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-right;
+    color: rgb(0, 226, 255);
+}
+
+.shop-add {
+    width: 51px;
+    height: 21px;
+    flex-shrink: 0;
+    margin-left: 0;
 }
 
 .row-action {
-    width: 70px;
-    height: 24px;
-    margin-left: 6px;
+    width: 74px;
+    height: 22px;
     font-size: 12px;
-    background-color: rgb(30, 56, 88);
-    color: rgb(210, 230, 255);
-    border-color: rgb(66, 96, 136);
+    border-width: 1px;
+    border-color: rgb(0, 170, 214);
+    background-color: rgb(6, 20, 30);
+    color: rgb(0, 226, 255);
 }
 
-.stack-label {
-    font-size: 15px;
-    color: rgb(255, 204, 0);
-    margin-bottom: 4px;
+.row-action:hover {
+    border-color: rgb(120, 232, 255);
+    color: rgb(210, 248, 255);
 }
 
-.checkout-button {
-    height: 32px;
-    margin-top: 8px;
-    -unity-font-style: bold;
-    background-color: rgb(38, 88, 62);
-    color: rgb(220, 255, 230);
-    border-color: rgb(64, 130, 92);
-}
-
-.clear-stack-button {
-    height: 28px;
-    margin-top: 6px;
-    background-color: rgb(60, 34, 34);
-    color: rgb(245, 210, 210);
-    border-color: rgb(110, 56, 56);
+.empty-row {
+    height: 30px;
+    font-size: 13px;
+    -unity-text-align: middle-center;
+    color: rgb(120, 160, 180);
 }

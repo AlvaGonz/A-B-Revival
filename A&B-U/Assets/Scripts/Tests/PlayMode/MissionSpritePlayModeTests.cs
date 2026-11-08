@@ -76,6 +76,8 @@ namespace ABRevival.Tests.PlayMode
 
                 renderer = go.AddComponent<BatchSpriteRenderer>();
                 var view = go.AddComponent<MissionSpriteView>();
+                view.StarfieldEnabled = false;
+                view.EffectsEnabled = false;
                 view.Initialize(table, null, capacity: 64);
                 Assert.IsTrue(
                     view.BeginMission(simulation, solver, shipToHull, playerIndex: 0, capacity: 64),
@@ -115,6 +117,21 @@ namespace ABRevival.Tests.PlayMode
                 long allocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
                 Assert.AreEqual(0, allocatedBytes,
                     $"Mission sprite rendering allocated {allocatedBytes} bytes over 30 frames.");
+
+                // Starfield, engine trails and impact particles share the same zero-alloc path.
+                view.StarfieldEnabled = true;
+                view.EffectsEnabled = true;
+                view.SpawnImpact(new float2(-100f, 0f), partDetached: true, hullDestroyed: false);
+                Assert.Greater(view.ActiveParticleCount, 0, "Component-loss impacts must spawn particles.");
+                view.Render(0f);
+                Assert.Greater(view.InstanceCount, 200, "The four frozen starfield layers must submit instances.");
+                for (int i = 0; i < 5; i++) view.Render(DeltaTime);
+                allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+                for (int i = 0; i < 30; i++) view.Render(DeltaTime);
+                allocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+                Assert.AreEqual(0, allocatedBytes,
+                    $"Starfield and combat effects allocated {allocatedBytes} bytes over 30 frames.");
+                Assert.Greater(view.StarCount, 0, "The frozen parallax starfield must have stars.");
             }
             finally
             {
@@ -130,8 +147,10 @@ namespace ABRevival.Tests.PlayMode
         {
             SpriteUvTable table = LoadCommittedTable();
             Assert.AreEqual(271, table.PartCount);
-            Assert.AreEqual(223, table.SymbolCount);
+            Assert.AreEqual(228, table.SymbolCount);
             Assert.IsTrue(table.HasWhite);
+            Assert.IsTrue(table.TryGetSymbol("bullet_normal.png", out _));
+            Assert.IsTrue(table.TryGetSymbol("bullet_Blt_1.png", out _));
 
             for (int partId = 0; partId < 271; partId++)
                 Assert.IsTrue(table.TryGetPart(partId, out _), $"Part {partId} is missing from the UV table.");
@@ -175,6 +194,9 @@ namespace ABRevival.Tests.PlayMode
 
                 var renderer = viewObject.AddComponent<BatchSpriteRenderer>();
                 var view = viewObject.AddComponent<MissionSpriteView>();
+                view.StarfieldEnabled = false;
+                view.EffectsEnabled = false;
+                view.SetCamera(camera);
                 view.Initialize(table, atlas, capacity: 8);
                 Assert.IsTrue(view.BeginMission(simulation, solver, new[] { hull }, playerIndex: 0, capacity: 8));
                 Assert.Greater(view.InstanceCount, 0);
