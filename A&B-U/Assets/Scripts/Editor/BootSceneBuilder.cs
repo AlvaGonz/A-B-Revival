@@ -20,7 +20,6 @@ namespace ABRevival.Editor
     public static class BootSceneBuilder
     {
         private const string ScenePath = "Assets/Scenes/Boot.unity";
-        private const string HangarScenePath = "Assets/Scenes/Hangar.unity";
         private const string SampleScenePath = "Assets/Scenes/SampleScene.unity";
         private const string HangarUxmlPath = "Assets/UI/Hangar.uxml";
         private const string HudUxmlPath = "Assets/UI/CombatHud.uxml";
@@ -134,7 +133,6 @@ namespace ABRevival.Editor
             EditorBuildSettings.scenes = new[]
             {
                 new EditorBuildSettingsScene(ScenePath, true),
-                new EditorBuildSettingsScene(HangarScenePath, true),
                 new EditorBuildSettingsScene(SampleScenePath, true)
             };
 
