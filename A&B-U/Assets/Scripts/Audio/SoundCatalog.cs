@@ -161,7 +161,7 @@ namespace ABRevival.Core.Audio
         public static readonly SoundDefinition[] Music =
         {
             new SoundDefinition("M_Main", AudioBus.Music, 1f),
-            new SoundDefinition("M_Menu", AudioBus.Music, 0.25f),
+            new SoundDefinition("M_Menu", AudioBus.Music, 1f),
             new SoundDefinition("M_Game1", AudioBus.Music, 1f),
             new SoundDefinition("M_Game2", AudioBus.Music, 1f),
             new SoundDefinition("M_Game3", AudioBus.Music, 1f),

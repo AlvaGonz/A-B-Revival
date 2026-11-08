@@ -52,6 +52,7 @@ namespace ABRevival.Tests
             Assert.AreEqual(0, (int)MusicTrack.M_Main);
             Assert.AreEqual(1, (int)MusicTrack.M_Menu);
             Assert.AreEqual(10, (int)MusicTrack.M_Win2);
+            Assert.AreEqual(1f, SoundCatalog.GetMusic(MusicTrack.M_Menu).DefaultVolume);
 
             for (int i = 0; i < SoundCatalog.Music.Length; i++)
             {

@@ -496,7 +496,7 @@ namespace ABRevival.Presentation.Audio
 
         public void PlayBriefingMusic()
         {
-            PlayMusic(MusicTrack.M_Menu, SoundCatalog.GetMusic(MusicTrack.M_Menu).DefaultVolume);
+            PlayMusic(MusicTrack.M_Menu, 0.25f);
         }
 
         public void PlayMissionMusic(int storyIndex)
