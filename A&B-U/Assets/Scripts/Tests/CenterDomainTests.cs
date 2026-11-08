@@ -64,7 +64,7 @@ namespace ABRevival.Tests
         }
 
         [Test]
-        public void CompanionRoster_AssignsFiveSlotsRejectsDuplicatesAndRemoves()
+        public void CompanionRoster_CountsMultipleAssignmentsAndRemovesSlots()
         {
             var roster = new CompanionRoster();
 
@@ -74,8 +74,10 @@ namespace ABRevival.Tests
 
             Assert.IsTrue(roster.AssignFirstFree(2));
             Assert.IsTrue(roster.Assign(3, 7));
-            Assert.IsFalse(roster.Assign(4, 2), "A craft cannot occupy two slots.");
-            Assert.AreEqual(2, roster.AssignedCount);
+            Assert.IsTrue(roster.Assign(4, 2), "The AI column is a count; a craft may fill several slots.");
+            Assert.AreEqual(3, roster.AssignedCount);
+            Assert.AreEqual(2, roster.CountOf(2));
+            Assert.AreEqual(1, roster.CountOf(7));
             Assert.AreEqual(3, roster.SlotOf(7));
             Assert.AreEqual(7, roster.CraftIndex(3));
 
@@ -83,15 +85,19 @@ namespace ABRevival.Tests
             Assert.AreEqual(-1, roster.CraftIndex(3));
             Assert.IsFalse(roster.Remove(7));
 
+            Assert.AreEqual(2, roster.RemoveAll(2), "Assigning a craft as Player clears every AI copy.");
+            Assert.AreEqual(0, roster.AssignedCount);
+
             roster.Clear();
             Assert.AreEqual(0, roster.AssignedCount);
         }
 
         [Test]
-        public void CompanionRoster_LoadSaveRoundTripsAndDropsInvalidSlots()
+        public void CompanionRoster_LoadSaveRoundTripsDuplicateCountsAndDropsInvalidSlots()
         {
             var roster = new CompanionRoster();
             roster.Assign(0, 1);
+            roster.Assign(1, 1);
             roster.Assign(2, 4);
 
             var saved = roster.ToSave();
@@ -99,13 +105,13 @@ namespace ABRevival.Tests
 
             var restored = new CompanionRoster();
             restored.Load(saved, playerCraftIndex: -1, fleetCount: 5);
-            Assert.AreEqual(1, restored.CraftIndex(0));
+            Assert.AreEqual(2, restored.CountOf(1));
             Assert.AreEqual(4, restored.CraftIndex(2));
 
             var clamped = new CompanionRoster();
             clamped.Load(saved, playerCraftIndex: 4, fleetCount: 5);
-            Assert.AreEqual(1, clamped.AssignedCount, "Player-owned and out-of-range craft must be dropped.");
-            Assert.AreEqual(1, clamped.CraftIndex(0));
+            Assert.AreEqual(2, clamped.AssignedCount, "Player-owned and out-of-range craft must be dropped.");
+            Assert.AreEqual(2, clamped.CountOf(1));
         }
 
         [Test]

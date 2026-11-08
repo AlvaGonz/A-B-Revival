@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using ABRevival.Core.Data;
 using ABRevival.Core.Persistence;
 using ABRevival.Core.Shop;
@@ -23,6 +24,8 @@ namespace ABRevival.Presentation
     {
         private const int PageSize = 8;
         private const int CompanionSlotCount = CompanionRoster.SlotCount;
+        private const float PreviewAreaFill = 0.85f;
+        private const float PreviewMaxDimensionFill = 0.98f;
 
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
         [SerializeField] private int startingMoney = 2000;
@@ -36,12 +39,14 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite buttonReady;
         [SerializeField] private Sprite gradePlate;
         [SerializeField] private Sprite helpButton;
+        [SerializeField] private Sprite[] mountArt = Array.Empty<Sprite>();
 
         private UIDocument _document;
         private ShopCatalog _catalog;
         private ShopState _shop;
         private PartMountTable _mountTable;
         private Dictionary<int, PartDefinitionSO> _byId;
+        private Dictionary<string, Sprite> _mountSprites;
         private List<PartDefinitionSO> _definitions;
         private PlayerSaveData _payload = new PlayerSaveData();
 
@@ -164,6 +169,7 @@ namespace ABRevival.Presentation
             _catalog = BuildCatalog(_definitions);
             _shop = new ShopState(_catalog, startingMoney);
             _mountTable = LoadMountTable();
+            BuildMountSpriteLookup();
 
             VisualElement root = _document.rootVisualElement;
             ApplySkin(root);
@@ -247,21 +253,19 @@ namespace ABRevival.Presentation
         {
             if (index < 0 || index >= _fleet.Count || !_assemblies[index].IsValid) return false;
 
-            _roster.Remove(index);
+            _roster.RemoveAll(index);
             _playerIndex = index;
             _selectedIndex = index;
             CommitChange();
             return true;
         }
 
-        /// <summary>Toggles a craft in the first free companion slot (frozen BAI button).</summary>
-        public bool ToggleCompanion(int index)
+        /// <summary>Adds the craft to the next free companion slot; the AI column is a count.</summary>
+        public bool AssignCompanion(int index)
         {
             if (index < 0 || index >= _fleet.Count || index == _playerIndex) return false;
 
-            bool changed = _roster.Contains(index)
-                ? _roster.Remove(index)
-                : _roster.AssignFirstFree(index);
+            bool changed = _roster.AssignFirstFree(index);
             if (changed) CommitChange();
             return changed;
         }
@@ -551,15 +555,16 @@ namespace ABRevival.Presentation
             row.Add(playerCell);
 
             int slot = _roster.SlotOf(index);
-            var aiCell = new Button(() => ToggleCompanion(index))
+            var aiCell = new Button(() => AssignCompanion(index))
             {
                 name = "ai-cell",
-                text = slot >= 0 ? (slot + 1).ToString(CultureInfo.InvariantCulture) : "AI",
-                tooltip = slot >= 0 ? "Remove from companion slot" : "Assign as AI companion"
+                text = _roster.CountOf(index).ToString(CultureInfo.InvariantCulture),
+                tooltip = slot >= 0 ? "Assign this craft to another AI slot" : "Assign as AI companion"
             };
             aiCell.AddToClassList("cell-button");
             aiCell.AddToClassList("col-ai");
             if (slot >= 0) aiCell.AddToClassList("cell-active");
+            aiCell.SetEnabled(index != _playerIndex && _roster.FirstFreeSlot() >= 0);
             row.Add(aiCell);
 
             return row;
@@ -613,12 +618,10 @@ namespace ABRevival.Presentation
             {
                 CraftPartPlacement placement = placements[i];
                 if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
-                Sprite sprite = definition.partSprite;
+                Sprite sprite = PreviewSprite(placement.partId, definition, out Vector2 contentCenter, out Vector2 contentSize);
                 if (sprite == null) continue;
 
-                Vector2 contentCenter = ContentCenter(definition, sprite);
                 if (placement.mirrored) contentCenter.x = -contentCenter.x;
-                Vector2 contentSize = ContentSize(definition, sprite);
                 float x = placement.localOffset.x + contentCenter.x;
                 float y = placement.localOffset.y + contentCenter.y;
                 minX = Mathf.Min(minX, x - (contentSize.x * 0.5f));
@@ -631,8 +634,10 @@ namespace ABRevival.Presentation
 
             float boundsWidth = Mathf.Max(1f, maxX - minX);
             float boundsHeight = Mathf.Max(1f, maxY - minY);
-            float areaScale = Mathf.Sqrt(0.65f * canvasWidth * canvasHeight / (boundsWidth * boundsHeight));
-            float fitScale = Mathf.Min(canvasWidth * 0.94f / boundsWidth, canvasHeight * 0.94f / boundsHeight);
+            float areaScale = Mathf.Sqrt(PreviewAreaFill * canvasWidth * canvasHeight / (boundsWidth * boundsHeight));
+            float fitScale = Mathf.Min(
+                canvasWidth * PreviewMaxDimensionFill / boundsWidth,
+                canvasHeight * PreviewMaxDimensionFill / boundsHeight);
             float scale = Mathf.Clamp(Mathf.Min(areaScale, fitScale), 0.15f, 24f);
 
             float centerX = canvasWidth * 0.5f;
@@ -644,12 +649,11 @@ namespace ABRevival.Presentation
             {
                 CraftPartPlacement placement = placements[i];
                 if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
-                Sprite sprite = definition.partSprite;
+                Sprite sprite = PreviewSprite(placement.partId, definition, out Vector2 contentCenter, out _);
                 if (sprite == null) continue;
 
                 float width = sprite.rect.width * scale;
                 float height = sprite.rect.height * scale;
-                Vector2 contentCenter = ContentCenter(definition, sprite);
                 if (placement.mirrored) contentCenter.x = -contentCenter.x;
                 var element = new VisualElement { name = "preview-part-" + placement.partId, pickingMode = PickingMode.Ignore };
                 element.style.position = Position.Absolute;
@@ -689,6 +693,53 @@ namespace ABRevival.Presentation
             return content.z > 0f && content.w > 0f
                 ? new Vector2(content.z, content.w)
                 : sprite.rect.size;
+        }
+
+        private void BuildMountSpriteLookup()
+        {
+            _mountSprites = new Dictionary<string, Sprite>(
+                mountArt != null ? mountArt.Length : 0, StringComparer.Ordinal);
+            if (mountArt == null) return;
+
+            for (int i = 0; i < mountArt.Length; i++)
+            {
+                Sprite sprite = mountArt[i];
+                if (sprite != null) _mountSprites[sprite.name] = sprite;
+            }
+        }
+
+        /// <summary>
+        /// Preview art is the 2x in-game mount sprite from the frozen SHOW frame. The shop
+        /// thumbnail is only a fallback when a mount sprite is missing.
+        /// </summary>
+        private Sprite PreviewSprite(
+            int partId,
+            PartDefinitionSO definition,
+            out Vector2 contentCenter,
+            out Vector2 contentSize)
+        {
+            contentCenter = Vector2.zero;
+            if (_mountTable != null && _mountTable.TryGetPart(partId, out PartMountEntry entry) &&
+                _mountSprites != null && !string.IsNullOrEmpty(entry.mountFile))
+            {
+                string mountName = Path.GetFileNameWithoutExtension(entry.mountFile);
+                if (_mountSprites.TryGetValue(mountName, out Sprite mount))
+                {
+                    contentSize = mount.rect.size;
+                    return mount;
+                }
+            }
+
+            Sprite thumbnail = definition.partSprite;
+            if (thumbnail == null)
+            {
+                contentSize = Vector2.zero;
+                return null;
+            }
+
+            contentCenter = ContentCenter(definition, thumbnail);
+            contentSize = ContentSize(definition, thumbnail);
+            return thumbnail;
         }
 
         // ---------------- Craft catalog / seed fleet ----------------

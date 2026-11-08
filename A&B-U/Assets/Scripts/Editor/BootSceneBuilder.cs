@@ -28,6 +28,7 @@ namespace ABRevival.Editor
         private const string OpeningClipPath = "Assets/Resources/Cinematics/Mov1.mp4";
         private const string CatalogFolder = "Assets/Data/Parts";
         private const string UiSpriteFolder = "Assets/Art/Sprites/UI";
+        private const string MountSpriteFolder = "Assets/Art/Sprites/PartMounts";
         private const string PresentationAssembly = ", ABRevival.Presentation";
 
         [MenuItem("Tools/A&B Revival/Build Boot Scene")]
@@ -222,7 +223,31 @@ namespace ABRevival.Editor
             SetSprite(serialized, "buttonReady", UiSpriteFolder, "ui_0585_hangar_button_launch.png");
             SetSprite(serialized, "gradePlate", UiSpriteFolder, "ui_0061_hud_portrait_backing.png");
             SetSprite(serialized, "helpButton", UiSpriteFolder, "ui_0073_hud_button_help.png");
+            SetMountArt(serialized);
             serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>Wires the 2x in-game mount sprites used by the Center craft preview.</summary>
+        private static void SetMountArt(SerializedObject serialized)
+        {
+            string[] guids = AssetDatabase.FindAssets("t:Sprite", new[] { MountSpriteFolder });
+            var sprites = new List<Sprite>(guids.Length);
+            for (int i = 0; i < guids.Length; i++)
+            {
+                var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guids[i]));
+                if (sprite != null) sprites.Add(sprite);
+            }
+            sprites.Sort((left, right) => string.CompareOrdinal(left.name, right.name));
+
+            SerializedProperty mountArt = serialized.FindProperty("mountArt");
+            if (mountArt == null)
+            {
+                throw new InvalidOperationException("[BootSceneBuilder] CenterController is missing mountArt.");
+            }
+
+            mountArt.arraySize = sprites.Count;
+            for (int i = 0; i < sprites.Count; i++)
+                mountArt.GetArrayElementAtIndex(i).objectReferenceValue = sprites[i];
         }
 
         private static void SetSprite(SerializedObject serialized, string property, string folder, string file)

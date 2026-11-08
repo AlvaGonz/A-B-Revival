@@ -67,6 +67,19 @@ namespace ABRevival.Core.Data
             return SlotOf(craftIndex) >= 0;
         }
 
+        /// <summary>How many companion slots use this craft (the Center AI column count).</summary>
+        public int CountOf(int craftIndex)
+        {
+            if (craftIndex < 0) return 0;
+            int count = 0;
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                if (_slots[i].craftIndex == craftIndex) count++;
+            }
+
+            return count;
+        }
+
         public int FirstFreeSlot()
         {
             for (int i = 0; i < _slots.Length; i++)
@@ -77,13 +90,13 @@ namespace ABRevival.Core.Data
             return -1;
         }
 
-        /// <summary>Assigns a craft to a slot, rejecting duplicates like the frozen ckAIUse check.</summary>
+        /// <summary>
+        /// Assigns a craft to a slot. The AI column is a count, so the same craft may fill
+        /// more than one companion slot; the grade row exposes each slot independently.
+        /// </summary>
         public bool Assign(int slot, int craftIndex)
         {
             if (slot < 0 || slot >= SlotCount || craftIndex < 0) return false;
-
-            int existing = SlotOf(craftIndex);
-            if (existing >= 0 && existing != slot) return false;
 
             CompanionSaveData entry = _slots[slot];
             entry.craftIndex = craftIndex;
@@ -116,12 +129,26 @@ namespace ABRevival.Core.Data
             return slot >= 0 && RemoveAt(slot);
         }
 
+        /// <summary>Removes every slot using the craft (assigning it as Player must clear all copies).</summary>
+        public int RemoveAll(int craftIndex)
+        {
+            int removed = 0;
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                if (_slots[i].craftIndex != craftIndex) continue;
+                RemoveAt(i);
+                removed++;
+            }
+
+            return removed;
+        }
+
         public void Clear()
         {
             for (int i = 0; i < _slots.Length; i++) _slots[i] = CompanionSaveData.Empty;
         }
 
-        /// <summary>Loads saved slots, ignoring out-of-range, duplicate and player-owned entries.</summary>
+        /// <summary>Loads saved slots, preserving duplicate AI counts and dropping invalid slots.</summary>
         public void Load(IReadOnlyList<CompanionSaveData> saved, int playerCraftIndex = -1, int fleetCount = int.MaxValue)
         {
             Clear();
@@ -132,7 +159,6 @@ namespace ABRevival.Core.Data
                 CompanionSaveData entry = saved[slot];
                 if (entry.craftIndex < 0 || entry.craftIndex >= fleetCount) continue;
                 if (entry.craftIndex == playerCraftIndex) continue;
-                if (Contains(entry.craftIndex)) continue;
                 if (entry.role < 0 || entry.role > 5) entry.role = RoleEscort;
                 if (entry.leader != LeaderMichael && entry.leader != 1) entry.leader = LeaderMichael;
                 _slots[slot] = entry;

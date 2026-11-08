@@ -62,6 +62,12 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual("Michael's", root.Q<Label>("stat-name").text);
             Assert.AreEqual("Michael's", root.Q<Label>("preview-name").text);
             Assert.GreaterOrEqual(center.PreviewPartCount, 4, "The player blueprint preview must render body, wings, engine and gun.");
+            VisualElement bodyPart = root.Q("preview-part-0");
+            Assert.IsNotNull(bodyPart, "The body preview part is missing.");
+            Sprite bodySprite = bodyPart.style.backgroundImage.value.sprite;
+            Assert.IsNotNull(bodySprite, "The body preview has no sprite.");
+            Assert.Greater(bodySprite.rect.width, 50f,
+                "The preview must use the 2x in-game mount art, not the 1x shop thumbnail.");
             Assert.IsTrue(center.IsInUse(center.SelectedCraftIndex), "The Player craft starts selected and in use.");
             Assert.AreEqual(DisplayStyle.Flex, root.Q("inuse-label").resolvedStyle.display);
 
@@ -89,25 +95,32 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual("1", root.Q("craft-row-1").Q<Button>("player-cell").text);
             Assert.AreEqual("0", root.Q("craft-row-0").Q<Button>("player-cell").text);
 
-            Assert.IsTrue(center.ToggleCompanion(2));
+            Assert.IsTrue(center.AssignCompanion(2));
+            Assert.IsTrue(center.AssignCompanion(2));
             yield return null;
-            Assert.IsTrue(center.Companions.Contains(2));
+            Assert.AreEqual(2, center.Companions.CountOf(2));
+            Assert.AreEqual("2", root.Q("craft-row-2").Q<Button>("ai-cell").text,
+                "The AI column is the numeric assignment count, not a label.");
             Assert.AreEqual(DisplayStyle.Flex, root.Q("companion-slots").resolvedStyle.display);
             Assert.AreEqual(center.StatsFor(2).cls, root.Q<Button>("grade-0").text,
                 "The round grade button must show the companion's ship quality.");
+            Assert.AreEqual(center.StatsFor(2).cls, root.Q<Button>("grade-1").text,
+                "A duplicated companion occupies a second grade slot.");
 
             Assert.IsTrue(File.Exists(SavePath), "Assignments must autosave through the existing payload.");
             PlayerSaveData saved = PlayerSaveCodec.LoadFromFile(SavePath);
             Assert.AreEqual(1, saved.playerBlueprintIndex);
-            Assert.IsTrue(ContainsCompanion(saved, 2));
+            Assert.AreEqual(2, CountCompanionCopies(saved, 2));
 
             yield return ReloadCenter();
             center = Object.FindAnyObjectByType<CenterController>();
             root = ActiveRoot(center);
             Assert.AreEqual(1, center.PlayerCraftIndex, "The Player pick must survive a reload.");
-            Assert.IsTrue(center.Companions.Contains(2), "The companion slot must survive a reload.");
+            Assert.AreEqual(2, center.Companions.CountOf(2), "The duplicate AI count must survive a reload.");
             Assert.AreEqual(DisplayStyle.Flex, root.Q("companion-slots").resolvedStyle.display);
+            Assert.AreEqual("2", root.Q("craft-row-2").Q<Button>("ai-cell").text);
             Assert.AreEqual(center.StatsFor(2).cls, root.Q<Button>("grade-0").text);
+            Assert.AreEqual(center.StatsFor(2).cls, root.Q<Button>("grade-1").text);
 
             center.ResetCompanions();
             yield return null;
@@ -237,9 +250,11 @@ namespace ABRevival.Tests.PlayMode
             var document = center.GetComponent<UIDocument>();
             Assert.IsNotNull(document);
 
-            // Show the five companion grade buttons in the review frame.
-            Assert.IsTrue(center.ToggleCompanion(2));
+            // Show the five companion grade buttons and a duplicate AI count in the review frame.
+            Assert.IsTrue(center.AssignCompanion(2));
+            Assert.IsTrue(center.AssignCompanion(2));
             yield return null;
+            Assert.AreEqual("2", ActiveRoot(center).Q("craft-row-2").Q<Button>("ai-cell").text);
 
             string folder = Path.Combine(Path.GetTempPath(), "opencode");
             Directory.CreateDirectory(folder);
@@ -363,14 +378,15 @@ namespace ABRevival.Tests.PlayMode
             return document != null ? document.rootVisualElement : null;
         }
 
-        private static bool ContainsCompanion(PlayerSaveData save, int craftIndex)
+        private static int CountCompanionCopies(PlayerSaveData save, int craftIndex)
         {
+            int count = 0;
             for (int i = 0; i < save.companions.Count; i++)
             {
-                if (save.companions[i].craftIndex == craftIndex) return true;
+                if (save.companions[i].craftIndex == craftIndex) count++;
             }
 
-            return false;
+            return count;
         }
 
         private static void Click(Button button)
