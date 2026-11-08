@@ -23,7 +23,7 @@ namespace ABRevival.Presentation
     /// Original game IP: Vargames (2011).
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class GameFlowController : MonoBehaviour
+    public sealed class GameFlowController : MonoBehaviour, ICraftDestroyedSink
     {
         public const string DefaultSaveFileName = "player-save.json";
         public const float FixedStepSeconds = MissionRunner.DefaultTickSeconds;
@@ -57,6 +57,14 @@ namespace ABRevival.Presentation
         private ScheduledCombatSimulation _simulation;
         private MissionRunner _runner;
         private ProjectileContactSolver _solver;
+        private WeaponSystem _weapons;
+        private ProjectileDamageHandoff _damageHandoff;
+        private ICombatFireInput _combatInput;
+        private int[] _hullToShip;
+        private int[] _shipToHull;
+        private int _registeredShipCount;
+        private int _playerHull = -1;
+        private float _playerHullMax = 1f;
         private MissionResult? _lastResult;
 
         private IMissionAudio _missionAudio;
@@ -92,6 +100,9 @@ namespace ABRevival.Presentation
                 _assemblyAudio = _audio;
                 _combatAudio = _audio;
             }
+
+            _combatInput = GetComponent<MouseCombatFireInput>();
+            if (_combatInput == null) _combatInput = gameObject.AddComponent<MouseCombatFireInput>();
 
             if (_hangar != null) _hangar.LaunchRequested += LaunchMission;
             if (_talkScreen != null)
@@ -366,6 +377,7 @@ namespace ABRevival.Presentation
             _simulation.PlayerIndex = _runner.PlayerShipIndex;
 
             TryCreateContactSolver();
+            SetupCombat();
 
             _flight?.BeginMission(_simulation, _runner.PlayerShipIndex, _hud, _cameraRig);
 
@@ -400,6 +412,187 @@ namespace ABRevival.Presentation
             }
         }
 
+        /// <summary>
+        /// Registers every spawned hull with the contact solver and turns the player's assembled
+        /// guns into fire ports. Setup only; the per-tick path below allocates nothing.
+        /// </summary>
+        private void SetupCombat()
+        {
+            _weapons = new WeaponSystem(_simulation, _simulation);
+            _weapons.PlayerShipIndex = _runner.PlayerShipIndex;
+
+            _hullToShip = new int[_simulation.MaxShips];
+            _shipToHull = new int[_simulation.MaxShips];
+            Array.Fill(_hullToShip, -1);
+            Array.Fill(_shipToHull, -1);
+            _registeredShipCount = 0;
+            _playerHull = -1;
+            _playerHullMax = 1f;
+
+            RegisterSpawnedShips();
+            _damageHandoff = new ProjectileDamageHandoff(_hullToShip, _playerHull, _playerHullMax);
+        }
+
+        /// <summary>Registers hulls for waves that spawned since the previous tick.</summary>
+        private void RegisterSpawnedShips()
+        {
+            if (_solver == null) return;
+
+            int shipCount = _simulation.ShipCount;
+            for (int shipIndex = _registeredShipCount; shipIndex < shipCount; shipIndex++)
+                RegisterShip(shipIndex);
+
+            _registeredShipCount = shipCount;
+        }
+
+        private void RegisterShip(int shipIndex)
+        {
+            ShipEntity ship = _simulation.GetShip(shipIndex);
+            bool isPlayer = shipIndex == _runner.PlayerShipIndex;
+
+            Span<HullPartDefinition> parts = stackalloc HullPartDefinition[_contactPartsPerHull];
+            int partCount = isPlayer ? BuildPlayerParts(parts, ship) : BuildHostileParts(parts, in ship);
+            if (partCount == 0)
+                partCount = AddBodyPart(parts, 0, ship.maxHealth, float2.zero);
+
+            int hull = _solver.RegisterHull(ship.position, ship.rotation, ship.factionId);
+            _solver.SetHullParts(hull, parts.Slice(0, partCount));
+            _shipToHull[shipIndex] = hull;
+            _hullToShip[hull] = shipIndex;
+
+            if (isPlayer)
+            {
+                RegisterPlayerWeapons(shipIndex, parts.Slice(0, partCount));
+                _playerHull = hull;
+                _playerHullMax = _solver.GetHullHealth(hull);
+            }
+        }
+
+        private int BuildPlayerParts(Span<HullPartDefinition> parts, in ShipEntity ship)
+        {
+            if (_save.blueprints == null || _save.blueprints.Count == 0) return 0;
+
+            BlueprintSaveData blueprint = _save.blueprints[0];
+            if (blueprint?.mountedParts == null) return 0;
+
+            int count = 0;
+            bool hasBody = false;
+            for (int i = 0; i < blueprint.mountedParts.Count && count < parts.Length; i++)
+            {
+                MountedPartData part = blueprint.mountedParts[i].ToMountedPart();
+                if (part.category == PartCategory.Body) hasBody = true;
+                count = AddMountedPart(parts, count, in part);
+            }
+
+            // The hangar may save a gun-only blueprint; the chassis is still part of the craft.
+            if (!hasBody)
+            {
+                float hullHealth = blueprint.hullHealth > 0f ? blueprint.hullHealth : ship.maxHealth;
+                count = AddBodyPart(parts, count, hullHealth, float2.zero);
+            }
+
+            return count;
+        }
+
+        private static int BuildHostileParts(Span<HullPartDefinition> parts, in ShipEntity ship)
+        {
+            return AddBodyPart(parts, 0, ship.maxHealth, float2.zero);
+        }
+
+        private static int AddMountedPart(Span<HullPartDefinition> parts, int count, in MountedPartData part)
+        {
+            if (count >= parts.Length) return count;
+
+            MountedPartData mounted = part;
+            mounted.health = math.max(1f, mounted.health);
+            parts[count] = new HullPartDefinition
+            {
+                part = mounted,
+                hitRadius = HitRadius(part.category)
+            };
+            return count + 1;
+        }
+
+        private static int AddBodyPart(Span<HullPartDefinition> parts, int count, float health, float2 offset)
+        {
+            if (count >= parts.Length) return count;
+
+            parts[count] = new HullPartDefinition
+            {
+                part = new MountedPartData
+                {
+                    category = PartCategory.Body,
+                    health = math.max(1f, health),
+                    maxHealth = math.max(1f, health),
+                    localOffset = offset
+                },
+                hitRadius = HitRadius(PartCategory.Body)
+            };
+            return count + 1;
+        }
+
+        private static float HitRadius(PartCategory category)
+        {
+            return category switch
+            {
+                PartCategory.Body => 32f,
+                PartCategory.Wing => 16f,
+                PartCategory.Engine => 10f,
+                PartCategory.Gun => 6f,
+                _ => 10f
+            };
+        }
+
+        /// <summary>Maps each assembled gun part to a fire port at its socket offset.</summary>
+        private void RegisterPlayerWeapons(int shipIndex, ReadOnlySpan<HullPartDefinition> parts)
+        {
+            if (_hangar == null) return;
+
+            Span<WeaponMount> mounts = stackalloc WeaponMount[_contactPartsPerHull];
+            int mountCount = 0;
+
+            for (int i = 0; i < parts.Length; i++)
+            {
+                MountedPartData part = parts[i].part;
+                if (part.category != PartCategory.Gun) continue;
+
+                PartDefinitionSO definition = _hangar.FindPartDefinition(part.partId);
+                if (definition == null) continue;
+
+                FireModeSpec spec = definition.CreateWeaponSpec();
+                if (spec.lifetime <= 0f) continue;
+
+                mounts[mountCount++] = new WeaponMount
+                {
+                    spec = spec,
+                    localOffset = part.localOffset,
+                    localRotation = part.localRotation
+                };
+            }
+
+            if (mountCount > 0) _weapons.RegisterCraft(shipIndex, mounts.Slice(0, mountCount));
+        }
+
+        private void SyncHullPoses()
+        {
+            if (_solver == null || _shipToHull == null) return;
+
+            int shipCount = _simulation.ShipCount;
+            for (int shipIndex = 0; shipIndex < shipCount; shipIndex++)
+            {
+                int hull = _shipToHull[shipIndex];
+                if (hull < 0 || _solver.IsHullDestroyed(hull)) continue;
+
+                ShipEntity ship = _simulation.GetShip(shipIndex);
+                _solver.SetHullPose(hull, ship.position, ship.rotation);
+            }
+        }
+
+        void ICraftDestroyedSink.CraftDestroyed(int shipIndex)
+        {
+            _runner?.NotifyCraftDestroyed(shipIndex);
+        }
+
         private void TickMission(float deltaTime)
         {
             if (_runner == null || _simulation == null) return;
@@ -421,11 +614,17 @@ namespace ABRevival.Presentation
         private void StepMission()
         {
             _flight?.Tick(FixedStepSeconds);
+            // Fire before the simulation step so new projectiles are integrated and swept this tick.
+            _weapons?.Tick(_combatInput);
             _runner.Tick();
+            RegisterSpawnedShips();
+            SyncHullPoses();
 
             if (_solver == null) return;
 
             ContactStepResult contacts = _solver.Step(_simulation.Projectiles, FixedStepSeconds);
+            _damageHandoff?.Apply(_solver, _hud?.State, this);
+
             if (contacts.hitCount == 0 || _combatAudio == null) return;
 
             var hits = _solver.Hits;
@@ -526,8 +725,15 @@ namespace ABRevival.Presentation
             int playerIndex = _runner.PlayerShipIndex;
             if (playerIndex >= 0 && playerIndex < _simulation.ShipCount)
             {
-                var player = _simulation.GetShip(playerIndex);
-                _hud.State.SetHullHealth(player.health, player.maxHealth);
+                if (_solver != null && _playerHull >= 0 && _playerHull < _solver.HullCount)
+                {
+                    _hud.State.SetHullHealth(_solver.GetHullHealth(_playerHull), _playerHullMax);
+                }
+                else
+                {
+                    var player = _simulation.GetShip(playerIndex);
+                    _hud.State.SetHullHealth(player.health, player.maxHealth);
+                }
             }
 
             if (_captainIndex >= 0 && _captainIndex < _simulation.ShipCount)
@@ -560,6 +766,14 @@ namespace ABRevival.Presentation
         {
             _flight?.EndMission();
             _runner = null;
+            _weapons = null;
+            _damageHandoff = null;
+            _hullToShip = null;
+            _shipToHull = null;
+            _registeredShipCount = 0;
+            _playerHull = -1;
+            _playerHullMax = 1f;
+
             if (_solver != null)
             {
                 _solver.Dispose();

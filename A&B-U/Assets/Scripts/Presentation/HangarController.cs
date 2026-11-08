@@ -36,6 +36,22 @@ namespace ABRevival.Presentation
         /// <summary>Current shop money, exposed for boot/save verification.</summary>
         public int Money => _shop != null ? _shop.Money : 0;
 
+        /// <summary>
+        /// Resolves a mounted part's authored definition. Mission loadout conversion uses it
+        /// to turn an assembled gun part into fire-control parameters.
+        /// </summary>
+        public PartDefinitionSO FindPartDefinition(int partId)
+        {
+            if (_definitions == null) return null;
+            for (int i = 0; i < _definitions.Count; i++)
+            {
+                PartDefinitionSO definition = _definitions[i];
+                if (definition != null && definition.partId == partId) return definition;
+            }
+
+            return null;
+        }
+
         /// <summary>Raised when the player asks to launch the next story mission.</summary>
         public event Action LaunchRequested;
 
@@ -284,10 +300,21 @@ namespace ABRevival.Presentation
 
         private static PartDefinitionSO[] CreateDemoCatalog()
         {
+            PartDefinitionSO gun = CreateDemoPart(71, "G.25.X1.01", PartCategory.Gun, 120, 425f, 17f, 0f);
+            // Frozen F4DataFire / F4DataBullet row for G.25.X1.01 (fire 1, bullet 1).
+            gun.projectileVelocity = 10f;
+            gun.bulletLifetime = 40f;
+            gun.bulletDamage = 13f;
+            gun.fireNum = 1;
+            gun.fireFrame = 8;
+            gun.fireStop = 17;
+            gun.fireEx = 4;
+            gun.spreadDegrees = 14f;
+
             return new[]
             {
                 CreateDemoPart(0, "B.Small.01", PartCategory.Body, 500, 1300f, 100f, 5f),
-                CreateDemoPart(71, "G.25.X1.01", PartCategory.Gun, 120, 425f, 17f, 0f),
+                gun,
                 CreateDemoPart(133, "E.Low.01", PartCategory.Engine, 150, 600f, 20f, 16f),
                 CreateDemoPart(173, "W.Cls.F.01.L", PartCategory.Wing, 80, 1300f, 20f, 0f),
                 CreateDemoPart(222, "W.Cls.F.01.R", PartCategory.Wing, 80, 1300f, 20f, 0f)

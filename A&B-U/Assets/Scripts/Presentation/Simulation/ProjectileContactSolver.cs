@@ -359,9 +359,14 @@ namespace ABRevival.Presentation
             int hullIndex = globalPartIndex / _maxPartsPerHull;
             var part = _parts[globalPartIndex];
             float remainingBefore = part.health;
+            float appliedDamage = math.min(math.max(0f, damage), remainingBefore);
 
-            part.health = math.max(0f, remainingBefore - math.max(0f, damage));
+            part.health = remainingBefore - appliedDamage;
             _parts[globalPartIndex] = part;
+
+            // Hull health is the sum of its mounted parts' remaining health, so every hit
+            // reduces it, not only the hit that finishes a part.
+            _hullHealth[hullIndex] = math.max(0f, _hullHealth[hullIndex] - appliedDamage);
 
             partDetached = false;
             if (part.health > 0f) return false;
@@ -370,7 +375,6 @@ namespace ABRevival.Presentation
             _partMounted[globalPartIndex] = false;
             DisableShape(globalPartIndex);
 
-            _hullHealth[hullIndex] -= remainingBefore;
             if (_hullHealth[hullIndex] > 0f || _hullDestroyed[hullIndex])
                 return false;
 

@@ -11,7 +11,7 @@ namespace ABRevival.Presentation
     /// Mirrors <see cref="CombatSimulation"/>'s Init/Tick/Dispose lifecycle while keeping job
     /// handles and native buffer lifetimes out of controllers.
     /// </summary>
-    public sealed class ScheduledCombatSimulation : IDisposable, IMissionSimulation
+    public sealed class ScheduledCombatSimulation : IDisposable, IMissionSimulation, IProjectileSpawner
     {
         private const int InnerLoopBatchCount = 32;
 

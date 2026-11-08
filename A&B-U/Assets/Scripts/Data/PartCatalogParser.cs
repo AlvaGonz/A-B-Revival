@@ -23,20 +23,41 @@ namespace ABRevival.Core.Data
         public float thrust;
         public float energyDraw;
 
-        // Weapon attributes (Category == Gun)
+        // Weapon attributes (Category == Gun), raw frozen frame units.
         public float projectileVelocity;
         public float burstAcceleration;
         public float bulletLifetime;
         public float bulletDamage;
 
+        // Fire-control attributes from F4DataFire (raw frozen frame units).
+        public int fireNum;
+        public int fireFrame;
+        public int fireStop;
+        public int fireEx;
+        public float spreadDegrees;
+        public float muzzleSpeedAdd;
+        public float accelerationAdd;
+        public float angleAddDegrees;
+
         /// <summary>
         /// Calculates theoretical weapon effective firing range using ADR 0012 formula:
-        /// d = v0 * t + 0.5 * a * t^2
+        /// d = v0 * t + 0.5 * a * t^2, with the burst-average muzzle speed and acceleration.
         /// </summary>
         public float CalculateEffectiveRange()
         {
             if (category != PartCategory.Gun) return 0f;
-            return Ballistics.EffectiveRange(projectileVelocity, burstAcceleration, bulletLifetime);
+            float v0 = projectileVelocity + (muzzleSpeedAdd * fireNum * 0.5f);
+            float acc = burstAcceleration + (accelerationAdd * fireNum * 0.5f);
+            return Ballistics.EffectiveRange(v0, acc, bulletLifetime);
+        }
+
+        /// <summary>Converts the raw catalog values into Unity seconds and pixels per second.</summary>
+        public FireModeSpec CreateWeaponSpec()
+        {
+            return FireModeSpec.FromCatalog(
+                fireNum, fireFrame, fireStop, fireEx, spreadDegrees,
+                projectileVelocity, muzzleSpeedAdd, burstAcceleration, accelerationAdd,
+                angleAddDegrees, bulletLifetime, bulletDamage);
         }
 
         public void PopulateScriptableObject(PartDefinitionSO so)
@@ -53,6 +74,14 @@ namespace ABRevival.Core.Data
             so.burstAcceleration = burstAcceleration;
             so.bulletLifetime = bulletLifetime;
             so.bulletDamage = bulletDamage;
+            so.fireNum = fireNum;
+            so.fireFrame = fireFrame;
+            so.fireStop = fireStop;
+            so.fireEx = fireEx;
+            so.spreadDegrees = spreadDegrees;
+            so.muzzleSpeedAdd = muzzleSpeedAdd;
+            so.accelerationAdd = accelerationAdd;
+            so.angleAddDegrees = angleAddDegrees;
         }
     }
 
@@ -67,7 +96,15 @@ namespace ABRevival.Core.Data
         private struct FireDef
         {
             public float spdS;
+            public float spdAdd;
             public float accS;
+            public float accAdd;
+            public float angAdd;
+            public float fireAcc;
+            public int fireNum;
+            public int fireFrame;
+            public int fireStop;
+            public int fireEx;
         }
 
         private struct BulletDef
@@ -97,9 +134,19 @@ namespace ABRevival.Core.Data
                 foreach (var el in fireDoc.Descendants("fireOne"))
                 {
                     int index = ParseInt(el.Element("index")?.Value, 0);
-                    float spdS = ParseFloat(el.Element("spdS")?.Value, 0f, invCulture);
-                    float accS = ParseFloat(el.Element("accS")?.Value, 0f, invCulture);
-                    fireLookup[index] = new FireDef { spdS = spdS, accS = accS };
+                    fireLookup[index] = new FireDef
+                    {
+                        spdS = ParseFloat(el.Element("spdS")?.Value, 0f, invCulture),
+                        spdAdd = ParseFloat(el.Element("spdAdd")?.Value, 0f, invCulture),
+                        accS = ParseFloat(el.Element("accS")?.Value, 0f, invCulture),
+                        accAdd = ParseFloat(el.Element("accAdd")?.Value, 0f, invCulture),
+                        angAdd = ParseFloat(el.Element("angAdd")?.Value, 0f, invCulture),
+                        fireAcc = ParseFloat(el.Element("fireAcc")?.Value, 0f, invCulture),
+                        fireNum = ParseInt(el.Element("fireNum")?.Value, 0),
+                        fireFrame = ParseInt(el.Element("fireFrame")?.Value, 0),
+                        fireStop = ParseInt(el.Element("fireStop")?.Value, 0),
+                        fireEx = ParseInt(el.Element("fireEx")?.Value, 0)
+                    };
                 }
             }
 
@@ -154,6 +201,14 @@ namespace ABRevival.Core.Data
                         {
                             record.projectileVelocity = fDef.spdS;
                             record.burstAcceleration = fDef.accS;
+                            record.fireNum = fDef.fireNum;
+                            record.fireFrame = fDef.fireFrame;
+                            record.fireStop = fDef.fireStop;
+                            record.fireEx = fDef.fireEx;
+                            record.spreadDegrees = fDef.fireAcc;
+                            record.muzzleSpeedAdd = fDef.spdAdd;
+                            record.accelerationAdd = fDef.accAdd;
+                            record.angleAddDegrees = fDef.angAdd;
                         }
 
                         if (bulletLookup.TryGetValue(bulletIdx, out var bDef))
