@@ -107,6 +107,21 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(firstShopRow.Q<Label>("shop-stack"), "Shop row has no xN stack.");
             AssertSprite(firstShopRow.Q("shop-icon"), "shop icon");
 
+            VisualElement icon = firstShopRow.Q("shop-icon");
+            var name = firstShopRow.Q<Label>("shop-name");
+            var price = firstShopRow.Q<Label>("shop-price");
+            var stock = firstShopRow.Q<Label>("shop-stock");
+            var stack = firstShopRow.Q<Label>("shop-stack");
+            Assert.LessOrEqual(icon.worldBound.xMax, name.worldBound.xMin + 0.5f, "Shop icon overlaps the name.");
+            Assert.LessOrEqual(name.worldBound.xMax, price.worldBound.xMin + 0.5f, "Shop name overlaps the price.");
+            Assert.LessOrEqual(price.worldBound.xMax, stock.worldBound.xMin + 0.5f, "Shop price overlaps the stock.");
+            Assert.LessOrEqual(stock.worldBound.xMax, stack.worldBound.xMin + 0.5f, "Shop stock overlaps the xN stack.");
+
+            var stackTotal = root.Q<Label>("stack-total-label");
+            Assert.IsNotNull(stackTotal, "Shop stack total is missing.");
+            Assert.LessOrEqual(stackTotal.worldBound.yMax, root.Q("checkout-button").worldBound.yMin + 0.5f,
+                "The stack total collides with the ACCEPT/RESET row.");
+
             bool launched = false;
             hangar.LaunchRequested += () => launched = true;
             hangar.RequestLaunch();

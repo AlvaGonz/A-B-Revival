@@ -23,6 +23,7 @@ MonoBehaviour:
   turnFly: 19.268435
   lr: 0
   partSprite: {fileID: 21300000, guid: c53de0c3c20a83f48aa8f30448f50cfb, type: 3}
+  spriteContentRect: {x: 6, y: 11, z: 32, w: 19}
   projectileVelocity: 0
   burstAcceleration: 0
   bulletLifetime: 0

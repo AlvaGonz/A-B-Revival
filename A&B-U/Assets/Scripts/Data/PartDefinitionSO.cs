@@ -22,6 +22,8 @@ namespace ABRevival.Core.Data
 
         [Header("Hangar Presentation")]
         public Sprite partSprite;
+        [Tooltip("Opaque sprite rect in texture pixels (x, y, width, height); zero falls back to the full sprite rect.")]
+        public Vector4 spriteContentRect;
 
         [Header("Weapon Attributes (Category == Gun)")]
         public float projectileVelocity;

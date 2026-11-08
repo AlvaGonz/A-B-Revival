@@ -27,8 +27,8 @@
                 <ui:VisualElement class="shop-column">
                     <ui:Label text="SHOP" class="section-title" />
                     <ui:ScrollView name="shop-stock-list" class="data-list shop-list" />
+                    <ui:Label name="stack-total-label" text="STACK 0 G" class="stack-total" />
                     <ui:VisualElement class="shop-footer">
-                        <ui:Label name="stack-total-label" text="0 G" class="stack-total" />
                         <ui:Button name="checkout-button" class="sprite-button button-accept" tooltip="Accept purchase" />
                         <ui:Button name="clear-stack-button" class="sprite-button button-reset" tooltip="Reset purchase stack" />
                     </ui:VisualElement>

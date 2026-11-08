@@ -91,12 +91,20 @@ namespace ABRevival.Presentation
 
                 VisualElement row = CreateRow(i);
                 row.Add(CreateIcon(part.PartId, part.Category));
-                row.Add(new Label(part.Name) { name = "shop-name" });
-                row.Add(new Label($"{part.Cost} G") { name = "shop-price" });
-                row.Add(new Label(part.IsBody ? $"x{entry.Quantity}" : "INF") { name = "shop-stock" });
+                var name = new Label(part.Name) { name = "shop-name", tooltip = part.Name };
+                name.AddToClassList("shop-name");
+                row.Add(name);
+                var price = new Label($"{part.Cost} G") { name = "shop-price" };
+                price.AddToClassList("shop-price");
+                row.Add(price);
+                var stockLabel = new Label(part.IsBody ? $"x{entry.Quantity}" : "INF") { name = "shop-stock" };
+                stockLabel.AddToClassList("shop-stock");
+                row.Add(stockLabel);
 
                 int quantity = _shop.PurchaseStack.GetQuantity(part.PartId);
-                row.Add(new Label(quantity <= 0 ? "-" : $"x{quantity}") { name = "shop-stack" });
+                var stack = new Label(quantity <= 0 ? "-" : $"x{quantity}") { name = "shop-stack" };
+                stack.AddToClassList("shop-stack");
+                row.Add(stack);
 
                 int capturedId = part.PartId;
                 var add = new Button(() => AddToStack(capturedId));
@@ -146,7 +154,9 @@ namespace ABRevival.Presentation
 
                 VisualElement row = CreateRow(i);
                 row.Add(CreateIcon(partId, part.Category));
-                row.Add(new Label($"{part.Name} x{counts[partId]}") { name = "sell-name" });
+                var name = new Label($"{part.Name} x{counts[partId]}") { name = "sell-name" };
+                name.AddToClassList("shop-name");
+                row.Add(name);
 
                 int capturedId = partId;
                 var sell = new Button(() => Sell(capturedId)) { text = $"SELL {_shop.GetSellValue(partId)} G" };

@@ -17,8 +17,9 @@ namespace ABRevival.Presentation
     {
         private const float CanvasWidth = 564f;
         private const float CanvasHeight = 458f;
-        private const float PreviewFill = 0.82f;
-        private const float PreviewMaxScale = 8f;
+        private const float PreviewFill = 0.7f;
+        private const float PreviewMinScale = 0.15f;
+        private const float PreviewMaxScale = 24f;
 
         private readonly ShopState _shop;
         private readonly Dictionary<int, PartDefinitionSO> _byId = new Dictionary<int, PartDefinitionSO>();
@@ -267,16 +268,19 @@ namespace ABRevival.Presentation
             for (int i = 0; i < CraftAssembly.MaxCapacity; i++)
             {
                 if (!_assembly.IsSlotOccupied(i)) continue;
-                if (!_byId.TryGetValue(_assembly.GetPart(i).partId, out PartDefinitionSO definition)) continue;
-                if (definition.partSprite == null) continue;
-
                 MountedPartData part = _assembly.GetPart(i);
-                float halfWidth = definition.partSprite.rect.width * 0.5f;
-                float halfHeight = definition.partSprite.rect.height * 0.5f;
-                minX = Mathf.Min(minX, part.localOffset.x - halfWidth);
-                maxX = Mathf.Max(maxX, part.localOffset.x + halfWidth);
-                minY = Mathf.Min(minY, part.localOffset.y - halfHeight);
-                maxY = Mathf.Max(maxY, part.localOffset.y + halfHeight);
+                if (!_byId.TryGetValue(part.partId, out PartDefinitionSO definition)) continue;
+                Sprite sprite = definition.partSprite;
+                if (sprite == null) continue;
+
+                Vector2 contentCenter = ContentCenter(definition, sprite);
+                Vector2 contentSize = ContentSize(definition, sprite);
+                float x = part.localOffset.x + contentCenter.x;
+                float y = part.localOffset.y + contentCenter.y;
+                minX = Mathf.Min(minX, x - (contentSize.x * 0.5f));
+                maxX = Mathf.Max(maxX, x + (contentSize.x * 0.5f));
+                minY = Mathf.Min(minY, y - (contentSize.y * 0.5f));
+                maxY = Mathf.Max(maxY, y + (contentSize.y * 0.5f));
             }
 
             if (minX > maxX) return;
@@ -286,7 +290,7 @@ namespace ABRevival.Presentation
             float scale = Mathf.Min(
                 CanvasWidth * PreviewFill / boundsWidth,
                 CanvasHeight * PreviewFill / boundsHeight);
-            scale = Mathf.Clamp(scale, 1f, PreviewMaxScale);
+            scale = Mathf.Clamp(scale, PreviewMinScale, PreviewMaxScale);
 
             float centerX = CanvasWidth * 0.5f;
             float centerY = CanvasHeight * 0.5f;
@@ -561,14 +565,30 @@ namespace ABRevival.Presentation
             };
         }
 
+        private static Vector2 ContentCenter(PartDefinitionSO definition, Sprite sprite)
+        {
+            Vector4 content = definition.spriteContentRect;
+            if (content.z <= 0f || content.w <= 0f) return Vector2.zero;
+            return new Vector2(
+                content.x + (content.z * 0.5f) - (sprite.rect.width * 0.5f),
+                content.y + (content.w * 0.5f) - (sprite.rect.height * 0.5f));
+        }
+
+        private static Vector2 ContentSize(PartDefinitionSO definition, Sprite sprite)
+        {
+            Vector4 content = definition.spriteContentRect;
+            if (content.z <= 0f || content.w <= 0f) return sprite.rect.size;
+            return new Vector2(content.z, content.w);
+        }
+
         private static float2 DefaultOffset(PartCategory category, int slotIndex)
         {
             switch (category)
             {
                 case PartCategory.Body: return float2.zero;
-                case PartCategory.Wing: return new float2(slotIndex % 2 == 0 ? -52f : 52f, 0f);
-                case PartCategory.Engine: return new float2(0f, -46f);
-                case PartCategory.Gun: return new float2(0f, 44f);
+                case PartCategory.Wing: return new float2(slotIndex % 2 == 0 ? -22f : 22f, 0f);
+                case PartCategory.Engine: return new float2(0f, 10f);
+                case PartCategory.Gun: return new float2(0f, -18f);
                 default: return float2.zero;
             }
         }

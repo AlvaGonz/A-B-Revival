@@ -64,6 +64,7 @@ namespace ABRevival.Editor
             CopyRuntimeSources(projectRoot);
 
             Dictionary<int, string> spriteFiles = PartSpriteFiles(records);
+            var contentRects = new Dictionary<string, Vector4>();
             int createdCount = 0;
             AssetDatabase.StartAssetEditing();
             try
@@ -83,7 +84,15 @@ namespace ABRevival.Editor
                     record.PopulateScriptableObject(partSO);
                     if (spriteFiles.TryGetValue(record.partId, out string spriteFile))
                     {
-                        partSO.partSprite = AssetDatabase.LoadAssetAtPath<Sprite>(PartSpriteDirectory + "/" + spriteFile);
+                        string spritePath = PartSpriteDirectory + "/" + spriteFile;
+                        partSO.partSprite = AssetDatabase.LoadAssetAtPath<Sprite>(spritePath);
+                        if (!contentRects.TryGetValue(spriteFile, out Vector4 contentRect))
+                        {
+                            contentRect = ReadOpaqueRect(spritePath);
+                            contentRects[spriteFile] = contentRect;
+                        }
+
+                        partSO.spriteContentRect = contentRect;
                     }
 
                     UnityEditor.EditorUtility.SetDirty(partSO);
@@ -109,6 +118,49 @@ namespace ABRevival.Editor
             }
 
             return files;
+        }
+
+        /// <summary>
+        /// Alpha bounds of an exported part PNG, in texture pixels from the bottom-left.
+        /// The hangar preview fits the visible pixels, not the transparent sprite rect.
+        /// </summary>
+        private static Vector4 ReadOpaqueRect(string spritePath)
+        {
+            string absolute = Path.GetFullPath(Path.Combine(Application.dataPath, "..", spritePath));
+            if (!File.Exists(absolute)) return Vector4.zero;
+
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false, false);
+            try
+            {
+                if (!ImageConversion.LoadImage(texture, File.ReadAllBytes(absolute), false)) return Vector4.zero;
+
+                Color32[] pixels = texture.GetPixels32();
+                int width = texture.width;
+                int height = texture.height;
+                int minX = width;
+                int minY = height;
+                int maxX = -1;
+                int maxY = -1;
+                for (int y = 0; y < height; y++)
+                {
+                    int row = y * width;
+                    for (int x = 0; x < width; x++)
+                    {
+                        if (pixels[row + x].a <= 8) continue;
+                        if (x < minX) minX = x;
+                        if (x > maxX) maxX = x;
+                        if (y < minY) minY = y;
+                        if (y > maxY) maxY = y;
+                    }
+                }
+
+                if (maxX < minX || maxY < minY) return Vector4.zero;
+                return new Vector4(minX, minY, maxX - minX + 1, maxY - minY + 1);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
         }
 
         /// <summary>

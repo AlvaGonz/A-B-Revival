@@ -144,13 +144,12 @@
 .button-accept {
     width: 125px;
     height: 49px;
-    margin-left: auto;
+    margin-right: 8px;
 }
 
 .button-reset {
     width: 123px;
     height: 36px;
-    margin-left: 8px;
 }
 
 .shop-column {
@@ -189,12 +188,15 @@
     height: 52px;
     flex-direction: row;
     align-items: center;
-    margin-top: 4px;
+    justify-content: flex-end;
+    margin-top: 2px;
 }
 
 .stack-total {
-    font-size: 17px;
+    height: 24px;
+    font-size: 16px;
     -unity-font-style: bold;
+    -unity-text-align: middle-right;
     color: rgb(255, 214, 90);
 }
 
@@ -417,32 +419,45 @@
 .shop-icon {
     width: 34px;
     height: 34px;
+    flex-shrink: 0;
     margin-right: 8px;
     -unity-background-scale-mode: scale-to-fit;
 }
 
 .shop-name {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 6px;
     font-size: 14px;
     color: rgb(210, 236, 248);
 }
 
 .shop-price {
-    width: 76px;
+    width: 66px;
+    flex-shrink: 0;
+    margin-right: 6px;
     font-size: 14px;
     -unity-text-align: middle-right;
     color: rgb(255, 214, 90);
 }
 
 .shop-stock {
-    width: 58px;
+    width: 40px;
+    flex-shrink: 0;
+    margin-right: 4px;
     font-size: 13px;
     -unity-text-align: middle-right;
     color: rgb(150, 205, 230);
 }
 
 .shop-stack {
-    width: 44px;
+    width: 34px;
+    flex-shrink: 0;
+    margin-right: 4px;
     font-size: 14px;
     -unity-font-style: bold;
     -unity-text-align: middle-right;
@@ -452,7 +467,8 @@
 .shop-add {
     width: 51px;
     height: 21px;
-    margin-left: 6px;
+    flex-shrink: 0;
+    margin-left: 0;
 }
 
 .row-action {
