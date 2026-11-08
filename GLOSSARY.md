@@ -78,6 +78,9 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Captain Tactical AI Job (`TacticalAIJob`, `IJobParallelFor`)**: Burst-compiled parallel job executing ADR 0006 tactical modes (Anchor, Escort, Evade, Seek & Destroy, Fire Support, Shield) over fleet entity arrays.
 - **BatchRendererGroup (BRG) & Instanced Draw Calls**: High-performance URP rendering interface drawing hundreds of modular space combat parts in a single GPU instanced batch using unified Sprite Atlases (ASTC/BC7) and `unity_RendererUserValue` for per-part damage tints.
 - **Zero-Alloc Gameplay Loop**: Architectural discipline prohibiting all dynamic heap allocations (`new`, closures, LINQ, boxing) inside `Update`, `FixedUpdate`, and `LateUpdate`.
+- **Sound Catalog (`SoundCatalog`)**: Pure C# catalogue preserving the frozen `SoundData` effect and music ids, clip names, mixer bus assignments, semantic trigger names, and original playback volumes.
+- **Runtime Audio Service (`AudioService`)**: Unity presentation service that preloads the extracted bank, owns the Music/SFX/UI voice pools, and reproduces the original music fade, duck and silence-floor behaviour.
+- **Audio Mixer (`ABRevivalAudioMixer`)**: Minimal Unity mixer with Music, SFX, and UI groups, created by `AudioAssetFactory` and addressed by `AudioService`.
 
 ## Tooling & IP Vocabulary
 - **Vargames**: Original independent game development studio and sole copyright holder of *Assembly and Battle: The Story in the Space* (2011).

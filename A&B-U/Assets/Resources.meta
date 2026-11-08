@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 99fc142df2addb696c9e90c7278b2f62
+=======
+guid: 370a4cd6fe4e6284998f45c1cd579297
+>>>>>>> 12a93ae (feat(audio): extract sound bank, mixer groups and trigger service (closes #158))
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

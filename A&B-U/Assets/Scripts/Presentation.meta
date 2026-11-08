@@ -1,12 +1,19 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 guid: e0dc88e2f84b7984e9bac5c3d3fe316d
 =======
 guid: eb84fd65b1401ff40ae099b75fe6f0a3
+=======
+guid: ce2d00a9523a22e4eb45d17019b66872
+>>>>>>> 12a93ae (feat(audio): extract sound bank, mixer groups and trigger service (closes #158))
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+<<<<<<< HEAD
 >>>>>>> ticket/126-fleet-jobs
+=======
+>>>>>>> 12a93ae (feat(audio): extract sound bank, mixer groups and trigger service (closes #158))
