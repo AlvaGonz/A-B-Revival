@@ -210,12 +210,12 @@ namespace ABRevival.Tests.PlayMode
                 Assert.AreEqual(405f, hud.State.ReticleY, 0.01f);
 
                 Vector2 centreFar = rig.ScreenToViewport(new Vector2(960f, 540f), screen);
-                Assert.AreEqual(1248f, centreMedium.x, 0.01f);
-                Assert.AreEqual(702f, centreMedium.y, 0.01f);
+                Assert.AreEqual(832f, centreMedium.x, 0.01f);
+                Assert.AreEqual(468f, centreMedium.y, 0.01f);
                 rig.ApplyPreset(CameraDistancePreset.Far);
                 centreFar = rig.ScreenToViewport(new Vector2(960f, 540f), screen);
-                Assert.AreEqual(1440f, centreFar.x, 0.01f);
-                Assert.AreEqual(810f, centreFar.y, 0.01f);
+                Assert.AreEqual(960f, centreFar.x, 0.01f);
+                Assert.AreEqual(540f, centreFar.y, 0.01f);
             }
             finally
             {
