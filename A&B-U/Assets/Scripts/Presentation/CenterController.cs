@@ -11,6 +11,14 @@ using UnityEngine.UIElements;
 
 namespace ABRevival.Presentation
 {
+    /// <summary>2x mount sprite plus its opaque pixel rect in bottom-left texture space.</summary>
+    [Serializable]
+    public sealed class MountArtEntry
+    {
+        public Sprite sprite;
+        public Vector4 contentRect;
+    }
+
     /// <summary>
     /// Scene entry point for Center (the frozen UIChooseFlyAI dashboard): craft preview,
     /// F4ShowData stat card, Player/AI assignment, companion grades, Reset/Best, pagination
@@ -24,7 +32,7 @@ namespace ABRevival.Presentation
     {
         private const int PageSize = 8;
         private const int CompanionSlotCount = CompanionRoster.SlotCount;
-        private const float PreviewAreaFill = 0.85f;
+        private const float PreviewAreaFill = 0.65f;
         private const float PreviewMaxDimensionFill = 0.98f;
 
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
@@ -39,14 +47,15 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite buttonReady;
         [SerializeField] private Sprite gradePlate;
         [SerializeField] private Sprite helpButton;
-        [SerializeField] private Sprite[] mountArt = Array.Empty<Sprite>();
+        [SerializeField] private MountArtEntry[] mountArt = Array.Empty<MountArtEntry>();
 
         private UIDocument _document;
         private ShopCatalog _catalog;
         private ShopState _shop;
         private PartMountTable _mountTable;
+        private CraftCatalog _craftCatalog;
         private Dictionary<int, PartDefinitionSO> _byId;
-        private Dictionary<string, Sprite> _mountSprites;
+        private Dictionary<string, MountArtEntry> _mountSprites;
         private List<PartDefinitionSO> _definitions;
         private PlayerSaveData _payload = new PlayerSaveData();
 
@@ -111,6 +120,15 @@ namespace ABRevival.Presentation
         public int FleetCount => _fleet.Count;
 
         public int PreviewPartCount => _previewCanvas != null ? _previewCanvas.childCount : 0;
+
+        /// <summary>True when every preview part resolved to its 2x PartMounts sprite.</summary>
+        public bool PreviewUsesMountArt { get; private set; }
+
+        /// <summary>Measured opaque craft bounds in the preview clip, in panel pixels.</summary>
+        public Vector2 PreviewBoundsSize { get; private set; }
+
+        /// <summary>Measured opaque bounds area divided by the usable clip area.</summary>
+        public float PreviewFillFraction { get; private set; }
 
         public int PageIndex => _page;
 
@@ -602,6 +620,25 @@ namespace ABRevival.Presentation
             int placementCount = CraftComposition.BuildPlayer(parts.Slice(0, partCount), _mountTable, placements);
             if (placementCount == 0) return;
 
+            bool useMountArt = true;
+            List<int> missingMountArt = null;
+            for (int i = 0; i < placementCount; i++)
+            {
+                int partId = placements[i].partId;
+                if (TryGetMountSprite(partId, out _)) continue;
+                useMountArt = false;
+                missingMountArt ??= new List<int>();
+                if (!missingMountArt.Contains(partId)) missingMountArt.Add(partId);
+            }
+
+            PreviewUsesMountArt = useMountArt;
+            if (!useMountArt)
+            {
+                Debug.LogWarning(
+                    "[Center] No mount art for part id(s) " + string.Join(", ", missingMountArt) +
+                    "; using the shop thumbnail set for the whole preview.");
+            }
+
             float canvasWidth = _previewClip.resolvedStyle.width;
             float canvasHeight = _previewClip.resolvedStyle.height;
             if (float.IsNaN(canvasWidth) || float.IsNaN(canvasHeight) || canvasWidth <= 1f || canvasHeight <= 1f)
@@ -618,7 +655,7 @@ namespace ABRevival.Presentation
             {
                 CraftPartPlacement placement = placements[i];
                 if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
-                Sprite sprite = PreviewSprite(placement.partId, definition, out Vector2 contentCenter, out Vector2 contentSize);
+                Sprite sprite = PreviewSprite(placement.partId, definition, useMountArt, out Vector2 contentCenter, out Vector2 contentSize);
                 if (sprite == null) continue;
 
                 if (placement.mirrored) contentCenter.x = -contentCenter.x;
@@ -639,6 +676,8 @@ namespace ABRevival.Presentation
                 canvasWidth * PreviewMaxDimensionFill / boundsWidth,
                 canvasHeight * PreviewMaxDimensionFill / boundsHeight);
             float scale = Mathf.Clamp(Mathf.Min(areaScale, fitScale), 0.15f, 24f);
+            PreviewBoundsSize = new Vector2(boundsWidth * scale, boundsHeight * scale);
+            PreviewFillFraction = PreviewBoundsSize.x * PreviewBoundsSize.y / (canvasWidth * canvasHeight);
 
             float centerX = canvasWidth * 0.5f;
             float centerY = canvasHeight * 0.5f;
@@ -649,7 +688,7 @@ namespace ABRevival.Presentation
             {
                 CraftPartPlacement placement = placements[i];
                 if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
-                Sprite sprite = PreviewSprite(placement.partId, definition, out Vector2 contentCenter, out _);
+                Sprite sprite = PreviewSprite(placement.partId, definition, useMountArt, out Vector2 contentCenter, out _);
                 if (sprite == null) continue;
 
                 float width = sprite.rect.width * scale;
@@ -697,37 +736,51 @@ namespace ABRevival.Presentation
 
         private void BuildMountSpriteLookup()
         {
-            _mountSprites = new Dictionary<string, Sprite>(
+            _mountSprites = new Dictionary<string, MountArtEntry>(
                 mountArt != null ? mountArt.Length : 0, StringComparer.Ordinal);
             if (mountArt == null) return;
 
             for (int i = 0; i < mountArt.Length; i++)
             {
-                Sprite sprite = mountArt[i];
-                if (sprite != null) _mountSprites[sprite.name] = sprite;
+                MountArtEntry entry = mountArt[i];
+                if (entry == null || entry.sprite == null) continue;
+                // Single-sprite textures import the sub-sprite as "<file>_0".
+                string key = entry.sprite.name.EndsWith("_0", StringComparison.Ordinal)
+                    ? entry.sprite.name.Substring(0, entry.sprite.name.Length - 2)
+                    : entry.sprite.name;
+                _mountSprites[key] = entry;
             }
         }
 
         /// <summary>
-        /// Preview art is the 2x in-game mount sprite from the frozen SHOW frame. The shop
-        /// thumbnail is only a fallback when a mount sprite is missing.
+        /// Mount art is the 2x in-game SHOW-frame sprite. The caller decides once whether the
+        /// whole preview uses mount art or the fallback thumbnail set; this method never mixes.
         /// </summary>
         private Sprite PreviewSprite(
             int partId,
             PartDefinitionSO definition,
+            bool useMountArt,
             out Vector2 contentCenter,
             out Vector2 contentSize)
         {
             contentCenter = Vector2.zero;
-            if (_mountTable != null && _mountTable.TryGetPart(partId, out PartMountEntry entry) &&
-                _mountSprites != null && !string.IsNullOrEmpty(entry.mountFile))
+            if (useMountArt && TryGetMountSprite(partId, out MountArtEntry mountEntry))
             {
-                string mountName = Path.GetFileNameWithoutExtension(entry.mountFile);
-                if (_mountSprites.TryGetValue(mountName, out Sprite mount))
+                Sprite mount = mountEntry.sprite;
+                Vector4 content = mountEntry.contentRect;
+                if (content.z > 0f && content.w > 0f)
+                {
+                    contentCenter = new Vector2(
+                        content.x + (content.z * 0.5f) - (mount.rect.width * 0.5f),
+                        content.y + (content.w * 0.5f) - (mount.rect.height * 0.5f));
+                    contentSize = new Vector2(content.z, content.w);
+                }
+                else
                 {
                     contentSize = mount.rect.size;
-                    return mount;
                 }
+
+                return mount;
             }
 
             Sprite thumbnail = definition.partSprite;
@@ -740,6 +793,17 @@ namespace ABRevival.Presentation
             contentCenter = ContentCenter(definition, thumbnail);
             contentSize = ContentSize(definition, thumbnail);
             return thumbnail;
+        }
+
+        private bool TryGetMountSprite(int partId, out MountArtEntry entry)
+        {
+            entry = null;
+            if (_mountTable == null || _mountSprites == null) return false;
+            if (!_mountTable.TryGetPart(partId, out PartMountEntry mount)) return false;
+            if (string.IsNullOrEmpty(mount.mountFile)) return false;
+
+            string mountName = Path.GetFileNameWithoutExtension(mount.mountFile);
+            return mountName != null && _mountSprites.TryGetValue(mountName, out entry);
         }
 
         // ---------------- Craft catalog / seed fleet ----------------
@@ -823,8 +887,9 @@ namespace ABRevival.Presentation
                 }
             }
 
-            if (_fleet.Count == 0) _fleet.Add(CreatePlayerCraft());
-            if (_fleet.Count == 1) SeedAiCandidates(_fleet);
+            CraftCatalog catalog = ResolveCraftCatalog();
+            if (_fleet.Count == 0) _fleet.Add(CreatePlayerCraft(catalog));
+            if (_fleet.Count == 1) SeedAiCandidates(_fleet, catalog);
 
             for (int i = 0; i < _fleet.Count; i++) _assemblies.Add(BuildAssembly(_fleet[i]));
         }
@@ -843,8 +908,33 @@ namespace ABRevival.Presentation
             return null;
         }
 
-        private void SeedAiCandidates(List<CraftBlueprintSO> fleet)
+        private void SeedAiCandidates(List<CraftBlueprintSO> fleet, CraftCatalog catalog)
         {
+            string[] names = { "Wingman 01", "Wingman 02", "Wingman 03", "Wingman 04", "Wingman 05", "Wingman 06", "Wingman 07", "Wingman 08", "Wingman 09" };
+            if (catalog != null)
+            {
+                var frozen = new List<CraftBlueprintSO>(names.Length);
+                bool complete = true;
+                for (int i = 0; i < names.Length; i++)
+                {
+                    CraftBlueprintSO blueprint = CreateFrozenCraft(catalog, i + 1, names[i]);
+                    if (blueprint == null)
+                    {
+                        complete = false;
+                        break;
+                    }
+                    frozen.Add(blueprint);
+                }
+
+                if (complete)
+                {
+                    fleet.AddRange(frozen);
+                    return;
+                }
+
+                for (int i = 0; i < frozen.Count; i++) Destroy(frozen[i]);
+            }
+
             fleet.Add(CreateBlueprint("Wingman 01", 1, 173, 222, 134, 72));
             fleet.Add(CreateBlueprint("Wingman 02", 2, 174, 223, 135, 73));
             fleet.Add(CreateBlueprint("Wingman 03", 3, 175, 224, 136, 74));
@@ -856,9 +946,55 @@ namespace ABRevival.Presentation
             fleet.Add(CreateBlueprint("Wingman 09", 36, 186, 235, 143, 144, 84, 85));
         }
 
-        private CraftBlueprintSO CreatePlayerCraft()
+        private CraftBlueprintSO CreatePlayerCraft(CraftCatalog catalog)
         {
-            return CreateBlueprint("Michael's", 0, 173, 222, 133, 71);
+            return CreateFrozenCraft(catalog, 0, "Michael's")
+                   ?? CreateBlueprint("Michael's", 0, 173, 222, 133, 71);
+        }
+
+        /// <summary>
+        /// Builds a blueprint from a frozen defFly tree and bakes the decoded socket placements
+        /// into localOffsets, so the Center preview and the mission use identical geometry.
+        /// </summary>
+        private CraftBlueprintSO CreateFrozenCraft(CraftCatalog catalog, int defIndex, string craftName)
+        {
+            CraftStatRecord craft = catalog != null ? catalog.Find(defIndex) : null;
+            if (craft == null || craft.parts == null || craft.parts.Length == 0) return null;
+
+            PartDefinitionSO hull = FindPartDefinition(craft.hullPartId);
+            if (hull == null) return null;
+
+            var blueprint = ScriptableObject.CreateInstance<CraftBlueprintSO>();
+            blueprint.craftName = craftName;
+            blueprint.hullName = hull.partName;
+            blueprint.hullCategory = CraftBlueprintSO.GetHullCategoryForName(hull.partName);
+            blueprint.hullMass = hull.mass;
+            blueprint.hullHealth = hull.health;
+
+            Span<CraftPartPlacement> placements = stackalloc CraftPartPlacement[CraftAssembly.MaxCapacity];
+            int placementCount = _mountTable != null
+                ? CraftComposition.Build(craft, _mountTable, placements)
+                : 0;
+
+            var mounted = new List<MountedPartData>(craft.parts.Length);
+            for (int i = 0; i < craft.parts.Length; i++)
+            {
+                CraftPartRecord record = craft.parts[i];
+                PartDefinitionSO definition = FindPartDefinition(record.partId);
+                if (definition == null) continue;
+
+                MountedPartData part = FromDefinition(definition);
+                part.mirrored = record.lr == 1;
+                if (i < placementCount && placements[i].partIndex == i)
+                {
+                    part.localOffset = placements[i].localOffset;
+                    part.localRotation = placements[i].localRotation;
+                }
+                mounted.Add(part);
+            }
+
+            blueprint.mountedParts = mounted.ToArray();
+            return blueprint;
         }
 
         private CraftBlueprintSO CreateBlueprint(string name, int bodyPartId, params int[] partIds)
@@ -979,6 +1115,33 @@ namespace ABRevival.Presentation
                    _mountTable.TryGetSymbol(entry.mcName, out PartMountSymbol symbol)
                 ? symbol.firePoints.Length
                 : 0;
+        }
+
+        private CraftCatalog ResolveCraftCatalog()
+        {
+            if (_craftCatalog != null) return _craftCatalog;
+
+            try
+            {
+                TextAsset defFly = Resources.Load<TextAsset>("Data/3_all.AllData_defFly");
+                TextAsset defPart = Resources.Load<TextAsset>("Data/8_all.AllData_defPart");
+                TextAsset defFire = Resources.Load<TextAsset>("Data/2_all.AllData_defFire");
+                TextAsset defBullet = Resources.Load<TextAsset>("Data/11_all.AllData_defBullet");
+                if (defFly == null || defPart == null || defFire == null || defBullet == null)
+                {
+                    Debug.LogWarning("[Center] Frozen craft definitions missing from Resources/Data; using the fallback fleet.");
+                    return null;
+                }
+
+                _craftCatalog = CraftCatalogParser.Parse(defFly.bytes, defPart.text, defFire.text, defBullet.text);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"[Center] Frozen craft definitions unavailable: {exception.Message}");
+                _craftCatalog = null;
+            }
+
+            return _craftCatalog;
         }
 
         private static PartMountTable LoadMountTable()

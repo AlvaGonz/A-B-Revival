@@ -68,6 +68,22 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(bodySprite, "The body preview has no sprite.");
             Assert.Greater(bodySprite.rect.width, 50f,
                 "The preview must use the 2x in-game mount art, not the 1x shop thumbnail.");
+            Assert.IsTrue(center.PreviewUsesMountArt,
+                "Every mounted preview part must resolve to PartMounts art; no thumbnail mixing.");
+            for (int i = 0; i < bodyPart.parent.childCount; i++)
+            {
+                Sprite partSprite = bodyPart.parent[i].style.backgroundImage.value.sprite;
+                Assert.IsNotNull(partSprite);
+                Assert.Greater(partSprite.rect.height, 30f,
+                    "Preview part " + bodyPart.parent[i].name + " is a 1x thumbnail.");
+            }
+
+            Assert.GreaterOrEqual(center.PreviewFillFraction, 0.60f,
+                "The assembled craft must fill at least 60% of the usable preview area.");
+            Assert.LessOrEqual(center.PreviewFillFraction, 0.72f,
+                "The assembled craft must not overshoot the 2011 preview density.");
+            Debug.Log($"[Center Preview] bounds={center.PreviewBoundsSize.x:0.0}x{center.PreviewBoundsSize.y:0.0} " +
+                      $"fill={center.PreviewFillFraction:P1}");
             Assert.IsTrue(center.IsInUse(center.SelectedCraftIndex), "The Player craft starts selected and in use.");
             Assert.AreEqual(DisplayStyle.Flex, root.Q("inuse-label").resolvedStyle.display);
 

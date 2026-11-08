@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using ABRevival.Core.Data;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -227,17 +228,23 @@ namespace ABRevival.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        /// <summary>Wires the 2x in-game mount sprites used by the Center craft preview.</summary>
+        /// <summary>
+        /// Wires the 2x in-game mount sprites and their measured opaque rects. The rect is
+        /// decoded from the committed PNG alpha so Center can fit the visible craft, not the
+        /// transparent canvas around it.
+        /// </summary>
         private static void SetMountArt(SerializedObject serialized)
         {
             string[] guids = AssetDatabase.FindAssets("t:Sprite", new[] { MountSpriteFolder });
-            var sprites = new List<Sprite>(guids.Length);
+            var entries = new List<(Sprite sprite, Vector4 content)>(guids.Length);
             for (int i = 0; i < guids.Length; i++)
             {
-                var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guids[i]));
-                if (sprite != null) sprites.Add(sprite);
+                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+                var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                if (sprite == null) continue;
+                entries.Add((sprite, MeasureOpaqueRect(path, sprite)));
             }
-            sprites.Sort((left, right) => string.CompareOrdinal(left.name, right.name));
+            entries.Sort((left, right) => string.CompareOrdinal(left.sprite.name, right.sprite.name));
 
             SerializedProperty mountArt = serialized.FindProperty("mountArt");
             if (mountArt == null)
@@ -245,9 +252,51 @@ namespace ABRevival.Editor
                 throw new InvalidOperationException("[BootSceneBuilder] CenterController is missing mountArt.");
             }
 
-            mountArt.arraySize = sprites.Count;
-            for (int i = 0; i < sprites.Count; i++)
-                mountArt.GetArrayElementAtIndex(i).objectReferenceValue = sprites[i];
+            mountArt.arraySize = entries.Count;
+            for (int i = 0; i < entries.Count; i++)
+            {
+                SerializedProperty element = mountArt.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("sprite").objectReferenceValue = entries[i].sprite;
+                element.FindPropertyRelative("contentRect").vector4Value = entries[i].content;
+            }
+        }
+
+        /// <summary>Opaque bounds in bottom-left texture pixels, matching Unity sprite space.</summary>
+        private static Vector4 MeasureOpaqueRect(string texturePath, Sprite sprite)
+        {
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            try
+            {
+                if (!texture.LoadImage(File.ReadAllBytes(texturePath)))
+                    return new Vector4(0f, 0f, sprite.rect.width, sprite.rect.height);
+
+                Color32[] pixels = texture.GetPixels32();
+                int width = texture.width;
+                int height = texture.height;
+                int minX = width;
+                int minY = height;
+                int maxX = -1;
+                int maxY = -1;
+                for (int y = 0; y < height; y++)
+                {
+                    int row = y * width;
+                    for (int x = 0; x < width; x++)
+                    {
+                        if (pixels[row + x].a <= 8) continue;
+                        if (x < minX) minX = x;
+                        if (x > maxX) maxX = x;
+                        if (y < minY) minY = y;
+                        if (y > maxY) maxY = y;
+                    }
+                }
+
+                if (maxX < 0) return new Vector4(0f, 0f, sprite.rect.width, sprite.rect.height);
+                return new Vector4(minX, minY, maxX - minX + 1, maxY - minY + 1);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
         }
 
         private static void SetSprite(SerializedObject serialized, string property, string folder, string file)

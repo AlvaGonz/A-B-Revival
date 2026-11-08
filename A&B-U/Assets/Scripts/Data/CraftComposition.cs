@@ -93,15 +93,19 @@ namespace ABRevival.Core.Data
 
                 MountedPartData part = parts[i];
                 float2 offset;
-                if (mounts == null ||
-                    !TryTakeHole(bodySymbol, part.category, part.mirrored, ref usedHoles, out int holeIndex) ||
-                    !mounts.TryResolveSocket(body.partId, holeIndex, part.partId, body.mirrored, out offset))
+                if (math.lengthsq(part.localOffset) > 1e-4f)
                 {
-                    // No decodable matching marker: keep an explicit hangar offset when there is
-                    // one, otherwise use the closest derivable layout. Never silently centre.
-                    offset = math.lengthsq(part.localOffset) > 1e-4f
-                        ? part.localOffset
-                        : PartMountTable.FallbackOffset(bodySymbol, part.category, siblingIndex);
+                    // Explicit blueprint placement (seeded from the frozen defFly tree or edited
+                    // in Factory) wins over re-deriving a socket from category alone.
+                    offset = part.localOffset;
+                }
+                else if (mounts == null ||
+                         !TryTakeHole(bodySymbol, part.category, part.mirrored, ref usedHoles, out int holeIndex) ||
+                         !mounts.TryResolveSocket(body.partId, holeIndex, part.partId, body.mirrored, out offset))
+                {
+                    // No explicit placement and no decodable matching marker: use the closest
+                    // derivable layout. Never silently centre a child on the parent.
+                    offset = PartMountTable.FallbackOffset(bodySymbol, part.category, siblingIndex);
                 }
 
                 output[count++] = new CraftPartPlacement(
