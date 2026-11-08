@@ -12,19 +12,19 @@ namespace ABRevival.Tests
         private static string FindRepoRoot()
         {
             var dir = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-            while (dir != null &&
-                   !Directory.Exists(Path.Combine(dir.FullName, ".git")) &&
-                   !File.Exists(Path.Combine(dir.FullName, ".git")))
+            while (dir != null)
             {
+                string gitPath = Path.Combine(dir.FullName, ".git");
+                // Worktrees store .git as a file rather than a directory.
+                if (Directory.Exists(gitPath) || File.Exists(gitPath))
+                {
+                    return dir.FullName;
+                }
+
                 dir = dir.Parent;
             }
 
-            if (dir == null)
-            {
-                throw new InvalidOperationException("Repository root containing .git directory could not be located.");
-            }
-
-            return dir.FullName;
+            throw new InvalidOperationException("Repository root containing .git directory could not be located.");
         }
 
         private static string GetCoreCsprojPath()
