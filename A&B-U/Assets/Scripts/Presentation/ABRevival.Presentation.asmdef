@@ -2,7 +2,8 @@
     "name": "ABRevival.Presentation",
     "rootNamespace": "ABRevival.Presentation",
     "references": [
-        "ABRevival.Core"
+        "ABRevival.Core",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
