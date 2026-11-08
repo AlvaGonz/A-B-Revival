@@ -177,21 +177,27 @@ namespace ABRevival.Tests.PlayMode
                 Assert.IsTrue(view.BeginMission(simulation, solver, new[] { hull }, playerIndex: 0, capacity: 8));
                 Assert.Greater(view.InstanceCount, 0);
 
-                yield return null;
-
-                RenderTexture.active = renderTexture;
                 readback = new Texture2D(96, 96, TextureFormat.RGBA32, false);
-                readback.ReadPixels(new Rect(0, 0, 96, 96), 0, 0);
-                readback.Apply();
 
+                // URP may not present the first frame in a single tick; poll a bounded number of frames.
                 bool drewPixels = false;
-                Color32[] pixels = readback.GetPixels32();
-                for (int i = 0; i < pixels.Length; i++)
+                for (int frame = 0; frame < 30 && !drewPixels; frame++)
                 {
-                    // Clear colour is opaque black; any lit texel proves the sprite pass ran.
-                    if (pixels[i].r < 8 && pixels[i].g < 8 && pixels[i].b < 8) continue;
-                    drewPixels = true;
-                    break;
+                    yield return null;
+
+                    RenderTexture.active = renderTexture;
+                    readback.ReadPixels(new Rect(0, 0, 96, 96), 0, 0);
+                    readback.Apply();
+                    RenderTexture.active = null;
+
+                    Color32[] pixels = readback.GetPixels32();
+                    for (int i = 0; i < pixels.Length; i++)
+                    {
+                        // Clear colour is opaque black; any lit texel proves the sprite pass ran.
+                        if (pixels[i].r < 8 && pixels[i].g < 8 && pixels[i].b < 8) continue;
+                        drewPixels = true;
+                        break;
+                    }
                 }
 
                 Assert.IsTrue(drewPixels,
