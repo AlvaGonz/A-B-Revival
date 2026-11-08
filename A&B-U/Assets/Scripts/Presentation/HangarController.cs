@@ -30,6 +30,7 @@ namespace ABRevival.Presentation
         private AssemblyPresenter _assemblyPresenter;
         private ShopPresenter _shopPresenter;
         private Label _messageLabel;
+        private readonly PlayerSaveData _payload = new PlayerSaveData();
 
         private void Start()
         {
@@ -81,9 +82,10 @@ namespace ABRevival.Presentation
         {
             try
             {
-                var payload = new PlayerSaveData { shop = _shop.CreateSave() };
-                payload.blueprints.Add(BlueprintSaveMapper.Capture(_runtimeBlueprint));
-                PlayerSaveCodec.SaveToFile(SavePath, payload);
+                _payload.shop = _shop.CreateSave();
+                _payload.blueprints.Clear();
+                _payload.blueprints.Add(BlueprintSaveMapper.Capture(_runtimeBlueprint));
+                PlayerSaveCodec.SaveToFile(SavePath, _payload);
                 SetMessage($"Saved to {SavePath}");
             }
             catch (Exception exception)
@@ -104,6 +106,7 @@ namespace ABRevival.Presentation
             try
             {
                 PlayerSaveData payload = PlayerSaveCodec.LoadFromFile(SavePath);
+                _payload.storyIndex = payload.storyIndex;
                 _shop.LoadFrom(payload.shop);
 
                 if (payload.blueprints.Count > 0)

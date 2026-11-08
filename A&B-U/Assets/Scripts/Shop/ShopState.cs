@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ABRevival.Core.Persistence;
+using ABRevival.Core.Story;
 
 namespace ABRevival.Core.Shop
 {
@@ -52,7 +53,7 @@ namespace ABRevival.Core.Shop
     public sealed class ShopState
     {
         public const float SellRate = 0.7f;
-        public const int MaxStoryIndex = 34;
+        public const int MaxStoryIndex = StoryDirector.MaxStoryIndex;
 
         private readonly ShopCatalog _catalog;
         private readonly List<ShopStockEntry> _stock = new List<ShopStockEntry>();

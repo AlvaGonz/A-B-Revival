@@ -78,6 +78,18 @@ namespace ABRevival.Core.Simulation
         public int movieIndex = -1;
     }
 
+    /// <summary>One toPlace_* transition fired when the named pilot entered its activation rect.</summary>
+    public sealed class MissionPlaceRecord
+    {
+        public int tick;
+        public string eventName;
+        public string pilot;
+        public float x;
+        public float y;
+        public float width;
+        public float height;
+    }
+
     /// <summary>
     /// Headless mission director. Replays a decoded level's spawn events against
     /// CombatSimulation through its public API. Time is measured in simulation ticks,
@@ -103,6 +115,7 @@ namespace ABRevival.Core.Simulation
     /// Terminal states are entered at most once; later ticks and kill reports are ignored.
     /// Every terminal transition also raises the return-to-hangar intent, consumed once by the game flow through
     /// <see cref="TryConsumeReturnToHangar"/>.
+    /// Active toPlace_* events are evaluated each tick and are surfaced through <see cref="PlaceTransitions"/>.
     /// Original game IP: Vargames (2011).
     /// </para>
     /// </summary>
@@ -143,6 +156,7 @@ namespace ABRevival.Core.Simulation
         private readonly HashSet<string> _finishedEvents = new HashSet<string>();
         private readonly List<MissionSpawnRecord> _spawns = new List<MissionSpawnRecord>();
         private readonly List<MissionHookRecord> _hooks = new List<MissionHookRecord>();
+        private readonly List<MissionPlaceRecord> _places = new List<MissionPlaceRecord>();
         private readonly List<SpawnedShip> _ships = new List<SpawnedShip>();
 
         private int _tick;
@@ -174,6 +188,9 @@ namespace ABRevival.Core.Simulation
         public MissionState State => _state;
         public IReadOnlyList<MissionSpawnRecord> Spawns => _spawns;
         public IReadOnlyList<MissionHookRecord> Hooks => _hooks;
+
+        /// <summary>toPlace_* transitions fired so far, in fire order.</summary>
+        public IReadOnlyList<MissionPlaceRecord> PlaceTransitions => _places;
 
         /// <summary>Terminal result (state, cause, objective, tick), or null while the mission is in progress.</summary>
         public MissionResult? Result { get; private set; }
@@ -343,6 +360,7 @@ namespace ABRevival.Core.Simulation
 
                     _activeEvents.RemoveAt(i);
                     i--;
+                    RecordPlaceTransition(ev);
                     TryComplete(ev);
                     break;
                 }
@@ -569,6 +587,21 @@ namespace ABRevival.Core.Simulation
                 x = spawn.x,
                 y = spawn.y,
                 shipIndex = shipIndex
+            });
+        }
+
+        private void RecordPlaceTransition(LevelEvent ev)
+        {
+            var place = ev.place;
+            _places.Add(new MissionPlaceRecord
+            {
+                tick = _tick,
+                eventName = ev.name,
+                pilot = place.pilot,
+                x = place.x,
+                y = place.y,
+                width = place.width,
+                height = place.height
             });
         }
 
