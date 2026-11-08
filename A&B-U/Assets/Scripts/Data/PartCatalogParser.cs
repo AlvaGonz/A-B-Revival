@@ -18,6 +18,12 @@ namespace ABRevival.Core.Data
         public string partName;
         public string mcName;
         public PartCategory category;
+
+        /// <summary>F4DataOrg.lr: 0 left, 1 right (mirrored art), 2 both/neutral.</summary>
+        public int lr;
+
+        /// <summary>F4DataBullet index this part's gun fires; 0 when not a gun.</summary>
+        public int bulletId;
         public float mass;
         public float health;
         public float thrust;
@@ -221,6 +227,7 @@ namespace ABRevival.Core.Data
                     record.partId = ParseInt(el.Element("index")?.Value, 0);
                     record.partName = el.Element("name")?.Value ?? string.Empty;
                     record.mcName = el.Element("mcName")?.Value ?? string.Empty;
+                    record.lr = ParseInt(el.Element("lr")?.Value, 2);
 
                     int typeInt = ParseInt(el.Element("type")?.Value, 0);
                     record.category = typeInt switch
@@ -248,6 +255,7 @@ namespace ABRevival.Core.Data
                     {
                         int fireIdx = ParseInt(el.Element("fire")?.Value, 0);
                         int bulletIdx = ParseInt(el.Element("bullet")?.Value, 0);
+                        record.bulletId = bulletIdx;
 
                         if (fireLookup.TryGetValue(fireIdx, out fireDef))
                         {

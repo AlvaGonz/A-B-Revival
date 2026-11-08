@@ -17,6 +17,7 @@ namespace ABRevival.Tests
     {
         private const int CatalogPartCount = 271;
         private const int DistinctSymbolCount = 222;
+        public const int BulletSymbolCount = 5;
 
         private static string FindRepoRoot()
         {
@@ -39,7 +40,29 @@ namespace ABRevival.Tests
 
         private static string PartsFolder()
         {
-            return Path.Combine(FindRepoRoot(), "A&B-U", "Assets", "Art", "Sprites", "Parts");
+            return Path.Combine(FindRepoRoot(), "A&B-U", "Assets", "Art", "Sprites", "PartMounts");
+        }
+
+        private static string BulletsFolder()
+        {
+            return Path.Combine(FindRepoRoot(), "A&B-U", "Assets", "Art", "Sprites", "Bullets");
+        }
+
+        private static Dictionary<string, SpritePixelSize> ReadSizes()
+        {
+            Dictionary<string, SpritePixelSize> sizes = PngSize.ReadFolder(PartsFolder());
+            foreach (KeyValuePair<string, SpritePixelSize> entry in PngSize.ReadFolder(BulletsFolder()))
+                sizes[entry.Key] = entry.Value;
+            return sizes;
+        }
+
+        private static List<string> BulletSymbols()
+        {
+            var names = new List<string>();
+            foreach (string file in Directory.GetFiles(BulletsFolder(), "*.png"))
+                names.Add(Path.GetFileName(file));
+            names.Sort(StringComparer.Ordinal);
+            return names;
         }
 
         private static string UvTablePath()
@@ -52,9 +75,9 @@ namespace ABRevival.Tests
         {
             var records = ParseCatalog();
             var mappings = PartSpriteMap.Build(records);
-            var sizes = PngSize.ReadFolder(PartsFolder());
+            var sizes = ReadSizes();
 
-            string expected = SpriteUvTableBuilder.Build(mappings, sizes);
+            string expected = SpriteUvTableBuilder.Build(mappings, sizes, extraSymbols: BulletSymbols());
             Assert.IsTrue(File.Exists(UvTablePath()), $"Committed UV table missing: {UvTablePath()}");
             string committed = File.ReadAllText(UvTablePath());
 
@@ -67,13 +90,16 @@ namespace ABRevival.Tests
         {
             var records = ParseCatalog();
             var mappings = PartSpriteMap.Build(records);
-            var sizes = PngSize.ReadFolder(PartsFolder());
+            var sizes = ReadSizes();
             var table = SpriteUvTable.Parse(File.ReadAllText(UvTablePath()));
 
             Assert.AreEqual(CatalogPartCount, mappings.Count);
-            Assert.AreEqual(DistinctSymbolCount, sizes.Count);
+            Assert.AreEqual(DistinctSymbolCount + BulletSymbolCount, sizes.Count);
             Assert.AreEqual(CatalogPartCount, table.PartCount);
-            Assert.AreEqual(DistinctSymbolCount + 1, table.SymbolCount, "222 sprites plus the projectile white cell.");
+            Assert.AreEqual(
+                DistinctSymbolCount + 1 + BulletSymbolCount,
+                table.SymbolCount,
+                "222 mount sprites, the projectile white cell and 5 bullet symbols.");
             Assert.IsTrue(table.HasWhite, "Projectiles need the synthetic white atlas cell.");
             Assert.AreEqual(SpriteAtlasLayout.DefaultWidth, table.AtlasWidth);
             Assert.AreEqual(SpriteAtlasLayout.DefaultHeight, table.AtlasHeight);
@@ -114,15 +140,16 @@ namespace ABRevival.Tests
         {
             var records = ParseCatalog();
             var mappings = PartSpriteMap.Build(records);
-            var sizes = PngSize.ReadFolder(PartsFolder());
+            var sizes = ReadSizes();
+            List<string> extras = BulletSymbols();
 
             // The packer sorts symbols, so a reversed catalog order yields identical rects.
             var reversed = new List<PartDefinitionRecord>(records);
             reversed.Reverse();
             var reversedMappings = PartSpriteMap.Build(reversed);
 
-            string forward = SpriteUvTableBuilder.Build(mappings, sizes);
-            string backward = SpriteUvTableBuilder.Build(reversedMappings, sizes);
+            string forward = SpriteUvTableBuilder.Build(mappings, sizes, extraSymbols: extras);
+            string backward = SpriteUvTableBuilder.Build(reversedMappings, sizes, extraSymbols: extras);
             Assert.AreEqual(Normalize(forward), Normalize(backward), "UV rects must not depend on catalog order.");
 
             var first = SpriteUvTable.Parse(forward);
@@ -157,6 +184,20 @@ namespace ABRevival.Tests
             Assert.AreEqual(1f - (white.Height / (float)table.AtlasHeight), white.UvY, 0.000001f);
             Assert.AreEqual(white.Width / (float)table.AtlasWidth, white.UvWidth, 0.000001f);
             Assert.AreEqual(white.Height / (float)table.AtlasHeight, white.UvHeight, 0.000001f);
+        }
+
+        [Test]
+        public void UvTable_ExposesBulletAndEffectSymbols()
+        {
+            var table = SpriteUvTable.Parse(File.ReadAllText(UvTablePath()));
+
+            Assert.IsTrue(table.TryGetSymbol("bullet_normal.png", out SpriteUvRect normal));
+            Assert.IsTrue(table.TryGetSymbol("bullet_Blt_1.png", out SpriteUvRect blt1));
+            Assert.AreEqual(32, normal.Width);
+            Assert.AreEqual(32, normal.Height);
+            Assert.Less(normal.X, table.AtlasWidth);
+            Assert.Less(blt1.Y, table.AtlasHeight);
+            Assert.IsFalse(table.TryGetSymbol("missing.png", out _));
         }
 
         [Test]

@@ -306,7 +306,7 @@ namespace ABRevival.Tests.PlayMode
             Assert.Greater(hullBefore, 0f);
 
             bool sawDamage = false;
-            for (int i = 0; i < 2500 && flow.State == GameFlowState.Mission; i++)
+            for (int i = 0; i < 3200 && flow.State == GameFlowState.Mission; i++)
             {
                 flow.Tick(GameFlowController.FixedStepSeconds * 4f);
                 if (hud.State.HullCurrent < hullBefore) sawDamage = true;

@@ -14,6 +14,15 @@ namespace ABRevival.Core.Data
         public float health;
         public float mass;
         public float thrust;
+
+        /// <summary>Index into <see cref="CraftStatRecord.parts"/> of the hosting part; -1 for the hull.</summary>
+        public int parentIndex;
+
+        /// <summary>Hole index on the parent part this part occupies; -1 for the hull.</summary>
+        public int socketIndex;
+
+        /// <summary>Part mirror variant from F4DataOrg.lr (0 left, 1 right, 2 both).</summary>
+        public int lr;
     }
 
     /// <summary>
@@ -24,6 +33,9 @@ namespace ABRevival.Core.Data
     {
         public int partId;
         public int holeIndex;
+
+        /// <summary>Index into <see cref="CraftStatRecord.parts"/> of the gun's placement.</summary>
+        public int partIndex;
     }
 
     /// <summary>
@@ -95,11 +107,11 @@ namespace ABRevival.Core.Data
     /// <c>3_all.AllData_defFly.bin</c>) and aggregates each root chassis plus its attached
     /// parts from <c>8_all.AllData_defPart.bin</c>.
     /// <para>
-    /// shortcut: the AMF3 graph carries part ids per socket, but not socket positions,
-    /// muzzle points, or fire-point counts. Those live in the part's SWF symbol
-    /// (<c>MC2F4Data.readMcData</c> reads the H/F/P marker layers). Weapon mounts therefore
-    /// expose the part id and hole index only; gameplay fires them from the hull centre until
-    /// the SWF marker table is exported.
+    /// The AMF3 graph carries part ids per socket, but not socket positions or muzzle points.
+    /// Those live in the part's SWF symbol (<c>MC2F4Data.readMcData</c> reads the H/F/P marker
+    /// layers); <see cref="PartMountTable"/> carries the decoded table and
+    /// <see cref="CraftComposition"/> turns each record's parent/socket link into a hull-local
+    /// placement.
     /// </para>
     /// Original game IP: Vargames (2011).
     /// </summary>
@@ -175,7 +187,7 @@ namespace ABRevival.Core.Data
             var mounts = new List<CraftWeaponMount>();
             float turnFly = 0f;
 
-            AddPart(source, record.hullPartId, -1, partLookup, parts, mounts, ref turnFly);
+            AddPart(source, record.hullPartId, -1, -1, partLookup, parts, mounts, ref turnFly);
 
             record.parts = parts.ToArray();
             record.weaponMounts = mounts.ToArray();
@@ -208,6 +220,7 @@ namespace ABRevival.Core.Data
         private static void AddPart(
             Dictionary<string, object> node,
             int partId,
+            int parentIndex,
             int holeIndex,
             Dictionary<int, PartDefinitionRecord> partLookup,
             List<CraftPartRecord> parts,
@@ -216,18 +229,22 @@ namespace ABRevival.Core.Data
         {
             if (!partLookup.TryGetValue(partId, out PartDefinitionRecord definition)) return;
 
+            int partIndex = parts.Count;
             parts.Add(new CraftPartRecord
             {
                 partId = partId,
                 category = definition.category,
                 health = definition.health,
                 mass = definition.mass,
-                thrust = definition.thrust
+                thrust = definition.thrust,
+                parentIndex = parentIndex,
+                socketIndex = holeIndex,
+                lr = definition.lr
             });
             turnFly += definition.turnFly;
 
             if (definition.category == PartCategory.Gun)
-                mounts.Add(new CraftWeaponMount { partId = partId, holeIndex = holeIndex });
+                mounts.Add(new CraftWeaponMount { partId = partId, holeIndex = holeIndex, partIndex = partIndex });
 
             if (!node.TryGetValue("thole", out object tholeValue) || tholeValue == null) return;
             var thole = AsObject(tholeValue);
@@ -247,7 +264,7 @@ namespace ABRevival.Core.Data
                 if (!node.TryGetValue("hole" + childHole.ToString(CultureInfo.InvariantCulture), out object childValue) || childValue == null)
                     continue;
 
-                AddPart(AsObject(childValue), childPartId, childHole, partLookup, parts, mounts, ref turnFly);
+                AddPart(AsObject(childValue), childPartId, partIndex, childHole, partLookup, parts, mounts, ref turnFly);
             }
         }
 

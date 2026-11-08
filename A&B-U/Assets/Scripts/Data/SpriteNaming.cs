@@ -14,9 +14,26 @@ namespace ABRevival.Core.Data
     {
         public const int ExportZoom = 1;
 
+        /// <summary>
+        /// In-game mount art is rasterised at 2x (ADR 0013 decision 5), matching the frozen
+        /// Stage3D atlas density. Marker coordinates are scaled by the same factor.
+        /// </summary>
+        public const int MountZoom = 2;
+
         public static string PartSpriteFile(int canonicalPartId, string mcName)
         {
             return $"part_{canonicalPartId:D3}_{Sanitize(mcName)}.png";
+        }
+
+        /// <summary>In-game mount art: nose-up frame 0 at <see cref="MountZoom"/>.</summary>
+        public static string PartMountFile(int canonicalPartId, string mcName)
+        {
+            return $"part_{canonicalPartId:D3}_{Sanitize(mcName)}.png";
+        }
+
+        public static string BulletSpriteFile(string mcName)
+        {
+            return $"bullet_{Sanitize(mcName)}.png";
         }
 
         public static string UiImageFile(int characterId)

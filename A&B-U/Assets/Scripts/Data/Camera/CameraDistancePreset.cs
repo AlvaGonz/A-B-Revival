@@ -3,8 +3,9 @@ using System;
 namespace ABRevival.Core.Camera
 {
     /// <summary>
-    /// Combat camera distance tiers from ADR 0005, rebased onto the ADR 0013
-    /// 1920x1080 design space (one Unity unit equals one stage pixel).
+    /// Combat camera distance tiers from ADR 0005, rebased onto ADR 0019's
+    /// 1280x720 combat viewport (one Unity unit equals one stage pixel). Mount art is
+    /// rasterised at 2x, so this viewport reproduces the frozen 640x480 framing at 1080p.
     /// </summary>
     public enum CameraDistancePreset
     {
@@ -14,14 +15,14 @@ namespace ABRevival.Core.Camera
     }
 
     /// <summary>
-    /// Pure mapping between the 1920x1080 HUD design space and the scaled combat
-    /// viewport. The HUD stays at design resolution; only the world viewport and
-    /// the mouse-aim mapping scale.
+    /// Pure mapping between the combat viewport and the scaled battlefield. The HUD is
+    /// screen-space UI Toolkit and never reads these values; only the world viewport and
+    /// the mouse-aim mapping scale with the distance preset.
     /// </summary>
     public static class CameraDistancePresets
     {
-        public const float DesignWidth = 1920f;
-        public const float DesignHeight = 1080f;
+        public const float DesignWidth = 1280f;
+        public const float DesignHeight = 720f;
         public const int Count = 3;
 
         private static readonly float[] ViewScales = { 1.0f, 1.3f, 1.5f };

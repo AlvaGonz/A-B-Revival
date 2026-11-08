@@ -22,12 +22,12 @@ namespace ABRevival.Tests
             Assert.AreEqual(1.3f, CameraDistancePresets.ViewScale(CameraDistancePreset.Medium), 0.0001f);
             Assert.AreEqual(1.5f, CameraDistancePresets.ViewScale(CameraDistancePreset.Far), 0.0001f);
 
-            Assert.AreEqual(1920f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Short), 0.001f);
-            Assert.AreEqual(1080f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Short), 0.001f);
-            Assert.AreEqual(2496f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Medium), 0.001f);
-            Assert.AreEqual(1404f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Medium), 0.001f);
-            Assert.AreEqual(2880f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Far), 0.001f);
-            Assert.AreEqual(1620f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Far), 0.001f);
+            Assert.AreEqual(1280f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Short), 0.001f);
+            Assert.AreEqual(720f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Short), 0.001f);
+            Assert.AreEqual(1664f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Medium), 0.001f);
+            Assert.AreEqual(936f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Medium), 0.001f);
+            Assert.AreEqual(1920f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Far), 0.001f);
+            Assert.AreEqual(1080f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Far), 0.001f);
 
             Assert.AreEqual("[ CAM: SHORT (1.0x) ]", CameraDistancePresets.BadgeText(CameraDistancePreset.Short));
             Assert.AreEqual("[ CAM: MEDIUM (1.3x) ]", CameraDistancePresets.BadgeText(CameraDistancePreset.Medium));
@@ -53,23 +53,23 @@ namespace ABRevival.Tests
 
             ViewportPoint shortCentre = CameraDistancePresets.ScreenToViewport(
                 screenCentre, screenSize, CameraDistancePreset.Short);
-            Assert.AreEqual(960f, shortCentre.X, 0.001f);
-            Assert.AreEqual(540f, shortCentre.Y, 0.001f);
+            Assert.AreEqual(640f, shortCentre.X, 0.001f);
+            Assert.AreEqual(360f, shortCentre.Y, 0.001f);
 
             ViewportPoint farCentre = CameraDistancePresets.ScreenToViewport(
                 screenCentre, screenSize, CameraDistancePreset.Far);
-            Assert.AreEqual(1440f, farCentre.X, 0.001f);
-            Assert.AreEqual(810f, farCentre.Y, 0.001f);
+            Assert.AreEqual(960f, farCentre.X, 0.001f);
+            Assert.AreEqual(540f, farCentre.Y, 0.001f);
 
             ViewportPoint farCorner = CameraDistancePresets.ScreenToViewport(
                 new ViewportPoint(1920f, 1080f), screenSize, CameraDistancePreset.Far);
-            Assert.AreEqual(2880f, farCorner.X, 0.001f);
-            Assert.AreEqual(1620f, farCorner.Y, 0.001f);
+            Assert.AreEqual(1920f, farCorner.X, 0.001f);
+            Assert.AreEqual(1080f, farCorner.Y, 0.001f);
 
             ViewportPoint worldCorner = CameraDistancePresets.ViewportToWorldCentered(
                 farCorner, CameraDistancePreset.Far);
-            Assert.AreEqual(1440f, worldCorner.X, 0.001f);
-            Assert.AreEqual(810f, worldCorner.Y, 0.001f);
+            Assert.AreEqual(960f, worldCorner.X, 0.001f);
+            Assert.AreEqual(540f, worldCorner.Y, 0.001f);
         }
 
         [Test]

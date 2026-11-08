@@ -276,24 +276,24 @@ namespace ABRevival.Tests.PlayMode
 
                 rig.ApplyPreset(CameraDistancePreset.Medium);
                 Assert.AreEqual(CameraDistancePreset.Medium, rig.Preset);
-                Assert.AreEqual(702f, camera.orthographicSize, 0.001f);
-                Assert.AreEqual(2496f, rig.ViewportWidth, 0.001f);
+                Assert.AreEqual(468f, camera.orthographicSize, 0.001f);
+                Assert.AreEqual(1664f, rig.ViewportWidth, 0.001f);
 
                 Vector2 viewport = rig.ScreenToViewport(new Vector2(960f, 540f), new Vector2(1920f, 1080f));
-                Assert.AreEqual(1248f, viewport.x, 0.001f);
-                Assert.AreEqual(702f, viewport.y, 0.001f);
+                Assert.AreEqual(832f, viewport.x, 0.001f);
+                Assert.AreEqual(468f, viewport.y, 0.001f);
 
                 rig.CyclePreset();
                 Assert.AreEqual(CameraDistancePreset.Far, rig.Preset);
-                Assert.AreEqual(810f, camera.orthographicSize, 0.001f);
+                Assert.AreEqual(540f, camera.orthographicSize, 0.001f);
 
-                Vector2 roundTrip = rig.ViewportToScreen(new Vector2(2880f, 1620f), new Vector2(1920f, 1080f));
+                Vector2 roundTrip = rig.ViewportToScreen(new Vector2(1920f, 1080f), new Vector2(1920f, 1080f));
                 Assert.AreEqual(1920f, roundTrip.x, 0.001f);
                 Assert.AreEqual(1080f, roundTrip.y, 0.001f);
 
                 rig.CyclePreset();
                 Assert.AreEqual(CameraDistancePreset.Short, rig.Preset);
-                Assert.AreEqual(540f, camera.orthographicSize, 0.001f);
+                Assert.AreEqual(360f, camera.orthographicSize, 0.001f);
             }
             finally
             {

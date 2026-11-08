@@ -174,6 +174,15 @@ namespace ABRevival.Presentation
             return _userValues[index];
         }
 
+        /// <summary>Per-instance UV rect last written at <paramref name="index"/> (test/layer read-back).</summary>
+        public Vector4 GetUvRect(int index)
+        {
+            ThrowIfNotConfigured();
+            if ((uint)index >= (uint)_instanceCount)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            return _uvRects[index];
+        }
+
         /// <summary>
         /// Uploads only the dirty instance range to the GPU. Call after adding or
         /// updating instances; this path performs no managed heap allocations.
