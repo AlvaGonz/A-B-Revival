@@ -191,7 +191,7 @@ namespace ABRevival.Core.Audio
             new AudioTriggerDefinition(SoundEffect.S_FireL2, AudioBus.Sfx, 0.8f),
             new AudioTriggerDefinition(SoundEffect.S_Fire100, AudioBus.Sfx, 1.5f),
             new AudioTriggerDefinition(SoundEffect.S_Rocket, AudioBus.Sfx, 0.2f),
-            new AudioTriggerDefinition(SoundEffect.S_Bomb, AudioBus.Sfx, 1f),
+            new AudioTriggerDefinition(SoundEffect.S_Bomb, AudioBus.Sfx, 1.5f),
             new AudioTriggerDefinition(SoundEffect.S_Bomb, AudioBus.Sfx, 0.4f),
             new AudioTriggerDefinition(SoundEffect.S_Pow, AudioBus.Sfx, 1f),
             new AudioTriggerDefinition(SoundEffect.S_Cant, AudioBus.Sfx, 0.35f),

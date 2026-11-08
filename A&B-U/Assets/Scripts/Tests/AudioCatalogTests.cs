@@ -98,6 +98,8 @@ namespace ABRevival.Tests
         {
             Assert.AreEqual(AudioBus.Sfx, SoundCatalog.GetTrigger(AudioTrigger.CombatWeaponHeavy).Bus);
             Assert.AreEqual(1.5f, SoundCatalog.GetTrigger(AudioTrigger.CombatWeaponHeavy).Volume);
+            Assert.AreEqual(1.5f, SoundCatalog.GetTrigger(AudioTrigger.CombatExplosion).Volume);
+            Assert.AreEqual(0.4f, SoundCatalog.GetTrigger(AudioTrigger.CombatExplosionSmall).Volume);
             Assert.AreEqual(0.35f, SoundCatalog.GetTrigger(AudioTrigger.CombatComponentLost).Volume);
             Assert.AreEqual(1.15f, SoundCatalog.GetTrigger(AudioTrigger.CombatPowerRestored).Volume);
         }
