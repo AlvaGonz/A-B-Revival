@@ -34,6 +34,13 @@ namespace ABRevival.Tests
             return Directory.Exists(gitPath) || File.Exists(gitPath);
         }
 
+        private static bool IsGitRoot(string directory)
+        {
+            string gitPath = Path.Combine(directory, ".git");
+            // Git worktrees use a .git file that points at the main repository.
+            return Directory.Exists(gitPath) || File.Exists(gitPath);
+        }
+
         private static string GetCoreCsprojPath()
         {
             return Path.Combine(FindRepoRoot(), "A&B-U", "Assets", "Scripts", "ABRevival.Core.csproj");
