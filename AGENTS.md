@@ -65,7 +65,7 @@ Consult [`CODING_STANDARDS.md`](CODING_STANDARDS.md) for canonical guidelines:
 - **Verification Pipeline**: Section 3 (Tier 1 `dotnet test` fast pre-commit gate, Tier 2 headless UTF gate).
 
 ### Asset fidelity (mandatory)
-Use the **original** Flash art, fonts, audio and UI assets. Never substitute fonts, redraw art, or "improve" the 2011 layout; where no art exists (procedural bullets, VFX), reimplement the behaviour with the original palette and rules. See `docs/adr/0020-original-fonts-and-asset-fidelity.md`.
+Use the **original** Flash art, fonts, audio and UI assets. Never substitute fonts, redraw art, or "improve" the 2011 layout; where no art exists (procedural bullets, VFX), reimplement the behaviour with the original palette and rules. See `docs/adr/0020-original-fonts-and-asset-fidelity.md`. Before laying out any menu section, extract and commit that section's full-page reference symbol (`UI_ChooseFlyAI`, `UI_MakePlayer`, `UI_Shop`, `UI_Help`, `UI_Game`, …) under `docs/assets/reference/` and build against it.
 
 ## Engineering Workflow Lifecycle
 This repository strictly follows the visual workflow defined in `assets/matt-pocock-workflow.png`:
