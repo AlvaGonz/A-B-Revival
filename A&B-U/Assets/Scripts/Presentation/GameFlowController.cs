@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using ABRevival.Core.Camera;
 using ABRevival.Core.Data;
@@ -617,9 +616,8 @@ namespace ABRevival.Presentation
         }
 
         /// <summary>
-        /// Composes the player's assembled blueprint from the hull's H markers. The hangar does
-        /// not persist socket indices yet, so each part takes the first compatible free hole;
-        /// the stored offset is only used when the hull exposes no matching marker.
+        /// Composes the player's assembled blueprint through the shared hangar/mission resolver:
+        /// socket offsets, mirroring, and engine/hull/wing/gun layer order.
         /// </summary>
         private int BuildPlayerParts(Span<HullPartDefinition> parts, in ShipEntity ship)
         {
@@ -628,63 +626,51 @@ namespace ABRevival.Presentation
             BlueprintSaveData blueprint = _save.blueprints[0];
             if (blueprint?.mountedParts == null) return 0;
 
-            var converted = new List<MountedPartData>(blueprint.mountedParts.Count);
-            for (int i = 0; i < blueprint.mountedParts.Count; i++)
-                converted.Add(blueprint.mountedParts[i].ToMountedPart());
-
+            Span<MountedPartData> mounted = stackalloc MountedPartData[_contactPartsPerHull];
+            int mountedCount = 0;
             int bodyIndex = -1;
-            for (int i = 0; i < converted.Count; i++)
+            for (int i = 0; i < blueprint.mountedParts.Count && mountedCount < mounted.Length; i++)
             {
-                if (converted[i].category != PartCategory.Body) continue;
-                bodyIndex = i;
-                break;
+                MountedPartData part = blueprint.mountedParts[i].ToMountedPart();
+                part.mirrored = part.mirrored || IsMirrored(part.partId);
+                if (part.category == PartCategory.Body) bodyIndex = mountedCount;
+                mounted[mountedCount++] = part;
             }
 
-            int count = 0;
-            MountedPartData body;
-            if (bodyIndex >= 0)
-            {
-                body = converted[bodyIndex];
-                body.localOffset = float2.zero;
-                body.localRotation = 0f;
-                body.mirrored = IsMirrored(body.partId);
-                count = AddMountedPart(parts, count, in body);
-            }
-            else
+            if (mountedCount == 0) return 0;
+
+            if (bodyIndex < 0)
             {
                 // The hangar may save a gun-only blueprint; the chassis is still part of the craft.
+                if (mountedCount >= mounted.Length) return 0;
+                for (int i = mountedCount; i > 0; i--) mounted[i] = mounted[i - 1];
                 float hullHealth = blueprint.hullHealth > 0f ? blueprint.hullHealth : ship.maxHealth;
-                count = AddBodyPart(parts, count, hullHealth, float2.zero);
-                body = new MountedPartData { partId = 0, category = PartCategory.Body };
+                mounted[0] = new MountedPartData
+                {
+                    partId = 0,
+                    category = PartCategory.Body,
+                    health = hullHealth,
+                    maxHealth = hullHealth,
+                    mass = blueprint.hullMass
+                };
+                mountedCount++;
             }
 
-            PartMountSymbol bodySymbol = _mountTable != null && _mountTable.TryGetPart(body.partId, out PartMountEntry bodyEntry)
-                ? _mountTable.GetSymbol(bodyEntry.mcName)
-                : null;
-            ulong usedHoles = 0;
-            int siblingIndex = 0;
+            Span<CraftPartPlacement> placements = stackalloc CraftPartPlacement[_contactPartsPerHull];
+            int placementCount = CraftComposition.BuildPlayer(
+                mounted.Slice(0, mountedCount), _mountTable, placements);
 
-            for (int i = 0; i < converted.Count && count < parts.Length; i++)
+            int count = 0;
+            for (int i = 0; i < placementCount && count < parts.Length; i++)
             {
-                if (i == bodyIndex) continue;
-                MountedPartData part = converted[i];
-                part.mirrored = IsMirrored(part.partId);
+                CraftPartPlacement placement = placements[i];
+                if ((uint)placement.partIndex >= (uint)mountedCount) continue;
 
-                if (_mountTable == null ||
-                    !TryTakeHole(bodySymbol, part.category, part.mirrored, ref usedHoles, out int holeIndex) ||
-                    !_mountTable.TryResolveSocket(body.partId, holeIndex, part.partId, false, out float2 offset))
-                {
-                    // No decodable matching marker: keep an explicit hangar offset when there is
-                    // one, otherwise use the closest derivable layout. Never silently centre.
-                    offset = math.lengthsq(part.localOffset) > 1e-4f
-                        ? part.localOffset
-                        : PartMountTable.FallbackOffset(bodySymbol, part.category, siblingIndex);
-                }
-
-                part.localOffset = offset;
-                part.localRotation = 0f;
+                MountedPartData part = mounted[placement.partIndex];
+                part.localOffset = placement.localOffset;
+                part.localRotation = placement.localRotation;
+                part.mirrored = placement.mirrored;
                 count = AddMountedPart(parts, count, in part);
-                siblingIndex++;
             }
 
             return count;
@@ -693,32 +679,6 @@ namespace ABRevival.Presentation
         private bool IsMirrored(int partId)
         {
             return _mountTable != null && _mountTable.TryGetPart(partId, out PartMountEntry entry) && entry.lr == 1;
-        }
-
-        private static bool TryTakeHole(
-            PartMountSymbol bodySymbol,
-            PartCategory category,
-            bool mirrored,
-            ref ulong usedHoles,
-            out int holeIndex)
-        {
-            holeIndex = -1;
-            if (bodySymbol == null || bodySymbol.holes == null) return false;
-
-            int wantedLr = mirrored ? 1 : 0;
-            for (int i = 0; i < bodySymbol.holes.Length && i < 64; i++)
-            {
-                PartMountHole hole = bodySymbol.holes[i];
-                if (hole == null || (usedHoles & (1UL << i)) != 0) continue;
-                if (!hole.Accepts(category)) continue;
-                if (hole.lr != 2 && hole.lr != wantedLr) continue;
-
-                usedHoles |= 1UL << i;
-                holeIndex = i;
-                return true;
-            }
-
-            return false;
         }
 
         private static int BuildCraftParts(
@@ -816,6 +776,7 @@ namespace ABRevival.Presentation
             if (_hangar == null) return;
 
             Span<WeaponMount> mounts = stackalloc WeaponMount[_contactPartsPerHull];
+            Span<float2> muzzles = stackalloc float2[8];
             int mountCount = 0;
 
             for (int i = 0; i < parts.Length; i++)
@@ -830,16 +791,25 @@ namespace ABRevival.Presentation
                 if (spec.lifetime <= 0f) continue;
 
                 spec.projectileType = BulletId(part.partId);
-                float2 muzzle = _mountTable != null
-                    ? _mountTable.MuzzleOffset(part.partId, part.localOffset)
-                    : part.localOffset;
-
-                mounts[mountCount++] = new WeaponMount
+                int muzzleCount = _mountTable != null ? _mountTable.CopyFirePoints(part.partId, muzzles) : 0;
+                if (muzzleCount == 0)
                 {
-                    spec = spec,
-                    localOffset = muzzle,
-                    localRotation = part.localRotation
-                };
+                    muzzles[0] = float2.zero;
+                    muzzleCount = 1;
+                }
+
+                for (int muzzleIndex = 0; muzzleIndex < muzzleCount && mountCount < mounts.Length; muzzleIndex++)
+                {
+                    float2 local = muzzles[muzzleIndex];
+                    if (part.mirrored) local.x = -local.x;
+
+                    mounts[mountCount++] = new WeaponMount
+                    {
+                        spec = spec,
+                        localOffset = part.localOffset + local,
+                        localRotation = part.localRotation
+                    };
+                }
             }
 
             if (mountCount > 0) _weapons.RegisterCraft(shipIndex, mounts.Slice(0, mountCount));
@@ -858,6 +828,7 @@ namespace ABRevival.Presentation
             if (_hangar == null || craft == null || craft.weaponMounts == null) return;
 
             Span<WeaponMount> mounts = stackalloc WeaponMount[_contactPartsPerHull];
+            Span<float2> muzzles = stackalloc float2[8];
             int mountCount = 0;
 
             for (int i = 0; i < craft.weaponMounts.Length && mountCount < mounts.Length; i++)
@@ -872,18 +843,27 @@ namespace ABRevival.Presentation
                 if (spec.lifetime <= 0f) continue;
 
                 CraftPartPlacement placement = placements[mount.partIndex];
-                float2 muzzle = _mountTable != null
-                    ? _mountTable.MuzzleOffset(mount.partId, placement.localOffset)
-                    : placement.localOffset;
+                int muzzleCount = _mountTable != null ? _mountTable.CopyFirePoints(mount.partId, muzzles) : 0;
+                if (muzzleCount == 0)
+                {
+                    muzzles[0] = float2.zero;
+                    muzzleCount = 1;
+                }
 
                 spec.projectileType = BulletId(mount.partId);
 
-                mounts[mountCount++] = new WeaponMount
+                for (int muzzleIndex = 0; muzzleIndex < muzzleCount && mountCount < mounts.Length; muzzleIndex++)
                 {
-                    spec = spec,
-                    localOffset = muzzle,
-                    localRotation = placement.localRotation
-                };
+                    float2 local = muzzles[muzzleIndex];
+                    if (placement.mirrored) local.x = -local.x;
+
+                    mounts[mountCount++] = new WeaponMount
+                    {
+                        spec = spec,
+                        localOffset = placement.localOffset + local,
+                        localRotation = placement.localRotation
+                    };
+                }
             }
 
             if (mountCount > 0) _weapons.RegisterCraft(shipIndex, mounts.Slice(0, mountCount));
@@ -1145,7 +1125,6 @@ namespace ABRevival.Presentation
                 }
 
                 ShipEntity ship = _simulation.GetShip(playerIndex);
-                state.SetEnergyFraction(Fraction(ship.energy, ship.maxEnergy));
                 state.SetShieldFraction(PlayerShieldFraction());
                 state.SetRadarBearing(math.degrees(-ship.rotation));
                 CountLivingHostiles(playerIndex, ship.position, out int hostiles, out float nearest);
@@ -1180,7 +1159,6 @@ namespace ABRevival.Presentation
             state.SetMissionSeconds(0f);
             state.SetAiCount(0);
             state.SetEnemyDistance(0f);
-            state.SetEnergyFraction(1f);
             state.SetShieldFraction(1f);
             state.SetCaptainHealth(1f, 1f);
             state.SetRadarBearing(0f);

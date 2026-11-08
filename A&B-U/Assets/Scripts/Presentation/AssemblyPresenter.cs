@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using ABRevival.Core.Data;
 using ABRevival.Core.Shop;
 using Unity.Mathematics;
@@ -23,6 +24,7 @@ namespace ABRevival.Presentation
         private const float PreviewMaxScale = 24f;
 
         private readonly ShopState _shop;
+        private readonly PartMountTable _mounts;
         private readonly Dictionary<int, PartDefinitionSO> _byId = new Dictionary<int, PartDefinitionSO>();
         private readonly Action _onChanged;
 
@@ -58,6 +60,7 @@ namespace ABRevival.Presentation
         private Vector2 _panStart;
         private Vector2 _panOrigin;
         private float _zoom = 1f;
+        private float _firePower;
 
         public AssemblyPresenter(
             VisualElement root,
@@ -65,12 +68,14 @@ namespace ABRevival.Presentation
             CraftBlueprintSO blueprint,
             IReadOnlyList<PartDefinitionSO> definitions,
             ShopState shop,
-            Action onChanged)
+            Action onChanged,
+            PartMountTable mounts)
         {
             _assembly = assembly;
             _blueprint = blueprint;
             _shop = shop;
             _onChanged = onChanged;
+            _mounts = mounts;
 
             if (definitions != null)
             {
@@ -162,10 +167,11 @@ namespace ABRevival.Presentation
             Button button = root.Q<Button>(name);
             if (button == null) return;
             _tabs.Add(button);
-            button.clicked += () => SetFilter(category);
+            button.clicked += () => SelectCategory(category);
         }
 
-        private void SetFilter(PartCategory? category)
+        /// <summary>Selects a category tab; null selects All. Public so PlayMode can drive the tabs.</summary>
+        public void SelectCategory(PartCategory? category)
         {
             _filter = category;
             RefreshTabs();
@@ -174,11 +180,12 @@ namespace ABRevival.Presentation
 
         private void RefreshTabs()
         {
+            PartCategory? activeCategory = _showCrafts ? null : _filter;
             for (int i = 0; i < _tabs.Count; i++)
             {
                 Button tab = _tabs[i];
                 tab.RemoveFromClassList("tab-active");
-                if (!_showCrafts && MatchesFilter(TabCategory(tab.name)))
+                if (!_showCrafts && TabCategory(tab.name) == activeCategory)
                 {
                     tab.AddToClassList("tab-active");
                 }
@@ -186,7 +193,8 @@ namespace ABRevival.Presentation
 
             if (_partsCraftsButton != null)
             {
-                _partsCraftsButton.AddToClassList("tab-active");
+                _partsCraftsButton.RemoveFromClassList("tab-active");
+                if (_showCrafts) _partsCraftsButton.AddToClassList("tab-active");
             }
         }
 
@@ -210,6 +218,7 @@ namespace ABRevival.Presentation
         private void RefreshStats()
         {
             AggregateCraftStats stats = _assembly.CurrentStats;
+            float strength = 0f;
             float firePower = 0f;
             int value = 0;
 
@@ -219,9 +228,10 @@ namespace ABRevival.Presentation
                 MountedPartData part = _assembly.GetPart(i);
                 if (!_byId.TryGetValue(part.partId, out PartDefinitionSO definition)) continue;
                 value += definition.cost;
+                strength += definition.turnFly * Mathf.Rad2Deg;
                 if (definition.category == PartCategory.Gun)
                 {
-                    firePower += definition.bulletDamage * Mathf.Max(1, definition.fireNum);
+                    firePower += definition.CalculateDisplayFirePower(FirePointCount(definition.partId));
                 }
             }
 
@@ -229,12 +239,13 @@ namespace ABRevival.Presentation
             _statName.text = string.IsNullOrEmpty(_blueprint?.craftName)
                 ? _assembly.HullName
                 : _blueprint.craftName;
-            _statHp.text = $"{stats.totalHealth:0}";
-            _statStrength.text = $"{_assembly.WingCount}/{_assembly.MaxWingCapacity}";
-            _statEngine.text = $"{stats.totalThrust:0}";
-            _statFire.text = $"{firePower:0.0}";
-            _statMass.text = $"{stats.totalMass:0}";
-            _statValue.text = value.ToString();
+            _statHp.text = stats.totalHealth.ToString("0", CultureInfo.InvariantCulture);
+            _statStrength.text = strength.ToString("0.0", CultureInfo.InvariantCulture);
+            _statEngine.text = stats.totalThrust.ToString("0", CultureInfo.InvariantCulture);
+            _statFire.text = firePower.ToString("0.00", CultureInfo.InvariantCulture);
+            _statMass.text = stats.totalMass.ToString("0", CultureInfo.InvariantCulture);
+            _statValue.text = value.ToString(CultureInfo.InvariantCulture);
+            _firePower = firePower;
 
             _hullLabel.text = _assembly.HullName;
             _wingLabel.text = $"Wings {_assembly.WingCount}/{_assembly.MaxWingCapacity}";
@@ -262,26 +273,44 @@ namespace ABRevival.Presentation
             if (_previewCanvas == null) return;
             _previewCanvas.Clear();
 
-            float minX = float.MaxValue;
-            float maxX = float.MinValue;
-            float minY = float.MaxValue;
-            float maxY = float.MinValue;
+            Span<MountedPartData> parts = stackalloc MountedPartData[CraftAssembly.MaxCapacity];
+            int partCount = 0;
             for (int i = 0; i < CraftAssembly.MaxCapacity; i++)
             {
                 if (!_assembly.IsSlotOccupied(i)) continue;
                 MountedPartData part = _assembly.GetPart(i);
-                if (!_byId.TryGetValue(part.partId, out PartDefinitionSO definition)) continue;
+                // The save payload does not persist the mirror variant; the catalog is authoritative.
+                if (_byId.TryGetValue(part.partId, out PartDefinitionSO definition))
+                    part.mirrored = definition.lr == 1;
+                parts[partCount++] = part;
+            }
+
+            if (partCount == 0) return;
+
+            Span<CraftPartPlacement> placements = stackalloc CraftPartPlacement[CraftAssembly.MaxCapacity];
+            int placementCount = CraftComposition.BuildPlayer(parts.Slice(0, partCount), _mounts, placements);
+            if (placementCount == 0) return;
+
+            float minX = float.MaxValue;
+            float maxX = float.MinValue;
+            float minY = float.MaxValue;
+            float maxY = float.MinValue;
+            for (int i = 0; i < placementCount; i++)
+            {
+                CraftPartPlacement placement = placements[i];
+                if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
                 Sprite sprite = definition.partSprite;
                 if (sprite == null) continue;
 
                 Vector2 contentCenter = ContentCenter(definition, sprite);
-                Vector2 contentSize = ContentSize(definition, sprite);
-                float x = part.localOffset.x + contentCenter.x;
-                float y = part.localOffset.y + contentCenter.y;
-                minX = Mathf.Min(minX, x - (contentSize.x * 0.5f));
-                maxX = Mathf.Max(maxX, x + (contentSize.x * 0.5f));
-                minY = Mathf.Min(minY, y - (contentSize.y * 0.5f));
-                maxY = Mathf.Max(maxY, y + (contentSize.y * 0.5f));
+                if (placement.mirrored) contentCenter.x = -contentCenter.x;
+                float x = placement.localOffset.x + contentCenter.x;
+                float y = placement.localOffset.y + contentCenter.y;
+                Vector2 spriteSize = sprite.rect.size;
+                minX = Mathf.Min(minX, x - (spriteSize.x * 0.5f));
+                maxX = Mathf.Max(maxX, x + (spriteSize.x * 0.5f));
+                minY = Mathf.Min(minY, y - (spriteSize.y * 0.5f));
+                maxY = Mathf.Max(maxY, y + (spriteSize.y * 0.5f));
             }
 
             if (minX > maxX) return;
@@ -301,25 +330,26 @@ namespace ABRevival.Presentation
             float boundsCenterX = (minX + maxX) * 0.5f;
             float boundsCenterY = (minY + maxY) * 0.5f;
 
-            for (int i = 0; i < CraftAssembly.MaxCapacity; i++)
+            for (int i = 0; i < placementCount; i++)
             {
-                if (!_assembly.IsSlotOccupied(i)) continue;
-                MountedPartData part = _assembly.GetPart(i);
-                if (!_byId.TryGetValue(part.partId, out PartDefinitionSO definition)) continue;
+                CraftPartPlacement placement = placements[i];
+                if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
                 Sprite sprite = definition.partSprite;
                 if (sprite == null) continue;
 
                 float width = sprite.rect.width * scale;
                 float height = sprite.rect.height * scale;
-                var element = new VisualElement { name = "preview-part-" + part.partId };
+                var element = new VisualElement { name = "preview-part-" + placement.partId };
                 element.style.position = Position.Absolute;
                 element.style.width = width;
                 element.style.height = height;
-                element.style.left = centerX + ((part.localOffset.x - boundsCenterX) * scale) - (width * 0.5f);
-                element.style.top = centerY - ((part.localOffset.y - boundsCenterY) * scale) - (height * 0.5f);
+                element.style.left = centerX + ((placement.localOffset.x - boundsCenterX) * scale) - (width * 0.5f);
+                element.style.top = centerY - ((placement.localOffset.y - boundsCenterY) * scale) - (height * 0.5f);
                 element.style.backgroundImage = new StyleBackground(sprite);
                 element.style.rotate = new StyleRotate(
-                    new Rotate(new Angle(part.localRotation * Mathf.Rad2Deg, AngleUnit.Degree)));
+                    new Rotate(new Angle(placement.localRotation * Mathf.Rad2Deg, AngleUnit.Degree)));
+                if (placement.mirrored)
+                    element.style.scale = new StyleScale(new Scale(new Vector3(-1f, 1f, 1f)));
                 _previewCanvas.Add(element);
             }
         }
@@ -364,16 +394,18 @@ namespace ABRevival.Presentation
             var row = new VisualElement();
             row.AddToClassList("row");
             row.AddToClassList(VisibleRowCount % 2 == 0 ? "row-even" : "row-odd");
-            AddCell(row, definition != null ? definition.partId.ToString() : part.partId.ToString(), "col-index");
+            AddCell(row, definition != null ? definition.partId.ToString(CultureInfo.InvariantCulture) : part.partId.ToString(CultureInfo.InvariantCulture), "col-index");
             AddCell(row, definition != null ? definition.partName : $"Part {part.partId}", "col-name");
             AddCell(row, CategoryLabel(part.category), "col-type");
             AddCell(row, definition != null ? LeftRightLabel(definition.lr) : "-", "col-lr");
-            AddCell(row, definition != null ? definition.health.ToString("0") : part.health.ToString("0"), "col-hp");
             AddCell(row, definition != null
-                ? (definition.turnFly * Mathf.Rad2Deg).ToString("0.0")
+                ? definition.health.ToString("0", CultureInfo.InvariantCulture)
+                : part.health.ToString("0", CultureInfo.InvariantCulture), "col-hp");
+            AddCell(row, definition != null
+                ? (definition.turnFly * Mathf.Rad2Deg).ToString("0.0", CultureInfo.InvariantCulture)
                 : "0.0", "col-steering");
-            AddCell(row, definition != null ? EngineColumn(definition) : part.thrust.ToString("0"), "col-engine");
-            AddCell(row, definition != null ? definition.mass.ToString("0") : part.mass.ToString("0"), "col-mass");
+            AddCell(row, definition != null ? EngineColumn(definition) : part.thrust.ToString("0", CultureInfo.InvariantCulture), "col-engine");
+            AddCell(row, definition != null ? definition.mass.ToString("0", CultureInfo.InvariantCulture) : part.mass.ToString("0", CultureInfo.InvariantCulture), "col-mass");
             AddCell(row, definition != null ? FireColumn(definition) : "0", "col-fire");
 
             int capturedId = definition != null ? definition.partId : part.partId;
@@ -407,11 +439,11 @@ namespace ABRevival.Presentation
             AddCell(row, string.IsNullOrEmpty(_blueprint?.craftName) ? _assembly.HullName : _blueprint.craftName, "col-name");
             AddCell(row, _assembly.HullCategory.ToString().ToUpperInvariant(), "col-type");
             AddCell(row, "-", "col-lr");
-            AddCell(row, _assembly.CurrentStats.totalHealth.ToString("0"), "col-hp");
+            AddCell(row, _assembly.CurrentStats.totalHealth.ToString("0", CultureInfo.InvariantCulture), "col-hp");
             AddCell(row, "-", "col-steering");
-            AddCell(row, _assembly.CurrentStats.totalThrust.ToString("0"), "col-engine");
-            AddCell(row, _assembly.CurrentStats.totalMass.ToString("0"), "col-mass");
-            AddCell(row, "0", "col-fire");
+            AddCell(row, _assembly.CurrentStats.totalThrust.ToString("0", CultureInfo.InvariantCulture), "col-engine");
+            AddCell(row, _assembly.CurrentStats.totalMass.ToString("0", CultureInfo.InvariantCulture), "col-mass");
+            AddCell(row, _firePower.ToString("0.00", CultureInfo.InvariantCulture), "col-fire");
             var edit = new Button(ToggleCrafts) { text = "EDIT" };
             edit.AddToClassList("row-action");
             row.Add(edit);
@@ -565,7 +597,8 @@ namespace ABRevival.Presentation
                 maxHealth = definition.health,
                 mass = definition.mass,
                 thrust = definition.thrust,
-                energyDraw = definition.energyDraw
+                energyDraw = definition.energyDraw,
+                mirrored = definition.lr == 1
             };
         }
 
@@ -578,23 +611,24 @@ namespace ABRevival.Presentation
                 content.y + (content.w * 0.5f) - (sprite.rect.height * 0.5f));
         }
 
-        private static Vector2 ContentSize(PartDefinitionSO definition, Sprite sprite)
-        {
-            Vector4 content = definition.spriteContentRect;
-            if (content.z <= 0f || content.w <= 0f) return sprite.rect.size;
-            return new Vector2(content.z, content.w);
-        }
-
         private static float2 DefaultOffset(PartCategory category, int slotIndex)
         {
             switch (category)
             {
                 case PartCategory.Body: return float2.zero;
                 case PartCategory.Wing: return new float2(slotIndex % 2 == 0 ? -16f : 16f, 0f);
-                case PartCategory.Engine: return new float2(0f, 8f);
-                case PartCategory.Gun: return new float2(0f, -16f);
+                case PartCategory.Engine: return new float2(0f, -16f);
+                case PartCategory.Gun: return new float2(0f, 8f);
                 default: return float2.zero;
             }
+        }
+
+        private int FirePointCount(int partId)
+        {
+            return _mounts != null && _mounts.TryGetPart(partId, out PartMountEntry entry) &&
+                   _mounts.TryGetSymbol(entry.mcName, out PartMountSymbol symbol)
+                ? symbol.firePoints.Length
+                : 0;
         }
 
         private static void AddCell(VisualElement row, string text, string className)
@@ -625,14 +659,15 @@ namespace ABRevival.Presentation
         private static string EngineColumn(PartDefinitionSO definition)
         {
             return definition.category == PartCategory.Gun
-                ? definition.CalculateEffectiveRange().ToString("0")
-                : definition.thrust.ToString("0.0");
+                ? definition.CalculateEffectiveRange().ToString("0", CultureInfo.InvariantCulture)
+                : definition.thrust.ToString("0.0", CultureInfo.InvariantCulture);
         }
 
-        private static string FireColumn(PartDefinitionSO definition)
+        private string FireColumn(PartDefinitionSO definition)
         {
             return definition.category == PartCategory.Gun
-                ? (definition.bulletDamage * Mathf.Max(1, definition.fireNum)).ToString("0.0")
+                ? definition.CalculateDisplayFirePower(FirePointCount(definition.partId))
+                    .ToString("0.00", CultureInfo.InvariantCulture)
                 : "0";
         }
 

@@ -147,16 +147,39 @@ namespace ABRevival.Core.Data
             return origin;
         }
 
-        /// <summary>Engine exhaust point (P marker) in hull space, or the part origin.</summary>
-        public float2 ExhaustPoint(int partId, float2 origin)
+        /// <summary>
+        /// Copies every F marker of a gun into <paramref name="destination"/> and returns the
+        /// count. Zero means the part has no muzzle marker. Allocation-free.
+        /// </summary>
+        public int CopyFirePoints(int partId, Span<float2> destination)
+        {
+            if (!_byPart.TryGetValue(partId, out PartMountEntry entry) ||
+                !_bySymbol.TryGetValue(entry.mcName, out PartMountSymbol symbol))
+            {
+                return 0;
+            }
+
+            int count = math.min(symbol.firePoints.Length, destination.Length);
+            for (int i = 0; i < count; i++) destination[i] = symbol.firePoints[i];
+            return count;
+        }
+
+        /// <summary>Engine exhaust point (P marker) in part-local space, or the origin.</summary>
+        public float2 ExhaustLocal(int partId)
         {
             if (_byPart.TryGetValue(partId, out PartMountEntry entry) &&
                 _bySymbol.TryGetValue(entry.mcName, out PartMountSymbol symbol) &&
                 symbol.hasPartPoint)
             {
-                return origin + symbol.partPoint;
+                return symbol.partPoint;
             }
-            return origin;
+            return float2.zero;
+        }
+
+        /// <summary>Engine exhaust point (P marker) in hull space, or the part origin.</summary>
+        public float2 ExhaustPoint(int partId, float2 origin)
+        {
+            return origin + ExhaustLocal(partId);
         }
 
         /// <summary>

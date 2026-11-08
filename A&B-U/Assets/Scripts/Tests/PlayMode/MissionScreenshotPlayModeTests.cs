@@ -111,7 +111,7 @@ namespace ABRevival.Tests.PlayMode
                         if (Mathf.Abs(rect.UvY - uv.y) > 0.00001f) continue;
                         if (Mathf.Abs(rect.UvWidth - uv.z) > 0.00001f) continue;
                         if (Mathf.Abs(rect.UvHeight - uv.w) > 0.00001f) continue;
-                        layer = Layer(placements[i].category);
+                        layer = CraftComposition.Layer(placements[i].category);
                         break;
                     }
 
@@ -183,14 +183,9 @@ namespace ABRevival.Tests.PlayMode
                     yield break;
                 }
 
-                if (File.Exists(goldenPath))
-                {
-                    AssertGolden(goldenPath, pixels);
-                }
-                else
-                {
-                    Debug.Log($"[MissionScreenshot] No golden at {goldenPath}; structural pixel assertions passed.");
-                }
+                Assert.IsTrue(File.Exists(goldenPath),
+                    $"No committed golden at {goldenPath}; a graphics device must not silently skip parity.");
+                AssertGolden(goldenPath, pixels);
             }
             finally
             {
@@ -204,17 +199,6 @@ namespace ABRevival.Tests.PlayMode
                 if (atlas != null) UnityEngine.Object.DestroyImmediate(atlas);
                 solver.Dispose();
                 simulation.Dispose();
-            }
-        }
-
-        private static int Layer(PartCategory category)
-        {
-            switch (category)
-            {
-                case PartCategory.Engine: return 0;
-                case PartCategory.Body: return 1;
-                case PartCategory.Wing: return 2;
-                default: return 3;
             }
         }
 

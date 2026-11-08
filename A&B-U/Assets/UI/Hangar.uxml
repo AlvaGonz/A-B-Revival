@@ -39,7 +39,6 @@
 
                 <ui:VisualElement class="stats-column">
                     <ui:VisualElement name="stats-card" class="stats-card">
-                        <ui:VisualElement class="stats-veil" />
                         <ui:VisualElement class="stat-row">
                             <ui:Label text="Type" class="stat-key" />
                             <ui:Label name="stat-type" text="-" class="stat-value" />
@@ -89,7 +88,7 @@
                     <ui:Button name="tab-engine" class="sprite-button tab-button tab-engine" tooltip="Engine parts" />
                     <ui:Button name="tab-gun" class="sprite-button tab-button tab-gun" tooltip="Gun parts" />
                 </ui:VisualElement>
-                <ui:VisualElement class="table-header">
+                <ui:VisualElement name="table-header" class="table-header">
                     <ui:Label text="Index" class="col col-index" />
                     <ui:Label text="Name" class="col col-name" />
                     <ui:Label text="Type" class="col col-type" />

@@ -21,9 +21,9 @@
         </ui:Image>
 
         <!-- bottom-left: battle-damage telemetry above the pilot bars -->
-        <ui:VisualElement name="hud-telemetry" class="hud-telemetry" picking-mode="Ignore">
+        <ui:Image name="hud-telemetry" class="hud-telemetry" picking-mode="Ignore">
             <ui:Label name="hud-lost-parts" text="" class="hud-telemetry-text" picking-mode="Ignore" />
-        </ui:VisualElement>
+        </ui:Image>
         <ui:VisualElement name="hud-bars" class="hud-bars" picking-mode="Ignore">
             <ui:VisualElement name="hud-health-bar" class="hud-bar">
                 <ui:Image name="hud-hull-fill" class="hud-bar-fill hud-health-fill" />
@@ -31,19 +31,19 @@
             <ui:VisualElement name="hud-shield-bar" class="hud-bar">
                 <ui:Image name="hud-shield-fill" class="hud-bar-fill hud-shield-fill" />
             </ui:VisualElement>
-            <ui:VisualElement name="hud-energy-bar" class="hud-bar hud-bar-last">
-                <ui:Image name="hud-energy-fill" class="hud-bar-fill hud-energy-fill" />
-            </ui:VisualElement>
             <ui:Label name="hud-hull-value" text="1000 / 1000" class="hud-hull-value" picking-mode="Ignore" />
         </ui:VisualElement>
         <ui:VisualElement name="hud-pilot-tile" class="hud-pilot-tile" picking-mode="Ignore">
+            <ui:Image name="hud-pilot-backing" class="hud-portrait-backing" />
             <ui:Image name="hud-pilot-portrait" class="hud-pilot-portrait" scale-mode="ScaleAndCrop" />
+            <ui:Image name="hud-pilot-health-pip" class="hud-portrait-pip" />
             <ui:Label name="hud-pilot-name" text="" class="hud-pilot-name" />
         </ui:VisualElement>
 
         <!-- bottom-right: minimap with the Captain portrait beside it -->
         <ui:Image name="hud-minimap" class="hud-minimap" />
         <ui:VisualElement name="hud-captain-tile" class="hud-captain-tile" picking-mode="Ignore">
+            <ui:Image name="hud-captain-backing" class="hud-portrait-backing" />
             <ui:Image name="hud-captain-portrait" class="hud-captain-portrait" scale-mode="ScaleAndCrop" />
             <ui:VisualElement name="hud-captain-health-track" class="hud-captain-health-track">
                 <ui:VisualElement name="hud-captain-health" class="hud-captain-health" />

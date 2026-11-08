@@ -46,6 +46,12 @@ namespace ABRevival.Core.Data
         public float muzzleSpeedAdd;
         public float accelerationAdd;
         public float angleAddDegrees;
+        public float accAngS;
+
+        // Bullet power terms from F4DataBullet.
+        public float bulletHp;
+        public float bulletDeadAct;
+        public float bulletBtwh;
 
         /// <summary>
         /// Calculates theoretical weapon effective firing range using ADR 0012 formula:
@@ -57,6 +63,32 @@ namespace ABRevival.Core.Data
             float v0 = projectileVelocity + (muzzleSpeedAdd * fireNum * 0.5f);
             float acc = burstAcceleration + (accelerationAdd * fireNum * 0.5f);
             return Ballistics.EffectiveRange(v0, acc, bulletLifetime);
+        }
+
+        /// <summary>F4DataFire.firePowRate in frozen frame units.</summary>
+        public float CalculateFirePowerRate()
+        {
+            float window = fireEx / (float)fireFrame;
+            float burst = window > 0f
+                ? (0.5f * accAngS + projectileVelocity * 15f) * fireNum / window
+                : 0f;
+            float rate = burst + 1000f / (fireFrame + fireStop);
+            return float.IsNaN(rate) || float.IsInfinity(rate) ? 0f : rate;
+        }
+
+        /// <summary>F4DataBullet.bulletPow with the frozen 60 FPS life rescale.</summary>
+        public float CalculateBulletPower()
+        {
+            float lifeAt60 = (float)Math.Round(bulletLifetime * (60f / 36f), MidpointRounding.AwayFromZero);
+            float hit = bulletBtwh > 0f ? bulletBtwh : 2f;
+            return bulletDamage * (lifeAt60 + 1f) + bulletHp + bulletDeadAct + (hit + hit) * 8f;
+        }
+
+        /// <summary>Frozen display fire power for one part (FormShop/ShowPart).</summary>
+        public float CalculateDisplayFirePower(int firePointCount)
+        {
+            if (category != PartCategory.Gun || firePointCount <= 0) return 0f;
+            return firePointCount * CalculateFirePowerRate() * CalculateBulletPower() / 300000f;
         }
 
         /// <summary>Converts the raw catalog values into Unity seconds and pixels per second.</summary>
@@ -93,6 +125,10 @@ namespace ABRevival.Core.Data
             so.muzzleSpeedAdd = muzzleSpeedAdd;
             so.accelerationAdd = accelerationAdd;
             so.angleAddDegrees = angleAddDegrees;
+            so.accAngS = accAngS;
+            so.bulletHp = bulletHp;
+            so.bulletDeadAct = bulletDeadAct;
+            so.bulletBtwh = bulletBtwh;
         }
     }
 
@@ -268,6 +304,7 @@ namespace ABRevival.Core.Data
                             record.muzzleSpeedAdd = fireDef.spdAdd;
                             record.accelerationAdd = fireDef.accAdd;
                             record.angleAddDegrees = fireDef.angAdd;
+                            record.accAngS = fireDef.accAngS;
                         }
 
                         if (bulletLookup.TryGetValue(bulletIdx, out bulletDef))
@@ -275,6 +312,9 @@ namespace ABRevival.Core.Data
                             hasBullet = true;
                             record.bulletLifetime = bulletDef.life;
                             record.bulletDamage = bulletDef.dmg;
+                            record.bulletHp = bulletDef.hp;
+                            record.bulletDeadAct = bulletDef.deadAct;
+                            record.bulletBtwh = bulletDef.btwh;
                         }
                     }
 

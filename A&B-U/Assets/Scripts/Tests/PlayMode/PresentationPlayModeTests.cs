@@ -108,7 +108,6 @@ namespace ABRevival.Tests.PlayMode
             state.SetMissionSeconds(92.4f);
             state.SetAiCount(3);
             state.SetEnemyDistance(812.6f);
-            state.SetEnergyFraction(0.25f);
             state.SetShieldFraction(0.75f);
             state.SetPilotName("Michael");
             state.SetRadarBearing(-90f);
@@ -123,7 +122,6 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual("813", root.Q<Label>(CombatHudPresenter.DistanceElement).text);
             Assert.AreEqual("Michael", root.Q<Label>(CombatHudPresenter.PilotNameElement).text);
 
-            Assert.AreEqual(25f, root.Q<VisualElement>(CombatHudPresenter.EnergyFillElement).style.width.value.value, 0.01f);
             Assert.AreEqual(75f, root.Q<VisualElement>(CombatHudPresenter.ShieldFillElement).style.width.value.value, 0.01f);
             Assert.AreEqual(40f, root.Q<VisualElement>(CombatHudPresenter.CaptainHealthElement).style.width.value.value, 0.01f);
 
@@ -153,7 +151,7 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(library.PortraitBacking, "hud_portrait_backing sprite");
             Assert.IsNotNull(library.HealthBar, "hud_health_bar sprite");
             Assert.IsNotNull(library.ShieldBar, "hud_shield_bar sprite");
-            Assert.IsNotNull(library.EnergyBar, "hud_energy_bar sprite");
+            Assert.IsNotNull(library.BarFrame, "hud_bar_frame sprite");
             Assert.IsNotNull(library.Reticle, "hud_reticle sprite");
             Assert.IsNotNull(library.ModeBadge, "hud_mode_badge sprite");
             Assert.IsNotNull(library.CameraBadge, "hud_camera_badge sprite");
@@ -169,14 +167,50 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual(library.RadarArrow, root.Q<Image>(CombatHudPresenter.RadarArrowElement).sprite);
             Assert.AreEqual(library.AiCount, root.Q<Image>(CombatHudPresenter.AiCountPanelElement).sprite);
             Assert.AreEqual(library.Minimap, root.Q<Image>(CombatHudPresenter.MinimapElement).sprite);
+            Assert.AreEqual(library.DamageTelemetryRow, root.Q<Image>(CombatHudPresenter.TelemetryElement).sprite);
             Assert.AreEqual(library.PilotPortrait, root.Q<Image>(CombatHudPresenter.PilotPortraitElement).sprite);
+            Assert.AreEqual(library.PortraitBacking, root.Q<Image>(CombatHudPresenter.PilotBackingElement).sprite);
+            Assert.AreEqual(library.PortraitHealthPip, root.Q<Image>(CombatHudPresenter.PilotHealthPipElement).sprite);
             Assert.AreEqual(library.CaptainPortrait, root.Q<Image>(CombatHudPresenter.CaptainPortraitElement).sprite);
+            Assert.AreEqual(library.PortraitBacking, root.Q<Image>(CombatHudPresenter.CaptainBackingElement).sprite);
             Assert.AreEqual(library.HealthBar, root.Q<Image>(CombatHudPresenter.HullFillElement).sprite);
             Assert.AreEqual(library.ShieldBar, root.Q<Image>(CombatHudPresenter.ShieldFillElement).sprite);
-            Assert.AreEqual(library.EnergyBar, root.Q<Image>(CombatHudPresenter.EnergyFillElement).sprite);
+            Assert.AreEqual(library.BarFrame,
+                root.Q<VisualElement>(CombatHudPresenter.BarsElement).style.backgroundImage.value.sprite);
             Assert.AreEqual(library.Reticle, root.Q<Image>(CombatHudPresenter.ReticleElement).sprite);
             Assert.AreEqual(library.ModeBadge, root.Q<Image>(CombatHudPresenter.ModeBadgeElement).sprite);
             Assert.AreEqual(library.CameraBadge, root.Q<Image>(CombatHudPresenter.CameraBadgeElement).sprite);
+        }
+
+        [Test]
+        public void HudPresenter_SteadyStateRenderDoesNotAllocate()
+        {
+            VisualElement root = CreateHudRoot();
+            var state = new CombatHudState();
+            state.SetHullHealth(750f, 1000f);
+            state.RecordLostPart(PartCategory.Gun);
+            state.SetMoney(1234);
+            state.SetMissionSeconds(92.4f);
+            state.SetAiCount(3);
+            state.SetEnemyDistance(812.6f);
+            state.SetShieldFraction(0.75f);
+            state.SetPilotName("Michael");
+            state.SetCaptainPresence(true);
+            state.SetCaptainMode(CaptainTacticalMode.FireSupport);
+            state.SetCaptainHealth(400f, 1000f);
+            state.CycleCameraDistance();
+            state.Tick(0.1f);
+
+            var presenter = new CombatHudPresenter(root);
+            CombatHudSnapshot snapshot = state.Snapshot();
+            presenter.Render(snapshot);
+
+            long before = System.GC.GetAllocatedBytesForCurrentThread();
+            for (int frame = 0; frame < 120; frame++) presenter.Render(snapshot);
+            long allocated = System.GC.GetAllocatedBytesForCurrentThread() - before;
+
+            Assert.AreEqual(0, allocated,
+                $"A steady-state HUD frame allocated {allocated} managed bytes; cache strings by value.");
         }
 
         [Test]
@@ -245,10 +279,12 @@ namespace ABRevival.Tests.PlayMode
                          CombatHudPresenter.RadarElement, CombatHudPresenter.DistanceElement,
                          CombatHudPresenter.MissionTimerElement, CombatHudPresenter.AiCountElement,
                          CombatHudPresenter.TelemetryElement, CombatHudPresenter.LostPartsElement,
-                         CombatHudPresenter.HullFillElement, CombatHudPresenter.ShieldFillElement,
-                         CombatHudPresenter.EnergyFillElement, CombatHudPresenter.PilotPortraitElement,
+                         CombatHudPresenter.BarsElement, CombatHudPresenter.HullFillElement,
+                         CombatHudPresenter.ShieldFillElement, CombatHudPresenter.PilotBackingElement,
+                         CombatHudPresenter.PilotPortraitElement, CombatHudPresenter.PilotHealthPipElement,
                          CombatHudPresenter.PilotNameElement, CombatHudPresenter.MinimapElement,
-                         CombatHudPresenter.CaptainPortraitElement, CombatHudPresenter.CaptainModeElement,
+                         CombatHudPresenter.CaptainBackingElement, CombatHudPresenter.CaptainPortraitElement,
+                         CombatHudPresenter.CaptainModeElement,
                          CombatHudPresenter.ModeBadgeElement, CombatHudPresenter.CameraBadgeElement,
                          CombatHudPresenter.ReticleElement
                      })
@@ -365,13 +401,16 @@ namespace ABRevival.Tests.PlayMode
             root.Add(new Image { name = CombatHudPresenter.TelemetryElement });
             root.Add(new Label { name = CombatHudPresenter.LostPartsElement });
             root.Add(new Label { name = CombatHudPresenter.HullValueElement });
+            root.Add(new VisualElement { name = CombatHudPresenter.BarsElement });
             root.Add(new Image { name = CombatHudPresenter.HullFillElement });
             root.Add(new Image { name = CombatHudPresenter.ShieldFillElement });
-            root.Add(new Image { name = CombatHudPresenter.EnergyFillElement });
+            root.Add(new Image { name = CombatHudPresenter.PilotBackingElement });
             root.Add(new Image { name = CombatHudPresenter.PilotPortraitElement });
+            root.Add(new Image { name = CombatHudPresenter.PilotHealthPipElement });
             root.Add(new Label { name = CombatHudPresenter.PilotNameElement });
             root.Add(new Image { name = CombatHudPresenter.MinimapElement });
             root.Add(new VisualElement { name = CombatHudPresenter.CaptainTileElement });
+            root.Add(new Image { name = CombatHudPresenter.CaptainBackingElement });
             root.Add(new Image { name = CombatHudPresenter.CaptainPortraitElement });
             root.Add(new VisualElement { name = CombatHudPresenter.CaptainHealthElement });
             root.Add(new Label { name = CombatHudPresenter.CaptainModeElement });

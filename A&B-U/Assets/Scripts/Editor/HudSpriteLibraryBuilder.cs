@@ -46,7 +46,7 @@ namespace ABRevival.Editor
             Assign(serialized, "_portraitBacking", Load("hud_portrait_backing"));
             Assign(serialized, "_healthBar", Load("hud_health_bar"));
             Assign(serialized, "_shieldBar", Load("hud_shield_bar"));
-            Assign(serialized, "_energyBar", Load("hud_energy_bar"));
+            Assign(serialized, "_barFrame", Load("hud_bar_frame"));
             Assign(serialized, "_reticle", Load("hud_reticle"));
             Assign(serialized, "_modeBadge", Load("hud_mode_badge"));
             Assign(serialized, "_cameraBadge", Load("hud_camera_badge"));

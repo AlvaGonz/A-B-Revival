@@ -28,6 +28,43 @@ namespace ABRevival.Tests.PlayMode
         }
 
         [Test]
+        public void MultiPortGun_FiresFromEveryMuzzle()
+        {
+            using var simulation = new ScheduledCombatSimulation();
+            simulation.Init(maxShips: 1, maxProjectiles: 8);
+            simulation.PlayerIndex = 0;
+            simulation.ShipCount = 1;
+            simulation.SetShip(0, new ShipEntity
+            {
+                position = float2.zero,
+                rotation = 0f,
+                mass = 100f,
+                health = 1000f,
+                maxHealth = 1000f,
+                thrustPower = 0f,
+                turnSpeed = 0f,
+                drag = 0f,
+                factionId = 0
+            });
+
+            var weapons = new WeaponSystem(simulation, simulation) { PlayerShipIndex = 0 };
+            Span<WeaponMount> mounts = stackalloc WeaponMount[3];
+            mounts[0] = new WeaponMount { spec = ReferenceGun(), localOffset = new float2(-9.9f, 26f) };
+            mounts[1] = new WeaponMount { spec = ReferenceGun(), localOffset = new float2(9.9f, 26f) };
+            mounts[2] = new WeaponMount { spec = ReferenceGun(), localOffset = new float2(0f, 26f) };
+            weapons.RegisterCraft(0, mounts);
+
+            var input = new FixedFireInput { FireHeld = false, Autofire = true };
+            for (int tick = 0; tick < 10 && simulation.ProjectileCount < 3; tick++)
+                weapons.Tick(input);
+
+            Assert.AreEqual(3, simulation.ProjectileCount, "A three-port gun must fire from every muzzle.");
+            Assert.AreEqual(-9.9f, simulation.GetProjectile(0).position.x, 0.01f);
+            Assert.AreEqual(9.9f, simulation.GetProjectile(1).position.x, 0.01f);
+            Assert.AreEqual(0f, simulation.GetProjectile(2).position.x, 0.01f);
+        }
+
+        [Test]
         public void AutofireVolley_HitsTargetPart_DetachesIt_AndUpdatesHudTelemetry()
         {
             using var simulation = new ScheduledCombatSimulation();

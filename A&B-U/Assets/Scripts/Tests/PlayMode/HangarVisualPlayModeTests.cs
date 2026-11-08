@@ -71,6 +71,7 @@ namespace ABRevival.Tests.PlayMode
             AssertSprite(root.Q("hangar-frame"), "hangar-frame");
             AssertSprite(root.Q("stats-card"), "stats-card");
             AssertSprite(root.Q("table-area"), "table-area");
+            AssertSprite(root.Q("table-header"), "table-header");
             AssertSprite(root.Q("launch-button"), "launch-button");
             AssertSprite(root.Q("merge-button"), "merge-button");
             AssertSprite(root.Q("new-button"), "new-button");
@@ -91,6 +92,19 @@ namespace ABRevival.Tests.PlayMode
             {
                 AssertSprite(preview[i], "preview part " + i);
             }
+
+            AssertPreviewFitsInsideTheClip(root.Q<VisualElement>("preview-clip"), preview);
+
+            // Frozen F4ShowData stats: summed turnFly in degrees and the FormShop fire formula.
+            Assert.AreEqual("540.0", root.Q<Label>("stat-strength").text, "Str. must be the summed turn rate.");
+            Assert.AreEqual("1.02", root.Q<Label>("stat-fire").text, "Fire must use the frozen display formula.");
+
+            // Exactly one category tab is active: All by default, then the selected category.
+            AssertSingleActiveTab(root, "tab-all");
+            hangar.Assembly.SelectCategory(ABRevival.Core.Data.PartCategory.Wing);
+            AssertSingleActiveTab(root, "tab-wing");
+            hangar.Assembly.SelectCategory(null);
+            AssertSingleActiveTab(root, "tab-all");
 
             var parts = root.Q<ScrollView>("owned-parts-list");
             Assert.IsNotNull(parts, "Parts table is missing.");
@@ -134,6 +148,49 @@ namespace ABRevival.Tests.PlayMode
             Background background = element.style.backgroundImage.value;
             Assert.IsTrue(background.sprite != null || background.texture != null,
                 label + " has no extracted sprite background.");
+        }
+
+        private static void AssertPreviewFitsInsideTheClip(VisualElement clip, VisualElement preview)
+        {
+            Assert.IsNotNull(clip, "Hangar preview clip is missing.");
+            Rect clipBounds = clip.worldBound;
+            Assert.Greater(clipBounds.width, 0f, "The preview clip has no layout width.");
+            Assert.Greater(clipBounds.height, 0f, "The preview clip has no layout height.");
+
+            float minX = float.MaxValue;
+            float maxX = float.MinValue;
+            float minY = float.MaxValue;
+            float maxY = float.MinValue;
+            for (int i = 0; i < preview.childCount; i++)
+            {
+                Rect bounds = preview[i].worldBound;
+                Assert.Greater(bounds.width, 0f, "Preview part " + i + " has no width.");
+                Assert.Greater(bounds.height, 0f, "Preview part " + i + " has no height.");
+                Assert.GreaterOrEqual(bounds.xMin, clipBounds.xMin - 1f, "Preview part " + i + " clips on the left.");
+                Assert.LessOrEqual(bounds.xMax, clipBounds.xMax + 1f, "Preview part " + i + " clips on the right.");
+                Assert.GreaterOrEqual(bounds.yMin, clipBounds.yMin - 1f, "Preview part " + i + " clips on the top.");
+                Assert.LessOrEqual(bounds.yMax, clipBounds.yMax + 1f, "Preview part " + i + " clips on the bottom.");
+                minX = Mathf.Min(minX, bounds.xMin);
+                maxX = Mathf.Max(maxX, bounds.xMax);
+                minY = Mathf.Min(minY, bounds.yMin);
+                maxY = Mathf.Max(maxY, bounds.yMax);
+            }
+
+            float unionArea = Mathf.Max(0f, maxX - minX) * Mathf.Max(0f, maxY - minY);
+            Assert.Greater(unionArea, clipBounds.width * clipBounds.height * 0.2f,
+                "The assembled craft must use the preview area, not render as a tiny thumbnail.");
+        }
+
+        private static void AssertSingleActiveTab(VisualElement root, string expected)
+        {
+            string[] tabs = { "tab-all", "tab-body", "tab-wing", "tab-engine", "tab-gun" };
+            for (int i = 0; i < tabs.Length; i++)
+            {
+                var tab = root.Q<Button>(tabs[i]);
+                Assert.IsNotNull(tab, tabs[i] + " is missing.");
+                Assert.AreEqual(tabs[i] == expected, tab.ClassListContains("tab-active"),
+                    tabs[i] + " active state is wrong; only " + expected + " may be active.");
+            }
         }
 
         private static int RowCount(ScrollView list)
