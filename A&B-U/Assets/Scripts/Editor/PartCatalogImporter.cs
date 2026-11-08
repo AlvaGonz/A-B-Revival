@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace ABRevival.Editor
         private const string FlyBinRelativePath = "../src/assets/binaryData/3_all.AllData_defFly.bin";
         private const string OutputDirectory = "Assets/Data/Parts";
         private const string ResourcesDirectory = "Assets/Resources/Data";
+        private const string PartSpriteDirectory = "Assets/Art/Sprites/Parts";
 
         private static readonly string[] RuntimeSourceNames =
         {
@@ -61,6 +63,7 @@ namespace ABRevival.Editor
 
             CopyRuntimeSources(projectRoot);
 
+            Dictionary<int, string> spriteFiles = PartSpriteFiles(records);
             int createdCount = 0;
             AssetDatabase.StartAssetEditing();
             try
@@ -78,6 +81,11 @@ namespace ABRevival.Editor
                     }
 
                     record.PopulateScriptableObject(partSO);
+                    if (spriteFiles.TryGetValue(record.partId, out string spriteFile))
+                    {
+                        partSO.partSprite = AssetDatabase.LoadAssetAtPath<Sprite>(PartSpriteDirectory + "/" + spriteFile);
+                    }
+
                     UnityEditor.EditorUtility.SetDirty(partSO);
                     createdCount++;
                 }
@@ -90,6 +98,17 @@ namespace ABRevival.Editor
             }
 
             Debug.Log($"[PartCatalogImporter] Successfully imported {createdCount} PartDefinitionSO assets into {OutputDirectory}.");
+        }
+
+        private static Dictionary<int, string> PartSpriteFiles(IReadOnlyList<PartDefinitionRecord> records)
+        {
+            var files = new Dictionary<int, string>();
+            foreach (PartSpriteMapping mapping in PartSpriteMap.Build(records))
+            {
+                files[mapping.partId] = mapping.fileName;
+            }
+
+            return files;
         }
 
         /// <summary>

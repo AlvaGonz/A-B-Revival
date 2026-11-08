@@ -20,6 +20,32 @@ namespace ABRevival.Presentation
         [SerializeField] private CraftBlueprintSO blueprint;
         [SerializeField] private int startingMoney = 2000;
 
+        [Header("Original UI sprites (frozen 2011 UI library)")]
+        [SerializeField] private Sprite hangarBackground;
+        [SerializeField] private Sprite hangarHeader;
+        [SerializeField] private Sprite hangarFrame;
+        [SerializeField] private Sprite hangarPanel;
+        [SerializeField] private Sprite hangarTableHeader;
+        [SerializeField] private Sprite hangarStatsCard;
+        [SerializeField] private Sprite buttonMerge;
+        [SerializeField] private Sprite buttonNew;
+        [SerializeField] private Sprite buttonBackToCenter;
+        [SerializeField] private Sprite buttonPartsCrafts;
+        [SerializeField] private Sprite buttonLaunch;
+        [SerializeField] private Sprite buttonAccept;
+        [SerializeField] private Sprite buttonReset;
+        [SerializeField] private Sprite buttonAdd;
+        [SerializeField] private Sprite categoryAll;
+        [SerializeField] private Sprite categoryBody;
+        [SerializeField] private Sprite categoryWing;
+        [SerializeField] private Sprite categoryEngine;
+        [SerializeField] private Sprite categoryGun;
+        [SerializeField] private Sprite thumbnailBody;
+        [SerializeField] private Sprite thumbnailWing;
+        [SerializeField] private Sprite thumbnailEngine;
+        [SerializeField] private Sprite thumbnailGun;
+        [SerializeField] private Sprite thumbnailModule;
+
         private UIDocument _document;
         private ShopCatalog _catalog;
         private ShopState _shop;
@@ -90,12 +116,16 @@ namespace ABRevival.Presentation
             _assembly = BuildAssembly(_runtimeBlueprint);
 
             VisualElement root = _document.rootVisualElement;
+            ApplySkin(root);
             _assemblyPresenter = new AssemblyPresenter(
                 root, _assembly, _runtimeBlueprint, _definitions, _shop, OnDomainChanged);
-            _shopPresenter = new ShopPresenter(root, _shop, OnDomainChanged);
+            _shopPresenter = new ShopPresenter(
+                root, _shop, OnDomainChanged, _definitions,
+                buttonAdd,
+                thumbnailBody, thumbnailWing, thumbnailEngine, thumbnailGun, thumbnailModule);
 
             Button launchButton = root.Q<Button>("launch-button");
-            if (launchButton != null) launchButton.clicked += OnLaunchClicked;
+            if (launchButton != null) launchButton.clicked += RequestLaunch;
 
             _initialized = true;
             if (save != null)
@@ -181,9 +211,49 @@ namespace ABRevival.Presentation
             SetStoryLabel(storyIndex);
         }
 
-        private void OnLaunchClicked()
+        /// <summary>Raises the launch intent; the button and PlayMode tests use the same seam.</summary>
+        public void RequestLaunch()
         {
             LaunchRequested?.Invoke();
+        }
+
+        /// <summary>
+        /// Applies the extracted 2011 sprite set to the named controls. Every background is
+        /// an explicit project asset wired by BootSceneBuilder; no theme art is relied on.
+        /// </summary>
+        private void ApplySkin(VisualElement root)
+        {
+            SetBackground(root, "hangar-screen", hangarBackground);
+            SetBackground(root, "hangar-header", hangarHeader);
+            SetBackground(root, "hangar-frame", hangarFrame);
+            SetBackground(root, "table-area", hangarPanel);
+            SetBackground(root, "stats-card", hangarStatsCard);
+
+            VisualElement tableHeader = root.Q("table-header");
+            if (tableHeader != null) tableHeader.style.backgroundImage = new StyleBackground(hangarTableHeader);
+
+            SetBackground(root, "launch-button", buttonLaunch);
+            SetBackground(root, "merge-button", buttonMerge);
+            SetBackground(root, "new-button", buttonNew);
+            SetBackground(root, "back-to-center-button", buttonBackToCenter);
+            SetBackground(root, "parts-crafts-button", buttonPartsCrafts);
+            SetBackground(root, "checkout-button", buttonAccept);
+            SetBackground(root, "clear-stack-button", buttonReset);
+
+            SetBackground(root, "tab-all", categoryAll);
+            SetBackground(root, "tab-body", categoryBody);
+            SetBackground(root, "tab-wing", categoryWing);
+            SetBackground(root, "tab-engine", categoryEngine);
+            SetBackground(root, "tab-gun", categoryGun);
+        }
+
+        private static void SetBackground(VisualElement root, string name, Sprite sprite)
+        {
+            VisualElement element = root.Q(name);
+            if (element != null && sprite != null)
+            {
+                element.style.backgroundImage = new StyleBackground(sprite);
+            }
         }
 
         private void SetStoryLabel(int storyIndex)
@@ -291,7 +361,7 @@ namespace ABRevival.Presentation
                 source.hullHealth = 1300f;
             }
 
-            var mounted = new List<MountedPartData>(2);
+            var mounted = new List<MountedPartData>(5);
             mounted.Add(new MountedPartData
             {
                 partId = body != null ? body.partId : 0,
@@ -301,22 +371,29 @@ namespace ABRevival.Presentation
                 mass = source.hullMass
             });
 
-            PartDefinitionSO gun = FindPartDefinition(71);
-            if (gun != null)
-            {
-                mounted.Add(new MountedPartData
-                {
-                    partId = gun.partId,
-                    category = gun.category,
-                    health = gun.health,
-                    maxHealth = gun.health,
-                    mass = gun.mass,
-                    localOffset = new Unity.Mathematics.float2(0f, -60f)
-                });
-            }
+            AddDefaultPart(mounted, FindPartDefinition(133), 0f, 16f);
+            AddDefaultPart(mounted, FindPartDefinition(173), -30f, 0f);
+            AddDefaultPart(mounted, FindPartDefinition(174), 30f, 0f);
+            AddDefaultPart(mounted, FindPartDefinition(71), 0f, -30f);
 
             source.mountedParts = mounted.ToArray();
             return source;
+        }
+
+        private static void AddDefaultPart(List<MountedPartData> mounted, PartDefinitionSO definition, float x, float y)
+        {
+            if (definition == null) return;
+            mounted.Add(new MountedPartData
+            {
+                partId = definition.partId,
+                category = definition.category,
+                health = definition.health,
+                maxHealth = definition.health,
+                mass = definition.mass,
+                thrust = definition.thrust,
+                energyDraw = definition.energyDraw,
+                localOffset = new Unity.Mathematics.float2(x, y)
+            });
         }
 
     }

@@ -20,6 +20,9 @@ MonoBehaviour:
   mass: 60
   thrust: 0
   energyDraw: 0
+  turnFly: 21.46755
+  lr: 1
+  partSprite: {fileID: 21300000, guid: b19e841dba0f6b04fb039dcf4f8533eb, type: 3}
   projectileVelocity: 0
   burstAcceleration: 0
   bulletLifetime: 0
