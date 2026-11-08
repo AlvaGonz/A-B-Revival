@@ -39,6 +39,7 @@ namespace ABRevival.Presentation
         private const string DefBulletResourcePath = "Data/11_all.AllData_defBullet";
 
         [SerializeField] private CenterController _center;
+        [SerializeField] private FactoryController _factory;
         [SerializeField] private TalkScreen _talkScreen;
         [SerializeField] private CinematicPlayer _cinematicPlayer;
         [SerializeField] private CombatHudBehaviour _hud;
@@ -118,6 +119,9 @@ namespace ABRevival.Presentation
             if (_combatInput == null) _combatInput = gameObject.AddComponent<MouseCombatFireInput>();
 
             if (_center != null) _center.Changed += OnCenterChanged;
+            if (_center != null) _center.FactoryRequested += OnFactoryRequested;
+            if (_factory != null) _factory.Changed += OnCenterChanged;
+            if (_factory != null) _factory.Closed += OnFactoryClosed;
             if (_talkScreen != null)
             {
                 _talkScreen.Completed += OnTalkCompleted;
@@ -139,6 +143,9 @@ namespace ABRevival.Presentation
         private void OnDestroy()
         {
             if (_center != null) _center.Changed -= OnCenterChanged;
+            if (_center != null) _center.FactoryRequested -= OnFactoryRequested;
+            if (_factory != null) _factory.Changed -= OnCenterChanged;
+            if (_factory != null) _factory.Closed -= OnFactoryClosed;
             if (_talkScreen != null) _talkScreen.Completed -= OnTalkCompleted;
             if (_flight != null)
             {
@@ -227,7 +234,10 @@ namespace ABRevival.Presentation
         {
             try
             {
-                _center?.CaptureSave(payload);
+                // Only the active screen owns the live fleet; capturing the other one would
+                // write a stale blueprint list over the edit in progress.
+                if (State == GameFlowState.Factory) _factory?.CaptureSave(payload);
+                else _center?.CaptureSave(payload);
                 PlayerSaveCodec.SaveToFile(_savePath, payload);
             }
             catch (Exception exception)
@@ -236,10 +246,39 @@ namespace ABRevival.Presentation
             }
         }
 
-        /// <summary>Center edits (Player pick, companions, blueprint) persist immediately.</summary>
+        /// <summary>Center or Factory edits (Player pick, companions, blueprint, parts) persist immediately.</summary>
         private void OnCenterChanged()
         {
             Autosave(_save);
+        }
+
+        // ---------------- Factory ----------------
+
+        /// <summary>Center's FACTORY button opens the dedicated assembly screen (#175).</summary>
+        private void OnFactoryRequested()
+        {
+            if (State != GameFlowState.Center || _center == null || _factory == null) return;
+
+            _center.CaptureSave(_save);
+            _factory.Initialize(_save, _center.SelectedCraftIndex);
+            _center.SetVisible(false);
+            _factory.SetVisible(true);
+            _assemblyAudio?.PlayAssemblyMusic();
+            State = GameFlowState.Factory;
+        }
+
+        /// <summary>Factory's Back to Center persists the blueprints, then Center reloads them.</summary>
+        private void OnFactoryClosed()
+        {
+            if (State != GameFlowState.Factory || _factory == null) return;
+
+            _factory.CaptureSave(_save);
+            _factory.SetVisible(false);
+            _center?.ApplySave(_save);
+            _center?.SetVisible(true);
+            State = GameFlowState.Center;
+            Autosave(_save);
+            _assemblyAudio?.PlayAssemblyMusic();
         }
 
         private void EnterCenter(bool firstBoot)
@@ -255,6 +294,7 @@ namespace ABRevival.Presentation
 
             SetFlowVisible(false);
             _talkScreen?.SetVisible(false);
+            _factory?.SetVisible(false);
             if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
 
             if (_center != null)
@@ -1325,6 +1365,7 @@ namespace ABRevival.Presentation
         Briefing = 2,
         Mission = 3,
         Result = 4,
-        Return = 5
+        Return = 5,
+        Factory = 6
     }
 }

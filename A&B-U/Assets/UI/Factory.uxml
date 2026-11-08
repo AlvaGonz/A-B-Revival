@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Factory.uss" />
+    <ui:VisualElement name="factory-root" class="factory-root">
+        <ui:VisualElement name="factory-screen" class="factory-screen">
+            <ui:VisualElement name="factory-header" class="factory-header">
+                <ui:Label name="factory-title" text="Edit" class="factory-title" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="factory-body" class="factory-body">
+                <ui:VisualElement name="undo-strip" class="undo-strip">
+                    <ui:Button name="undo-0" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-1" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-2" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-3" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-4" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-5" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-6" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-7" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-8" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-9" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-10" text="-" class="undo-button" tooltip="Removed part" />
+                    <ui:Button name="undo-11" text="-" class="undo-button" tooltip="Removed part" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="preview-column">
+                    <ui:VisualElement name="preview-frame" class="preview-frame">
+                        <ui:VisualElement name="preview-clip" class="preview-clip">
+                            <ui:VisualElement name="preview-canvas" class="preview-canvas" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:Label name="preview-name" text="-" class="preview-name" />
+                    <ui:VisualElement class="preview-actions">
+                        <ui:Button name="merge-button" class="sprite-button action-button" tooltip="Merge this craft" />
+                        <ui:Button name="new-button" class="sprite-button action-button" tooltip="Break this craft to parts" />
+                        <ui:Button name="add-button" class="sprite-button action-button" tooltip="Add as a new craft" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="detail-column">
+                    <ui:VisualElement class="view-controls">
+                        <ui:Button name="help-button" class="sprite-button help-button" tooltip="Help" />
+                        <ui:Button name="zoom-in-button" text="+" class="zoom-button" tooltip="Zoom in" />
+                        <ui:Button name="zoom-out-button" text="-" class="zoom-button" tooltip="Zoom out" />
+                        <ui:Button name="center-view-button" text="C" class="zoom-button" tooltip="Center view" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="detail-spacer" />
+                    <ui:VisualElement name="detail-card" class="detail-card">
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Hp" class="detail-key" />
+                            <ui:Label name="detail-hp" text="0" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Steering" class="detail-key" />
+                            <ui:Label name="detail-steering" text="0.0" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Speed" class="detail-key" />
+                            <ui:Label name="detail-speed" text="0.0" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Fire Pow." class="detail-key" />
+                            <ui:Label name="detail-fire" text="0.00" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row detail-row-wings">
+                            <ui:Label text="Wings" class="detail-key" />
+                            <ui:Label name="wing-label" text="Wings 0/0" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Parts" class="detail-key" />
+                            <ui:Label name="detail-parts" text="0" class="detail-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:Label name="preview-hint" text="Tap: Select | Drag: Move | Drag Pan: Canvas" class="preview-hint" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="stats-column" class="stats-column">
+                    <ui:VisualElement name="stats-card" class="stats-card">
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Name" class="stat-key" />
+                            <ui:Label name="stat-name" text="-" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Hp" class="stat-key" />
+                            <ui:Label name="stat-hp" text="0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Fire pow." class="stat-key" />
+                            <ui:Label name="stat-fire" text="0.00" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Speed" class="stat-key" />
+                            <ui:Label name="stat-speed" text="0.0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Steering" class="stat-key" />
+                            <ui:Label name="stat-steering" text="0.0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Class" class="stat-key" />
+                            <ui:Label name="stat-class" text="F" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Parts" class="stat-key" />
+                            <ui:Label name="stat-parts" text="0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Value" class="stat-key" />
+                            <ui:Label name="stat-value" text="0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:Label name="hull-label" text="-" class="hull-label" />
+                    </ui:VisualElement>
+
+                    <ui:Button name="back-to-center-button" class="sprite-button back-button" tooltip="Back to Center" />
+                    <ui:Button name="parts-crafts-button" class="sprite-button parts-crafts-button" tooltip="Parts / crafts" />
+                    <ui:Label name="assembly-error" text="" class="error-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="table-area" class="table-area">
+                <ui:VisualElement name="table-tabs" class="table-tabs">
+                    <ui:Button name="tab-all" class="sprite-button tab-button" tooltip="All parts" />
+                    <ui:Button name="tab-body" class="sprite-button tab-button" tooltip="Body parts" />
+                    <ui:Button name="tab-wing" class="sprite-button tab-button" tooltip="Wing parts" />
+                    <ui:Button name="tab-engine" class="sprite-button tab-button" tooltip="Engine parts" />
+                    <ui:Button name="tab-gun" class="sprite-button tab-button" tooltip="Gun parts" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="table-header" class="table-header">
+                    <ui:Label text="Index" class="col col-index" />
+                    <ui:Label text="Name" class="col col-name" />
+                    <ui:Label text="Type" class="col col-type" />
+                    <ui:Label text="L.R." class="col col-lr" />
+                    <ui:Label text="Hp" class="col col-hp" />
+                    <ui:Label text="Steering" class="col col-steering" />
+                    <ui:Label text="Engine" class="col col-engine" />
+                    <ui:Label text="Mass" class="col col-mass" />
+                    <ui:Label text="Fire Power" class="col col-fire" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="crafts-header" class="table-header">
+                    <ui:Label text="Index" class="col col-index" />
+                    <ui:Label text="Name" class="col col-name" />
+                    <ui:Label text="" class="col col-actions" />
+                </ui:VisualElement>
+
+                <ui:ScrollView name="owned-parts-list" class="parts-table" />
+                <ui:ScrollView name="crafts-list" class="parts-table" />
+
+                <ui:VisualElement class="table-footer">
+                    <ui:Button name="first-button" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
+                    <ui:Button name="prev-button" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
+                    <ui:Label name="page-label" text="1 / 1" class="page-label" />
+                    <ui:Button name="next-button" text="&gt;" class="sprite-button page-button" tooltip="Next page" />
+                    <ui:Button name="last-button" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="factory-help" class="factory-help">
+            <ui:VisualElement class="help-panel">
+                <ui:Label text="FACTORY" class="help-title" />
+                <ui:Label text="Pick a part row and merge it into the craft. Break a mounted part to send it back to inventory. New breaks everything except the chassis; Merge stores the craft and returns to the craft list." class="help-body" />
+                <ui:Button name="help-close" text="BACK" class="text-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

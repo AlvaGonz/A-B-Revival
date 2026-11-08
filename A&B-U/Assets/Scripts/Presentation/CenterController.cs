@@ -1,24 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using ABRevival.Core.Data;
 using ABRevival.Core.Persistence;
 using ABRevival.Core.Shop;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace ABRevival.Presentation
 {
-    /// <summary>2x mount sprite plus its opaque pixel rect in bottom-left texture space.</summary>
-    [Serializable]
-    public sealed class MountArtEntry
-    {
-        public Sprite sprite;
-        public Vector4 contentRect;
-    }
-
     /// <summary>
     /// Scene entry point for Center (the frozen UIChooseFlyAI dashboard): craft preview,
     /// F4ShowData stat card, Player/AI assignment, companion grades, Reset/Best, pagination
@@ -55,7 +45,7 @@ namespace ABRevival.Presentation
         private PartMountTable _mountTable;
         private CraftCatalog _craftCatalog;
         private Dictionary<int, PartDefinitionSO> _byId;
-        private Dictionary<string, MountArtEntry> _mountSprites;
+        private MountArtLookup _mountArtLookup;
         private List<PartDefinitionSO> _definitions;
         private PlayerSaveData _payload = new PlayerSaveData();
 
@@ -107,6 +97,9 @@ namespace ABRevival.Presentation
 
         /// <summary>Raised after a Center action mutates the save payload.</summary>
         public event Action Changed;
+
+        /// <summary>Raised when the player asks for the dedicated Factory screen (#175).</summary>
+        public event Action FactoryRequested;
 
         /// <summary>Current shop money, exposed for boot/save verification.</summary>
         public int Money => _shop != null ? _shop.Money : 0;
@@ -187,7 +180,7 @@ namespace ABRevival.Presentation
             _catalog = BuildCatalog(_definitions);
             _shop = new ShopState(_catalog, startingMoney);
             _mountTable = LoadMountTable();
-            BuildMountSpriteLookup();
+            _mountArtLookup = new MountArtLookup(_mountTable, mountArt);
 
             VisualElement root = _document.rootVisualElement;
             ApplySkin(root);
@@ -404,7 +397,7 @@ namespace ABRevival.Presentation
             if (_infoButton != null) _infoButton.clicked += () => OpenPlaceholder("INFO");
             if (_readyButton != null) _readyButton.clicked += () => OpenPlaceholder("READY");
             if (_shopButton != null) _shopButton.clicked += () => OpenPlaceholder("SHOP");
-            if (_factoryButton != null) _factoryButton.clicked += () => OpenPlaceholder("FACTORY");
+            if (_factoryButton != null) _factoryButton.clicked += () => FactoryRequested?.Invoke();
             if (_backButton != null) _backButton.clicked += () => OpenPlaceholder("MAIN MENU");
             if (_placeholderBack != null) _placeholderBack.clicked += ShowCenter;
             if (_firstButton != null) _firstButton.clicked += FirstPage;
@@ -600,37 +593,27 @@ namespace ABRevival.Presentation
         {
             if (_previewCanvas == null || _previewClip == null || _fleet.Count == 0) return;
 
-            _previewCanvas.Clear();
             CraftAssembly assembly = _assemblies[ClampCraftIndex(_selectedIndex)];
 
             Span<MountedPartData> parts = stackalloc MountedPartData[CraftAssembly.MaxCapacity];
-            int partCount = 0;
-            for (int i = 0; i < CraftAssembly.MaxCapacity; i++)
+            int partCount = CraftPreviewPainter.CollectParts(assembly, _byId, parts);
+            if (partCount == 0)
             {
-                if (!assembly.IsSlotOccupied(i)) continue;
-                MountedPartData part = assembly.GetPart(i);
-                if (_byId.TryGetValue(part.partId, out PartDefinitionSO definition))
-                    part.mirrored = definition.lr == 1;
-                parts[partCount++] = part;
+                _previewCanvas.Clear();
+                return;
             }
-
-            if (partCount == 0) return;
 
             Span<CraftPartPlacement> placements = stackalloc CraftPartPlacement[CraftAssembly.MaxCapacity];
-            int placementCount = CraftComposition.BuildPlayer(parts.Slice(0, partCount), _mountTable, placements);
-            if (placementCount == 0) return;
-
-            bool useMountArt = true;
-            List<int> missingMountArt = null;
-            for (int i = 0; i < placementCount; i++)
+            int placementCount = CraftPreviewPainter.PlaceParts(
+                parts.Slice(0, partCount), _mountTable, placements);
+            if (placementCount == 0)
             {
-                int partId = placements[i].partId;
-                if (TryGetMountSprite(partId, out _)) continue;
-                useMountArt = false;
-                missingMountArt ??= new List<int>();
-                if (!missingMountArt.Contains(partId)) missingMountArt.Add(partId);
+                _previewCanvas.Clear();
+                return;
             }
 
+            bool useMountArt = CraftPreviewPainter.AllUseMountArt(
+                placements.Slice(0, placementCount), _mountArtLookup, out List<int> missingMountArt);
             PreviewUsesMountArt = useMountArt;
             if (!useMountArt)
             {
@@ -647,66 +630,17 @@ namespace ABRevival.Presentation
                 canvasHeight = 510f;
             }
 
-            float minX = float.MaxValue;
-            float maxX = float.MinValue;
-            float minY = float.MaxValue;
-            float maxY = float.MinValue;
-            for (int i = 0; i < placementCount; i++)
-            {
-                CraftPartPlacement placement = placements[i];
-                if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
-                Sprite sprite = PreviewSprite(placement.partId, definition, useMountArt, out Vector2 contentCenter, out Vector2 contentSize);
-                if (sprite == null) continue;
+            CraftPreviewFit fit = CraftPreviewPainter.Fit(
+                placements.Slice(0, placementCount), _byId, _mountArtLookup, useMountArt,
+                canvasWidth, canvasHeight, PreviewAreaFill, PreviewMaxDimensionFill);
+            if (fit.scale <= 0f) return;
 
-                if (placement.mirrored) contentCenter.x = -contentCenter.x;
-                float x = placement.localOffset.x + contentCenter.x;
-                float y = placement.localOffset.y + contentCenter.y;
-                minX = Mathf.Min(minX, x - (contentSize.x * 0.5f));
-                maxX = Mathf.Max(maxX, x + (contentSize.x * 0.5f));
-                minY = Mathf.Min(minY, y - (contentSize.y * 0.5f));
-                maxY = Mathf.Max(maxY, y + (contentSize.y * 0.5f));
-            }
-
-            if (minX > maxX) return;
-
-            float boundsWidth = Mathf.Max(1f, maxX - minX);
-            float boundsHeight = Mathf.Max(1f, maxY - minY);
-            float areaScale = Mathf.Sqrt(PreviewAreaFill * canvasWidth * canvasHeight / (boundsWidth * boundsHeight));
-            float fitScale = Mathf.Min(
-                canvasWidth * PreviewMaxDimensionFill / boundsWidth,
-                canvasHeight * PreviewMaxDimensionFill / boundsHeight);
-            float scale = Mathf.Clamp(Mathf.Min(areaScale, fitScale), 0.15f, 24f);
-            PreviewBoundsSize = new Vector2(boundsWidth * scale, boundsHeight * scale);
+            PreviewBoundsSize = fit.ScaledSize;
             PreviewFillFraction = PreviewBoundsSize.x * PreviewBoundsSize.y / (canvasWidth * canvasHeight);
 
-            float centerX = canvasWidth * 0.5f;
-            float centerY = canvasHeight * 0.5f;
-            float boundsCenterX = (minX + maxX) * 0.5f;
-            float boundsCenterY = (minY + maxY) * 0.5f;
-
-            for (int i = 0; i < placementCount; i++)
-            {
-                CraftPartPlacement placement = placements[i];
-                if (!_byId.TryGetValue(placement.partId, out PartDefinitionSO definition)) continue;
-                Sprite sprite = PreviewSprite(placement.partId, definition, useMountArt, out Vector2 contentCenter, out _);
-                if (sprite == null) continue;
-
-                float width = sprite.rect.width * scale;
-                float height = sprite.rect.height * scale;
-                if (placement.mirrored) contentCenter.x = -contentCenter.x;
-                var element = new VisualElement { name = "preview-part-" + placement.partId, pickingMode = PickingMode.Ignore };
-                element.style.position = Position.Absolute;
-                element.style.width = width;
-                element.style.height = height;
-                element.style.left = centerX + ((placement.localOffset.x + contentCenter.x - boundsCenterX) * scale) - (width * 0.5f);
-                element.style.top = centerY - ((placement.localOffset.y + contentCenter.y - boundsCenterY) * scale) - (height * 0.5f);
-                element.style.backgroundImage = new StyleBackground(sprite);
-                element.style.rotate = new StyleRotate(
-                    new Rotate(new Angle(placement.localRotation * Mathf.Rad2Deg, AngleUnit.Degree)));
-                if (placement.mirrored)
-                    element.style.scale = new StyleScale(new Scale(new Vector3(-1f, 1f, 1f)));
-                _previewCanvas.Add(element);
-            }
+            CraftPreviewPainter.Paint(
+                _previewCanvas, placements.Slice(0, placementCount), _byId, _mountArtLookup,
+                useMountArt, fit, canvasWidth, canvasHeight);
         }
 
         private void OnPreviewGeometryChanged(GeometryChangedEvent evt)
@@ -715,95 +649,6 @@ namespace ABRevival.Presentation
             if (Mathf.Approximately(size.x, _lastPreviewSize.x) && Mathf.Approximately(size.y, _lastPreviewSize.y)) return;
             _lastPreviewSize = size;
             RefreshPreview();
-        }
-
-        private static Vector2 ContentCenter(PartDefinitionSO definition, Sprite sprite)
-        {
-            Vector4 content = definition.spriteContentRect;
-            if (content.z <= 0f || content.w <= 0f) return Vector2.zero;
-            return new Vector2(
-                content.x + (content.z * 0.5f) - (sprite.rect.width * 0.5f),
-                content.y + (content.w * 0.5f) - (sprite.rect.height * 0.5f));
-        }
-
-        private static Vector2 ContentSize(PartDefinitionSO definition, Sprite sprite)
-        {
-            Vector4 content = definition.spriteContentRect;
-            return content.z > 0f && content.w > 0f
-                ? new Vector2(content.z, content.w)
-                : sprite.rect.size;
-        }
-
-        private void BuildMountSpriteLookup()
-        {
-            _mountSprites = new Dictionary<string, MountArtEntry>(
-                mountArt != null ? mountArt.Length : 0, StringComparer.Ordinal);
-            if (mountArt == null) return;
-
-            for (int i = 0; i < mountArt.Length; i++)
-            {
-                MountArtEntry entry = mountArt[i];
-                if (entry == null || entry.sprite == null) continue;
-                // Single-sprite textures import the sub-sprite as "<file>_0".
-                string key = entry.sprite.name.EndsWith("_0", StringComparison.Ordinal)
-                    ? entry.sprite.name.Substring(0, entry.sprite.name.Length - 2)
-                    : entry.sprite.name;
-                _mountSprites[key] = entry;
-            }
-        }
-
-        /// <summary>
-        /// Mount art is the 2x in-game SHOW-frame sprite. The caller decides once whether the
-        /// whole preview uses mount art or the fallback thumbnail set; this method never mixes.
-        /// </summary>
-        private Sprite PreviewSprite(
-            int partId,
-            PartDefinitionSO definition,
-            bool useMountArt,
-            out Vector2 contentCenter,
-            out Vector2 contentSize)
-        {
-            contentCenter = Vector2.zero;
-            if (useMountArt && TryGetMountSprite(partId, out MountArtEntry mountEntry))
-            {
-                Sprite mount = mountEntry.sprite;
-                Vector4 content = mountEntry.contentRect;
-                if (content.z > 0f && content.w > 0f)
-                {
-                    contentCenter = new Vector2(
-                        content.x + (content.z * 0.5f) - (mount.rect.width * 0.5f),
-                        content.y + (content.w * 0.5f) - (mount.rect.height * 0.5f));
-                    contentSize = new Vector2(content.z, content.w);
-                }
-                else
-                {
-                    contentSize = mount.rect.size;
-                }
-
-                return mount;
-            }
-
-            Sprite thumbnail = definition.partSprite;
-            if (thumbnail == null)
-            {
-                contentSize = Vector2.zero;
-                return null;
-            }
-
-            contentCenter = ContentCenter(definition, thumbnail);
-            contentSize = ContentSize(definition, thumbnail);
-            return thumbnail;
-        }
-
-        private bool TryGetMountSprite(int partId, out MountArtEntry entry)
-        {
-            entry = null;
-            if (_mountTable == null || _mountSprites == null) return false;
-            if (!_mountTable.TryGetPart(partId, out PartMountEntry mount)) return false;
-            if (string.IsNullOrEmpty(mount.mountFile)) return false;
-
-            string mountName = Path.GetFileNameWithoutExtension(mount.mountFile);
-            return mountName != null && _mountSprites.TryGetValue(mountName, out entry);
         }
 
         // ---------------- Craft catalog / seed fleet ----------------

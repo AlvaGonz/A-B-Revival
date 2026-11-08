@@ -24,6 +24,14 @@ namespace ABRevival.Editor
         private const string TempFolder = "ab-revival-ui-sprite-export";
         private static readonly Regex SymbolClassLine = new Regex("^(\\d+);\"(.*)\"$", RegexOptions.Compiled);
         private static readonly Regex SpriteFolder = new Regex("^DefineSprite_(\\d+)(?:_|$)", RegexOptions.Compiled);
+        private static readonly Dictionary<string, string> PageReferenceFiles =
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                { "UI_MakePlayer", "factory-page.png" },
+                { "UI_ChooseFlyAI", "center-page.png" },
+                { "UI_Shop", "shop-page.png" },
+                { "UI_Game", "hud-page.png" }
+            };
 
         [MenuItem("Tools/A&B Revival/Export UI Sprites")]
         public static void ExportFromMenu()
@@ -118,6 +126,8 @@ namespace ABRevival.Editor
                         : FindShapeFrame(shapeDir, spec.symbolId);
                     SpriteExportPipeline.CopyIfChanged(source, destination);
                 }
+
+                CopyPageReferences(repoRoot, classNames);
 
                 foreach (UiSpriteSpec spec in UiSpriteCatalog.Sprites.Where(spec => !UiSpriteCatalog.IsGenerated(spec)))
                 {
@@ -221,6 +231,22 @@ namespace ABRevival.Editor
             }
 
             return png;
+        }
+
+        private static void CopyPageReferences(
+            string repoRoot, IReadOnlyDictionary<int, string> classNames)
+        {
+            foreach (UiSpriteSpec spec in UiSpriteCatalog.Sprites)
+            {
+                if (!spec.logicalName.StartsWith("reference_", StringComparison.Ordinal)) continue;
+                string symbolClass = ResolveSymbolClass(spec, classNames);
+                if (!PageReferenceFiles.TryGetValue(symbolClass, out string file)) continue;
+
+                string source = Resolve(repoRoot, UiSpriteCatalog.FileName(spec));
+                if (!File.Exists(source)) continue;
+                SpriteExportPipeline.CopyIfChanged(
+                    source, Resolve(repoRoot, "docs/assets/reference/" + file));
+            }
         }
 
         private static void RemoveStaleGeneratedPngs(string folder, HashSet<string> expected)

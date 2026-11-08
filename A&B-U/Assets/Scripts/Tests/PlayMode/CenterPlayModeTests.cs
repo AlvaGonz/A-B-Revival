@@ -170,7 +170,6 @@ namespace ABRevival.Tests.PlayMode
                          ("info-button", "INFO"),
                          ("ready-button", "READY"),
                          ("shop-button", "SHOP"),
-                         ("factory-button", "FACTORY"),
                          ("back-button", "MAIN MENU"),
                          ("help-button", "HELP")
                      })
@@ -186,6 +185,23 @@ namespace ABRevival.Tests.PlayMode
                 Assert.AreEqual(DisplayStyle.Flex, root.Q("center-screen").resolvedStyle.display);
                 Assert.AreEqual(DisplayStyle.None, root.Q("center-placeholder").resolvedStyle.display);
             }
+
+            // FACTORY is a real screen (#175), not a placeholder.
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            FactoryController factory = Object.FindAnyObjectByType<FactoryController>();
+            Assert.IsNotNull(flow);
+            Assert.IsNotNull(factory, "Boot must host the dedicated Factory screen.");
+            Click(root.Q<Button>("factory-button"));
+            yield return null;
+            Assert.AreEqual(GameFlowState.Factory, flow.State);
+            Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, factory.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+
+            Click(factory.GetComponent<UIDocument>().rootVisualElement.Q<Button>("back-to-center-button"));
+            yield return null;
+            Assert.AreEqual(GameFlowState.Center, flow.State);
+            Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, factory.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
         }
 
         [UnityTest]

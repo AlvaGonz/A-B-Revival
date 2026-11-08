@@ -22,6 +22,7 @@ namespace ABRevival.Editor
     {
         private const string ScenePath = "Assets/Scenes/Boot.unity";
         private const string CenterUxmlPath = "Assets/UI/Center.uxml";
+        private const string FactoryUxmlPath = "Assets/UI/Factory.uxml";
         private const string HudUxmlPath = "Assets/UI/CombatHud.uxml";
         private const string PanelSettingsPath = "Assets/UI/HangarPanelSettings.asset";
         private const string PortraitPath = "Assets/Resources/Talk/TalkPortraitCatalog.asset";
@@ -40,6 +41,7 @@ namespace ABRevival.Editor
 
             PanelSettings panelSettings = LoadRequired<PanelSettings>(PanelSettingsPath);
             VisualTreeAsset centerUxml = LoadRequired<VisualTreeAsset>(CenterUxmlPath);
+            VisualTreeAsset factoryUxml = LoadRequired<VisualTreeAsset>(FactoryUxmlPath);
             VisualTreeAsset hudUxml = LoadRequired<VisualTreeAsset>(HudUxmlPath);
             UnityEngine.Object portraits = LoadRequired<UnityEngine.Object>(PortraitPath);
             TextAsset talkData = LoadRequired<TextAsset>(TalkDataPath);
@@ -60,6 +62,13 @@ namespace ABRevival.Editor
             SetReference(centerDocument, "sourceAsset", centerUxml);
             centerDocument.sortingOrder = 0;
             Component center = AddPresentationComponent(centerObject, "ABRevival.Presentation.CenterController");
+
+            var factoryObject = new GameObject("Factory");
+            UIDocument factoryDocument = factoryObject.AddComponent<UIDocument>();
+            SetReference(factoryDocument, "m_PanelSettings", panelSettings);
+            SetReference(factoryDocument, "sourceAsset", factoryUxml);
+            factoryDocument.sortingOrder = 1;
+            Component factory = AddPresentationComponent(factoryObject, "ABRevival.Presentation.FactoryController");
 
             var talkObject = new GameObject("Talk");
             UIDocument talkDocument = talkObject.AddComponent<UIDocument>();
@@ -105,6 +114,8 @@ namespace ABRevival.Editor
             SetReference(hud, "_cameraRig", cameraRig);
             SetCatalog(center);
             SetCenterSprites(center);
+            SetCatalog(factory);
+            SetFactorySprites(factory);
 
             Texture2D partsAtlas = LoadRequired<Texture2D>(PartsAtlasBuilder.AtlasPath);
             TextAsset partsUvTable = LoadRequired<TextAsset>(PartsAtlasBuilder.UvTablePath);
@@ -117,6 +128,7 @@ namespace ABRevival.Editor
 
             var flowSerialized = new SerializedObject(flow);
             SetReference(flowSerialized, "_center", center);
+            SetReference(flowSerialized, "_factory", factory);
             SetReference(flowSerialized, "_talkScreen", talk);
             SetReference(flowSerialized, "_cinematicPlayer", cinematic);
             SetReference(flowSerialized, "_hud", hud);
@@ -224,6 +236,32 @@ namespace ABRevival.Editor
             SetSprite(serialized, "buttonReady", UiSpriteFolder, "ui_0585_hangar_button_launch.png");
             SetSprite(serialized, "gradePlate", UiSpriteFolder, "ui_0061_hud_portrait_backing.png");
             SetSprite(serialized, "helpButton", UiSpriteFolder, "ui_0073_hud_button_help.png");
+            SetMountArt(serialized);
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// Wires the frozen 2011 UIMakePlayer art into Factory's serialized fields.
+        /// The runtime never guesses an asset path; missing art fails the scene build.
+        /// </summary>
+        private static void SetFactorySprites(Component factory)
+        {
+            var serialized = new SerializedObject(factory);
+            SetSprite(serialized, "factoryBackground", UiSpriteFolder, "ui_0312_hangar_background.png");
+            SetSprite(serialized, "factoryHeader", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "previewFrame", UiSpriteFolder, "ui_0315_hangar_frame.png");
+            SetSprite(serialized, "buttonPlate", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "buttonMerge", UiSpriteFolder, "ui_0364_hangar_button_merge.png");
+            SetSprite(serialized, "buttonNew", UiSpriteFolder, "ui_0361_hangar_button_new.png");
+            SetSprite(serialized, "buttonAdd", UiSpriteFolder, "ui_0356_hangar_button_add.png");
+            SetSprite(serialized, "buttonBackToCenter", UiSpriteFolder, "ui_0324_hangar_button_back_to_center.png");
+            SetSprite(serialized, "buttonPartsCrafts", UiSpriteFolder, "ui_0404_hangar_button_parts_crafts.png");
+            SetSprite(serialized, "helpButton", UiSpriteFolder, "ui_0073_hud_button_help.png");
+            SetSprite(serialized, "categoryAll", UiSpriteFolder, "ui_0124_hangar_category_all.png");
+            SetSprite(serialized, "categoryBody", UiSpriteFolder, "ui_0136_hangar_category_body.png");
+            SetSprite(serialized, "categoryWing", UiSpriteFolder, "ui_0133_hangar_category_wing.png");
+            SetSprite(serialized, "categoryEngine", UiSpriteFolder, "ui_0130_hangar_category_engine.png");
+            SetSprite(serialized, "categoryGun", UiSpriteFolder, "ui_0127_hangar_category_gun.png");
             SetMountArt(serialized);
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
