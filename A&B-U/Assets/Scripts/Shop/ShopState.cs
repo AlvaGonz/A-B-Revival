@@ -100,7 +100,8 @@ namespace ABRevival.Core.Shop
         public int GetSellValue(int partId)
         {
             if (!_catalog.TryGet(partId, out ShopPart part)) return 0;
-            return (int)(part.Cost * SellRate);
+            // Integer math: float truncation made 500*0.7 sell for 349 under Mono.
+            return (part.Cost * 7) / 10;
         }
 
         /// <summary>
