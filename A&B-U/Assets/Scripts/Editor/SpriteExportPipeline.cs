@@ -193,7 +193,7 @@ namespace ABRevival.Editor
             }
         }
 
-        private static void ApplyImportSettings(string folder)
+        internal static void ApplyImportSettings(string folder)
         {
             if (!AssetDatabase.IsValidFolder(folder)) return;
 
@@ -258,7 +258,7 @@ namespace ABRevival.Editor
             return true;
         }
 
-        private static void RebuildAtlas(string atlasPath, string packableFolder)
+        internal static void RebuildAtlas(string atlasPath, string packableFolder)
         {
             if (AssetDatabase.IsValidFolder(AtlasOutput) == false)
             {
@@ -374,7 +374,7 @@ namespace ABRevival.Editor
             }
         }
 
-        private static void CopyIfChanged(string source, string destination)
+        internal static void CopyIfChanged(string source, string destination)
         {
             string directory = Path.GetDirectoryName(destination);
             if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
@@ -413,7 +413,7 @@ namespace ABRevival.Editor
             }
         }
 
-        private static string ResolveFfdec()
+        internal static string ResolveFfdec()
         {
             string fromEnvironment = Environment.GetEnvironmentVariable("FFDEC_CLI");
             if (!string.IsNullOrEmpty(fromEnvironment) && File.Exists(fromEnvironment)) return fromEnvironment;

@@ -68,7 +68,18 @@ Launches the game natively via Adobe AIR Debug Launcher (ADL) with Stage3D direc
 scripts\run_air.bat
 ```
 
-### 9. `package_android_apk.bat`
+### 9. `export-ui-sprites.bat`
+Regenerates the original hangar and HUD sprites, manifest, and contact sheet:
+```cmd
+scripts\export-ui-sprites.bat
+```
+- **Input**: `src\assets\binaryData\9_all.AllData_ui.bin` and the existing part sprites
+- **Output**: `A&B-U\Assets\Art\Sprites\UI\` (PPU 1, uncompressed)
+- **Manifest**: `docs\assets\ui-sprites.md`
+- **Contact sheet**: `docs\assets\ui-sprites-contact-sheet.png`
+- **Tool**: Unity 6.6.8f1 batchmode (`ABRevival.Editor.UiSpriteExportPipeline.ExportBatch`)
+
+### 10. `package_android_apk.bat`
 Generates a self-signed developer certificate and packages the modified SWF into an installable Android APK (`dist\AssemblyAndBattle.apk`) via ADT:
 ```cmd
 scripts\package_android_apk.bat
