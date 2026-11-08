@@ -38,6 +38,7 @@ scripts/*local*
 # Build and binary folders
 [Bb]in/
 [Oo]bj/
+.build/
 *.bin.meta
 *.obj.meta
 bin.meta
