@@ -5,11 +5,52 @@ using Unity.Mathematics;
 
 namespace ABRevival.Core.Simulation
 {
+    /// <summary>
+    /// Mission outcome state. Only <see cref="InProgress"/> is non-terminal; the runner enters
+    /// <see cref="Win"/> or <see cref="Lose"/> at most once per mission.
+    /// </summary>
     public enum MissionState
     {
-        Running = 0,
-        Complete = 1,
-        Failed = 2
+        InProgress = 0,
+        Win = 1,
+        Lose = 2
+    }
+
+    /// <summary>
+    /// Which decoded objective ended the mission.
+    /// Mapping to the frozen AS3 baseline (f4.evts.EvtCtrl) is documented on <see cref="MissionRunner"/>.
+    /// </summary>
+    public enum MissionEndCause
+    {
+        None = 0,
+        /// <summary><c>windir</c> finish act: EvtCtrl.win() -> Win.</summary>
+        WindirAct,
+        /// <summary><c>lose</c> finish act: EvtCtrl.loseNow() -> Lose.</summary>
+        LoseAct,
+        /// <summary><c>delLose</c> finish act: EvtCtrl.delAllEvtAddLose() -> Lose.</summary>
+        DelLoseAct,
+        /// <summary>Player craft destroyed without a level-scripted loss objective -> Lose.</summary>
+        PlayerDestroyed
+    }
+
+    /// <summary>
+    /// Terminal mission result and the objective that produced it.
+    /// <see cref="objective"/> is the level event name (or pilot name for an implicit player loss).
+    /// </summary>
+    public readonly struct MissionResult
+    {
+        public readonly MissionState state;
+        public readonly MissionEndCause cause;
+        public readonly string objective;
+        public readonly int tick;
+
+        public MissionResult(MissionState state, MissionEndCause cause, string objective, int tick)
+        {
+            this.state = state;
+            this.cause = cause;
+            this.objective = objective;
+            this.tick = tick;
+        }
     }
 
     /// <summary>One spawn or outer-wave directive emitted by a mission replay.</summary>
@@ -41,7 +82,29 @@ namespace ABRevival.Core.Simulation
     /// Headless mission director. Replays a decoded level's spawn events against
     /// CombatSimulation through its public API. Time is measured in simulation ticks,
     /// so identical level data and identical external triggers produce identical output.
+    /// <para>
+    /// Objective mapping, traced to the frozen AS3 baseline (f4.evts.EvtCtrl):
+    /// <list type="bullet">
+    /// <item><c>win</c> event (<see cref="LevelFinishKind.Win"/>): completes when no living hostile remains
+    /// (EvtCtrl.runWinEvt checks efa1.num == 0 and outa1.num == 0).</item>
+    /// <item><c>win1</c> event (<see cref="LevelFinishKind.Win1"/>): completes when exactly one living hostile remains
+    /// (EvtCtrl.runWin1Evt checks efa1.num == 1 and outa1.num == 0).</item>
+    /// <item><c>windir</c> finish act: enters <see cref="MissionState.Win"/> (EvtCtrl.win()).</item>
+    /// <item><c>lose</c> finish act: enters <see cref="MissionState.Lose"/> (EvtCtrl.loseNow()).</item>
+    /// <item><c>delLose</c> finish act: enters <see cref="MissionState.Lose"/>. The frozen baseline clears every event and
+    /// schedules a 5 s clock whose finish act is <c>lose</c> (EvtCtrl.delAllEvtAddLose); the headless runner applies the
+    /// loss immediately and skips the delay.</item>
+    /// <item><c>uDead_&lt;pilot&gt;_&lt;side&gt;</c> event: EvtCtrl.uDeadAct selects the specific event first and falls back
+    /// to <c>uDead_all_&lt;side&gt;</c> only when no specific event is active, increments its kill counter when the killer
+    /// matches <c>fireName</c>, and completes at <c>num &gt;= rnum</c>; completion runs its finish acts.</item>
+    /// <item>Player craft destroyed: port rule for levels with no scripted <c>uDead_*_P</c> loss objective
+    /// (story 0 has none); enters Lose unless a scripted death objective already ended the mission.</item>
+    /// </list>
+    /// Terminal states are entered at most once; later ticks and kill reports are ignored.
+    /// Every terminal transition also raises the return-to-hangar intent, consumed once by the game flow through
+    /// <see cref="TryConsumeReturnToHangar"/>.
     /// Original game IP: Vargames (2011).
+    /// </para>
     /// </summary>
     public sealed class MissionRunner
     {
@@ -64,6 +127,7 @@ namespace ABRevival.Core.Simulation
         {
             public int ShipIndex;
             public string Pilot;
+            public string[] Pilots;
             public bool Friendly;
             public bool Alive = true;
         }
@@ -84,6 +148,7 @@ namespace ABRevival.Core.Simulation
         private int _tick;
         private bool _started;
         private MissionState _state;
+        private bool _returnToHangarPending;
 
         public MissionRunner(LevelRecord level, CombatSimulation simulation, float tickSeconds = DefaultTickSeconds)
         {
@@ -110,6 +175,26 @@ namespace ABRevival.Core.Simulation
         public IReadOnlyList<MissionSpawnRecord> Spawns => _spawns;
         public IReadOnlyList<MissionHookRecord> Hooks => _hooks;
 
+        /// <summary>Terminal result (state, cause, objective, tick), or null while the mission is in progress.</summary>
+        public MissionResult? Result { get; private set; }
+
+        /// <summary>
+        /// Consumes the single return-to-hangar intent raised when the mission entered Win or Lose.
+        /// Returns false while the mission is in progress and on every call after the first.
+        /// </summary>
+        public bool TryConsumeReturnToHangar(out MissionResult result)
+        {
+            if (!_returnToHangarPending)
+            {
+                result = default;
+                return false;
+            }
+
+            _returnToHangarPending = false;
+            result = Result.Value;
+            return true;
+        }
+
         /// <summary>Simulation index of the player craft spawned by the level's player act, or -1.</summary>
         public int PlayerShipIndex { get; private set; } = -1;
 
@@ -133,16 +218,16 @@ namespace ABRevival.Core.Simulation
         public void Tick()
         {
             if (!_started) throw new InvalidOperationException("MissionRunner.Start() must be called first.");
-            if (_state != MissionState.Running) return;
+            if (_state != MissionState.InProgress) return;
 
             _tick++;
             _simulation.Tick(_tickSeconds);
 
             RunClockEvents();
-            if (_state != MissionState.Running) return;
+            if (_state != MissionState.InProgress) return;
 
             RunPlaceTransitions();
-            if (_state != MissionState.Running) return;
+            if (_state != MissionState.InProgress) return;
 
             RunWinConditions();
         }
@@ -150,9 +235,12 @@ namespace ABRevival.Core.Simulation
         /// <summary>
         /// Reports a destroyed craft. Drives uDead_* counters and the win/win1 conditions.
         /// Callers reach this through gameplay code once the simulation exposes damage events.
+        /// Ignored once the mission is terminal.
         /// </summary>
         public void NotifyCraftDestroyed(int shipIndex, string killerPilot = null)
         {
+            if (_state != MissionState.InProgress) return;
+
             SpawnedShip ship = null;
             for (int i = 0; i < _ships.Count; i++)
             {
@@ -166,7 +254,9 @@ namespace ABRevival.Core.Simulation
             if (ship == null || !ship.Alive) return;
             ship.Alive = false;
             RunDeathEvents(ship, killerPilot);
-            if (_state == MissionState.Running) RunWinConditions();
+            if (_state == MissionState.InProgress && ship.ShipIndex == PlayerShipIndex)
+                EndMission(MissionState.Lose, MissionEndCause.PlayerDestroyed, ship.Pilot);
+            if (_state == MissionState.InProgress) RunWinConditions();
         }
 
         private void BuildEventLinks()
@@ -229,7 +319,7 @@ namespace ABRevival.Core.Simulation
                     index++;
                 }
 
-                if (_state != MissionState.Running) return;
+                if (_state != MissionState.InProgress) return;
             }
         }
 
@@ -249,6 +339,7 @@ namespace ABRevival.Core.Simulation
                     var entity = _simulation.GetShip(ship.ShipIndex);
                     if (entity.position.x < ev.place.x || entity.position.x > ev.place.x + ev.place.width) continue;
                     if (entity.position.y < ev.place.y || entity.position.y > ev.place.y + ev.place.height) continue;
+                    if (!RequiresMet(ev)) continue;
 
                     _activeEvents.RemoveAt(i);
                     i--;
@@ -256,12 +347,14 @@ namespace ABRevival.Core.Simulation
                     break;
                 }
 
-                if (_state != MissionState.Running) return;
+                if (_state != MissionState.InProgress) return;
             }
         }
 
         private void RunWinConditions()
         {
+            // shortcut: outer-wave directives are recorded, not simulated, so win/win1 count only spawned craft.
+            // The reference mission (story 0) has no outer acts; expand when a mission with outer waves needs them.
             for (int i = 0; i < _activeEvents.Count; i++)
             {
                 var ev = _activeEvents[i];
@@ -269,41 +362,69 @@ namespace ABRevival.Core.Simulation
 
                 int hostiles = CountLivingHostiles();
                 bool complete = ev.finishKind == LevelFinishKind.Win ? hostiles == 0 : hostiles == 1;
-                if (!complete) continue;
+                if (!complete || !RequiresMet(ev)) continue;
 
                 _activeEvents.RemoveAt(i);
                 i--;
                 TryComplete(ev);
-                if (_state != MissionState.Running) return;
+                if (_state != MissionState.InProgress) return;
             }
         }
 
         private void RunDeathEvents(SpawnedShip destroyed, string killerPilot)
         {
+            LevelEvent specific = null;
+            LevelEvent all = null;
             for (int i = 0; i < _activeEvents.Count; i++)
             {
                 var ev = _activeEvents[i];
                 var trigger = ev.death;
                 if (trigger == null) continue;
                 if (trigger.friendlySide != destroyed.Friendly) continue;
-                if (trigger.targetPilot != null && !string.Equals(trigger.targetPilot, destroyed.Pilot, StringComparison.Ordinal))
-                    continue;
-                if (!KillerMatches(trigger.killerPilots, killerPilot)) continue;
 
-                _deathCounts[ev] = _deathCounts.TryGetValue(ev, out int count) ? count + 1 : 1;
-                if (_deathCounts[ev] < trigger.requiredKills) continue;
-
-                _activeEvents.RemoveAt(i);
-                i--;
-                TryComplete(ev);
-                if (_state != MissionState.Running) return;
+                if (trigger.targetPilot == null)
+                {
+                    if (all == null) all = ev;
+                }
+                else if (PilotMatches(trigger.targetPilot, destroyed))
+                {
+                    specific = ev;
+                    break;
+                }
             }
+
+            // EvtCtrl.uDeadAct: the specific event wins; uDead_all_* is used only when no specific event exists.
+            var matched = specific ?? all;
+            if (matched == null) return;
+
+            var death = matched.death;
+            if (!KillerMatches(death.killerPilots, killerPilot)) return;
+
+            _deathCounts[matched] = _deathCounts.TryGetValue(matched, out int count) ? count + 1 : 1;
+            if (_deathCounts[matched] < death.requiredKills) return;
+            if (!RequiresMet(matched)) return;
+
+            _activeEvents.Remove(matched);
+            TryComplete(matched);
+        }
+
+        private static bool PilotMatches(string targetPilot, SpawnedShip destroyed)
+        {
+            for (int i = 0; i < destroyed.Pilots.Length; i++)
+                if (string.Equals(destroyed.Pilots[i], targetPilot, StringComparison.Ordinal)) return true;
+            return string.Equals(destroyed.Pilot, targetPilot, StringComparison.Ordinal);
+        }
+
+        private bool RequiresMet(LevelEvent ev)
+        {
+            for (int i = 0; i < ev.requires.Count; i++)
+                if (!_finishedEvents.Contains(ev.requires[i])) return false;
+            return true;
         }
 
         private bool TryComplete(LevelEvent ev)
         {
-            for (int i = 0; i < ev.requires.Count; i++)
-                if (!_finishedEvents.Contains(ev.requires[i])) return false;
+            if (!RequiresMet(ev)) return false;
 
             for (int i = 0; i < ev.finish.Count; i++) _finishedEvents.Add(ev.finish[i]);
             for (int i = 0; i < ev.finishRemoveFinished.Count; i++) _finishedEvents.Remove(ev.finishRemoveFinished[i]);
@@ -318,7 +439,7 @@ namespace ABRevival.Core.Simulation
             for (int i = 0; i < ev.finishActs.Count; i++)
             {
                 ExecuteAct(ev.finishActs[i], ev);
-                if (_state != MissionState.Running) break;
+                if (_state != MissionState.InProgress) break;
             }
 
             int remaining = _remainingLoops.TryGetValue(ev, out int loops) ? loops - 1 : 0;
@@ -361,12 +482,30 @@ namespace ABRevival.Core.Simulation
                     });
                     break;
                 case LevelActKind.Windir:
-                    _state = MissionState.Complete;
+                    EndMission(MissionState.Win, MissionEndCause.WindirAct, owner);
                     break;
                 case LevelActKind.Lose:
-                    _state = MissionState.Failed;
+                    EndMission(MissionState.Lose, MissionEndCause.LoseAct, owner);
+                    break;
+                case LevelActKind.DelLose:
+                    EndMission(MissionState.Lose, MissionEndCause.DelLoseAct, owner);
                     break;
             }
+        }
+
+        private void EndMission(MissionState state, MissionEndCause cause, LevelEvent objective)
+        {
+            EndMission(state, cause, objective != null ? objective.name : null);
+        }
+
+        /// <summary>Enters a terminal state at most once and raises the return-to-hangar intent.</summary>
+        private void EndMission(MissionState state, MissionEndCause cause, string objective)
+        {
+            if (_state != MissionState.InProgress) return;
+
+            _state = state;
+            Result = new MissionResult(state, cause, objective, _tick);
+            _returnToHangarPending = true;
         }
 
         private void SpawnCraft(LevelSpawn spawn, LevelEvent owner)
@@ -404,6 +543,7 @@ namespace ABRevival.Core.Simulation
             {
                 ShipIndex = shipIndex,
                 Pilot = spawn.pilot,
+                Pilots = spawn.pilots,
                 Friendly = spawn.friendly
             });
 
