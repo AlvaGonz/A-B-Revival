@@ -187,6 +187,8 @@ namespace ABRevival.Presentation
             if (_dirtyStart >= _dirtyEnd)
                 return;
 
+            // SetData indices are element indices of T, so a byte offset is divided by
+            // sizeof(T) and the dirty instance index is added in those same units.
             int count = _dirtyEnd - _dirtyStart;
             _instanceBuffer.SetData(
                 _transforms,

@@ -234,6 +234,8 @@ namespace ABRevival.Core.Rendering
     /// </summary>
     public sealed class SpriteUvTable
     {
+        public const int MaxPartId = 4096;
+
         private readonly SpriteUvRect[] _byPart;
         private readonly SpriteUvRect _white;
 
@@ -317,6 +319,9 @@ namespace ABRevival.Core.Rendering
                 {
                     throw new FormatException($"Malformed UV row on line {i + 1}.");
                 }
+
+                if (partId > MaxPartId)
+                    throw new FormatException($"Part id {partId} exceeds the supported maximum of {MaxPartId} on line {i + 1}.");
 
                 string symbol = cells[1];
                 if (symbol.Length == 0 || width <= 0 || height <= 0 || x < 0 || y < 0 ||

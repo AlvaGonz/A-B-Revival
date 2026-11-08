@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using ABRevival.Core.Camera;
 using ABRevival.Core.Data;
 
 namespace ABRevival.Core.Persistence
@@ -23,6 +24,9 @@ namespace ABRevival.Core.Persistence
 
         /// <summary>Campaign index (the frozen release's STORY). Missing members from version-1 saves default to 0.</summary>
         [DataMember(Order = 3)] public int storyIndex;
+
+        /// <summary>ADR 0005 camera distance preset restored at boot and saved whenever C cycles it.</summary>
+        [DataMember(Order = 4)] public CameraDistancePreset cameraPreset;
     }
 
     [DataContract]
@@ -143,13 +147,40 @@ namespace ABRevival.Core.Persistence
                 save.shop.stock ??= new List<ShopStockSave>();
                 save.shop.ownedParts ??= new List<int>();
                 save.blueprints ??= new List<BlueprintSaveData>();
+                if ((int)save.cameraPreset < 0 || (int)save.cameraPreset >= CameraDistancePresets.Count)
+                    save.cameraPreset = CameraDistancePreset.Short;
                 return save;
             }
         }
 
+        /// <summary>
+        /// Writes the payload to a sibling temporary file and swaps it in, so a failed
+        /// write never truncates the previous save.
+        /// </summary>
         public static void SaveToFile(string path, PlayerSaveData save)
         {
-            File.WriteAllText(path, ToJson(save));
+            if (path == null) throw new ArgumentNullException(nameof(path));
+
+            string tempPath = path + ".tmp";
+            File.WriteAllText(tempPath, ToJson(save));
+
+            if (File.Exists(path))
+            {
+                try
+                {
+                    File.Replace(tempPath, path, null);
+                    return;
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    // File.Move(overwrite) is unavailable on netstandard2.1; delete first.
+                    // shortcut: the fallback has a small non-atomic window, upgrade with
+                    // File.Move(source, destination, overwrite: true) when the API is available.
+                    File.Delete(path);
+                }
+            }
+
+            File.Move(tempPath, path);
         }
 
         public static PlayerSaveData LoadFromFile(string path)

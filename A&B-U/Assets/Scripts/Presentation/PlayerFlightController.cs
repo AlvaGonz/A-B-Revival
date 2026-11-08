@@ -1,23 +1,16 @@
+using System;
+using ABRevival.Core.Camera;
 using ABRevival.Core.Simulation;
 using UnityEngine;
 
 namespace ABRevival.Presentation
 {
     /// <summary>
-    /// Weapon firing seam consumed by player input. Ticket #163 replaces the
-    /// no-op usage with assembled-part fire ports and projectile spawning.
-    /// </summary>
-    public interface IWeaponFireControl
-    {
-        /// <summary>Attempts to fire the player's weapons for this fixed step.</summary>
-        void Fire(int shipIndex, in ShipInput input, float deltaTime);
-    }
-
-    /// <summary>
     /// Manual player flight for the Mission state. Reads the desktop keyboard/mouse
-    /// action map, writes <see cref="ShipInput"/> before every fixed simulation step,
-    /// toggles autofire on X, and cycles camera presets on C. A deterministic override
-    /// remains for the headless win hook; normal play never uses it.
+    /// action map and writes <see cref="ShipInput"/> before every fixed simulation step.
+    /// C cycles the ADR 0005 camera distance and E requests the Captain's tactical mode;
+    /// firing is owned by <see cref="ICombatFireInput"/> and consumed by <see cref="WeaponSystem"/>.
+    /// A deterministic override remains for the headless win hook; normal play never uses it.
     /// Original game IP: Vargames (2011).
     /// </summary>
     [DisallowMultipleComponent]
@@ -32,18 +25,16 @@ namespace ABRevival.Presentation
         private bool _deterministic;
         private ShipInput _deterministicInput;
 
-        /// <summary>Read by gameplay and HUD; X flips it.</summary>
-        public bool AutofireEnabled { get; private set; }
+        /// <summary>Raised when E is pressed during a mission; the game flow owns the cycle.</summary>
+        public event Action TacticalModeRequested;
+
+        /// <summary>Raised after C changes the camera preset so the flow can autosave it.</summary>
+        public event Action<CameraDistancePreset> CameraDistanceChanged;
 
         /// <summary>Command written to the simulation on the last fixed tick.</summary>
         public ShipInput CurrentInput { get; private set; }
 
-        /// <summary>Set by the game flow when ticket #163 lands; null means no weapons.</summary>
-        public IWeaponFireControl WeaponFireControl { get; set; }
-
         public bool HasMission => _missionActive;
-
-        public bool IsFiring => AutofireEnabled || (_input != null && _input.FireHeld);
 
         private void Awake()
         {
@@ -79,8 +70,8 @@ namespace ABRevival.Presentation
         {
             if (!_missionActive || _deterministic || _input == null) return;
 
-            if (_input.AutofirePressedThisFrame())
-                AutofireEnabled = !AutofireEnabled;
+            if (_input.TacticalModePressedThisFrame())
+                TacticalModeRequested?.Invoke();
 
             if (_input.CameraDistancePressedThisFrame())
                 CycleCameraDistance();
@@ -100,7 +91,6 @@ namespace ABRevival.Presentation
             _missionActive = simulation != null;
             _deterministic = false;
             _deterministicInput = default;
-            AutofireEnabled = false;
             CurrentInput = default;
 
             if (_missionActive) _input?.Enable();
@@ -116,7 +106,6 @@ namespace ABRevival.Presentation
             _shipIndex = -1;
             _hud = null;
             _cameraRig = null;
-            AutofireEnabled = false;
             CurrentInput = default;
             _input?.Disable();
         }
@@ -137,11 +126,7 @@ namespace ABRevival.Presentation
             _deterministicInput = default;
         }
 
-        /// <summary>
-        /// Writes the player ship's input for one fixed simulation step, then hands the
-        /// fire request to the weapon seam when autofire or the mouse trigger is active.
-        /// Allocation-free.
-        /// </summary>
+        /// <summary>Writes the player ship's input for one fixed simulation step. Allocation-free.</summary>
         public void Tick(float deltaTime)
         {
             if (!_missionActive || _simulation == null || _shipIndex < 0) return;
@@ -151,9 +136,6 @@ namespace ABRevival.Presentation
 
             if (_shipIndex < _simulation.ShipCount)
                 _simulation.SetInput(_shipIndex, in input);
-
-            if (IsFiring)
-                WeaponFireControl?.Fire(_shipIndex, in input, deltaTime);
         }
 
         private void CycleCameraDistance()
@@ -162,10 +144,12 @@ namespace ABRevival.Presentation
             {
                 _hud.CycleCameraDistance();
                 _cameraRig?.ApplyPreset(_hud.State.CameraPreset);
+                CameraDistanceChanged?.Invoke(_hud.State.CameraPreset);
                 return;
             }
 
-            _cameraRig?.CyclePreset();
+            if (_cameraRig != null)
+                CameraDistanceChanged?.Invoke(_cameraRig.CyclePreset());
         }
     }
 }

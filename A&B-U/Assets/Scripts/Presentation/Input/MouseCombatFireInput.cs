@@ -4,8 +4,9 @@ using UnityEngine.InputSystem;
 namespace ABRevival.Presentation
 {
     /// <summary>
-    /// Desktop input seam: left mouse fires, 'X' toggles autofire (glossary
-    /// `OpOneCore.autoFire`). Input System devices are optional so headless
+    /// Single desktop firing seam: left mouse fires, 'X' toggles autofire (glossary
+    /// `OpOneCore.autoFire`). <see cref="WeaponSystem"/> reads this interface; no other
+    /// input path spawns projectiles. Input System devices are optional so headless
     /// batchmode runs read a neutral state instead of throwing.
     /// Original game IP: Vargames (2011).
     /// </summary>

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using System.Text.RegularExpressions;
 using ABRevival.Core.Persistence;
 using ABRevival.Core.Simulation;
 using ABRevival.Presentation;
@@ -28,6 +29,8 @@ namespace ABRevival.Tests.PlayMode
         public IEnumerator TearDown()
         {
             if (File.Exists(SavePath)) File.Delete(SavePath);
+            if (File.Exists(SavePath + ".corrupt")) File.Delete(SavePath + ".corrupt");
+            if (File.Exists(SavePath + ".tmp")) File.Delete(SavePath + ".tmp");
             if (AudioService.Instance != null) Object.Destroy(AudioService.Instance.gameObject);
             yield return null;
         }
@@ -35,7 +38,11 @@ namespace ABRevival.Tests.PlayMode
         [UnityTest]
         public IEnumerator BootScene_LoadsSavedStoryAndShopState()
         {
-            var seeded = new PlayerSaveData { storyIndex = 3 };
+            var seeded = new PlayerSaveData
+            {
+                storyIndex = 3,
+                cameraPreset = ABRevival.Core.Camera.CameraDistancePreset.Far
+            };
             seeded.shop.money = 777;
             seeded.shop.ownedParts.Add(71);
             PlayerSaveCodec.SaveToFile(SavePath, seeded);
@@ -51,6 +58,32 @@ namespace ABRevival.Tests.PlayMode
             var hangar = Object.FindAnyObjectByType<HangarController>();
             Assert.IsNotNull(hangar, "Boot scene must host the hangar.");
             Assert.AreEqual(777, hangar.Money, "Boot must restore the stored shop money.");
+            Assert.IsTrue(hangar.IsUnlocked(71),
+                "Loading a save must reconcile missing catalog rows (part 71 had no stock row).");
+
+            var cameraRig = Object.FindAnyObjectByType<CombatCameraRig>();
+            Assert.IsNotNull(cameraRig);
+            Assert.AreEqual(ABRevival.Core.Camera.CameraDistancePreset.Far, cameraRig.Preset,
+                "Boot must apply the saved ADR 0005 camera preset.");
+        }
+
+        [UnityTest]
+        public IEnumerator BootScene_CorruptSave_IsQuarantinedBeforeStartingFresh()
+        {
+            File.WriteAllText(SavePath, "{ not valid json");
+            LogAssert.Expect(LogType.Error, new Regex("Save was corrupt.*"));
+
+            SceneManager.LoadScene("Boot");
+            yield return null;
+
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            Assert.IsNotNull(flow);
+            yield return WaitForState(flow, GameFlowState.Hangar);
+
+            Assert.IsTrue(File.Exists(SavePath + ".corrupt"),
+                "An unreadable save must be moved aside, not silently overwritten.");
+            Assert.IsFalse(File.Exists(SavePath), "A fresh campaign must not have written over the quarantined save.");
+            Assert.AreEqual(0, flow.StoryIndex);
         }
 
         [UnityTest]
@@ -74,8 +107,20 @@ namespace ABRevival.Tests.PlayMode
             Assert.GreaterOrEqual(playerIndex, 0);
             flow.Runner.NotifyCraftDestroyed(playerIndex);
 
-            yield return WaitForState(flow, GameFlowState.Hangar);
+            bool sawResult = false;
+            for (int i = 0; i < WaitFrames && flow.State != GameFlowState.Hangar; i++)
+            {
+                if (flow.State == GameFlowState.Result)
+                {
+                    sawResult = true;
+                    flow.SkipResult();
+                }
 
+                yield return null;
+            }
+
+            Assert.IsTrue(sawResult, "A loss must be observable in the Result state before returning.");
+            Assert.AreEqual(GameFlowState.Hangar, flow.State);
             Assert.IsTrue(flow.LastResult.HasValue);
             Assert.AreEqual(MissionState.Lose, flow.LastResult.Value.state);
             Assert.AreEqual(0, flow.StoryIndex, "A loss must not advance STORY.");
@@ -107,6 +152,16 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(flow.ContactSolver, "The projectile contact layer must be wired.");
             Assert.AreEqual(MissionState.InProgress, flow.Runner.State);
 
+            // The shipped scene has no authored catalog, so the fallback blueprint must be
+            // armed and reach WeaponSystem through the real launch path.
+            var fireInput = flow.GetComponent<MouseCombatFireInput>();
+            Assert.IsNotNull(fireInput, "The flow must own the single combat fire input.");
+            fireInput.SetAutofire(true);
+            for (int i = 0; i < 20; i++) flow.Tick(GameFlowController.FixedStepSeconds);
+            Assert.Greater(flow.ShotsFired, 0,
+                "The default loadout must mount a gun; the real setup path produced no projectiles.");
+            fireInput.SetAutofire(false);
+
             // Warm up Burst/job reflection before measuring the 60 Hz flow path.
             for (int i = 0; i < 30; i++) flow.Tick(GameFlowController.FixedStepSeconds);
 
@@ -128,7 +183,12 @@ namespace ABRevival.Tests.PlayMode
             int guard = 0;
             while (flow.State != GameFlowState.Hangar && guard < WaitFrames)
             {
-                if (flow.State == GameFlowState.Result) flow.AdvanceTalk();
+                if (flow.State == GameFlowState.Result)
+                {
+                    flow.AdvanceTalk();
+                    flow.SkipResult();
+                }
+
                 guard++;
                 yield return null;
             }
@@ -140,6 +200,61 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsTrue(File.Exists(SavePath), "A win must autosave the player payload.");
             PlayerSaveData saved = PlayerSaveCodec.LoadFromFile(SavePath);
             Assert.AreEqual(1, saved.storyIndex, "The autosave must persist the advanced STORY index.");
+
+            // A second launch must resolve the level from the advanced STORY, not replay story 0.
+            flow.LaunchMission();
+            yield return WaitForState(flow, GameFlowState.Briefing);
+            flow.SkipBriefing();
+            yield return WaitForState(flow, GameFlowState.Mission);
+
+            Assert.AreEqual(1, flow.StoryIndex);
+            Assert.AreEqual(2, flow.Runner.Level.storyKey,
+                "The new launch must load the level for the saved STORY index.");
+        }
+
+        [UnityTest]
+        public IEnumerator Launch_ECyclesTheLiveCaptainAndIgnoresADestroyedCaptain()
+        {
+            if (File.Exists(SavePath)) File.Delete(SavePath);
+
+            SceneManager.LoadScene("Boot");
+            yield return null;
+
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            Assert.IsNotNull(flow);
+            yield return WaitForState(flow, GameFlowState.Hangar);
+
+            flow.LaunchMission();
+            yield return WaitForState(flow, GameFlowState.Briefing);
+            flow.SkipBriefing();
+            yield return WaitForState(flow, GameFlowState.Mission);
+
+            int playerIndex = flow.Runner.PlayerShipIndex;
+            int captainIndex = -1;
+            var spawns = flow.Runner.Spawns;
+            for (int i = 0; i < spawns.Count; i++)
+            {
+                if (spawns[i].friendly && spawns[i].shipIndex >= 0 && spawns[i].shipIndex != playerIndex)
+                {
+                    captainIndex = spawns[i].shipIndex;
+                    break;
+                }
+            }
+
+            Assert.GreaterOrEqual(captainIndex, 0, "Story 0 must deploy Captain Tom.");
+            Assert.AreEqual(CaptainTacticalMode.Anchor, (CaptainTacticalMode)flow.Simulation.GetShip(captainIndex).tacticalMode);
+
+            Assert.IsTrue(flow.CycleCaptainTacticalMode());
+            Assert.AreEqual(CaptainTacticalMode.Escort,
+                (CaptainTacticalMode)flow.Simulation.GetShip(captainIndex).tacticalMode);
+            var hud = Object.FindAnyObjectByType<CombatHudBehaviour>();
+            Assert.IsNotNull(hud);
+            Assert.AreEqual(CaptainTacticalMode.Escort, hud.State.CaptainMode);
+
+            flow.Runner.NotifyCraftDestroyed(captainIndex);
+            Assert.IsFalse(flow.CycleCaptainTacticalMode(), "E must do nothing once the Captain is gone.");
+            Assert.AreEqual(CaptainTacticalMode.Escort,
+                (CaptainTacticalMode)flow.Simulation.GetShip(captainIndex).tacticalMode);
         }
 
         private static IEnumerator WaitForState(GameFlowController flow, GameFlowState expected)

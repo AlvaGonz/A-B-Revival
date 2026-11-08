@@ -188,4 +188,3 @@ MonoBehaviour:
   catalogParts: []
   blueprint: {fileID: 0}
   startingMoney: 2000
-  saveFileName: hangar-save.json

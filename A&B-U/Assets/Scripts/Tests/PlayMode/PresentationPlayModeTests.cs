@@ -107,10 +107,6 @@ namespace ABRevival.Tests.PlayMode
                 Assert.AreEqual(1248f, viewport.x, 0.001f);
                 Assert.AreEqual(702f, viewport.y, 0.001f);
 
-                Vector2 worldAim = rig.ScreenToWorldAim(new Vector2(1920f, 1080f), new Vector2(1920f, 1080f));
-                Assert.AreEqual(1248f, worldAim.x, 0.001f);
-                Assert.AreEqual(702f, worldAim.y, 0.001f);
-
                 rig.CyclePreset();
                 Assert.AreEqual(CameraDistancePreset.Far, rig.Preset);
                 Assert.AreEqual(810f, camera.orthographicSize, 0.001f);

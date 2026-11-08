@@ -83,23 +83,5 @@ namespace ABRevival.Presentation
             return new Vector2(point.X, point.Y);
         }
 
-        /// <summary>
-        /// Mouse display position -> world aim point. This is the inverse of the
-        /// viewport scale, so a click at the screen edge still lands where the
-        /// player expects at Medium and Far.
-        /// </summary>
-        public Vector2 ScreenToWorldAim(Vector2 screen, Vector2 screenSize)
-        {
-            ViewportPoint offset = CameraDistancePresets.ScreenToWorldCentered(
-                new ViewportPoint(screen.x, screen.y),
-                new ViewportPoint(screenSize.x, screenSize.y),
-                _preset);
-
-            if (_camera == null)
-                return new Vector2(offset.X, offset.Y);
-
-            Vector3 position = _camera.transform.position;
-            return new Vector2(position.x + offset.X, position.y + offset.Y);
-        }
     }
 }

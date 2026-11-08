@@ -86,6 +86,8 @@ namespace ABRevival.Presentation
         private readonly int _ownerKey;
 
         private NativeArray<PhysicsBody> _hullBodies;
+        private NativeArray<float2> _hullPositions;
+        private NativeArray<float> _hullRotations;
         private NativeArray<int> _hullFactions;
         private NativeArray<float> _hullHealth;
         private NativeArray<int> _hullPartCounts;
@@ -94,6 +96,7 @@ namespace ABRevival.Presentation
         private NativeArray<MountedPartData> _parts;
         private NativeArray<bool> _partMounted;
         private NativeArray<PhysicsShape> _partShapes;
+        private NativeArray<float> _partRadii;
 
         private NativeArray<BallisticHit> _candidates;
         private NativeArray<ProjectileHit> _hits;
@@ -134,6 +137,8 @@ namespace ABRevival.Presentation
             _ownerKey = _world.SetOwner(null);
 
             _hullBodies = new NativeArray<PhysicsBody>(maxHulls, Allocator.Persistent, NativeArrayOptions.ClearMemory);
+            _hullPositions = new NativeArray<float2>(maxHulls, Allocator.Persistent, NativeArrayOptions.ClearMemory);
+            _hullRotations = new NativeArray<float>(maxHulls, Allocator.Persistent, NativeArrayOptions.ClearMemory);
             _hullFactions = new NativeArray<int>(maxHulls, Allocator.Persistent, NativeArrayOptions.ClearMemory);
             _hullHealth = new NativeArray<float>(maxHulls, Allocator.Persistent, NativeArrayOptions.ClearMemory);
             _hullPartCounts = new NativeArray<int>(maxHulls, Allocator.Persistent, NativeArrayOptions.ClearMemory);
@@ -142,6 +147,7 @@ namespace ABRevival.Presentation
             _parts = new NativeArray<MountedPartData>(_maxParts, Allocator.Persistent, NativeArrayOptions.ClearMemory);
             _partMounted = new NativeArray<bool>(_maxParts, Allocator.Persistent, NativeArrayOptions.ClearMemory);
             _partShapes = new NativeArray<PhysicsShape>(_maxParts, Allocator.Persistent, NativeArrayOptions.ClearMemory);
+            _partRadii = new NativeArray<float>(_maxParts, Allocator.Persistent, NativeArrayOptions.ClearMemory);
 
             _candidates = new NativeArray<BallisticHit>(_maxParts, Allocator.Persistent, NativeArrayOptions.ClearMemory);
             _hits = new NativeArray<ProjectileHit>(maxProjectiles, Allocator.Persistent, NativeArrayOptions.ClearMemory);
@@ -167,6 +173,8 @@ namespace ABRevival.Presentation
 
             int hullIndex = _hullCount++;
             _hullBodies[hullIndex] = _world.CreateBody(definition);
+            _hullPositions[hullIndex] = position;
+            _hullRotations[hullIndex] = rotation;
             _hullFactions[hullIndex] = factionId;
             return hullIndex;
         }
@@ -180,6 +188,9 @@ namespace ABRevival.Presentation
             var body = _hullBodies[hullIndex];
             body.position = new Vector2(position.x, position.y);
             body.rotation = PhysicsRotate.FromRadians(rotation);
+
+            _hullPositions[hullIndex] = position;
+            _hullRotations[hullIndex] = rotation;
         }
 
         /// <summary>
@@ -214,6 +225,7 @@ namespace ABRevival.Presentation
                 int globalPartIndex = ToGlobalPartIndex(hullIndex, partIndex);
                 _parts[globalPartIndex] = definition.part;
                 _partMounted[globalPartIndex] = true;
+                _partRadii[globalPartIndex] = definition.hitRadius;
                 totalHealth += definition.part.health;
 
                 var geometry = CircleGeometry.Create(definition.hitRadius, new Vector2(definition.part.localOffset.x, definition.part.localOffset.y));
@@ -253,32 +265,41 @@ namespace ABRevival.Presentation
                 if (math.lengthsq(to - from) <= 1e-8f) continue;
 
                 var input = PhysicsQuery.CastRayInput.FromTo(new Vector2(from.x, from.y), new Vector2(to.x, to.y));
-                var results = _world.CastRay(input, PhysicsQuery.QueryFilter.Everything, PhysicsQuery.WorldCastMode.All, Allocator.Temp);
 
+                // PhysicsWorld.CastRay has no caller-owned results overload, so the
+                // narrow phase is the allocation-free CircleGeometry.CastRay. Hull
+                // factions and destroyed hulls cull most parts before the cast.
                 int candidateCount = 0;
-                for (int resultIndex = 0; resultIndex < results.Length; resultIndex++)
+                for (int hullIndex = 0; hullIndex < _hullCount; hullIndex++)
                 {
-                    var result = results[resultIndex];
-                    if (!result.shape.isValid) continue;
-
-                    int globalPartIndex = result.shape.userData.intValue;
-                    if (globalPartIndex < 0 || globalPartIndex >= _maxParts) continue;
-                    if (!_partMounted[globalPartIndex]) continue;
-
-                    int hullIndex = globalPartIndex / _maxPartsPerHull;
-                    if (hullIndex >= _hullCount) continue;
+                    if (_hullDestroyed[hullIndex]) continue;
                     if (_hullFactions[hullIndex] == projectile.factionId) continue;
 
-                    _candidates[candidateCount++] = new BallisticHit
+                    int firstPart = ToGlobalPartIndex(hullIndex, 0);
+                    int partCount = _hullPartCounts[hullIndex];
+                    for (int partIndex = 0; partIndex < partCount; partIndex++)
                     {
-                        targetIndex = globalPartIndex,
-                        fraction = result.fraction,
-                        point = new float2(result.point.x, result.point.y),
-                        normal = new float2(result.normal.x, result.normal.y)
-                    };
+                        int globalPartIndex = firstPart + partIndex;
+                        if (!_partMounted[globalPartIndex]) continue;
+
+                        float radius = _partRadii[globalPartIndex];
+                        float2 center = WorldPartCenter(hullIndex, _parts[globalPartIndex].localOffset);
+                        if (!SegmentNearCircle(from, to, center, radius)) continue;
+
+                        var circle = CircleGeometry.Create(radius, new Vector2(center.x, center.y));
+                        PhysicsQuery.CastResult hit = circle.CastRay(input);
+                        if (!hit.isValid) continue;
+
+                        _candidates[candidateCount++] = new BallisticHit
+                        {
+                            targetIndex = globalPartIndex,
+                            fraction = hit.fraction,
+                            point = new float2(hit.point.x, hit.point.y),
+                            normal = new float2(hit.normal.x, hit.normal.y)
+                        };
+                    }
                 }
 
-                if (results.IsCreated) results.Dispose();
                 if (candidateCount == 0) continue;
 
                 Ballistics.OrderByFraction(_candidates.AsSpan().Slice(0, candidateCount));
@@ -357,6 +378,26 @@ namespace ABRevival.Presentation
             ThrowIfDisposed();
             ThrowIfHullOutOfRange(hullIndex);
             return _hullDestroyed[hullIndex];
+        }
+
+        private float2 WorldPartCenter(int hullIndex, float2 localOffset)
+        {
+            float cos = math.cos(_hullRotations[hullIndex]);
+            float sin = math.sin(_hullRotations[hullIndex]);
+            return _hullPositions[hullIndex] + new float2(
+                (cos * localOffset.x) - (sin * localOffset.y),
+                (sin * localOffset.x) + (cos * localOffset.y));
+        }
+
+        /// <summary>Broad phase: rejects circles the projectile segment cannot reach.</summary>
+        private static bool SegmentNearCircle(float2 from, float2 to, float2 center, float radius)
+        {
+            float2 segment = to - from;
+            float lengthSq = math.lengthsq(segment);
+            float t = lengthSq > 1e-8f
+                ? math.clamp(math.dot(center - from, segment) / lengthSq, 0f, 1f)
+                : 0f;
+            return math.distancesq(from + (segment * t), center) <= radius * radius;
         }
 
         /// <summary>
@@ -461,6 +502,8 @@ namespace ABRevival.Presentation
             if (_world.isValid) _world.Destroy(_ownerKey);
 
             if (_hullBodies.IsCreated) _hullBodies.Dispose();
+            if (_hullPositions.IsCreated) _hullPositions.Dispose();
+            if (_hullRotations.IsCreated) _hullRotations.Dispose();
             if (_hullFactions.IsCreated) _hullFactions.Dispose();
             if (_hullHealth.IsCreated) _hullHealth.Dispose();
             if (_hullPartCounts.IsCreated) _hullPartCounts.Dispose();
@@ -469,6 +512,7 @@ namespace ABRevival.Presentation
             if (_parts.IsCreated) _parts.Dispose();
             if (_partMounted.IsCreated) _partMounted.Dispose();
             if (_partShapes.IsCreated) _partShapes.Dispose();
+            if (_partRadii.IsCreated) _partRadii.Dispose();
 
             if (_candidates.IsCreated) _candidates.Dispose();
             if (_hits.IsCreated) _hits.Dispose();

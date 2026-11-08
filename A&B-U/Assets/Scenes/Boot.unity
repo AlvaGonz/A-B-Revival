@@ -636,7 +636,6 @@ MonoBehaviour:
   catalogParts: []
   blueprint: {fileID: 0}
   startingMoney: 2000
-  saveFileName: hangar-save.json
 --- !u!114 &1922759797
 MonoBehaviour:
   m_ObjectHideFlags: 0

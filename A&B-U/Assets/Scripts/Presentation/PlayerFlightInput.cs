@@ -9,7 +9,8 @@ namespace ABRevival.Presentation
     /// Desktop keyboard/mouse action map for direct flight. Bindings are built in code
     /// (no imported asset) so they are deterministic in tests, and every read touches
     /// preallocated Input System state only: no managed allocation per frame.
-    /// X toggles autofire, C cycles the ADR 0005 camera distance, left mouse fires.
+    /// C cycles the ADR 0005 camera distance, E requests the Captain tactical mode.
+    /// Firing is read by <see cref="MouseCombatFireInput"/> via the combat seam.
     /// Original game IP: Vargames (2011).
     /// </summary>
     public sealed class PlayerFlightInput : IDisposable
@@ -17,16 +18,14 @@ namespace ABRevival.Presentation
         public const string MapName = "PlayerFlight";
         public const string ThrustAction = "Thrust";
         public const string SteeringAction = "Steering";
-        public const string AutofireAction = "Autofire";
+        public const string TacticalModeAction = "TacticalMode";
         public const string CameraDistanceAction = "CameraDistance";
-        public const string FireAction = "Fire";
 
         private readonly InputActionMap _map;
         private readonly InputAction _thrust;
         private readonly InputAction _steering;
-        private readonly InputAction _autofire;
+        private readonly InputAction _tacticalMode;
         private readonly InputAction _cameraDistance;
-        private readonly InputAction _fire;
 
         public PlayerFlightInput()
         {
@@ -44,14 +43,11 @@ namespace ABRevival.Presentation
                 .With("negative", "<Keyboard>/d")
                 .With("negative", "<Keyboard>/rightArrow");
 
-            _autofire = _map.AddAction(AutofireAction, InputActionType.Button, "<Keyboard>/x");
+            _tacticalMode = _map.AddAction(TacticalModeAction, InputActionType.Button, "<Keyboard>/e");
             _cameraDistance = _map.AddAction(CameraDistanceAction, InputActionType.Button, "<Keyboard>/c");
-            _fire = _map.AddAction(FireAction, InputActionType.Button, "<Mouse>/leftButton");
         }
 
-        public bool FireHeld => _fire.IsPressed();
-
-        public bool AutofirePressedThisFrame() => _autofire.WasPressedThisFrame();
+        public bool TacticalModePressedThisFrame() => _tacticalMode.WasPressedThisFrame();
 
         public bool CameraDistancePressedThisFrame() => _cameraDistance.WasPressedThisFrame();
 

@@ -10,7 +10,7 @@ namespace ABRevival.Tests.PlayMode
 {
     /// <summary>
     /// Desktop flight input through the real Input System: W thrusts, A/D steer,
-    /// X toggles autofire into the weapon seam, C cycles the ADR 0005 camera preset
+    /// E requests the Captain tactical mode, C cycles the ADR 0005 camera preset
     /// and HUD badge, and the fixed-tick path allocates nothing.
     /// </summary>
     public class PlayerFlightInputPlayModeTests : InputTestFixture
@@ -23,19 +23,6 @@ namespace ABRevival.Tests.PlayMode
         private CombatCameraRig _cameraRig;
         private CombatHudBehaviour _hud;
         private Keyboard _keyboard;
-        private Mouse _mouse;
-
-        private sealed class RecordingWeapons : IWeaponFireControl
-        {
-            public int FireCalls;
-            public int LastShipIndex;
-
-            public void Fire(int shipIndex, in ShipInput input, float deltaTime)
-            {
-                FireCalls++;
-                LastShipIndex = shipIndex;
-            }
-        }
 
         [SetUp]
         public override void Setup()
@@ -43,7 +30,7 @@ namespace ABRevival.Tests.PlayMode
             base.Setup();
 
             _keyboard = InputSystem.AddDevice<Keyboard>();
-            _mouse = InputSystem.AddDevice<Mouse>();
+            InputSystem.AddDevice<Mouse>();
 
             _host = new GameObject("player-flight-input-test");
             _cameraRig = _host.AddComponent<CombatCameraRig>();
@@ -135,41 +122,16 @@ namespace ABRevival.Tests.PlayMode
         }
 
         [Test]
-        public void AutofireKey_TogglesFlag_AndFiresThroughTheWeaponSeam()
+        public void TacticalModeKey_RaisesOneRequestPerPress()
         {
-            var weapons = new RecordingWeapons();
-            _player.WeaponFireControl = weapons;
+            int requests = 0;
+            _player.TacticalModeRequested += () => requests++;
 
-            Press(_keyboard.xKey);
+            Press(_keyboard.eKey);
             _player.PollActions();
-            Assert.IsTrue(_player.AutofireEnabled, "X must enable autofire.");
+            Release(_keyboard.eKey);
 
-            _player.Tick(Step);
-            Assert.AreEqual(1, weapons.FireCalls, "Autofire must reach the weapon seam every tick.");
-
-            _player.Tick(Step);
-            Assert.AreEqual(2, weapons.FireCalls);
-            Assert.AreEqual(0, weapons.LastShipIndex);
-
-            Release(_keyboard.xKey);
-            Press(_keyboard.xKey);
-            _player.PollActions();
-            Assert.IsFalse(_player.AutofireEnabled, "A second X press must disable autofire.");
-            Release(_keyboard.xKey);
-        }
-
-        [Test]
-        public void MouseTrigger_FiresThroughTheWeaponSeamWithoutAutofire()
-        {
-            var weapons = new RecordingWeapons();
-            _player.WeaponFireControl = weapons;
-
-            Press(_mouse.leftButton);
-            _player.Tick(Step);
-
-            Assert.IsFalse(_player.AutofireEnabled);
-            Assert.AreEqual(1, weapons.FireCalls, "Holding the mouse trigger must fire.");
-            Release(_mouse.leftButton);
+            Assert.AreEqual(1, requests, "E must raise exactly one tactical-mode request.");
         }
 
         [Test]

@@ -54,10 +54,16 @@ namespace ABRevival.Tests
                 localRotation = 0.75f
             }));
 
-            var payload = new PlayerSaveData { shop = shop.CreateSave() };
+            var payload = new PlayerSaveData
+            {
+                shop = shop.CreateSave(),
+                cameraPreset = ABRevival.Core.Camera.CameraDistancePreset.Far
+            };
             payload.blueprints.Add(blueprint);
 
             PlayerSaveData loaded = PlayerSaveCodec.FromJson(PlayerSaveCodec.ToJson(payload));
+            Assert.AreEqual(ABRevival.Core.Camera.CameraDistancePreset.Far, loaded.cameraPreset,
+                "The ADR 0005 camera preset must round-trip through the single save payload.");
             ShopState restored = ShopState.FromSave(catalog, loaded.shop);
 
             Assert.AreEqual(260, restored.Money);
@@ -140,6 +146,34 @@ namespace ABRevival.Tests
             {
                 if (File.Exists(path)) File.Delete(path);
             }
+        }
+
+        [Test]
+        public void Save_ReplacesTheExistingFileAtomically_AndLeavesNoTempFile()
+        {
+            string path = Path.Combine(Path.GetTempPath(), "ab-revival-atomic-save-test.json");
+            try
+            {
+                PlayerSaveCodec.SaveToFile(path, new PlayerSaveData { storyIndex = 3 });
+                PlayerSaveCodec.SaveToFile(path, new PlayerSaveData { storyIndex = 7 });
+
+                Assert.AreEqual(7, PlayerSaveCodec.LoadFromFile(path).storyIndex);
+                Assert.IsFalse(File.Exists(path + ".tmp"), "The staging file must be consumed by the swap.");
+            }
+            finally
+            {
+                if (File.Exists(path)) File.Delete(path);
+                if (File.Exists(path + ".tmp")) File.Delete(path + ".tmp");
+            }
+        }
+
+        [Test]
+        public void Save_InvalidCameraPreset_FallsBackToShort()
+        {
+            var payload = new PlayerSaveData { cameraPreset = (ABRevival.Core.Camera.CameraDistancePreset)99 };
+            PlayerSaveData loaded = PlayerSaveCodec.FromJson(PlayerSaveCodec.ToJson(payload));
+
+            Assert.AreEqual(ABRevival.Core.Camera.CameraDistancePreset.Short, loaded.cameraPreset);
         }
 
         [Test]

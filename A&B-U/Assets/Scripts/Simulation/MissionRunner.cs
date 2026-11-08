@@ -54,7 +54,7 @@ namespace ABRevival.Core.Simulation
     }
 
     /// <summary>One spawn or outer-wave directive emitted by a mission replay.</summary>
-    public sealed class MissionSpawnRecord
+    public struct MissionSpawnRecord
     {
         public int tick;
         public int order;
@@ -65,21 +65,21 @@ namespace ABRevival.Core.Simulation
         public int defIndex;
         public float x;
         public float y;
-        public int shipIndex = -1;
+        public int shipIndex;
     }
 
     /// <summary>One talk or movie hook emitted by a mission replay.</summary>
-    public sealed class MissionHookRecord
+    public struct MissionHookRecord
     {
         public int tick;
         public LevelActKind kind;
         public int firstLine;
         public int lastLine;
-        public int movieIndex = -1;
+        public int movieIndex;
     }
 
     /// <summary>One toPlace_* transition fired when the named pilot entered its activation rect.</summary>
-    public sealed class MissionPlaceRecord
+    public struct MissionPlaceRecord
     {
         public int tick;
         public string eventName;
@@ -130,19 +130,21 @@ namespace ABRevival.Core.Simulation
         private const float DefaultTurnSpeed = 2f;
         private const float DefaultDrag = 0.05f;
 
-        private sealed class TimedEventState
+        // Value types so replay bookkeeping stays in the pre-sized lists added by Start().
+        private struct TimedEventState
         {
             public LevelEvent Event;
             public int RemainingTicks;
+            public bool Removed;
         }
 
-        private sealed class SpawnedShip
+        private struct SpawnedShip
         {
             public int ShipIndex;
             public string Pilot;
             public string[] Pilots;
             public bool Friendly;
-            public bool Alive = true;
+            public bool Alive;
         }
 
         private readonly LevelRecord _level;
@@ -163,6 +165,14 @@ namespace ABRevival.Core.Simulation
         private bool _started;
         private MissionState _state;
         private bool _returnToHangarPending;
+        private bool _scanningClockEvents;
+        private int _hostilesSpawned;
+
+        /// <summary>
+        /// Raised when a spawn act cannot be placed because the simulation is full.
+        /// The spawn is skipped instead of aborting the tick.
+        /// </summary>
+        public event Action<string> SpawnSkipped;
 
         public MissionRunner(LevelRecord level, CombatSimulation simulation, float tickSeconds = DefaultTickSeconds)
             : this(level, Wrap(simulation), tickSeconds)
@@ -255,6 +265,8 @@ namespace ABRevival.Core.Simulation
             if (_started) throw new InvalidOperationException("MissionRunner has already started.");
             _started = true;
 
+            Preallocate();
+
             for (int i = 0; i < _level.initialActs.Count; i++)
                 ExecuteAct(_level.initialActs[i], null);
 
@@ -263,6 +275,100 @@ namespace ABRevival.Core.Simulation
                 var ev = _level.events[i];
                 if (string.IsNullOrEmpty(ev.after)) Activate(ev);
             }
+        }
+
+        /// <summary>True while the mission's record of that craft has not been reported destroyed.</summary>
+        public bool IsCraftAlive(int shipIndex)
+        {
+            for (int i = 0; i < _ships.Count; i++)
+                if (_ships[i].ShipIndex == shipIndex) return _ships[i].Alive;
+            return false;
+        }
+
+        /// <summary>
+        /// Sizes every replay list from the decoded level before any act runs, so the
+        /// per-tick path only fills existing capacity (ADR 0010 zero-alloc contract).
+        /// </summary>
+        private void Preallocate()
+        {
+            _activeEvents.Capacity = Math.Max(_activeEvents.Count, _level.events.Count);
+            _clockEvents.Capacity = Math.Max(_clockEvents.Count, CountTimedEvents());
+            _ships.Capacity = Math.Max(_ships.Count, _simulation.MaxShips);
+            _spawns.Capacity = Math.Max(_spawns.Count, Math.Max(_level.spawns.Count, CountSpawnActs()));
+            _hooks.Capacity = Math.Max(_hooks.Count, CountHookActs());
+            _places.Capacity = Math.Max(_places.Count, CountPlaceEvents());
+            _finishedEvents.EnsureCapacity(CountFinishNames());
+        }
+
+        private int CountTimedEvents()
+        {
+            int count = 0;
+            for (int i = 0; i < _level.events.Count; i++)
+                if (_level.events[i].isTimed) count++;
+            return count;
+        }
+
+        private int CountPlaceEvents()
+        {
+            int count = 0;
+            for (int i = 0; i < _level.events.Count; i++)
+                if (_level.events[i].place != null) count++;
+            return count;
+        }
+
+        private int CountHookActs()
+        {
+            int count = 0;
+            for (int i = 0; i < _level.initialActs.Count; i++)
+                if (IsHook(_level.initialActs[i])) count++;
+
+            for (int i = 0; i < _level.events.Count; i++)
+            {
+                LevelEvent ev = _level.events[i];
+                for (int a = 0; a < ev.finishActs.Count; a++)
+                    if (IsHook(ev.finishActs[a])) count++;
+                for (int a = 0; a < ev.frameActs.Count; a++)
+                    if (ev.frameActs[a].act != null && IsHook(ev.frameActs[a].act)) count++;
+            }
+
+            return count;
+        }
+
+        private int CountSpawnActs()
+        {
+            int count = 0;
+            for (int i = 0; i < _level.initialActs.Count; i++)
+                if (IsSpawn(_level.initialActs[i])) count++;
+
+            for (int i = 0; i < _level.events.Count; i++)
+            {
+                LevelEvent ev = _level.events[i];
+                for (int a = 0; a < ev.finishActs.Count; a++)
+                    if (IsSpawn(ev.finishActs[a])) count++;
+                for (int a = 0; a < ev.frameActs.Count; a++)
+                    if (ev.frameActs[a].act != null && IsSpawn(ev.frameActs[a].act)) count++;
+            }
+
+            return count;
+        }
+
+        private static bool IsSpawn(LevelAct act)
+        {
+            return act != null &&
+                   (act.kind == LevelActKind.Add || act.kind == LevelActKind.Player || act.kind == LevelActKind.Outer);
+        }
+
+        private static bool IsHook(LevelAct act)
+        {
+            return act != null && (act.kind == LevelActKind.Talk || act.kind == LevelActKind.Movie);
+        }
+
+        private int CountFinishNames()
+        {
+            int count = 0;
+            for (int i = 0; i < _level.events.Count; i++)
+                count += _level.events[i].finish.Count;
+            return count;
         }
 
         /// <summary>Advances one simulation tick, then evaluates clocks, place transitions, and win conditions.</summary>
@@ -292,18 +398,22 @@ namespace ABRevival.Core.Simulation
         {
             if (_state != MissionState.InProgress) return;
 
-            SpawnedShip ship = null;
+            int recordIndex = -1;
             for (int i = 0; i < _ships.Count; i++)
             {
                 if (_ships[i].ShipIndex == shipIndex)
                 {
-                    ship = _ships[i];
+                    recordIndex = i;
                     break;
                 }
             }
 
-            if (ship == null || !ship.Alive) return;
+            if (recordIndex < 0 || !_ships[recordIndex].Alive) return;
+
+            SpawnedShip ship = _ships[recordIndex];
             ship.Alive = false;
+            _ships[recordIndex] = ship;
+
             RunDeathEvents(ship, killerPilot);
             if (_state == MissionState.InProgress && ship.ShipIndex == PlayerShipIndex)
                 EndMission(MissionState.Lose, MissionEndCause.PlayerDestroyed, ship.Pilot);
@@ -333,7 +443,15 @@ namespace ABRevival.Core.Simulation
             if (ev.isTimed)
             {
                 for (int i = 0; i < _clockEvents.Count; i++)
-                    if (_clockEvents[i].Event == ev) return;
+                {
+                    if (_clockEvents[i].Event != ev) continue;
+
+                    // A completion in the current scan may have finished this clock already.
+                    if (_clockEvents[i].Removed)
+                        _clockEvents[i] = new TimedEventState { Event = ev, RemainingTicks = ev.timeTicks };
+                    return;
+                }
+
                 _clockEvents.Add(new TimedEventState { Event = ev, RemainingTicks = ev.timeTicks });
                 return;
             }
@@ -344,33 +462,45 @@ namespace ABRevival.Core.Simulation
         private void RunClockEvents()
         {
             // Match EvtCtrl.runClock: events appended by a completion start next tick, not this one.
+            // Completions can remove other clock events, so removals are deferred until the
+            // scan ends; removing in place would shift the list and skip the next event.
             int count = _clockEvents.Count;
-            int index = 0;
-            while (index < count)
+            _scanningClockEvents = true;
+            try
             {
-                var state = _clockEvents[index];
-                int remaining = state.RemainingTicks;
-
-                for (int i = 0; i < state.Event.frameActs.Count; i++)
+                for (int index = 0; index < count; index++)
                 {
-                    var frame = state.Event.frameActs[i];
-                    if (frame.interval > 0 && remaining % frame.interval == 0)
-                        ExecuteAct(frame.act, state.Event);
-                }
+                    var state = _clockEvents[index];
+                    if (state.Removed) continue;
 
-                state.RemainingTicks = remaining - 1;
-                if (remaining <= 0)
-                {
-                    _clockEvents.RemoveAt(index);
-                    count--;
-                    TryComplete(state.Event);
-                }
-                else
-                {
-                    index++;
-                }
+                    int remaining = state.RemainingTicks;
+                    for (int i = 0; i < state.Event.frameActs.Count; i++)
+                    {
+                        var frame = state.Event.frameActs[i];
+                        if (frame.interval > 0 && remaining % frame.interval == 0)
+                            ExecuteAct(frame.act, state.Event);
+                    }
 
-                if (_state != MissionState.InProgress) return;
+                    state.RemainingTicks = remaining - 1;
+                    if (remaining <= 0)
+                    {
+                        state.Removed = true;
+                        _clockEvents[index] = state;
+                        TryComplete(state.Event);
+                    }
+                    else
+                    {
+                        _clockEvents[index] = state;
+                    }
+
+                    if (_state != MissionState.InProgress) break;
+                }
+            }
+            finally
+            {
+                _scanningClockEvents = false;
+                for (int i = _clockEvents.Count - 1; i >= 0; i--)
+                    if (_clockEvents[i].Removed) _clockEvents.RemoveAt(i);
             }
         }
 
@@ -407,6 +537,8 @@ namespace ABRevival.Core.Simulation
         {
             // shortcut: outer-wave directives are recorded, not simulated, so win/win1 count only spawned craft.
             // The reference mission (story 0) has no outer acts; expand when a mission with outer waves needs them.
+            if (_hostilesSpawned == 0) return;
+
             for (int i = 0; i < _activeEvents.Count; i++)
             {
                 var ev = _activeEvents[i];
@@ -521,7 +653,8 @@ namespace ABRevival.Core.Simulation
                             tick = _tick,
                             kind = LevelActKind.Talk,
                             firstLine = act.talk.firstLine,
-                            lastLine = act.talk.lastLine
+                            lastLine = act.talk.lastLine,
+                            movieIndex = -1
                         });
                     }
                     break;
@@ -564,12 +697,16 @@ namespace ABRevival.Core.Simulation
         {
             if (spawn == null) return;
             if (_simulation.ShipCount >= _simulation.MaxShips)
-                throw new InvalidOperationException(
-                    $"Level spawn exceeds CombatSimulation capacity of {_simulation.MaxShips} ships.");
+            {
+                SpawnSkipped?.Invoke(
+                    $"Spawn '{spawn.pilot}' skipped: simulation capacity {_simulation.MaxShips} reached.");
+                return;
+            }
 
+            var position = new float2(spawn.x, spawn.y);
             var entity = new ShipEntity
             {
-                position = new float2(spawn.x, spawn.y),
+                position = position,
                 velocity = float2.zero,
                 rotation = 0f,
                 angularVelocity = 0f,
@@ -582,7 +719,11 @@ namespace ABRevival.Core.Simulation
                 turnSpeed = DefaultTurnSpeed,
                 drag = DefaultDrag,
                 factionId = spawn.friendly ? 0 : 1,
-                tacticalMode = (int)CaptainTacticalMode.Anchor
+                tacticalMode = (int)CaptainTacticalMode.Anchor,
+                // Anchor mode returns here (ADR 0006); without it every AI ship flies to (0,0).
+                spawnPosition = position,
+                // The frozen add/outer acts carry no per-craft slot; 0 is the formation leader.
+                formationSlot = 0
             };
 
             int shipIndex = _simulation.ShipCount;
@@ -590,13 +731,15 @@ namespace ABRevival.Core.Simulation
             _simulation.SetShip(shipIndex, entity);
 
             if (spawn.kind == LevelSpawnKind.Player) PlayerShipIndex = shipIndex;
+            if (!spawn.friendly) _hostilesSpawned++;
 
             _ships.Add(new SpawnedShip
             {
                 ShipIndex = shipIndex,
                 Pilot = spawn.pilot,
-                Pilots = spawn.pilots,
-                Friendly = spawn.friendly
+                Pilots = spawn.pilots ?? Array.Empty<string>(),
+                Friendly = spawn.friendly,
+                Alive = true
             });
 
             RecordSpawn(spawn, owner, shipIndex);
@@ -656,7 +799,20 @@ namespace ABRevival.Core.Simulation
         private void RemoveClockEvent(string name)
         {
             for (int i = _clockEvents.Count - 1; i >= 0; i--)
-                if (_clockEvents[i].Event.name == name) _clockEvents.RemoveAt(i);
+            {
+                if (_clockEvents[i].Event.name != name) continue;
+
+                if (_scanningClockEvents)
+                {
+                    TimedEventState state = _clockEvents[i];
+                    state.Removed = true;
+                    _clockEvents[i] = state;
+                }
+                else
+                {
+                    _clockEvents.RemoveAt(i);
+                }
+            }
         }
 
         private static bool KillerMatches(string[] killerPilots, string killerPilot)

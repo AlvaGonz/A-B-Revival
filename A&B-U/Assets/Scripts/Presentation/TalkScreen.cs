@@ -70,8 +70,14 @@ namespace ABRevival.Presentation
 
             _started = true;
             SetVisible(true);
-            _view = new TalkView(_document.rootVisualElement, _portraits);
-            _view.ClickArea.RegisterCallback<ClickEvent>(OnClick);
+
+            // Build the panel once; repeated missions must not stack subtrees or callbacks.
+            if (_view == null)
+            {
+                _view = new TalkView(_document.rootVisualElement, _portraits);
+                _view.ClickArea.RegisterCallback<ClickEvent>(OnClick);
+            }
+
             _presenter = new TalkPresenter(sequence, _view, Audio, OnCompleted);
             _presenter.Advance();
         }

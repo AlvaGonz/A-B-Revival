@@ -334,6 +334,166 @@ namespace ABRevival.Tests
         }
 
         [Test]
+        public void MissionRunner_Spawn_SetsTheAnchorSpawnPoint()
+        {
+            using var simulation = new CombatSimulation();
+            simulation.Init(maxShips: 8, maxProjectiles: 8);
+
+            var level = new LevelRecord { storyKey = 1, cameraWidth = 1000f, cameraHeight = 1000f, background = "test" };
+            level.initialActs.Add(SpawnActAt("player", LevelSpawnKind.Player, "Wang", friendly: true, x: 120f, y: -40f));
+            level.initialActs.Add(SpawnActAt("add", LevelSpawnKind.Add, "E1", friendly: false, x: 300f, y: 75f));
+
+            var runner = new MissionRunner(level, simulation);
+            runner.Start();
+
+            ShipEntity player = simulation.GetShip(0);
+            ShipEntity hostile = simulation.GetShip(1);
+            Assert.AreEqual(120f, player.spawnPosition.x, 0.001f);
+            Assert.AreEqual(-40f, player.spawnPosition.y, 0.001f);
+            Assert.AreEqual(300f, hostile.spawnPosition.x, 0.001f);
+            Assert.AreEqual(75f, hostile.spawnPosition.y, 0.001f);
+            Assert.AreEqual(0, hostile.formationSlot);
+        }
+
+        [Test]
+        public void MissionRunner_WinEvent_DoesNotFireBeforeAnyHostileSpawns()
+        {
+            using var simulation = new CombatSimulation();
+            simulation.Init(maxShips: 8, maxProjectiles: 8);
+
+            var level = new LevelRecord { storyKey = 1, cameraWidth = 1000f, cameraHeight = 1000f, background = "test" };
+            level.initialActs.Add(SpawnAct("player", LevelSpawnKind.Player, "Wang", friendly: true));
+            var win = new LevelEvent { name = "win", finishKind = LevelFinishKind.Win };
+            win.finishActs.Add(new LevelAct { name = "windir", kind = LevelActKind.Windir });
+            level.events.Add(win);
+
+            var runner = new MissionRunner(level, simulation);
+            runner.Start();
+            runner.Tick();
+
+            Assert.AreEqual(MissionState.InProgress, runner.State,
+                "A win objective must not complete before a single hostile has spawned.");
+        }
+
+        [Test]
+        public void MissionRunner_OverflowSpawn_IsSkippedAndReported()
+        {
+            using var simulation = new CombatSimulation();
+            simulation.Init(maxShips: 2, maxProjectiles: 8);
+
+            var level = new LevelRecord { storyKey = 1, cameraWidth = 1000f, cameraHeight = 1000f, background = "test" };
+            level.initialActs.Add(SpawnAct("player", LevelSpawnKind.Player, "Wang", friendly: true));
+            level.initialActs.Add(SpawnAct("add", LevelSpawnKind.Add, "E1", friendly: false));
+            level.initialActs.Add(SpawnAct("add", LevelSpawnKind.Add, "E2", friendly: false));
+
+            var runner = new MissionRunner(level, simulation);
+            int skipped = 0;
+            runner.SpawnSkipped += _ => skipped++;
+
+            Assert.DoesNotThrow(runner.Start, "A full simulation must skip the spawn, not throw from the tick.");
+            Assert.AreEqual(2, simulation.ShipCount);
+            Assert.AreEqual(1, skipped);
+        }
+
+        [Test]
+        public void MissionRunner_ClockRemoval_DoesNotSkipTheFollowingEvent()
+        {
+            using var simulation = new CombatSimulation();
+            simulation.Init(maxShips: 8, maxProjectiles: 8);
+
+            var level = new LevelRecord { storyKey = 1, cameraWidth = 1000f, cameraHeight = 1000f, background = "test" };
+            level.initialActs.Add(SpawnAct("player", LevelSpawnKind.Player, "Wang", friendly: true));
+
+            var removed = new LevelEvent { name = "clock_x", isTimed = true, timeTicks = 5 };
+            var completes = new LevelEvent { name = "clock_a", isTimed = true, timeTicks = 1 };
+            completes.finishRemoveClock.Add("clock_x");
+            var following = new LevelEvent { name = "clock_b", isTimed = true, timeTicks = 1 };
+            following.finishActs.Add(new LevelAct
+            {
+                name = "talk",
+                kind = LevelActKind.Talk,
+                talk = new LevelTalkHook { firstLine = 1, lastLine = 1 }
+            });
+
+            level.events.Add(removed);
+            level.events.Add(completes);
+            level.events.Add(following);
+
+            var runner = new MissionRunner(level, simulation);
+            runner.Start();
+
+            runner.Tick();
+            Assert.DoesNotThrow(runner.Tick, "Deferred clock removal must not index past the list.");
+            Assert.AreEqual(1, runner.Hooks.Count, "The event after the removed clock must still run.");
+        }
+
+        [Test]
+        public void MissionRunner_SpawnTick_DoesNotAllocateManagedMemory()
+        {
+            using var warmSimulation = new CombatSimulation();
+            warmSimulation.Init(maxShips: 16, maxProjectiles: 8);
+            var warmRunner = new MissionRunner(BuildSpawnTickLevel(), warmSimulation);
+            warmRunner.Start();
+            warmRunner.Tick();
+            warmRunner.Tick();
+
+            using var simulation = new CombatSimulation();
+            simulation.Init(maxShips: 16, maxProjectiles: 8);
+            var runner = new MissionRunner(BuildSpawnTickLevel(), simulation);
+            runner.Start();
+            runner.Tick();
+
+            long allocatedBefore = System.GC.GetAllocatedBytesForCurrentThread();
+            runner.Tick();
+            long allocatedBytes = System.GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+
+            Assert.Greater(runner.Spawns.Count, 1, "The measured tick must execute the spawn act.");
+            Assert.Greater(runner.Hooks.Count, 0, "The measured tick must execute the talk hook.");
+            Assert.AreEqual(0, allocatedBytes,
+                $"Mission replay allocated {allocatedBytes} bytes on a spawn tick. Zero-alloc contract violated.");
+        }
+
+        private static LevelRecord BuildSpawnTickLevel()
+        {
+            var level = new LevelRecord { storyKey = 1, cameraWidth = 1000f, cameraHeight = 1000f, background = "test" };
+            level.initialActs.Add(SpawnAct("player", LevelSpawnKind.Player, "Wang", friendly: true));
+
+            var place = new LevelEvent
+            {
+                name = "toPlace_Wang",
+                place = new LevelPlaceTransition { pilot = "Wang", x = -10f, y = -10f, width = 20f, height = 20f }
+            };
+            level.events.Add(place);
+
+            var clock = new LevelEvent { name = "clock_spawn", isTimed = true, timeTicks = 1 };
+            clock.finishActs.Add(SpawnActAt("add", LevelSpawnKind.Add, "E1", false, 100f, 0f));
+            clock.finishActs.Add(SpawnActAt("add", LevelSpawnKind.Add, "E2", false, 120f, 0f));
+            clock.finishActs.Add(new LevelAct
+            {
+                name = "talk",
+                kind = LevelActKind.Talk,
+                talk = new LevelTalkHook { firstLine = 1, lastLine = 1 }
+            });
+            level.events.Add(clock);
+
+            return level;
+        }
+
+        private static LevelAct SpawnActAt(
+            string name,
+            LevelSpawnKind kind,
+            string pilot,
+            bool friendly,
+            float x,
+            float y)
+        {
+            LevelAct act = SpawnAct(name, kind, pilot, friendly);
+            act.spawn.x = x;
+            act.spawn.y = y;
+            return act;
+        }
+
+        [Test]
         public void MissionRunner_DeathObjective_SpecificEventWinsOverUDeadAll()
         {
             using var simulation = new CombatSimulation();

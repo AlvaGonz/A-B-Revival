@@ -158,8 +158,10 @@ namespace ABRevival.Tests.PlayMode
                 simulation.ShipCount = 1;
                 simulation.SetShip(0, Ship(0f, 0f, factionId: 0));
 
+                // Part 54 has a flat mid-tone region, so a rendered texel can be compared
+                // against the atlas source instead of merely "any non-black pixel".
                 Span<HullPartDefinition> parts = stackalloc HullPartDefinition[1];
-                parts[0] = Part(partId: 0, health: 1000f, offset: float2.zero, radius: 32f);
+                parts[0] = Part(partId: 54, health: 1000f, offset: float2.zero, radius: 32f);
                 int hull = solver.RegisterHull(float2.zero, 0f, factionId: 0);
                 solver.SetHullParts(hull, parts);
 
@@ -181,6 +183,7 @@ namespace ABRevival.Tests.PlayMode
 
                 // URP may not present the first frame in a single tick; poll a bounded number of frames.
                 bool drewPixels = false;
+                Color32[] pixels = null;
                 for (int frame = 0; frame < 30 && !drewPixels; frame++)
                 {
                     yield return null;
@@ -190,7 +193,7 @@ namespace ABRevival.Tests.PlayMode
                     readback.Apply();
                     RenderTexture.active = null;
 
-                    Color32[] pixels = readback.GetPixels32();
+                    pixels = readback.GetPixels32();
                     for (int i = 0; i < pixels.Length; i++)
                     {
                         // Clear colour is opaque black; any lit texel proves the sprite pass ran.
@@ -202,6 +205,21 @@ namespace ABRevival.Tests.PlayMode
 
                 Assert.IsTrue(drewPixels,
                     "The URP 2D renderer produced no pixels for the populated BRG frame; check the shader LightMode tag and atlas.");
+
+                // A white quad means the UV upload landed on the atlas white cell (wrong stride)
+                // or that per-instance UVs never reached the shader. Compare a flat source texel.
+                SpriteUvRect rect = table.PartOrDefault(54);
+                Assert.IsTrue(
+                    TryFindFlatNonWhiteTexel(atlas, rect, out int texelX, out int texelY, out Color32 expected),
+                    $"Part 54 ({rect.Width}x{rect.Height}) has no flat non-white texel to compare.");
+                int screenX = WorldToScreenX(texelX, rect);
+                int screenY = WorldToScreenY(texelY, rect);
+                Color32 actual = pixels[(screenY * 96) + screenX];
+                Assert.Greater(actual.r + actual.g + actual.b, 24,
+                    $"The known atlas texel at ({screenX},{screenY}) rendered black; UVs did not reach the shader.");
+                Assert.AreEqual(expected.r, actual.r, 40, "Rendered R must match the atlas source texel.");
+                Assert.AreEqual(expected.g, actual.g, 40, "Rendered G must match the atlas source texel.");
+                Assert.AreEqual(expected.b, actual.b, 40, "Rendered B must match the atlas source texel.");
             }
             finally
             {
@@ -216,6 +234,71 @@ namespace ABRevival.Tests.PlayMode
                 solver.Dispose();
                 simulation.Dispose();
             }
+        }
+
+        private static bool TryFindFlatNonWhiteTexel(
+            Texture2D atlas,
+            SpriteUvRect rect,
+            out int texelX,
+            out int texelY,
+            out Color32 expected)
+        {
+            texelX = -1;
+            texelY = -1;
+            expected = default;
+
+            Color32[] pixels = atlas.GetPixels32();
+            int width = atlas.width;
+            int height = atlas.height;
+
+            for (int y = rect.Y + 2; y < rect.Y + rect.Height - 2; y++)
+            {
+                for (int x = rect.X + 2; x < rect.X + rect.Width - 2; x++)
+                {
+                    Color32 candidate = pixels[((height - 1 - y) * width) + x];
+                    if (candidate.a < 250) continue;
+                    if (candidate.r + candidate.g + candidate.b < 120) continue;
+                    if (candidate.r > 220 && candidate.g > 220 && candidate.b > 220) continue;
+
+                    bool flat = true;
+                    for (int oy = -1; oy <= 1 && flat; oy++)
+                    {
+                        for (int ox = -1; ox <= 1; ox++)
+                        {
+                            Color32 neighbour = pixels[((height - 1 - (y + oy)) * width) + (x + ox)];
+                            if (Mathf.Abs(neighbour.r - candidate.r) > 2 ||
+                                Mathf.Abs(neighbour.g - candidate.g) > 2 ||
+                                Mathf.Abs(neighbour.b - candidate.b) > 2 ||
+                                Mathf.Abs(neighbour.a - candidate.a) > 2)
+                            {
+                                flat = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!flat) continue;
+
+                    texelX = x;
+                    texelY = y;
+                    expected = candidate;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static int WorldToScreenX(int texelX, SpriteUvRect rect)
+        {
+            float worldX = (texelX - rect.X) + 0.5f - (rect.Width * 0.5f);
+            return Mathf.Clamp(Mathf.RoundToInt(((worldX / 256f) + 0.5f) * 96f), 0, 95);
+        }
+
+        private static int WorldToScreenY(int texelY, SpriteUvRect rect)
+        {
+            float worldY = (rect.Height * 0.5f) - ((texelY - rect.Y) + 0.5f);
+            return Mathf.Clamp(Mathf.RoundToInt(((worldY / 256f) + 0.5f) * 96f), 0, 95);
         }
 
         private static Texture2D LoadAtlasTexture()

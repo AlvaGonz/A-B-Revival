@@ -166,6 +166,9 @@ namespace ABRevival.Tests
             Assert.Throws<FormatException>(() => SpriteUvTable.Parse("0;part_000_Body_1.png;0;0;1;1\n"));
             Assert.Throws<FormatException>(() => SpriteUvTable.Parse("atlas=2048x2048\n0;part_000_Body_1.png;0;0;1;1\n"));
             Assert.Throws<FormatException>(() => SpriteUvTable.Parse("atlas=8x8\n-1;__white;0;0;8;8\n0;part_000_Body_1.png;4;4;8;8\n"));
+            Assert.Throws<FormatException>(() => SpriteUvTable.Parse(
+                "atlas=8x8\n-1;__white;0;0;8;8\n4097;part_000_Body_1.png;0;0;1;1\n"),
+                "Part ids above the 4096 cap must be rejected.");
         }
 
         private static string Normalize(string value)

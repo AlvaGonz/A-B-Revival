@@ -14,7 +14,8 @@ namespace ABRevival.Core.Data
         SocketOutOfRange,
         InsufficientEnergy,
         MissingHull,
-        AssemblyFull
+        AssemblyFull,
+        MultipleHulls
     }
 
     /// <summary>
@@ -144,6 +145,13 @@ namespace ABRevival.Core.Data
             if (_occupied[socketIndex])
             {
                 error = AssemblyError.SocketOccupied;
+                return false;
+            }
+
+            // ADR 0007: one chassis per craft; extra Body parts are not additional hulls.
+            if (part.category == PartCategory.Body && _bodyCount > 0)
+            {
+                error = AssemblyError.MultipleHulls;
                 return false;
             }
 

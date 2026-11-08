@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using ABRevival.Core.Data;
 using ABRevival.Core.Persistence;
 using ABRevival.Core.Shop;
@@ -10,8 +9,9 @@ using UnityEngine.UIElements;
 namespace ABRevival.Presentation
 {
     /// <summary>
-    /// Scene entry point for the hangar prototype. Hosts the single player save
-    /// payload and wires the assembly and shop presenters to one domain state.
+    /// Scene entry point for the hangar prototype. Mutates the single player save
+    /// payload owned by <see cref="GameFlowController"/> and wires the assembly and
+    /// shop presenters to one domain state. The hangar never owns a save file.
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public sealed class HangarController : MonoBehaviour
@@ -19,7 +19,6 @@ namespace ABRevival.Presentation
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
         [SerializeField] private CraftBlueprintSO blueprint;
         [SerializeField] private int startingMoney = 2000;
-        [SerializeField] private string saveFileName = "hangar-save.json";
 
         private UIDocument _document;
         private ShopCatalog _catalog;
@@ -27,14 +26,17 @@ namespace ABRevival.Presentation
         private CraftAssembly _assembly;
         private CraftBlueprintSO _runtimeBlueprint;
         private List<PartDefinitionSO> _definitions;
+        private int[][] _defaultGifts;
         private AssemblyPresenter _assemblyPresenter;
         private ShopPresenter _shopPresenter;
-        private Label _messageLabel;
-        private readonly PlayerSaveData _payload = new PlayerSaveData();
+        private PlayerSaveData _payload = new PlayerSaveData();
         private bool _initialized;
 
         /// <summary>Current shop money, exposed for boot/save verification.</summary>
         public int Money => _shop != null ? _shop.Money : 0;
+
+        /// <summary>True when the shop has a stock row for the part (save reconciliation telemetry).</summary>
+        public bool IsUnlocked(int partId) => _shop != null && _shop.IsUnlocked(partId);
 
         /// <summary>
         /// Resolves a mounted part's authored definition. Mission loadout conversion uses it
@@ -81,33 +83,31 @@ namespace ABRevival.Presentation
 
             _definitions = ResolveDefinitions();
             _catalog = BuildCatalog(_definitions);
+            _defaultGifts = BuildDefaultGifts(_definitions);
             _shop = new ShopState(_catalog, startingMoney);
-            for (int i = 0; i < _definitions.Count; i++)
-            {
-                PartDefinitionSO definition = _definitions[i];
-                _shop.Unlock(definition.partId, definition.category == PartCategory.Body ? 1 : 0);
-            }
 
             _runtimeBlueprint = blueprint != null ? Instantiate(blueprint) : CreateDefaultBlueprint();
             _assembly = BuildAssembly(_runtimeBlueprint);
 
             VisualElement root = _document.rootVisualElement;
-            _messageLabel = root.Q<Label>("message-label");
             _assemblyPresenter = new AssemblyPresenter(
                 root, _assembly, _runtimeBlueprint, _definitions, _shop, OnDomainChanged);
             _shopPresenter = new ShopPresenter(root, _shop, OnDomainChanged);
 
-            Button saveButton = root.Q<Button>("save-button");
-            if (saveButton != null) saveButton.clicked += Save;
-            Button loadButton = root.Q<Button>("load-button");
-            if (loadButton != null) loadButton.clicked += Load;
             Button launchButton = root.Q<Button>("launch-button");
             if (launchButton != null) launchButton.clicked += OnLaunchClicked;
 
             _initialized = true;
-            OnDomainChanged();
-            SetStoryLabel(_payload.storyIndex);
-            if (save != null) ApplySave(save);
+            if (save != null)
+            {
+                ApplySave(save);
+            }
+            else
+            {
+                ReconcileShop(_payload.storyIndex);
+                OnDomainChanged();
+                SetStoryLabel(_payload.storyIndex);
+            }
         }
 
         /// <summary>Captures the current shop and blueprint into the single player payload.</summary>
@@ -120,23 +120,48 @@ namespace ABRevival.Presentation
             target.blueprints.Add(BlueprintSaveMapper.Capture(_runtimeBlueprint));
         }
 
-        /// <summary>Restores shop money, stock, owned parts and the mounted blueprint.</summary>
+        /// <summary>
+        /// Restores shop money, stock, owned parts and the mounted blueprint, then
+        /// reconciles missing catalog stock rows before the UI is refreshed.
+        /// </summary>
         public void ApplySave(PlayerSaveData payload)
         {
             if (!_initialized || payload == null) return;
 
-            _payload.storyIndex = payload.storyIndex;
+            _payload = payload;
             _shop.LoadFrom(payload.shop);
             if (payload.blueprints.Count > 0)
             {
                 BlueprintSaveMapper.Apply(payload.blueprints[0], _runtimeBlueprint);
             }
 
+            ReconcileShop(payload.storyIndex);
+
             _assembly.Dispose();
             _assembly = BuildAssembly(_runtimeBlueprint);
             _assemblyPresenter.Rebind(_assembly, _runtimeBlueprint);
             OnDomainChanged();
             SetStoryLabel(payload.storyIndex);
+        }
+
+        private void ReconcileShop(int storyIndex)
+        {
+            _shop.ReconcileStock(_defaultGifts, storyIndex, ActiveHullNames());
+        }
+
+        private string[] ActiveHullNames()
+        {
+            return _runtimeBlueprint != null && !string.IsNullOrEmpty(_runtimeBlueprint.hullName)
+                ? new[] { _runtimeBlueprint.hullName }
+                : null;
+        }
+
+        private static int[][] BuildDefaultGifts(IReadOnlyList<PartDefinitionSO> definitions)
+        {
+            var partIds = new int[definitions.Count];
+            for (int i = 0; i < definitions.Count; i++)
+                partIds[i] = definitions[i].partId;
+            return new[] { partIds };
         }
 
         /// <summary>Shows or hides the whole hangar overlay.</summary>
@@ -175,60 +200,11 @@ namespace ABRevival.Presentation
 
         private void OnDomainChanged()
         {
+            // The flow owns the file; the hangar only mutates its payload.
+            CaptureSave(_payload);
             _assemblyPresenter?.Refresh();
             _shopPresenter?.Refresh();
         }
-
-        private void Save()
-        {
-            try
-            {
-                _payload.shop = _shop.CreateSave();
-                _payload.blueprints.Clear();
-                _payload.blueprints.Add(BlueprintSaveMapper.Capture(_runtimeBlueprint));
-                PlayerSaveCodec.SaveToFile(SavePath, _payload);
-                SetMessage($"Saved to {SavePath}");
-            }
-            catch (Exception exception)
-            {
-                Debug.LogError($"[Hangar] Save failed: {exception}");
-                SetMessage("Save failed.");
-            }
-        }
-
-        private void Load()
-        {
-            if (!File.Exists(SavePath))
-            {
-                SetMessage("No save file yet.");
-                return;
-            }
-
-            try
-            {
-                PlayerSaveData payload = PlayerSaveCodec.LoadFromFile(SavePath);
-                _payload.storyIndex = payload.storyIndex;
-                _shop.LoadFrom(payload.shop);
-
-                if (payload.blueprints.Count > 0)
-                {
-                    BlueprintSaveMapper.Apply(payload.blueprints[0], _runtimeBlueprint);
-                }
-
-                _assembly.Dispose();
-                _assembly = BuildAssembly(_runtimeBlueprint);
-                _assemblyPresenter.Rebind(_assembly, _runtimeBlueprint);
-                OnDomainChanged();
-                SetMessage($"Loaded {SavePath}");
-            }
-            catch (Exception exception)
-            {
-                Debug.LogError($"[Hangar] Load failed: {exception}");
-                SetMessage("Load failed.");
-            }
-        }
-
-        private string SavePath => Path.Combine(Application.persistentDataPath, saveFileName);
 
         private CraftAssembly BuildAssembly(CraftBlueprintSO source)
         {
@@ -238,14 +214,25 @@ namespace ABRevival.Presentation
                 source.hullHealth,
                 source.isGrandfathered);
 
+            var mounted = new List<MountedPartData>();
             if (source.mountedParts != null)
             {
                 for (int i = 0; i < source.mountedParts.Length; i++)
                 {
-                    assembly.TryMountPart(source.mountedParts[i], out _);
+                    MountedPartData part = source.mountedParts[i];
+                    AssemblyError error = assembly.TryMountPart(part, out _);
+                    if (error == AssemblyError.None)
+                    {
+                        mounted.Add(part);
+                        continue;
+                    }
+
+                    Debug.LogWarning($"[Hangar] Blueprint part {part.partId} was not mounted: {error}.");
                 }
             }
 
+            // Normalize the blueprint to what the chassis actually accepted.
+            source.mountedParts = mounted.ToArray();
             return assembly;
         }
 
@@ -294,7 +281,29 @@ namespace ABRevival.Presentation
             source.hullCategory = CraftBlueprintSO.GetHullCategoryForName(source.hullName);
             source.hullMass = 100f;
             source.hullHealth = 1300f;
-            source.mountedParts = Array.Empty<MountedPartData>();
+
+            // The boot scene ships without authored catalog/blueprint assets, so the
+            // fallback craft must be armed or WeaponSystem never mounts a fire port.
+            source.mountedParts = new[]
+            {
+                new MountedPartData
+                {
+                    partId = 0,
+                    category = PartCategory.Body,
+                    health = 1300f,
+                    maxHealth = 1300f,
+                    mass = 100f
+                },
+                new MountedPartData
+                {
+                    partId = 71,
+                    category = PartCategory.Gun,
+                    health = 425f,
+                    maxHealth = 425f,
+                    mass = 17f,
+                    localOffset = new Unity.Mathematics.float2(0f, -60f)
+                }
+            };
             return source;
         }
 
@@ -341,9 +350,5 @@ namespace ABRevival.Presentation
             return part;
         }
 
-        private void SetMessage(string message)
-        {
-            if (_messageLabel != null) _messageLabel.text = message;
-        }
     }
 }

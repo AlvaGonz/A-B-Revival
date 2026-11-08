@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using ABRevival.Core.Camera;
 using ABRevival.Core.Data;
 using ABRevival.Core.Hud;
 using ABRevival.Core.Persistence;
@@ -30,6 +31,8 @@ namespace ABRevival.Presentation
         private const int ForceWinTickLimit = 10000;
         private const int MaxSubstepsPerFrame = 4;
         private const int MaxTalkAdvancesPerSkip = 1024;
+        private const int TacticalModeCount = (int)CaptainTacticalMode.Shield + 1;
+        public const float ResultDwellSeconds = 1.5f;
 
         [SerializeField] private HangarController _hangar;
         [SerializeField] private TalkScreen _talkScreen;
@@ -53,7 +56,6 @@ namespace ABRevival.Presentation
         private LevelCatalog _catalog;
         private LevelRecord _level;
         private string _savePath;
-        private bool _hasSave;
 
         private ScheduledCombatSimulation _simulation;
         private MissionRunner _runner;
@@ -77,6 +79,7 @@ namespace ABRevival.Presentation
         private RenderTexture _renderTexture;
 
         private float _accumulator;
+        private float _resultElapsed;
         private int _captainIndex = -1;
         private bool _briefingTalkActive;
         private bool _resultTalkPending;
@@ -89,6 +92,9 @@ namespace ABRevival.Presentation
         public ProjectileContactSolver ContactSolver => _solver;
         public MissionResult? LastResult => _lastResult;
         public string SavePath => _savePath;
+
+        /// <summary>Projectiles fired by the player craft this mission (real setup path telemetry).</summary>
+        public int ShotsFired => _weapons != null ? _weapons.ShotsFired : 0;
 
         private void Awake()
         {
@@ -111,6 +117,11 @@ namespace ABRevival.Presentation
                 _talkScreen.Completed += OnTalkCompleted;
                 if (_audio != null) _talkScreen.Audio = _audio;
             }
+            if (_flight != null)
+            {
+                _flight.TacticalModeRequested += OnTacticalModeRequested;
+                _flight.CameraDistanceChanged += OnCameraDistanceChanged;
+            }
         }
 
         private void Start()
@@ -123,6 +134,11 @@ namespace ABRevival.Presentation
         {
             if (_hangar != null) _hangar.LaunchRequested -= LaunchMission;
             if (_talkScreen != null) _talkScreen.Completed -= OnTalkCompleted;
+            if (_flight != null)
+            {
+                _flight.TacticalModeRequested -= OnTacticalModeRequested;
+                _flight.CameraDistanceChanged -= OnCameraDistanceChanged;
+            }
 
             DisposeMission();
             if (_renderTexture != null)
@@ -150,7 +166,10 @@ namespace ABRevival.Presentation
                     TickMission(deltaTime);
                     break;
                 case GameFlowState.Result:
-                    if (!_resultTalkPending) State = GameFlowState.Return;
+                    // Hold the outcome long enough to be read; a loss must be observable.
+                    _resultElapsed += deltaTime;
+                    if (!_resultTalkPending && _resultElapsed >= ResultDwellSeconds)
+                        State = GameFlowState.Return;
                     break;
                 case GameFlowState.Return:
                     EnterHangar(firstBoot: false);
@@ -168,17 +187,34 @@ namespace ABRevival.Presentation
                 if (File.Exists(_savePath))
                 {
                     _save = PlayerSaveCodec.LoadFromFile(_savePath);
-                    _hasSave = true;
                 }
             }
             catch (Exception exception)
             {
-                Debug.LogError($"[GameFlow] Save load failed, starting a new campaign: {exception.Message}");
+                // Quarantine the unreadable file so the next autosave cannot silently
+                // overwrite proof of the corruption.
+                string corruptPath = _savePath + ".corrupt";
+                try
+                {
+                    // File.Move(overwrite) is unavailable on netstandard2.1.
+                    if (File.Exists(corruptPath)) File.Delete(corruptPath);
+                    File.Move(_savePath, corruptPath);
+                    Debug.LogError(
+                        $"[GameFlow] Save was corrupt and was moved to {corruptPath}; starting a new campaign: {exception.Message}");
+                }
+                catch (Exception quarantineException)
+                {
+                    Debug.LogError(
+                        $"[GameFlow] Save load failed and {_savePath} could not be quarantined " +
+                        $"({quarantineException.Message}); starting a new campaign: {exception.Message}");
+                }
+
                 _save = new PlayerSaveData();
-                _hasSave = false;
             }
 
             _story = new StoryDirector(_save, Autosave);
+            _hud?.State.SetCameraDistance(_save.cameraPreset);
+            _cameraRig?.ApplyPreset(_save.cameraPreset);
         }
 
         private void Autosave(PlayerSaveData payload)
@@ -187,7 +223,6 @@ namespace ABRevival.Presentation
             {
                 _hangar?.CaptureSave(payload);
                 PlayerSaveCodec.SaveToFile(_savePath, payload);
-                _hasSave = true;
             }
             catch (Exception exception)
             {
@@ -200,8 +235,11 @@ namespace ABRevival.Presentation
             DisposeMission();
             _briefingTalkActive = false;
             _resultTalkPending = false;
+            _resultElapsed = 0f;
             _accumulator = 0f;
             _captainIndex = -1;
+            // The next launch resolves its level from the saved STORY index.
+            _level = null;
 
             SetFlowVisible(false);
             _talkScreen?.SetVisible(false);
@@ -209,7 +247,7 @@ namespace ABRevival.Presentation
 
             if (_hangar != null)
             {
-                if (firstBoot) _hangar.Initialize(_hasSave ? _save : null);
+                if (firstBoot) _hangar.Initialize(_save);
                 else _hangar.SetStory(_save.storyIndex);
                 _hangar.SetVisible(true);
             }
@@ -351,16 +389,19 @@ namespace ABRevival.Presentation
 
         private bool TryResolveLevel()
         {
-            if (_level != null) return true;
-
-            TextAsset levelData = Resources.Load<TextAsset>(_levelResourcePath);
-            if (levelData == null)
+            if (_catalog == null)
             {
-                Debug.LogError($"[GameFlow] Level payload missing from Resources/{_levelResourcePath}.");
-                return false;
+                TextAsset levelData = Resources.Load<TextAsset>(_levelResourcePath);
+                if (levelData == null)
+                {
+                    Debug.LogError($"[GameFlow] Level payload missing from Resources/{_levelResourcePath}.");
+                    return false;
+                }
+
+                _catalog = LevelDataParser.Parse(levelData.bytes);
             }
 
-            _catalog = LevelDataParser.Parse(levelData.bytes);
+            // STORY advances after a win, so the level must be re-resolved on every launch.
             _level = _catalog.GetLevel(_save.storyIndex);
             return true;
         }
@@ -374,6 +415,7 @@ namespace ABRevival.Presentation
             _simulation = new ScheduledCombatSimulation();
             _simulation.Init(_maxShips, _maxProjectiles);
             _runner = new MissionRunner(_level, _simulation);
+            _runner.SpawnSkipped += OnSpawnSkipped;
             _runner.Start();
             _simulation.PlayerIndex = _runner.PlayerShipIndex;
 
@@ -395,6 +437,7 @@ namespace ABRevival.Presentation
             if (_cameraRig != null) _hud?.State.SetCameraDistance(_cameraRig.Preset);
 
             _accumulator = 0f;
+            _resultElapsed = 0f;
             if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
 
             ShowCinematicSurface(false);
@@ -403,6 +446,11 @@ namespace ABRevival.Presentation
             _missionAudio?.PlayMissionMusic(_save.storyIndex);
             State = GameFlowState.Mission;
             UpdateHud();
+        }
+
+        private static void OnSpawnSkipped(string message)
+        {
+            Debug.LogWarning($"[GameFlow] {message}");
         }
 
         private void TryCreateContactSolver()
@@ -673,6 +721,7 @@ namespace ABRevival.Presentation
             EnsureOverlayReferences();
             _lastResult = result;
             _resultTalkPending = false;
+            _resultElapsed = 0f;
 
             TalkScript after = null;
             if (result.state == MissionState.Win)
@@ -703,6 +752,45 @@ namespace ABRevival.Presentation
             }
 
             State = GameFlowState.Result;
+        }
+
+        /// <summary>Ends the result hold immediately (result screen click/skip control).</summary>
+        public void SkipResult()
+        {
+            if (State != GameFlowState.Result) return;
+            _resultElapsed = ResultDwellSeconds;
+        }
+
+        /// <summary>
+        /// Cycles the live Captain's ADR 0006 tactical mode. Returns false while no Captain
+        /// is deployed or his craft has been destroyed, in which case E does nothing.
+        /// </summary>
+        public bool CycleCaptainTacticalMode()
+        {
+            if (State != GameFlowState.Mission || _runner == null || _simulation == null) return false;
+            if (_captainIndex < 0 || _captainIndex >= _simulation.ShipCount) return false;
+            if (!_runner.IsCraftAlive(_captainIndex)) return false;
+
+            ShipEntity captain = _simulation.GetShip(_captainIndex);
+            int nextMode = ((int)(CaptainTacticalMode)captain.tacticalMode + 1) % TacticalModeCount;
+            var mode = (CaptainTacticalMode)nextMode;
+
+            captain.tacticalMode = nextMode;
+            _simulation.SetShip(_captainIndex, captain);
+            _hud?.State.SetCaptainMode(mode);
+            _combatAudio?.TacticalModeChanged();
+            return true;
+        }
+
+        private void OnTacticalModeRequested()
+        {
+            CycleCaptainTacticalMode();
+        }
+
+        private void OnCameraDistanceChanged(CameraDistancePreset preset)
+        {
+            _save.cameraPreset = preset;
+            Autosave(_save);
         }
 
         /// <summary>
