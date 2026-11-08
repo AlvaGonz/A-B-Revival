@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fe825abbfd24194d8de7bafafa03507, type: 3}
+  m_Name: Part_122_G.30.X2.02
+  m_EditorClassIdentifier: ABRevival.Core::ABRevival.Core.Data.PartDefinitionSO
+  partId: 122
+  partName: G.30.X2.02
+  category: 3
+  cost: 7239
+  health: 2520
+  mass: 56
+  thrust: 0
+  energyDraw: 0
+  projectileVelocity: 16
+  burstAcceleration: 0
+  bulletLifetime: 41
+  bulletDamage: 28
+  fireNum: 1
+  fireFrame: 6
+  fireStop: 13
+  fireEx: 3
+  spreadDegrees: 7
+  muzzleSpeedAdd: 0
+  accelerationAdd: 0
+  angleAddDegrees: 0

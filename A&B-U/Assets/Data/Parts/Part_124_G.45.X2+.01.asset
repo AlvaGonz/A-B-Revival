@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fe825abbfd24194d8de7bafafa03507, type: 3}
+  m_Name: Part_124_G.45.X2+.01
+  m_EditorClassIdentifier: ABRevival.Core::ABRevival.Core.Data.PartDefinitionSO
+  partId: 124
+  partName: G.45.X2+.01
+  category: 3
+  cost: 12224
+  health: 2970
+  mass: 66
+  thrust: 0
+  energyDraw: 0
+  projectileVelocity: 18
+  burstAcceleration: 0
+  bulletLifetime: 42
+  bulletDamage: 42
+  fireNum: 1
+  fireFrame: 6
+  fireStop: 13
+  fireEx: 3
+  spreadDegrees: 7
+  muzzleSpeedAdd: 0
+  accelerationAdd: 0
+  angleAddDegrees: 0

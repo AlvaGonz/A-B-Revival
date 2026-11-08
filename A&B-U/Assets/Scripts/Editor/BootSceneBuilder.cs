@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using ABRevival.Core.Data;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -26,6 +28,7 @@ namespace ABRevival.Editor
         private const string PortraitPath = "Assets/Resources/Talk/TalkPortraitCatalog.asset";
         private const string TalkDataPath = "Assets/Resources/Talk/5_all.AllData_talk.xml";
         private const string OpeningClipPath = "Assets/Resources/Cinematics/Mov1.mp4";
+        private const string CatalogFolder = "Assets/Data/Parts";
         private const string PresentationAssembly = ", ABRevival.Presentation";
 
         [MenuItem("Tools/A&B Revival/Build Boot Scene")]
@@ -93,6 +96,7 @@ namespace ABRevival.Editor
 
             SetReference(hud, "_document", hudDocument);
             SetReference(hud, "_cameraRig", cameraRig);
+            SetCatalog(hangar);
 
             Texture2D partsAtlas = LoadRequired<Texture2D>(PartsAtlasBuilder.AtlasPath);
             TextAsset partsUvTable = LoadRequired<TextAsset>(PartsAtlasBuilder.UvTablePath);
@@ -167,6 +171,36 @@ namespace ABRevival.Editor
             var serialized = new SerializedObject(target);
             SetReference(serialized, property, value);
             serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// Assigns every generated PartDefinitionSO to the hangar, sorted by legacy part id so
+        /// the scene is deterministic across import runs.
+        /// </summary>
+        private static void SetCatalog(Component hangar)
+        {
+            string[] guids = AssetDatabase.FindAssets("t:PartDefinitionSO", new[] { CatalogFolder });
+            var parts = new List<PartDefinitionSO>(guids.Length);
+            for (int i = 0; i < guids.Length; i++)
+            {
+                var part = AssetDatabase.LoadAssetAtPath<PartDefinitionSO>(AssetDatabase.GUIDToAssetPath(guids[i]));
+                if (part != null) parts.Add(part);
+            }
+            parts.Sort((left, right) => left.partId.CompareTo(right.partId));
+
+            var serialized = new SerializedObject(hangar);
+            SerializedProperty catalog = serialized.FindProperty("catalogParts");
+            if (catalog == null)
+            {
+                throw new InvalidOperationException("[BootSceneBuilder] HangarController is missing catalogParts.");
+            }
+
+            catalog.arraySize = parts.Count;
+            for (int i = 0; i < parts.Count; i++)
+                catalog.GetArrayElementAtIndex(i).objectReferenceValue = parts[i];
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+
+            Debug.Log($"[BootSceneBuilder] Assigned {parts.Count} PartDefinitionSO assets to the hangar.");
         }
 
         private static void SetReference(SerializedObject serialized, string property, UnityEngine.Object value)

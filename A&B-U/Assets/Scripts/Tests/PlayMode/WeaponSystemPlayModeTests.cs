@@ -195,6 +195,70 @@ namespace ABRevival.Tests.PlayMode
                 $"Weapon fire path allocated {allocatedBytes} bytes over 60 ticks. Zero-alloc contract violated.");
         }
 
+        [Test]
+        public void AiFirePath_60Ticks_ZeroManagedAllocations()
+        {
+            using var simulation = new ScheduledCombatSimulation();
+            simulation.Init(maxShips: 2, maxProjectiles: 64);
+            simulation.PlayerIndex = -1;
+            simulation.ShipCount = 2;
+
+            simulation.SetShip(0, new ShipEntity
+            {
+                position = float2.zero,
+                rotation = 0f,
+                mass = 100f,
+                health = 1000f,
+                maxHealth = 1000f,
+                thrustPower = 0f,
+                turnSpeed = 0f,
+                drag = 0f,
+                factionId = 1
+            });
+            simulation.SetShip(1, new ShipEntity
+            {
+                position = new float2(0f, 300f),
+                rotation = 0f,
+                mass = 100f,
+                health = 1_000_000f,
+                maxHealth = 1_000_000f,
+                thrustPower = 0f,
+                turnSpeed = 0f,
+                drag = 0f,
+                factionId = 0
+            });
+
+            using var solver = new ProjectileContactSolver(maxHulls: 2, maxPartsPerHull: 2, maxProjectiles: 64);
+            int targetHull = solver.RegisterHull(new float2(0f, 300f), 0f, factionId: 0);
+            solver.SetHullParts(targetHull, SinglePart(PartCategory.Body, health: 1_000_000f, hitRadius: 20f));
+
+            var weapons = new WeaponSystem(simulation, simulation);
+            Span<WeaponMount> mounts = stackalloc WeaponMount[1];
+            mounts[0] = new WeaponMount { spec = ReferenceGun(), localOffset = float2.zero, localRotation = 0f };
+            weapons.RegisterCraft(0, mounts);
+
+            for (int tick = 0; tick < 30; tick++)
+            {
+                weapons.TickAi(0, simulation.GetShip(1).position);
+                simulation.Tick(DeltaTime);
+                solver.Step(simulation.Projectiles, DeltaTime);
+            }
+
+            int shotsBefore = weapons.ShotsFired;
+            long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+            for (int tick = 0; tick < 60; tick++)
+            {
+                weapons.TickAi(0, simulation.GetShip(1).position);
+                simulation.Tick(DeltaTime);
+                solver.Step(simulation.Projectiles, DeltaTime);
+            }
+            long allocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+
+            Assert.Greater(weapons.ShotsFired, shotsBefore, "The measured window must exercise the AI firing path.");
+            Assert.AreEqual(0, allocatedBytes,
+                $"AI fire path allocated {allocatedBytes} bytes over 60 ticks. Zero-alloc contract violated.");
+        }
+
         private static void StepWeapons(
             WeaponSystem weapons,
             ScheduledCombatSimulation simulation,

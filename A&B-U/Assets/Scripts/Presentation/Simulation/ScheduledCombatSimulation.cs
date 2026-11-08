@@ -136,6 +136,25 @@ namespace ABRevival.Presentation
             return _inputs[index];
         }
 
+        /// <summary>
+        /// Nearest enemy for one ship using the same faction/range rule as
+        /// <see cref="TacticalAIJob"/>. Used by AI fire control; no allocation.
+        /// </summary>
+        public bool TryFindNearestHostile(int shipIndex, out ShipEntity target)
+        {
+            ThrowIfDisposed();
+            ThrowIfNotInitialized();
+            if (shipIndex < 0 || shipIndex >= _shipCount)
+            {
+                target = default;
+                return false;
+            }
+
+            ShipEntity ship = _ships[shipIndex];
+            return TacticalAIJob.TryFindNearestHostile(
+                _ships, _shipCount, ship.position, ship.factionId, out target);
+        }
+
         public void SetProjectile(int index, in ProjectileData projectile)
         {
             ThrowIfDisposed();

@@ -34,6 +34,11 @@ namespace ABRevival.Presentation
         private const int TacticalModeCount = (int)CaptainTacticalMode.Shield + 1;
         public const float ResultDwellSeconds = 1.5f;
 
+        private const string DefFlyResourcePath = "Data/3_all.AllData_defFly";
+        private const string DefPartResourcePath = "Data/8_all.AllData_defPart";
+        private const string DefFireResourcePath = "Data/2_all.AllData_defFire";
+        private const string DefBulletResourcePath = "Data/11_all.AllData_defBullet";
+
         [SerializeField] private HangarController _hangar;
         [SerializeField] private TalkScreen _talkScreen;
         [SerializeField] private CinematicPlayer _cinematicPlayer;
@@ -54,6 +59,7 @@ namespace ABRevival.Presentation
         private StoryDirector _story;
         private TalkScript _talkScript;
         private LevelCatalog _catalog;
+        private CraftCatalog _craftCatalog;
         private LevelRecord _level;
         private string _savePath;
 
@@ -406,6 +412,37 @@ namespace ABRevival.Presentation
             return true;
         }
 
+        /// <summary>
+        /// Loads the frozen craft definitions once per campaign. The parser is pure C#;
+        /// Resources carry the same four binaries the editor importer reads.
+        /// </summary>
+        private CraftCatalog ResolveCraftCatalog()
+        {
+            if (_craftCatalog != null) return _craftCatalog;
+
+            try
+            {
+                TextAsset defFly = Resources.Load<TextAsset>(DefFlyResourcePath);
+                TextAsset defPart = Resources.Load<TextAsset>(DefPartResourcePath);
+                TextAsset defFire = Resources.Load<TextAsset>(DefFireResourcePath);
+                TextAsset defBullet = Resources.Load<TextAsset>(DefBulletResourcePath);
+                if (defFly == null || defPart == null || defFire == null || defBullet == null)
+                {
+                    Debug.LogWarning("[GameFlow] Craft definitions missing from Resources/Data; spawns use placeholder stats.");
+                    return null;
+                }
+
+                _craftCatalog = CraftCatalogParser.Parse(defFly.bytes, defPart.text, defFire.text, defBullet.text);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"[GameFlow] Craft definitions unavailable: {exception.Message}");
+                _craftCatalog = null;
+            }
+
+            return _craftCatalog;
+        }
+
         // ---------------- Mission ----------------
 
         private void StartMission()
@@ -414,7 +451,7 @@ namespace ABRevival.Presentation
 
             _simulation = new ScheduledCombatSimulation();
             _simulation.Init(_maxShips, _maxProjectiles);
-            _runner = new MissionRunner(_level, _simulation);
+            _runner = new MissionRunner(_level, _simulation, ResolveCraftCatalog());
             _runner.SpawnSkipped += OnSpawnSkipped;
             _runner.Start();
             _simulation.PlayerIndex = _runner.PlayerShipIndex;
@@ -504,11 +541,12 @@ namespace ABRevival.Presentation
         {
             ShipEntity ship = _simulation.GetShip(shipIndex);
             bool isPlayer = shipIndex == _runner.PlayerShipIndex;
+            _runner.TryGetCraftStats(shipIndex, out CraftStatRecord craft);
 
             Span<HullPartDefinition> parts = stackalloc HullPartDefinition[_contactPartsPerHull];
-            int partCount = isPlayer ? BuildPlayerParts(parts, ship) : BuildHostileParts(parts, in ship);
+            int partCount = isPlayer ? BuildPlayerParts(parts, ship) : BuildCraftParts(parts, craft);
             if (partCount == 0)
-                partCount = AddBodyPart(parts, 0, ship.maxHealth, float2.zero);
+                partCount = AddBodyPart(parts, 0, craft != null ? craft.health : ship.maxHealth, float2.zero);
 
             int hull = _solver.RegisterHull(ship.position, ship.rotation, ship.factionId);
             _solver.SetHullParts(hull, parts.Slice(0, partCount));
@@ -520,6 +558,10 @@ namespace ABRevival.Presentation
                 RegisterPlayerWeapons(shipIndex, parts.Slice(0, partCount));
                 _playerHull = hull;
                 _playerHullMax = _solver.GetHullHealth(hull);
+            }
+            else
+            {
+                RegisterCraftWeapons(shipIndex, craft);
             }
         }
 
@@ -549,9 +591,33 @@ namespace ABRevival.Presentation
             return count;
         }
 
-        private static int BuildHostileParts(Span<HullPartDefinition> parts, in ShipEntity ship)
+        private static int BuildCraftParts(Span<HullPartDefinition> parts, CraftStatRecord craft)
         {
-            return AddBodyPart(parts, 0, ship.maxHealth, float2.zero);
+            if (craft == null || craft.parts == null) return 0;
+
+            int count = 0;
+            for (int i = 0; i < craft.parts.Length && count < parts.Length; i++)
+            {
+                CraftPartRecord source = craft.parts[i];
+                // shortcut: defFly carries no socket positions; AI parts share the hull centre
+                // until the SWF H-marker table is exported.
+                parts[count++] = new HullPartDefinition
+                {
+                    part = new MountedPartData
+                    {
+                        partId = source.partId,
+                        category = source.category,
+                        health = math.max(1f, source.health),
+                        maxHealth = math.max(1f, source.health),
+                        mass = source.mass,
+                        thrust = source.thrust,
+                        localOffset = float2.zero
+                    },
+                    hitRadius = HitRadius(source.category)
+                };
+            }
+
+            return count;
         }
 
         private static int AddMountedPart(Span<HullPartDefinition> parts, int count, in MountedPartData part)
@@ -628,6 +694,38 @@ namespace ABRevival.Presentation
             if (mountCount > 0) _weapons.RegisterCraft(shipIndex, mounts.Slice(0, mountCount));
         }
 
+        /// <summary>
+        /// Registers every frozen gun socket on an AI craft. The Captain uses the same path in
+        /// all six tactical modes (ADR 0006); hostiles use it after their pursuit steering.
+        /// </summary>
+        private void RegisterCraftWeapons(int shipIndex, CraftStatRecord craft)
+        {
+            if (_hangar == null || craft == null || craft.weaponMounts == null) return;
+
+            Span<WeaponMount> mounts = stackalloc WeaponMount[_contactPartsPerHull];
+            int mountCount = 0;
+
+            for (int i = 0; i < craft.weaponMounts.Length && mountCount < mounts.Length; i++)
+            {
+                PartDefinitionSO definition = _hangar.FindPartDefinition(craft.weaponMounts[i].partId);
+                if (definition == null) continue;
+
+                FireModeSpec spec = definition.CreateWeaponSpec();
+                if (spec.lifetime <= 0f) continue;
+
+                // shortcut: muzzle offsets live in the SWF F-marker layers, not defFly.
+                // Autonomous ports fire from the hull centre until that table is exported.
+                mounts[mountCount++] = new WeaponMount
+                {
+                    spec = spec,
+                    localOffset = float2.zero,
+                    localRotation = 0f
+                };
+            }
+
+            if (mountCount > 0) _weapons.RegisterCraft(shipIndex, mounts.Slice(0, mountCount));
+        }
+
         private void SyncHullPoses()
         {
             if (_solver == null || _shipToHull == null) return;
@@ -688,6 +786,7 @@ namespace ABRevival.Presentation
             _flight?.Tick(FixedStepSeconds);
             // Fire before the simulation step so new projectiles are integrated and swept this tick.
             _weapons?.Tick(_combatInput);
+            TickAiWeapons();
             _runner.Tick();
             RegisterSpawnedShips();
             SyncHullPoses();
@@ -704,6 +803,26 @@ namespace ABRevival.Presentation
             {
                 if (hits[i].hullDestroyed) _combatAudio.Explosion(1f);
                 else if (hits[i].partDetached) _combatAudio.ComponentLost();
+            }
+        }
+
+        /// <summary>
+        /// Fires every living AI craft at the nearest enemy selected by the same rule as
+        /// <see cref="TacticalAIJob"/>. No managed allocation.
+        /// </summary>
+        private void TickAiWeapons()
+        {
+            if (_weapons == null || _simulation == null || _runner == null) return;
+
+            int shipCount = _simulation.ShipCount;
+            int playerIndex = _runner.PlayerShipIndex;
+            for (int shipIndex = 0; shipIndex < shipCount; shipIndex++)
+            {
+                if (shipIndex == playerIndex) continue;
+                if (!_runner.IsCraftAlive(shipIndex)) continue;
+                if (!_simulation.TryFindNearestHostile(shipIndex, out ShipEntity target)) continue;
+
+                _weapons.TickAi(shipIndex, target.position);
             }
         }
 

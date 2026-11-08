@@ -264,10 +264,7 @@ namespace ABRevival.Presentation
 
             if (definitions.Count == 0)
             {
-                // shortcut: built-in demo catalog until PartCatalogImporter populates
-                // priced PartDefinitionSO assets; replace the scene catalog then.
-                Debug.LogWarning("[Hangar] No PartDefinitionSO catalog assigned; using demo catalog.");
-                definitions.AddRange(CreateDemoCatalog());
+                Debug.LogError("[Hangar] No PartDefinitionSO catalog assigned; the shop and assembly are empty.");
             }
 
             return definitions;
@@ -277,77 +274,49 @@ namespace ABRevival.Presentation
         {
             var source = ScriptableObject.CreateInstance<CraftBlueprintSO>();
             source.craftName = "Player Craft";
-            source.hullName = "B.Small.01";
-            source.hullCategory = CraftBlueprintSO.GetHullCategoryForName(source.hullName);
-            source.hullMass = 100f;
-            source.hullHealth = 1300f;
 
-            // The boot scene ships without authored catalog/blueprint assets, so the
-            // fallback craft must be armed or WeaponSystem never mounts a fire port.
-            source.mountedParts = new[]
+            PartDefinitionSO body = FindPartDefinition(0);
+            if (body != null)
             {
-                new MountedPartData
+                source.hullName = body.partName;
+                source.hullCategory = CraftBlueprintSO.GetHullCategoryForName(body.partName);
+                source.hullMass = body.mass;
+                source.hullHealth = body.health;
+            }
+            else
+            {
+                source.hullName = "B.Small.01";
+                source.hullCategory = CraftBlueprintSO.GetHullCategoryForName(source.hullName);
+                source.hullMass = 100f;
+                source.hullHealth = 1300f;
+            }
+
+            var mounted = new List<MountedPartData>(2);
+            mounted.Add(new MountedPartData
+            {
+                partId = body != null ? body.partId : 0,
+                category = PartCategory.Body,
+                health = source.hullHealth,
+                maxHealth = source.hullHealth,
+                mass = source.hullMass
+            });
+
+            PartDefinitionSO gun = FindPartDefinition(71);
+            if (gun != null)
+            {
+                mounted.Add(new MountedPartData
                 {
-                    partId = 0,
-                    category = PartCategory.Body,
-                    health = 1300f,
-                    maxHealth = 1300f,
-                    mass = 100f
-                },
-                new MountedPartData
-                {
-                    partId = 71,
-                    category = PartCategory.Gun,
-                    health = 425f,
-                    maxHealth = 425f,
-                    mass = 17f,
+                    partId = gun.partId,
+                    category = gun.category,
+                    health = gun.health,
+                    maxHealth = gun.health,
+                    mass = gun.mass,
                     localOffset = new Unity.Mathematics.float2(0f, -60f)
-                }
-            };
+                });
+            }
+
+            source.mountedParts = mounted.ToArray();
             return source;
-        }
-
-        private static PartDefinitionSO[] CreateDemoCatalog()
-        {
-            PartDefinitionSO gun = CreateDemoPart(71, "G.25.X1.01", PartCategory.Gun, 120, 425f, 17f, 0f);
-            // Frozen F4DataFire / F4DataBullet row for G.25.X1.01 (fire 1, bullet 1).
-            gun.projectileVelocity = 10f;
-            gun.bulletLifetime = 40f;
-            gun.bulletDamage = 13f;
-            gun.fireNum = 1;
-            gun.fireFrame = 8;
-            gun.fireStop = 17;
-            gun.fireEx = 4;
-            gun.spreadDegrees = 14f;
-
-            return new[]
-            {
-                CreateDemoPart(0, "B.Small.01", PartCategory.Body, 500, 1300f, 100f, 5f),
-                gun,
-                CreateDemoPart(133, "E.Low.01", PartCategory.Engine, 150, 600f, 20f, 16f),
-                CreateDemoPart(173, "W.Cls.F.01.L", PartCategory.Wing, 80, 1300f, 20f, 0f),
-                CreateDemoPart(222, "W.Cls.F.01.R", PartCategory.Wing, 80, 1300f, 20f, 0f)
-            };
-        }
-
-        private static PartDefinitionSO CreateDemoPart(
-            int partId,
-            string name,
-            PartCategory category,
-            int cost,
-            float health,
-            float mass,
-            float thrust)
-        {
-            var part = ScriptableObject.CreateInstance<PartDefinitionSO>();
-            part.partId = partId;
-            part.partName = name;
-            part.category = category;
-            part.cost = cost;
-            part.health = health;
-            part.mass = mass;
-            part.thrust = thrust;
-            return part;
         }
 
     }

@@ -75,6 +75,21 @@ namespace ABRevival.Presentation
         /// <summary>Advances one craft's ports by one simulation tick.</summary>
         public int TickCraft(int shipIndex, bool fireHeld, bool autofire)
         {
+            return TickCraft(shipIndex, fireHeld, autofire, false, default);
+        }
+
+        /// <summary>
+        /// Advances one AI craft's ports and aims every mount at the target position. A mount
+        /// only fires while the target is inside its ADR 0012 effective range, so the Captain
+        /// fires in all six tactical modes (ADR 0006) without mode-specific branches.
+        /// </summary>
+        public int TickAi(int shipIndex, float2 targetPosition)
+        {
+            return TickCraft(shipIndex, true, false, true, targetPosition);
+        }
+
+        private int TickCraft(int shipIndex, bool fireHeld, bool autofire, bool hasAim, float2 aimPoint)
+        {
             if (shipIndex < 0 || shipIndex >= _crafts.Length) return 0;
             CraftWeapons craft = _crafts[shipIndex];
             if (craft == null) return 0;
@@ -87,11 +102,22 @@ namespace ABRevival.Presentation
                 ref WeaponMount mount = ref craft.Mounts[mountIndex];
                 ref FireControlState state = ref craft.States[mountIndex];
 
-                if (!WeaponFireControl.Tick(ref state, in mount.spec, fireHeld, autofire))
-                    continue;
-
                 float2 origin = PortPosition(in ship, mount.localOffset);
                 float heading = ship.rotation + mount.localRotation;
+                bool canFire = true;
+
+                if (hasAim)
+                {
+                    float2 toTarget = aimPoint - origin;
+                    float range = mount.spec.EffectiveRange;
+                    canFire = math.lengthsq(toTarget) <= range * range;
+                    heading = math.atan2(-toTarget.x, toTarget.y);
+                }
+
+                // Out-of-range AI ports tick as released so they do not burn a firing frame.
+                bool triggerHeld = (fireHeld || autofire) && canFire;
+                if (!WeaponFireControl.Tick(ref state, in mount.spec, triggerHeld, false))
+                    continue;
 
                 for (int burstIndex = 0; burstIndex < mount.spec.ShotsPerVolley; burstIndex++)
                 {

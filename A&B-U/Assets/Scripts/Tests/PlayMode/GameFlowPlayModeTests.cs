@@ -6,6 +6,7 @@ using ABRevival.Core.Simulation;
 using ABRevival.Presentation;
 using ABRevival.Presentation.Audio;
 using NUnit.Framework;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -152,7 +153,7 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(flow.ContactSolver, "The projectile contact layer must be wired.");
             Assert.AreEqual(MissionState.InProgress, flow.Runner.State);
 
-            // The shipped scene has no authored catalog, so the fallback blueprint must be
+            // The shipped scene assigns the imported part catalog; the default blueprint must be
             // armed and reach WeaponSystem through the real launch path.
             var fireInput = flow.GetComponent<MouseCombatFireInput>();
             Assert.IsNotNull(fireInput, "The flow must own the single combat fire input.");
@@ -255,6 +256,81 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsFalse(flow.CycleCaptainTacticalMode(), "E must do nothing once the Captain is gone.");
             Assert.AreEqual(CaptainTacticalMode.Escort,
                 (CaptainTacticalMode)flow.Simulation.GetShip(captainIndex).tacticalMode);
+        }
+
+        [UnityTest]
+        public IEnumerator BootScene_HostileFire_DamagesAndDestroysPlayer_ReachesLose()
+        {
+            if (File.Exists(SavePath)) File.Delete(SavePath);
+
+            SceneManager.LoadScene("Boot");
+            yield return null;
+
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            Assert.IsNotNull(flow);
+            yield return WaitForState(flow, GameFlowState.Hangar);
+
+            flow.LaunchMission();
+            yield return WaitForState(flow, GameFlowState.Briefing);
+            flow.SkipBriefing();
+            yield return WaitForState(flow, GameFlowState.Mission);
+
+            int playerIndex = flow.Runner.PlayerShipIndex;
+            Assert.GreaterOrEqual(playerIndex, 0);
+
+            // Move the Captain out of the firing line. The player must die from hostile
+            // projectiles, not from a direct NotifyCraftDestroyed call in this test.
+            int captainIndex = FindSpawn(flow, friendly: true, excludeShip: playerIndex);
+            if (captainIndex >= 0)
+            {
+                flow.Runner.NotifyCraftDestroyed(captainIndex);
+                ShipEntity captain = flow.Simulation.GetShip(captainIndex);
+                captain.position += new float2(6000f, 0f);
+                flow.Simulation.SetShip(captainIndex, captain);
+            }
+
+            int hostileIndex = FindSpawn(flow, friendly: false, excludeShip: -1);
+            Assert.GreaterOrEqual(hostileIndex, 0, "Story 0 must spawn a hostile craft.");
+
+            ShipEntity player = flow.Simulation.GetShip(playerIndex);
+            ShipEntity hostile = flow.Simulation.GetShip(hostileIndex);
+            hostile.position = player.position + new float2(0f, 300f);
+            hostile.velocity = float2.zero;
+            hostile.thrustPower = 0f;
+            hostile.tacticalMode = (int)CaptainTacticalMode.SeekAndDestroy;
+            flow.Simulation.SetShip(hostileIndex, hostile);
+
+            var hud = Object.FindAnyObjectByType<CombatHudBehaviour>();
+            Assert.IsNotNull(hud);
+            float hullBefore = hud.State.HullCurrent;
+            Assert.Greater(hullBefore, 0f);
+
+            bool sawDamage = false;
+            for (int i = 0; i < 2500 && flow.State == GameFlowState.Mission; i++)
+            {
+                flow.Tick(GameFlowController.FixedStepSeconds * 4f);
+                if (hud.State.HullCurrent < hullBefore) sawDamage = true;
+            }
+
+            Assert.IsTrue(sawDamage, "Hostile projectiles must damage the player hull through the contact solver.");
+            Assert.AreEqual(GameFlowState.Result, flow.State, "Destroying the player must end the mission.");
+            Assert.IsTrue(flow.LastResult.HasValue);
+            Assert.AreEqual(MissionState.Lose, flow.LastResult.Value.state);
+            Assert.AreEqual(MissionEndCause.PlayerDestroyed, flow.LastResult.Value.cause,
+                "The loss must be caused by the player craft being destroyed, not a scripted objective.");
+        }
+
+        private static int FindSpawn(GameFlowController flow, bool friendly, int excludeShip)
+        {
+            var spawns = flow.Runner.Spawns;
+            for (int i = 0; i < spawns.Count; i++)
+            {
+                MissionSpawnRecord spawn = spawns[i];
+                if (spawn.shipIndex < 0 || spawn.shipIndex == excludeShip) continue;
+                if (spawn.friendly == friendly) return spawn.shipIndex;
+            }
+
+            return -1;
         }
 
         private static IEnumerator WaitForState(GameFlowController flow, GameFlowState expected)

@@ -61,6 +61,24 @@ namespace ABRevival.Tests
 
             // ADR 0012 Range: d = v0 * t + 0.5 * a * t^2 = 10 * 40 + 0 = 400
             Assert.AreEqual(400f, gun.CalculateEffectiveRange(), 0.001f);
+
+            // F4DataOrg.makeCost: the shop must not sell every part for free.
+            Assert.AreEqual(2055, gun.cost);
+        }
+
+        [Test]
+        public void PartCatalogParser_AssignsNonZeroLegacyCosts_ToEveryPart()
+        {
+            var records = PartCatalogParser.ParseCatalogFromFiles(
+                GetBinaryDataPath("8_all.AllData_defPart.bin"),
+                GetBinaryDataPath("2_all.AllData_defFire.bin"),
+                GetBinaryDataPath("11_all.AllData_defBullet.bin"));
+
+            Assert.AreEqual(271, records.Count);
+            for (int i = 0; i < records.Count; i++)
+            {
+                Assert.Greater(records[i].cost, 0, $"{records[i].partName} must have a legacy cost.");
+            }
         }
 
         [Test]

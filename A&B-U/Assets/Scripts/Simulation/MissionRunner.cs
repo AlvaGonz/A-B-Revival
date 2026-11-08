@@ -145,10 +145,12 @@ namespace ABRevival.Core.Simulation
             public string[] Pilots;
             public bool Friendly;
             public bool Alive;
+            public int DefIndex;
         }
 
         private readonly LevelRecord _level;
         private readonly IMissionSimulation _simulation;
+        private readonly CraftCatalog _craftCatalog;
         private readonly float _tickSeconds;
         private readonly List<LevelEvent> _activeEvents = new List<LevelEvent>();
         private readonly List<TimedEventState> _clockEvents = new List<TimedEventState>();
@@ -175,14 +177,25 @@ namespace ABRevival.Core.Simulation
         public event Action<string> SpawnSkipped;
 
         public MissionRunner(LevelRecord level, CombatSimulation simulation, float tickSeconds = DefaultTickSeconds)
-            : this(level, Wrap(simulation), tickSeconds)
+            : this(level, Wrap(simulation), null, tickSeconds)
+        {
+        }
+
+        public MissionRunner(LevelRecord level, CombatSimulation simulation, CraftCatalog craftCatalog, float tickSeconds = DefaultTickSeconds)
+            : this(level, Wrap(simulation), craftCatalog, tickSeconds)
         {
         }
 
         public MissionRunner(LevelRecord level, IMissionSimulation simulation, float tickSeconds = DefaultTickSeconds)
+            : this(level, simulation, null, tickSeconds)
+        {
+        }
+
+        public MissionRunner(LevelRecord level, IMissionSimulation simulation, CraftCatalog craftCatalog, float tickSeconds = DefaultTickSeconds)
         {
             _level = level ?? throw new ArgumentNullException(nameof(level));
             _simulation = simulation ?? throw new ArgumentNullException(nameof(simulation));
+            _craftCatalog = craftCatalog;
             if (!simulation.IsInitialized)
                 throw new ArgumentException("The simulation must be initialized before creating a MissionRunner.", nameof(simulation));
             if (tickSeconds <= 0f)
@@ -194,6 +207,11 @@ namespace ABRevival.Core.Simulation
 
         public MissionRunner(LevelCatalog catalog, int storyIndex, CombatSimulation simulation, float tickSeconds = DefaultTickSeconds)
             : this(catalog != null ? catalog.GetLevel(storyIndex) : throw new ArgumentNullException(nameof(catalog)), simulation, tickSeconds)
+        {
+        }
+
+        public MissionRunner(LevelCatalog catalog, int storyIndex, CombatSimulation simulation, CraftCatalog craftCatalog, float tickSeconds = DefaultTickSeconds)
+            : this(catalog != null ? catalog.GetLevel(storyIndex) : throw new ArgumentNullException(nameof(catalog)), simulation, craftCatalog, tickSeconds)
         {
         }
 
@@ -282,6 +300,24 @@ namespace ABRevival.Core.Simulation
         {
             for (int i = 0; i < _ships.Count; i++)
                 if (_ships[i].ShipIndex == shipIndex) return _ships[i].Alive;
+            return false;
+        }
+
+        /// <summary>
+        /// Resolves a spawned ship's frozen <c>defFly</c> record. False when no craft catalog was
+        /// supplied or the spawn's <c>defIndex</c> is absent.
+        /// </summary>
+        public bool TryGetCraftStats(int shipIndex, out CraftStatRecord craft)
+        {
+            craft = null;
+            if (_craftCatalog == null) return false;
+
+            for (int i = 0; i < _ships.Count; i++)
+            {
+                if (_ships[i].ShipIndex != shipIndex) continue;
+                return _craftCatalog.TryGet(_ships[i].DefIndex, out craft);
+            }
+
             return false;
         }
 
@@ -704,22 +740,34 @@ namespace ABRevival.Core.Simulation
             }
 
             var position = new float2(spawn.x, spawn.y);
+            CraftStatRecord craft = _craftCatalog?.Find(spawn.defIndex);
+
+            float mass = craft != null ? craft.mass : DefaultMass;
+            float health = craft != null ? craft.health : DefaultHealth;
+            float thrust = craft != null ? craft.thrust : DefaultThrust / DefaultMass;
+            float turnRate = craft != null ? craft.turnRate : DefaultTurnSpeed;
+
             var entity = new ShipEntity
             {
                 position = position,
                 velocity = float2.zero,
                 rotation = 0f,
                 angularVelocity = 0f,
-                mass = DefaultMass,
-                health = DefaultHealth,
-                maxHealth = DefaultHealth,
+                mass = mass,
+                health = health,
+                maxHealth = health,
                 energy = DefaultEnergy,
                 maxEnergy = DefaultEnergy,
-                thrustPower = DefaultThrust,
-                turnSpeed = DefaultTurnSpeed,
+                // ShipMovementJob accelerates by thrustPower/mass, so the display speed is a force.
+                thrustPower = thrust * mass,
+                turnSpeed = turnRate,
                 drag = DefaultDrag,
                 factionId = spawn.friendly ? 0 : 1,
-                tacticalMode = (int)CaptainTacticalMode.Anchor,
+                // Hostiles pursue (base-game AI behaviour); the Captain keeps ADR 0006 Anchor
+                // and fires through the same weapon system in every mode.
+                tacticalMode = spawn.friendly
+                    ? (int)CaptainTacticalMode.Anchor
+                    : (int)CaptainTacticalMode.SeekAndDestroy,
                 // Anchor mode returns here (ADR 0006); without it every AI ship flies to (0,0).
                 spawnPosition = position,
                 // The frozen add/outer acts carry no per-craft slot; 0 is the formation leader.
@@ -739,7 +787,8 @@ namespace ABRevival.Core.Simulation
                 Pilot = spawn.pilot,
                 Pilots = spawn.pilots ?? Array.Empty<string>(),
                 Friendly = spawn.friendly,
-                Alive = true
+                Alive = true,
+                DefIndex = spawn.defIndex
             });
 
             RecordSpawn(spawn, owner, shipIndex);

@@ -165,7 +165,7 @@ namespace ABRevival.Core.Simulation
             outputs[index] = input;
         }
 
-        private static bool TryFindNearestHostile(
+        public static bool TryFindNearestHostile(
             in NativeArray<ShipEntity> ships,
             int count,
             float2 from,
