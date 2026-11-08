@@ -27,6 +27,15 @@ namespace ABRevival.Core.Simulation
         /// Cast via (CaptainTacticalMode)tacticalMode at evaluation time.
         /// </summary>
         public int tacticalMode;
+        /// <summary>
+        /// Mission spawn point used by Anchor mode (ADR 0006), not the activation position.
+        /// </summary>
+        public float2 spawnPosition;
+        /// <summary>
+        /// Fleet formation slot; 0 is the leader, positive slots fan out to starboard,
+        /// negative slots to port.
+        /// </summary>
+        public int formationSlot;
 
         /// <summary>
         /// Unit forward vector from heading angle (0 rad = up / positive Y).
@@ -45,7 +54,7 @@ namespace ABRevival.Core.Simulation
     public struct ShipInput
     {
         public float throttle; // 0..1
-        public float steering; // -1..1 (positive = right / clockwise)
+        public float steering; // -1..1 (positive increases rotation: left / counter-clockwise)
     }
 }
 
