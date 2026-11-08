@@ -15,6 +15,7 @@ namespace ABRevival.Core.Data
     {
         public int partId;
         public string partName;
+        public string mcName;
         public PartCategory category;
         public float mass;
         public float health;
@@ -126,6 +127,7 @@ namespace ABRevival.Core.Data
 
                     record.partId = ParseInt(el.Element("index")?.Value, 0);
                     record.partName = el.Element("name")?.Value ?? string.Empty;
+                    record.mcName = el.Element("mcName")?.Value ?? string.Empty;
 
                     int typeInt = ParseInt(el.Element("type")?.Value, 0);
                     record.category = typeInt switch
