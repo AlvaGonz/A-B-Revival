@@ -341,7 +341,7 @@ namespace ABRevival.Editor
         {
             var serialized = new SerializedObject(mainMenu);
             SetSprite(serialized, "backdrop", UiSpriteFolder, "ui_0005.png");
-            SetSprite(serialized, "titleArt", UiSpriteFolder, "Screens/UI_Main_Title.png");
+            SetSprite(serialized, "titleArt", UiSpriteFolder, "Screens/UI_Main_TitleComposite.png");
             SetSprite(serialized, "shipArt", UiSpriteFolder, "Screens/UI_Main_Ship.png");
             SetSprite(serialized, "playNormal", UiSpriteFolder, "UI_Main/447_widget_normal.png");
             SetSprite(serialized, "playHover", UiSpriteFolder, "UI_Main/447_widget_hover.png");

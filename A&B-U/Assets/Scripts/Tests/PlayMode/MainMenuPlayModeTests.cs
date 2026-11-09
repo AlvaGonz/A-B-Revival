@@ -441,7 +441,7 @@ namespace ABRevival.Tests.PlayMode
         private static void AssertMainMenuLayers(VisualElement root)
         {
             AssertSprite(root.Q("main-backdrop"), "ui_0005");
-            AssertSprite(root.Q("main-title"), "UI_Main_Title");
+            AssertSprite(root.Q("main-title"), "UI_Main_TitleComposite");
             AssertSprite(root.Q("main-ship"), "UI_Main_Ship");
             Assert.IsNull(root.Q("main-page"), "The baked UI_Main page wrapper is retired.");
             Assert.IsNull(root.Q("main-art"), "The baked UI_Main_Hero crop is retired.");
@@ -481,6 +481,22 @@ namespace ABRevival.Tests.PlayMode
             foreach (string topButton in new[] { "link-button", "player-button" })
                 Assert.IsFalse(shipBounds.Overlaps(root.Q(topButton).worldBound),
                     "The ship must not overlap " + topButton + " at " + label);
+
+            Rect reference = root.Q("play-button").worldBound;
+            float widthTolerance = Mathf.Max(1f, reference.width * 0.02f);
+            float heightTolerance = Mathf.Max(1f, reference.height * 0.02f);
+            foreach (string button in new[]
+                     {
+                         "play-button", "data-button", "options-button",
+                         "credits-button", "link-button", "player-button"
+                     })
+            {
+                Rect rect = root.Q(button).worldBound;
+                Assert.AreEqual(reference.width, rect.width, widthTolerance,
+                    button + " must use the shared button width at " + label);
+                Assert.AreEqual(reference.height, rect.height, heightTolerance,
+                    button + " must use the shared button height at " + label);
+            }
         }
 
         private static void AssertSprite(VisualElement element, string spriteName)
