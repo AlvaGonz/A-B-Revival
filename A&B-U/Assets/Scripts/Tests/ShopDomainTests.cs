@@ -169,8 +169,38 @@ namespace ABRevival.Tests
         }
 
         [Test]
-        public void ReconcileStock_DeduplicatesRowsAndBackfillsHistoricalGifts()
+        public void NewBadgeState_StartsUnseenAndClearsOnPurchaseThenRoundTrips()
         {
+            ShopCatalog catalog = CreateCatalog();
+            var shop = new ShopState(catalog, 1000);
+            shop.Unlock(71);
+
+            Assert.IsFalse(shop.Stock[0].Seen, "A newly unlocked row must show the frozen NEW badge.");
+            shop.Buy(71, 1);
+            Assert.IsTrue(shop.Stock[0].Seen, "Buying a module must clear its NEW badge.");
+            Assert.IsTrue(shop.IsUnlocked(71), "Infinite stock must keep the row after buying.");
+
+            ShopSaveData save = shop.CreateSave();
+            Assert.IsTrue(save.stock[0].seen, "The NEW state must persist in the existing shop save slice.");
+            ShopState restored = ShopState.FromSave(catalog, save);
+            Assert.IsTrue(restored.Stock[0].Seen, "Reloading must preserve the cleared NEW state.");
+        }
+
+        [Test]
+        public void NewBadgeState_OldSaveRowsLoadUnseen()
+        {
+            ShopCatalog catalog = CreateCatalog();
+            var save = new ShopSaveData();
+            save.stock.Add(new ShopStockSave { partId = 71, quantity = 0 });
+
+            ShopState shop = ShopState.FromSave(catalog, save);
+
+            Assert.IsFalse(shop.Stock[0].Seen,
+                "Old saves have no NEW flag; they load with the frozen badge visible.");
+        }
+
+        [Test]
+        public void ReconcileStock_DeduplicatesRowsAndBackfillsHistoricalGifts()        {
             ShopCatalog catalog = CreateCatalog();
             var shop = new ShopState(catalog);
             var save = new ShopSaveData();

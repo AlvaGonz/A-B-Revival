@@ -93,6 +93,10 @@ namespace ABRevival.Core.Data
                 "608x17 shop row background with selection marker."),
             new UiSpriteSpec("hangar_shop_row_odd", 106, "", UiSpriteKind.Sprite, 1, null, true,
                 "608x17 shop row background with selection marker."),
+            new UiSpriteSpec("hangar_shop_new_badge", 162, "", UiSpriteKind.Sprite, 1, null, true,
+                "94x40 animated NEW row badge, frame 1; visibility comes from the saved shop row state."),
+            new UiSpriteSpec("hangar_help_shop", 744, "UI_HelpShop", UiSpriteKind.Sprite, 1, null, true,
+                "Full-page Shop tutorial overlay with the buy/sell annotation boxes and SKIP control."),
 
             // Hangar buttons and category filters.
             new UiSpriteSpec("hangar_button_merge", 364, "", UiSpriteKind.Sprite, 1, null, true,
@@ -101,6 +105,10 @@ namespace ABRevival.Core.Data
                 "Three-frame NEW button, frame 1."),
             new UiSpriteSpec("hangar_button_back_to_center", 324, "", UiSpriteKind.Sprite, 1, null, true,
                 "Three-frame BACK TO CENTER button, frame 1."),
+            new UiSpriteSpec("hangar_button_center", 173, "", UiSpriteKind.Sprite, 1, null, true,
+                "Three-frame CENTER button used by UI_Shop, frame 1."),
+            new UiSpriteSpec("hangar_button_invert", 204, "", UiSpriteKind.Sprite, 1, null, true,
+                "Three-frame INVERT button under the owned table, frame 1."),
             new UiSpriteSpec("hangar_button_parts_crafts", 404, "", UiSpriteKind.Sprite, 1, null, true,
                 "Three-frame PARTS/CRAFTS toggle, frame 1."),
             new UiSpriteSpec("hangar_button_launch", 585, "", UiSpriteKind.Sprite, 1, null, true,

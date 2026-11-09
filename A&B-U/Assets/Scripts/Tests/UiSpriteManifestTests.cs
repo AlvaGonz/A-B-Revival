@@ -22,11 +22,15 @@ namespace ABRevival.Tests
             "hangar_table_row_odd",
             "hangar_shop_row_even",
             "hangar_shop_row_odd",
+            "hangar_shop_new_badge",
+            "hangar_help_shop",
 
             // Required buttons and category filters.
             "hangar_button_merge",
             "hangar_button_new",
             "hangar_button_back_to_center",
+            "hangar_button_center",
+            "hangar_button_invert",
             "hangar_button_parts_crafts",
             "hangar_button_launch",
             "hangar_category_all",

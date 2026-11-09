@@ -146,6 +146,23 @@
     width: 54px;
 }
 
+.col-new {
+    width: 76px;
+}
+
+.shop-new-slot {
+    width: 76px;
+    height: 32px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.shop-new-badge {
+    width: 72px;
+    height: 30px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
 .col-index {
     width: 64px;
 }
@@ -238,6 +255,19 @@
     -unity-font-style: bold;
     -unity-text-align: middle-center;
     color: rgb(224, 240, 250);
+}
+
+.invert-button {
+    width: 137px;
+    height: 50px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.help-button {
+    width: 48px;
+    height: 48px;
+    margin-left: 12px;
+    -unity-background-scale-mode: scale-to-fit;
 }
 
 .filter-button {
@@ -405,4 +435,47 @@
 
 .sprite-button.trade-button {
     -unity-background-scale-mode: scale-to-fit;
+}
+
+.sprite-button.invert-button,
+.sprite-button.help-button {
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.shop-help {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(2, 4, 8, 0.94);
+}
+
+.shop-help-page {
+    width: 76%;
+    height: 92%;
+    max-width: 1460px;
+    max-height: 1000px;
+    background-color: rgba(0, 0, 0, 0.92);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.shop-help-close {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.shop-help-close:hover,
+.shop-help-close:active {
+    background-color: rgba(0, 0, 0, 0);
 }

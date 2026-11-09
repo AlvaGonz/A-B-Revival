@@ -27,6 +27,10 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite buttonAccept;
         [SerializeField] private Sprite buttonReset;
         [SerializeField] private Sprite buttonCenter;
+        [SerializeField] private Sprite buttonInvert;
+        [SerializeField] private Sprite newBadge;
+        [SerializeField] private Sprite helpOverlay;
+        [SerializeField] private Sprite helpButton;
         [SerializeField] private Sprite categoryAll;
         [SerializeField] private Sprite categoryBody;
         [SerializeField] private Sprite categoryWing;
@@ -40,6 +44,7 @@ namespace ABRevival.Presentation
         private ShopPresenter _presenter;
         private List<PartDefinitionSO> _definitions;
         private PlayerSaveData _payload = new PlayerSaveData();
+        private VisualElement _help;
         private bool _initialized;
 
         /// <summary>Raised after a shop action mutates the save payload.</summary>
@@ -85,12 +90,13 @@ namespace ABRevival.Presentation
                 Bind(root);
 
                 _presenter = new ShopPresenter(
-                    root, _shop, OnShopChanged, _definitions, _mountTable);
+                    root, _shop, OnShopChanged, _definitions, _mountTable, newBadge);
 
                 _initialized = true;
             }
 
             ApplySave(save);
+            CloseHelp();
             SetVisible(true);
         }
 
@@ -118,12 +124,35 @@ namespace ABRevival.Presentation
             if (_document == null) _document = GetComponent<UIDocument>();
             if (_document != null && _document.rootVisualElement != null)
                 _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (visible) CloseHelp();
+        }
+
+        /// <summary>Opens or closes the frozen UI_HelpShop page.</summary>
+        public void ToggleHelp()
+        {
+            if (_help == null) return;
+            _help.style.display = _help.resolvedStyle.display == DisplayStyle.Flex
+                ? DisplayStyle.None
+                : DisplayStyle.Flex;
+        }
+
+        public void CloseHelp()
+        {
+            if (_help != null) _help.style.display = DisplayStyle.None;
         }
 
         private void Bind(VisualElement root)
         {
             Button center = root.Q<Button>("center-button");
             if (center != null) center.clicked += () => Closed?.Invoke();
+
+            Button help = root.Q<Button>("help-button");
+            if (help != null) help.clicked += ToggleHelp;
+
+            Button helpClose = root.Q<Button>("shop-help-close");
+            if (helpClose != null) helpClose.clicked += CloseHelp;
+
+            _help = root.Q("shop-help");
 
             Label player = root.Q<Label>("player-label");
             if (player != null) player.text = "Michael";
@@ -145,6 +174,9 @@ namespace ABRevival.Presentation
             SetBackground(root, "accept-button", buttonAccept);
             SetBackground(root, "reset-button", buttonReset);
             SetBackground(root, "center-button", buttonCenter);
+            SetBackground(root, "invert-button", buttonInvert);
+            SetBackground(root, "help-button", helpButton);
+            SetBackground(root, "shop-help-page", helpOverlay);
 
             Sprite[] categories = { categoryAll, categoryBody, categoryWing, categoryEngine, categoryGun };
             string[] tables = { "buy", "sell" };

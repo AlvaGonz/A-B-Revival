@@ -58,6 +58,7 @@ namespace ABRevival.Tests.PlayMode
 
             VisualElement buyRow = FindAffordableModule(root, shop.Presenter, shop.Money);
             Assert.IsNotNull(buyRow, "The shop has no affordable module row to stage.");
+            Assert.IsNotNull(buyRow.Q("shop-new-badge"), "A newly unlocked row must show the frozen NEW badge.");
             int partId = PartIdOf(buyRow);
             int price = shop.Shop.Catalog.TryGet(partId, out var part) ? part.Cost : 0;
             int moneyBefore = shop.Money;
@@ -93,12 +94,14 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(buyRow);
             Assert.AreEqual("INF", Cell(buyRow, "col-stock").text);
             Assert.AreEqual("N", Cell(buyRow, "col-sel").text, "ACCEPT must clear the purchase stack.");
+            Assert.IsNull(buyRow.Q("shop-new-badge"), "Buying must clear the row's NEW badge.");
 
             PlayerSaveData saved = PlayerSaveCodec.LoadFromFile(SavePath);
             Assert.AreEqual(shop.Money, saved.shop.money, "ACCEPT must persist the money through the single save.");
 
             VisualElement sellRow = FindSellRow(root, partId);
             Assert.IsNotNull(sellRow, "Bought parts must appear in the sell table.");
+            Assert.AreEqual(3, CountSellRows(root, partId), "The frozen form lists one row per owned copy.");
             shop.Presenter.ToggleSell(partId);
             yield return null;
             Assert.AreEqual("Y", Cell(FindSellRow(root, partId), "col-sel").text, "Selling is unit-based Y/N.");
@@ -109,6 +112,7 @@ namespace ABRevival.Tests.PlayMode
 
             Assert.AreEqual(moneyAfterBuy + sellValue, shop.Money);
             Assert.AreEqual(ownedBefore + 2, shop.Shop.OwnedCount(partId));
+            Assert.AreEqual(2, CountSellRows(root, partId), "Selling one copy must leave the other copy's row.");
             saved = PlayerSaveCodec.LoadFromFile(SavePath);
             Assert.AreEqual(shop.Money, saved.shop.money);
 
@@ -132,7 +136,7 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(reopened);
             VisualElement persistedSellRow = FindSellRow(ActiveRoot(reopened), partId);
             Assert.IsNotNull(persistedSellRow, "Owned parts must survive a full boot reload.");
-            Assert.AreEqual("x2", Cell(persistedSellRow, "col-stock").text);
+            Assert.AreEqual(2, CountSellRows(ActiveRoot(reopened), partId));
         }
 
         [UnityTest]
@@ -180,6 +184,68 @@ namespace ABRevival.Tests.PlayMode
             bodyRow = FindAcrossPages(root, shop.Presenter, row => PartIdOf(row) == bodyId);
             Assert.IsNotNull(bodyRow, "The returned hull must be back in the shop table.");
             Assert.AreEqual("x1", Cell(bodyRow, "col-stock").text);
+        }
+
+        [UnityTest]
+        public IEnumerator Shop_InvertFlipsEveryOwnedCopyAndHelpOverlayToggles()
+        {
+            SeedSave(20000);
+            yield return OpenShop();
+
+            ShopController shop = Object.FindAnyObjectByType<ShopController>();
+            VisualElement root = ActiveRoot(shop);
+            VisualElement buyRow = FindAffordableModule(root, shop.Presenter, shop.Money);
+            Assert.IsNotNull(buyRow, "The invert test needs an affordable module.");
+            int partId = PartIdOf(buyRow);
+            int sellValue = shop.Shop.GetSellValue(partId);
+
+            shop.Presenter.AddToStack(partId);
+            shop.Presenter.AddToStack(partId);
+            shop.Presenter.AddToStack(partId);
+            shop.Presenter.Accept();
+            yield return null;
+            Assert.AreEqual(3, CountSellRows(root, partId), "Three bought copies must produce three sell rows.");
+
+            Click(root.Q<Button>("invert-button"));
+            yield return null;
+            Assert.AreEqual(3, shop.Presenter.SellSelectionCount,
+                "INVERT must flip every filtered sell row from N to Y (FormShop.selInvert).");
+            foreach (VisualElement row in RealRows(root, "sell-rows"))
+            {
+                Label sel = Cell(row, "col-sel");
+                if (PartIdOf(row) >= 0 && sel != null) Assert.AreEqual("Y", sel.text);
+            }
+
+            StringAssert.Contains((sellValue * 3).ToString(CultureInfo.InvariantCulture),
+                root.Q<Label>("now-label").text);
+
+            Click(root.Q<Button>("invert-button"));
+            yield return null;
+            Assert.AreEqual(0, shop.Presenter.SellSelectionCount, "A second INVERT must clear every row.");
+            foreach (VisualElement row in RealRows(root, "sell-rows"))
+            {
+                Label sel = Cell(row, "col-sel");
+                if (PartIdOf(row) >= 0 && sel != null) Assert.AreEqual("N", sel.text);
+            }
+
+            VisualElement help = root.Q("shop-help");
+            Assert.IsNotNull(help, "The UI_HelpShop overlay is missing.");
+            Assert.AreEqual(DisplayStyle.None, help.resolvedStyle.display);
+            Click(root.Q<Button>("help-button"));
+            yield return null;
+            Assert.AreEqual(DisplayStyle.Flex, help.resolvedStyle.display, "The help button must open UI_HelpShop.");
+            AssertSprite(root.Q("shop-help-page"), "shop-help-page");
+
+            Click(root.Q<Button>("shop-help-close"));
+            yield return null;
+            Assert.AreEqual(DisplayStyle.None, help.resolvedStyle.display, "The SKIP/close control must close the help page.");
+
+            Click(root.Q<Button>("help-button"));
+            yield return null;
+            Assert.AreEqual(DisplayStyle.Flex, help.resolvedStyle.display);
+            Click(root.Q<Button>("help-button"));
+            yield return null;
+            Assert.AreEqual(DisplayStyle.None, help.resolvedStyle.display, "The help button must toggle the overlay closed.");
         }
 
         [UnityTest]
@@ -263,6 +329,8 @@ namespace ABRevival.Tests.PlayMode
                     VisualElement middle = root.Q("shop-middle");
                     VisualElement sell = root.Q("sell-panel");
                     VisualElement center = root.Q<Button>("center-button");
+                    VisualElement invert = root.Q<Button>("invert-button");
+                    VisualElement help = root.Q<Button>("help-button");
                     VisualElement filters = root.Q("buy-filters");
                     Assert.IsNotNull(shopRoot, "Shop root is missing.");
                     Assert.IsNotNull(screen, "Shop screen is missing.");
@@ -271,6 +339,8 @@ namespace ABRevival.Tests.PlayMode
                     Assert.IsNotNull(middle, "Shop trade strip is missing.");
                     Assert.IsNotNull(sell, "Shop sell table is missing.");
                     Assert.IsNotNull(center, "Shop Back to Center is missing.");
+                    Assert.IsNotNull(invert, "Shop INVERT is missing.");
+                    Assert.IsNotNull(help, "Shop help button is missing.");
                     Assert.IsNotNull(filters, "Shop category filters are missing.");
 
                     Rect surface = shopRoot.worldBound;
@@ -354,8 +424,11 @@ namespace ABRevival.Tests.PlayMode
                 AssertSprite(root.Q("accept-button"), "accept-button");
                 AssertSprite(root.Q("reset-button"), "reset-button");
                 AssertSprite(root.Q("center-button"), "center-button");
+                AssertSprite(root.Q("invert-button"), "invert-button");
+                AssertSprite(root.Q("help-button"), "help-button");
                 AssertSprite(root.Q("buy-filter-all"), "buy-filter-all");
                 Assert.Greater(shop.Presenter.BuyRowCount, 0, "The capture frame must show stock rows.");
+                Assert.IsNotNull(root.Q("shop-new-badge"), "The capture frame must show a NEW badge.");
                 VisualElement firstRow = FirstAnyRow(root);
                 Assert.IsNotNull(firstRow, "The capture frame must show a stock row.");
                 VisualElement icon = firstRow.Q("shop-icon");
@@ -390,6 +463,39 @@ namespace ABRevival.Tests.PlayMode
                 Assert.Greater(colors.Count, 32, "Shop rendered no extracted UI palette.");
                 Debug.Log("[Shop Capture] path=" + path + " nonBlack=" +
                           ((float)nonBlack / pixels.Length).ToString("P2") + " colors=" + colors.Count);
+
+                // Second frame: the exact UI_HelpShop overlay.
+                Click(root.Q<Button>("help-button"));
+                for (int i = 0; i < 12; i++) yield return null;
+                VisualElement help = root.Q("shop-help");
+                Assert.AreEqual(DisplayStyle.Flex, help.resolvedStyle.display);
+                AssertSprite(root.Q("shop-help-page"), "shop-help-page");
+
+                string helpPath = Path.Combine(folder, "shop-help-1920x1080.png");
+                if (File.Exists(helpPath)) File.Delete(helpPath);
+                RenderTexture.active = target;
+                var helpImage = new Texture2D(1920, 1080, TextureFormat.RGBA32, false);
+                helpImage.ReadPixels(new Rect(0, 0, 1920, 1080), 0, 0);
+                helpImage.Apply();
+                RenderTexture.active = null;
+                File.WriteAllBytes(helpPath, helpImage.EncodeToPNG());
+                Object.Destroy(helpImage);
+
+                var helpCheck = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                Assert.IsTrue(helpCheck.LoadImage(File.ReadAllBytes(helpPath)));
+                Color32[] helpPixels = helpCheck.GetPixels32();
+                Object.Destroy(helpCheck);
+                int helpNonBlack = 0;
+                for (int i = 0; i < helpPixels.Length; i++)
+                {
+                    Color32 pixel = helpPixels[i];
+                    if (pixel.r > 16 || pixel.g > 16 || pixel.b > 16) helpNonBlack++;
+                }
+
+                Assert.Greater(helpNonBlack, helpPixels.Length / 200, "The help overlay rendered almost black.");
+                Debug.Log("[Shop Help Capture] path=" + helpPath + " nonBlack=" +
+                          ((float)helpNonBlack / helpPixels.Length).ToString("P2"));
+                Click(root.Q<Button>("shop-help-close"));
             }
             finally
             {
@@ -551,8 +657,21 @@ namespace ABRevival.Tests.PlayMode
             return null;
         }
 
+        private static int CountSellRows(VisualElement root, int partId)
+        {
+            int count = 0;
+            foreach (VisualElement row in RealRows(root, "sell-rows"))
+            {
+                if (PartIdOf(row) == partId) count++;
+            }
+
+            return count;
+        }
+
         private static int PartIdOf(VisualElement row)
         {
+            if (row.userData is int stored) return stored;
+
             Label label = Cell(row, "col-index");
             return label != null && int.TryParse(label.text, out int id) ? id : -1;
         }

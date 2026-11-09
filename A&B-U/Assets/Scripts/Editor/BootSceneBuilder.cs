@@ -290,7 +290,11 @@ namespace ABRevival.Editor
             SetSprite(serialized, "panel", UiSpriteFolder, "ui_0325_hangar_panel.png");
             SetSprite(serialized, "buttonAccept", UiSpriteFolder, "ui_0170_hangar_button_accept.png");
             SetSprite(serialized, "buttonReset", UiSpriteFolder, "ui_0167_hangar_button_reset.png");
-            SetSprite(serialized, "buttonCenter", UiSpriteFolder, "ui_0324_hangar_button_back_to_center.png");
+            SetSprite(serialized, "buttonCenter", UiSpriteFolder, "ui_0173_hangar_button_center.png");
+            SetSprite(serialized, "buttonInvert", UiSpriteFolder, "ui_0204_hangar_button_invert.png");
+            SetSprite(serialized, "newBadge", UiSpriteFolder, "ui_0162_hangar_shop_new_badge.png");
+            SetSprite(serialized, "helpOverlay", UiSpriteFolder, "ui_0744_hangar_help_shop.png");
+            SetSprite(serialized, "helpButton", UiSpriteFolder, "ui_0073_hud_button_help.png");
             SetSprite(serialized, "categoryAll", UiSpriteFolder, "ui_0124_hangar_category_all.png");
             SetSprite(serialized, "categoryBody", UiSpriteFolder, "ui_0136_hangar_category_body.png");
             SetSprite(serialized, "categoryWing", UiSpriteFolder, "ui_0133_hangar_category_wing.png");

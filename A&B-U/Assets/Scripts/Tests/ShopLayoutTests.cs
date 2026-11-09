@@ -43,6 +43,7 @@ namespace ABRevival.Tests
             "accept-button",
             "reset-button",
             "center-button",
+            "help-button",
             "buy-detail-name",
             "buy-detail-value",
             "sell-detail-name",
@@ -55,13 +56,17 @@ namespace ABRevival.Tests
             "sell-prev",
             "sell-next",
             "sell-last",
+            "invert-button",
             "sell-filter-all",
             "sell-filter-body",
             "sell-filter-wing",
             "sell-filter-engine",
             "sell-filter-gun",
             "player-label",
-            "shop-error"
+            "shop-error",
+            "shop-help",
+            "shop-help-page",
+            "shop-help-close"
         };
 
         [Test]
@@ -95,6 +100,9 @@ namespace ABRevival.Tests
             StringAssert.Contains(".shop-icon", uss);
             StringAssert.Contains(".filter-button", uss);
             StringAssert.Contains(".detail-card", uss);
+            StringAssert.Contains(".shop-new-badge", uss);
+            StringAssert.Contains(".invert-button", uss);
+            StringAssert.Contains(".shop-help", uss);
 
             StringAssert.DoesNotContain("1280", uss, "The retired 1280x960 hangar root must not survive.");
             StringAssert.DoesNotContain("960px", uss, "The retired 1280x960 hangar root must not survive.");

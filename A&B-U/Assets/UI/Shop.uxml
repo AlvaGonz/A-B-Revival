@@ -9,11 +9,13 @@
                 </ui:VisualElement>
                 <ui:VisualElement class="header-spacer" />
                 <ui:Label name="money-label" text="0 G" class="money-label" />
+                <ui:Button name="help-button" class="sprite-button help-button" tooltip="Shop help" />
             </ui:VisualElement>
 
             <!-- form1: shop stock (infinite modules, finite hulls). -->
             <ui:VisualElement name="buy-panel" class="shop-panel">
                 <ui:VisualElement name="buy-header" class="table-header">
+                    <ui:Label text="" class="cell col-new" />
                     <ui:Label text="" class="cell col-icon" />
                     <ui:Label text="Index" class="cell col-index" />
                     <ui:Label text="Name" class="cell col-name" />
@@ -154,11 +156,11 @@
                     <ui:Label text="Mass" class="cell col-mass" />
                     <ui:Label text="Fire Power" class="cell col-fire" />
                     <ui:Label text="Sell" class="cell col-value" />
-                    <ui:Label text="Owned" class="cell col-stock" />
                     <ui:Label text="Sel." class="cell col-sel" />
                 </ui:VisualElement>
                 <ui:VisualElement name="sell-rows" class="shop-rows" />
                 <ui:VisualElement name="sell-footer" class="table-footer">
+                    <ui:Button name="invert-button" class="sprite-button invert-button" tooltip="Invert the sell selection" />
                     <ui:VisualElement class="page-controls">
                         <ui:Button name="sell-first" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
                         <ui:Button name="sell-prev" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
@@ -174,6 +176,12 @@
                         <ui:Button name="sell-filter-gun" class="sprite-button filter-button" tooltip="Gun parts" />
                     </ui:VisualElement>
                 </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="shop-help" class="shop-help">
+            <ui:VisualElement name="shop-help-page" class="shop-help-page">
+                <ui:Button name="shop-help-close" class="shop-help-close" tooltip="Close help" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

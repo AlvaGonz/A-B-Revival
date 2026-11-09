@@ -37,10 +37,14 @@ namespace ABRevival.Core.Shop
         public readonly int PartId;
         public readonly int Quantity;
 
-        public ShopStockEntry(int partId, int quantity)
+        /// <summary>False while the row still carries the frozen NEW badge.</summary>
+        public readonly bool Seen;
+
+        public ShopStockEntry(int partId, int quantity, bool seen = false)
         {
             PartId = partId;
             Quantity = quantity;
+            Seen = seen;
         }
     }
 
@@ -119,8 +123,7 @@ namespace ABRevival.Core.Shop
             }
 
             _stock.Add(new ShopStockEntry(partId, part.IsBody ? Math.Max(0, bodyQuantity) : 0));
-            return true;
-        }
+            return true;        }
 
         public ShopResult Buy(int partId, int quantity)
         {
@@ -148,16 +151,16 @@ namespace ABRevival.Core.Shop
                 int stockIndex = FindStockIndex(partId);
                 if (stockIndex < 0)
                 {
-                    _stock.Add(new ShopStockEntry(partId, 1));
+                    _stock.Add(new ShopStockEntry(partId, 1, seen: true));
                 }
                 else
                 {
-                    _stock[stockIndex] = new ShopStockEntry(partId, _stock[stockIndex].Quantity + 1);
+                    _stock[stockIndex] = new ShopStockEntry(partId, _stock[stockIndex].Quantity + 1, seen: true);
                 }
             }
             else if (!IsUnlocked(partId))
             {
-                _stock.Add(new ShopStockEntry(partId, 0));
+                _stock.Add(new ShopStockEntry(partId, 0, seen: true));
             }
 
             return ShopResult.Ok(credit);
@@ -248,7 +251,8 @@ namespace ABRevival.Core.Shop
                 save.stock.Add(new ShopStockSave
                 {
                     partId = _stock[i].PartId,
-                    quantity = _stock[i].Quantity
+                    quantity = _stock[i].Quantity,
+                    seen = _stock[i].Seen
                 });
             }
 
@@ -268,7 +272,8 @@ namespace ABRevival.Core.Shop
                 for (int i = 0; i < save.stock.Count; i++)
                 {
                     ShopStockSave entry = save.stock[i];
-                    if (_catalog.Contains(entry.partId)) _stock.Add(new ShopStockEntry(entry.partId, entry.quantity));
+                    if (_catalog.Contains(entry.partId))
+                        _stock.Add(new ShopStockEntry(entry.partId, entry.quantity, entry.seen));
                 }
             }
 
@@ -336,8 +341,13 @@ namespace ABRevival.Core.Shop
                 }
                 else
                 {
-                    _stock[index] = new ShopStockEntry(part.PartId, remaining);
+                    _stock[index] = new ShopStockEntry(part.PartId, remaining, seen: true);
                 }
+            }
+            else
+            {
+                // Buying clears the NEW badge for this stock row.
+                _stock[index] = new ShopStockEntry(part.PartId, _stock[index].Quantity, seen: true);
             }
 
             for (int i = 0; i < quantity; i++)
@@ -360,7 +370,7 @@ namespace ABRevival.Core.Shop
                 }
 
                 int quantity = part.IsBody ? Math.Max(1, entry.Quantity) : 0;
-                _stock[i] = new ShopStockEntry(entry.PartId, quantity);
+                _stock[i] = new ShopStockEntry(entry.PartId, quantity, entry.Seen);
             }
         }
 

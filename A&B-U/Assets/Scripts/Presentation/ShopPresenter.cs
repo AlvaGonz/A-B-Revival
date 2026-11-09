@@ -33,6 +33,7 @@ namespace ABRevival.Presentation
         private readonly Action _onChanged;
         private readonly Dictionary<int, PartDefinitionSO> _parts = new Dictionary<int, PartDefinitionSO>();
         private readonly PartMountTable _mountTable;
+        private readonly Sprite _newBadge;
         private readonly VisualElement _root;
         private readonly Label _moneyLabel;
         private readonly Label _costLabel;
@@ -67,11 +68,13 @@ namespace ABRevival.Presentation
             ShopState shop,
             Action onChanged,
             IReadOnlyList<PartDefinitionSO> definitions,
-            PartMountTable mountTable)
+            PartMountTable mountTable,
+            Sprite newBadge)
         {
             _shop = shop ?? throw new ArgumentNullException(nameof(shop));
             _onChanged = onChanged;
             _mountTable = mountTable;
+            _newBadge = newBadge;
             _root = root;
 
             if (definitions != null)
@@ -108,6 +111,8 @@ namespace ABRevival.Presentation
             if (_acceptButton != null) _acceptButton.clicked += Accept;
             Button reset = root.Q<Button>("reset-button");
             if (reset != null) reset.clicked += Reset;
+            Button invert = root.Q<Button>("invert-button");
+            if (invert != null) invert.clicked += InvertSellSelection;
 
             // The release must be caught on the root: a stack increment rebuilds the row.
             root.RegisterCallback<PointerUpEvent>(_ => EndHold());
@@ -185,15 +190,50 @@ namespace ABRevival.Presentation
             _holdSchedule?.Pause();
         }
 
-        /// <summary>Toggles one owned unit of the row between N and Y for the next ACCEPT.</summary>
+        /// <summary>Toggles one owned copy between N and Y for the next ACCEPT.</summary>
         public bool ToggleSell(int partId)
         {
-            if (_shop.OwnedCount(partId) <= 0) return false;
+            IReadOnlyList<int> owned = _shop.OwnedParts;
+            for (int i = 0; i < owned.Count; i++)
+            {
+                if (owned[i] == partId && !_sellSelection.Contains(i)) return ToggleSellAt(i);
+            }
 
-            if (!_sellSelection.Add(partId)) _sellSelection.Remove(partId);
+            for (int i = 0; i < owned.Count; i++)
+            {
+                if (owned[i] == partId && _sellSelection.Contains(i)) return ToggleSellAt(i);
+            }
+
+            return false;
+        }
+
+        /// <summary>Toggles the sell row at an owned-part index (frozen form2 Y/N).</summary>
+        public bool ToggleSellAt(int ownedIndex)
+        {
+            if (ownedIndex < 0 || ownedIndex >= _shop.OwnedParts.Count) return false;
+
+            if (!_sellSelection.Add(ownedIndex)) _sellSelection.Remove(ownedIndex);
             ClearError();
             Refresh();
             return true;
+        }
+
+        /// <summary>
+        /// Frozen <c>FormShop.selInvert</c>: every filtered sell row flips between Y and N.
+        /// The source proves selection inversion, not list reordering; the button acts on form2.
+        /// </summary>
+        public void InvertSellSelection()
+        {
+            if (_sellView.Count == 0) return;
+
+            for (int i = 0; i < _sellView.Count; i++)
+            {
+                int ownedIndex = _sellView[i];
+                if (!_sellSelection.Add(ownedIndex)) _sellSelection.Remove(ownedIndex);
+            }
+
+            ClearError();
+            Refresh();
         }
 
         /// <summary>Clears the purchase stack and the staged sell units.</summary>
@@ -225,9 +265,15 @@ namespace ABRevival.Presentation
             }
 
             bool changed = false;
-            foreach (int partId in _sellSelection)
+            var batch = new List<int>(_sellSelection.Count);
+            for (int i = 0; i < _shop.OwnedParts.Count; i++)
             {
-                ShopResult sell = _shop.Sell(partId);
+                if (_sellSelection.Contains(i)) batch.Add(_shop.OwnedParts[i]);
+            }
+
+            for (int i = 0; i < batch.Count; i++)
+            {
+                ShopResult sell = _shop.Sell(batch[i]);
                 if (!sell.Success)
                 {
                     SetError(sell.Error);
@@ -268,7 +314,7 @@ namespace ABRevival.Presentation
 
         public void Refresh()
         {
-            _sellSelection.RemoveWhere(id => _shop.OwnedCount(id) <= 0);
+            _sellSelection.RemoveWhere(index => index < 0 || index >= _shop.OwnedParts.Count);
             BuildBuyView();
             BuildSellView();
 
@@ -301,15 +347,12 @@ namespace ABRevival.Presentation
         private void BuildSellView()
         {
             _sellView.Clear();
-            var seen = new HashSet<int>();
             IReadOnlyList<int> owned = _shop.OwnedParts;
             for (int i = 0; i < owned.Count; i++)
             {
-                int partId = owned[i];
-                if (!seen.Add(partId)) continue;
-                if (!_shop.Catalog.TryGet(partId, out ShopPart part)) continue;
+                if (!_shop.Catalog.TryGet(owned[i], out ShopPart part)) continue;
                 if (_sellFilter != AllFilter && (int)part.Category != _sellFilter) continue;
-                _sellView.Add(partId);
+                _sellView.Add(i);
             }
         }
 
@@ -349,9 +392,11 @@ namespace ABRevival.Presentation
             int quantity = _shop.PurchaseStack.GetQuantity(entry.PartId);
 
             var row = CreateRow("buy", slot, quantity > 0);
+            row.userData = entry.PartId;
             row.RegisterCallback<PointerDownEvent>(_ => OnBuyDown(entry.PartId));
             row.RegisterCallback<PointerEnterEvent>(_ => ShowBuyDetail(entry.PartId));
 
+            AddNewBadge(row, entry.Seen);
             AddIcon(row, entry.PartId);
             AddCell(row, part.PartId.ToString(CultureInfo.InvariantCulture), "col-index");
             AddCell(row, part.Name, "col-name");
@@ -368,17 +413,20 @@ namespace ABRevival.Presentation
             return row;
         }
 
-        private VisualElement CreateSellRow(int slot, int partId)
+        private VisualElement CreateSellRow(int slot, int ownedIndex)
         {
+            IReadOnlyList<int> owned = _shop.OwnedParts;
+            int partId = ownedIndex >= 0 && ownedIndex < owned.Count ? owned[ownedIndex] : -1;
             _shop.Catalog.TryGet(partId, out ShopPart part);
-            bool selected = _sellSelection.Contains(partId);
+            bool selected = _sellSelection.Contains(ownedIndex);
 
             var row = CreateRow("sell", slot, selected);
-            row.RegisterCallback<PointerDownEvent>(_ => ToggleSell(partId));
+            row.userData = partId;
+            row.RegisterCallback<PointerDownEvent>(_ => ToggleSellAt(ownedIndex));
             row.RegisterCallback<PointerEnterEvent>(_ => ShowSellDetail(partId));
 
             AddIcon(row, partId);
-            AddCell(row, part.PartId.ToString(CultureInfo.InvariantCulture), "col-index");
+            AddCell(row, ownedIndex.ToString(CultureInfo.InvariantCulture), "col-index");
             AddCell(row, part.Name, "col-name");
             AddCell(row, TypeLabel(part.Category), "col-type");
             AddCell(row, LrLabel(partId), "col-lr");
@@ -388,7 +436,6 @@ namespace ABRevival.Presentation
             AddCell(row, Number(partId, d => d.mass, "0"), "col-mass");
             AddCell(row, FireLabel(partId), "col-fire");
             AddCell(row, _shop.GetSellValue(partId).ToString(CultureInfo.InvariantCulture), "col-value");
-            AddCell(row, "x" + _shop.OwnedCount(partId).ToString(CultureInfo.InvariantCulture), "col-stock");
             AddCell(row, selected ? "Y" : "N", "col-sel");
             return row;
         }
@@ -418,6 +465,21 @@ namespace ABRevival.Presentation
             if (_parts.TryGetValue(partId, out PartDefinitionSO definition) && definition.partSprite != null)
                 icon.style.backgroundImage = new StyleBackground(definition.partSprite);
             row.Add(icon);
+        }
+
+        private void AddNewBadge(VisualElement row, bool seen)
+        {
+            var slot = new VisualElement { name = "shop-new-slot" };
+            slot.AddToClassList("shop-new-slot");
+            if (!seen && _newBadge != null)
+            {
+                var badge = new VisualElement { name = "shop-new-badge" };
+                badge.AddToClassList("shop-new-badge");
+                badge.style.backgroundImage = new StyleBackground(_newBadge);
+                slot.Add(badge);
+            }
+
+            row.Add(slot);
         }
 
         private static Label AddCell(VisualElement row, string text, string className)
@@ -479,7 +541,7 @@ namespace ABRevival.Presentation
             if (_buyDetailPartId < 0 || !ContainsBuyPart(_buyDetailPartId))
                 _buyDetailPartId = BuyRowCount > 0 ? _buyView[_buyPage * PageSize].PartId : -1;
             if (_sellDetailPartId < 0 || !ContainsSellPart(_sellDetailPartId))
-                _sellDetailPartId = SellRowCount > 0 ? _sellView[_sellPage * PageSize] : -1;
+                _sellDetailPartId = SellRowCount > 0 ? SellPartAt(_sellView[_sellPage * PageSize]) : -1;
 
             FillDetail(_buyDetail, _buyDetailPartId, sell: false);
             FillDetail(_sellDetail, _sellDetailPartId, sell: true);
@@ -499,10 +561,16 @@ namespace ABRevival.Presentation
         {
             for (int i = 0; i < _sellView.Count; i++)
             {
-                if (_sellView[i] == partId) return true;
+                if (SellPartAt(_sellView[i]) == partId) return true;
             }
 
             return false;
+        }
+
+        private int SellPartAt(int ownedIndex)
+        {
+            IReadOnlyList<int> owned = _shop.OwnedParts;
+            return ownedIndex >= 0 && ownedIndex < owned.Count ? owned[ownedIndex] : -1;
         }
 
         private void ShowBuyDetail(int partId)
@@ -569,7 +637,12 @@ namespace ABRevival.Presentation
         private int SellCredit()
         {
             int total = 0;
-            foreach (int partId in _sellSelection) total += _shop.GetSellValue(partId);
+            foreach (int ownedIndex in _sellSelection)
+            {
+                int partId = SellPartAt(ownedIndex);
+                if (partId >= 0) total += _shop.GetSellValue(partId);
+            }
+
             return total;
         }
 

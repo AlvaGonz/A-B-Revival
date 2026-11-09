@@ -64,6 +64,9 @@ namespace ABRevival.Core.Persistence
     {
         [DataMember(Order = 0)] public int partId;
         [DataMember(Order = 1)] public int quantity;
+
+        /// <summary>False while the row still shows the frozen NEW badge (old saves load false).</summary>
+        [DataMember(Order = 2)] public bool seen;
     }
 
     [DataContract]
