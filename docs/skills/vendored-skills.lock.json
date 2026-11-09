@@ -1,4 +1,55 @@
 {
   "schemaVersion": 1,
-  "skills": []
+  "skills": [
+    {
+      "id": "ab-game-ui-ux",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/game-ui-ux",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-game-ui-ux",
+      "modifications": "renamed; ADR 0020/UI Toolkit header",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-performance-optimization",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/performance-optimization",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-performance-optimization",
+      "modifications": "renamed; Unity 6.6 note",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-physics-tuning",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/physics-tuning",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-physics-tuning",
+      "modifications": "rewritten for PhysicsCore2D / 60 Hz",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-unity-input-system",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/unity/unity-input-system",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-unity-input-system",
+      "modifications": "renamed; Unity 6.6 note",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-unity-scriptableobjects",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/unity/unity-scriptableobjects",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-unity-scriptableobjects",
+      "modifications": "renamed; Unity 6.6 note",
+      "adoptedAt": "2026-11-09"
+    }
+  ]
 }
