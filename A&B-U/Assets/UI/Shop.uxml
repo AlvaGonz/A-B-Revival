@@ -14,7 +14,7 @@
 
             <!-- form1: shop stock (infinite modules, finite hulls). -->
             <ui:VisualElement name="buy-panel" class="shop-panel">
-                <ui:VisualElement name="buy-header" class="table-header">
+                <ui:VisualElement name="buy-header" class="table-header font-data">
                     <ui:Label text="" class="cell col-new" />
                     <ui:Label text="" class="cell col-icon" />
                     <ui:Label text="Index" class="cell col-index" />
@@ -35,7 +35,7 @@
                     <ui:VisualElement class="page-controls">
                         <ui:Button name="buy-first" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
                         <ui:Button name="buy-prev" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
-                        <ui:Label name="buy-page-label" text="1 / 1" class="page-label" />
+                        <ui:Label name="buy-page-label" text="1 / 1" class="page-label font-sans" />
                         <ui:Button name="buy-next" text="&gt;" class="sprite-button page-button" tooltip="Next page" />
                         <ui:Button name="buy-last" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
                     </ui:VisualElement>
@@ -58,7 +58,7 @@
                 </ui:VisualElement>
 
                 <ui:VisualElement class="detail-column">
-                    <ui:VisualElement name="buy-detail" class="detail-card">
+                    <ui:VisualElement name="buy-detail" class="detail-card font-data">
                         <ui:Label text="SHOP PART" class="detail-title" />
                         <ui:VisualElement class="detail-row">
                             <ui:Label text="Type" class="detail-key" />
@@ -94,7 +94,7 @@
                         </ui:VisualElement>
                     </ui:VisualElement>
 
-                    <ui:VisualElement name="sell-detail" class="detail-card">
+                    <ui:VisualElement name="sell-detail" class="detail-card font-data">
                         <ui:Label text="YOUR PART" class="detail-title" />
                         <ui:VisualElement class="detail-row">
                             <ui:Label text="Type" class="detail-key" />
@@ -144,7 +144,7 @@
                 <ui:VisualElement name="sell-title-row" class="sell-title-row">
                     <ui:Label name="player-label" text="Michael" class="player-label" />
                 </ui:VisualElement>
-                <ui:VisualElement name="sell-header" class="table-header">
+                <ui:VisualElement name="sell-header" class="table-header font-data">
                     <ui:Label text="" class="cell col-icon" />
                     <ui:Label text="Index" class="cell col-index" />
                     <ui:Label text="Name" class="cell col-name" />
@@ -164,7 +164,7 @@
                     <ui:VisualElement class="page-controls">
                         <ui:Button name="sell-first" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
                         <ui:Button name="sell-prev" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
-                        <ui:Label name="sell-page-label" text="1 / 1" class="page-label" />
+                        <ui:Label name="sell-page-label" text="1 / 1" class="page-label font-sans" />
                         <ui:Button name="sell-next" text="&gt;" class="sprite-button page-button" tooltip="Next page" />
                         <ui:Button name="sell-last" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
                     </ui:VisualElement>

@@ -54,8 +54,9 @@ The fonts are copied byte-for-byte from FFDec's `font:ttf` export and imported a
 Font assets with `includeFontData = true`. No open or system font is substituted.
 FFDec copies the source SWF mtime into the TTF `head` timestamps; the temp library mtime
 is pinned to 2011-06-01 so the exported bytes are deterministic. Glyph outlines and font
-metrics are untouched. The fonts are available to the UI as Unity Font assets; this
-ticket does not rewire UI text, per the no-runtime-change constraint.
+metrics are untouched. Ticket #185 wires the eight faces into the shared UI Toolkit
+theme (`A&B-U/Assets/UI/UnityDefaultRuntimeTheme.tss`); the family-to-symbol mapping and
+the two-glyph/one-glyph fallbacks are recorded in `docs/assets/reference/README.md`.
 
 ## Text
 

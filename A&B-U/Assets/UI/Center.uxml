@@ -28,7 +28,7 @@
                 </ui:VisualElement>
 
                 <ui:VisualElement class="stats-column">
-                    <ui:VisualElement name="stats-card" class="stats-card">
+                    <ui:VisualElement name="stats-card" class="stats-card font-data">
                         <ui:VisualElement class="stat-row">
                             <ui:Label text="Name" class="stat-key" />
                             <ui:Label name="stat-name" text="-" class="stat-value" />
@@ -64,19 +64,19 @@
                     </ui:VisualElement>
 
                     <ui:VisualElement name="companion-slots" class="companion-slots">
-                        <ui:Button name="grade-0" text="B" class="grade-button" tooltip="Companion 1" />
-                        <ui:Button name="grade-1" text="B" class="grade-button" tooltip="Companion 2" />
-                        <ui:Button name="grade-2" text="B" class="grade-button" tooltip="Companion 3" />
-                        <ui:Button name="grade-3" text="C" class="grade-button" tooltip="Companion 4" />
-                        <ui:Button name="grade-4" text="B" class="grade-button" tooltip="Companion 5" />
+                        <ui:Button name="grade-0" text="B" class="grade-button font-grade" tooltip="Companion 1" />
+                        <ui:Button name="grade-1" text="B" class="grade-button font-grade" tooltip="Companion 2" />
+                        <ui:Button name="grade-2" text="B" class="grade-button font-grade" tooltip="Companion 3" />
+                        <ui:Button name="grade-3" text="C" class="grade-button font-grade" tooltip="Companion 4" />
+                        <ui:Button name="grade-4" text="B" class="grade-button font-grade" tooltip="Companion 5" />
                     </ui:VisualElement>
 
-                    <ui:VisualElement class="companion-actions">
+                    <ui:VisualElement class="companion-actions font-data">
                         <ui:Button name="reset-button" text="Reset" class="text-button" />
                         <ui:Button name="best-button" text="Best" class="text-button" />
                     </ui:VisualElement>
 
-                    <ui:Label name="instruction-label" text="Pick crafts here and ready to fight!" class="instruction" />
+                    <ui:Label name="instruction-label" text="Pick crafts here and ready to fight!" class="instruction font-sans" />
                 </ui:VisualElement>
 
                 <ui:VisualElement class="actions-column">
@@ -89,7 +89,7 @@
             </ui:VisualElement>
 
             <ui:VisualElement name="craft-table" class="craft-table">
-                <ui:VisualElement name="table-header" class="table-header">
+                <ui:VisualElement name="table-header" class="table-header font-data">
                     <ui:Label text="Index" class="cell col-index" />
                     <ui:Label text="Name" class="cell col-name" />
                     <ui:Label text="Player" class="cell col-player" />
@@ -99,7 +99,7 @@
                 <ui:VisualElement class="table-footer">
                     <ui:Button name="first-button" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
                     <ui:Button name="prev-button" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
-                    <ui:Label name="page-label" text="1 / 1" class="page-label" />
+                    <ui:Label name="page-label" text="1 / 1" class="page-label font-sans" />
                     <ui:Button name="next-button" text="&gt;" class="sprite-button page-button" tooltip="Next page" />
                     <ui:Button name="last-button" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
                 </ui:VisualElement>

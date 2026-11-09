@@ -170,7 +170,8 @@
 }
 
 .detail-card {
-    height: 30%;
+    /* SF TransRobotics has a 1em line box; 30% clipped the six 20px detail labels. */
+    height: 36%;
     min-height: 150px;
     padding: 10px 14px;
     background-color: rgba(2, 8, 13, 0.94);

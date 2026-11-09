@@ -37,7 +37,7 @@
             <ui:Image name="hud-pilot-backing" class="hud-portrait-backing" />
             <ui:Image name="hud-pilot-portrait" class="hud-pilot-portrait" scale-mode="ScaleAndCrop" />
             <ui:Image name="hud-pilot-health-pip" class="hud-portrait-pip" />
-            <ui:Label name="hud-pilot-name" text="" class="hud-pilot-name" />
+            <ui:Label name="hud-pilot-name" text="" class="hud-pilot-name font-grade" />
         </ui:VisualElement>
 
         <!-- bottom-right: minimap with the Captain portrait beside it -->

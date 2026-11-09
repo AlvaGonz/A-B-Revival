@@ -8,7 +8,7 @@
             </ui:VisualElement>
 
             <ui:VisualElement name="factory-body" class="factory-body">
-                <ui:VisualElement name="undo-strip" class="undo-strip">
+                <ui:VisualElement name="undo-strip" class="undo-strip font-sans">
                     <ui:Button name="undo-0" text="-" class="undo-button" tooltip="Removed part" />
                     <ui:Button name="undo-1" text="-" class="undo-button" tooltip="Removed part" />
                     <ui:Button name="undo-2" text="-" class="undo-button" tooltip="Removed part" />
@@ -45,7 +45,7 @@
                         <ui:Button name="center-view-button" text="C" class="zoom-button" tooltip="Center view" />
                     </ui:VisualElement>
                     <ui:VisualElement class="detail-spacer" />
-                    <ui:VisualElement name="detail-card" class="detail-card">
+                    <ui:VisualElement name="detail-card" class="detail-card font-data">
                         <ui:VisualElement class="detail-row">
                             <ui:Label text="Hp" class="detail-key" />
                             <ui:Label name="detail-hp" text="0" class="detail-value" />
@@ -75,7 +75,7 @@
                 </ui:VisualElement>
 
                 <ui:VisualElement name="stats-column" class="stats-column">
-                    <ui:VisualElement name="stats-card" class="stats-card">
+                    <ui:VisualElement name="stats-card" class="stats-card font-data">
                         <ui:VisualElement class="stat-row">
                             <ui:Label text="Name" class="stat-key" />
                             <ui:Label name="stat-name" text="-" class="stat-value" />
@@ -126,7 +126,7 @@
                     <ui:Button name="tab-gun" class="sprite-button tab-button" tooltip="Gun parts" />
                 </ui:VisualElement>
 
-                <ui:VisualElement name="table-header" class="table-header">
+                <ui:VisualElement name="table-header" class="table-header font-data">
                     <ui:Label text="Index" class="col col-index" />
                     <ui:Label text="Name" class="col col-name" />
                     <ui:Label text="Type" class="col col-type" />
@@ -138,7 +138,7 @@
                     <ui:Label text="Fire Power" class="col col-fire" />
                 </ui:VisualElement>
 
-                <ui:VisualElement name="crafts-header" class="table-header">
+                <ui:VisualElement name="crafts-header" class="table-header font-data">
                     <ui:Label text="Index" class="col col-index" />
                     <ui:Label text="Name" class="col col-name" />
                     <ui:Label text="" class="col col-actions" />
@@ -150,7 +150,7 @@
                 <ui:VisualElement class="table-footer">
                     <ui:Button name="first-button" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
                     <ui:Button name="prev-button" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
-                    <ui:Label name="page-label" text="1 / 1" class="page-label" />
+                    <ui:Label name="page-label" text="1 / 1" class="page-label font-sans" />
                     <ui:Button name="next-button" text="&gt;" class="sprite-button page-button" tooltip="Next page" />
                     <ui:Button name="last-button" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
                 </ui:VisualElement>
@@ -159,8 +159,8 @@
 
         <ui:VisualElement name="factory-help" class="factory-help">
             <ui:VisualElement class="help-panel">
-                <ui:Label text="FACTORY" class="help-title" />
-                <ui:Label text="Pick a part row and merge it into the craft. Break a mounted part to send it back to inventory. New breaks everything except the chassis; Merge stores the craft and returns to the craft list." class="help-body" />
+                <ui:Label name="help-title" text="FACTORY" class="help-title" />
+                <ui:Label name="help-body" text="Pick a part row and merge it into the craft. Break a mounted part to send it back to inventory. New breaks everything except the chassis; Merge stores the craft and returns to the craft list." class="help-body" />
                 <ui:Button name="help-close" text="BACK" class="text-button" />
             </ui:VisualElement>
         </ui:VisualElement>

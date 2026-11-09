@@ -1,2 +1,54 @@
 @import url("unity-theme://default");
-VisualElement {}
+
+/* ADR 0020: the only fonts allowed in the game UI are the eight faces extracted from the
+   frozen 2011 SWF (Assets/Art/Fonts, symbol ids 2/7/81/478/496/595/627/701). Text styles
+   are inherited in UI Toolkit, so the :root font covers every current and future screen.
+   Data surfaces opt into the shared font-* classes below; never use a system font. */
+:root {
+    -unity-font-definition: url("../Art/Fonts/font_0007_SF_TransRobotics.ttf");
+}
+
+/* SF TransRobotics, symbol 7: menu chrome, buttons, help and HUD labels (211 text tags). */
+.font-ui {
+    -unity-font-definition: url("../Art/Fonts/font_0007_SF_TransRobotics.ttf");
+}
+
+/* Arial, symbol 81: table headers, row data and stat/detail values (116 text tags). */
+.font-data {
+    -unity-font-definition: url("../Art/Fonts/font_0081_Arial.ttf");
+}
+
+/* _sans, symbol 2: undo slots, page counters and the Center instruction (41 text tags). */
+.font-sans {
+    -unity-font-definition: url("../Art/Fonts/font_0002_sans.ttf");
+}
+
+/* _sans, symbol 478: companion grade letters and the HUD pilot name (6 text tags). */
+.font-grade {
+    -unity-font-definition: url("../Art/Fonts/font_0478_sans.ttf");
+}
+
+/* SF TransRobotics, symbol 627: Mov1-Mov9 cinematic captions (10 text tags). No caption
+   surface exists yet; the shared class is ready for it. */
+.font-cinematic {
+    -unity-font-definition: url("../Art/Fonts/font_0627_SF_TransRobotics.ttf");
+}
+
+/* SF TransRobotics, symbol 701: BGWord credits (31 text tags). The credits surface is not
+   implemented yet; the shared class is ready for it. */
+.font-credits {
+    -unity-font-definition: url("../Art/Fonts/font_0701_SF_TransRobotics.ttf");
+}
+
+/* Times New Roman, symbol 595: a two-glyph subset ("3" and "5") for the Center version
+   plate. UI Toolkit cannot use it for arbitrary text; see the fallback note in
+   docs/assets/reference/README.md. */
+.font-version {
+    -unity-font-definition: url("../Art/Fonts/font_0595_Times_New_Roman.ttf");
+}
+
+/* SF Zero Gravity, symbol 496: a one-glyph subset ("Q") used by the HUD logo mark. UI
+   Toolkit cannot use it for arbitrary text; see the fallback note. */
+.font-logo {
+    -unity-font-definition: url("../Art/Fonts/font_0496_SF_Zero_Gravity.ttf");
+}

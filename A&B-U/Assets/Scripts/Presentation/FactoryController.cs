@@ -409,6 +409,7 @@ namespace ABRevival.Presentation
         {
             var row = new VisualElement { name = "craft-row-" + index };
             row.AddToClassList("row");
+            row.AddToClassList("font-data");
             row.AddToClassList(index % 2 == 0 ? "row-even" : "row-odd");
             if (index == _activeIndex) row.AddToClassList("row-selected");
             row.RegisterCallback<PointerDownEvent>(evt =>

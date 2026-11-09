@@ -444,6 +444,7 @@ namespace ABRevival.Presentation
         {
             var row = new VisualElement { name = prefix + "-row-" + slot };
             row.AddToClassList("shop-row");
+            row.AddToClassList("font-data");
             row.AddToClassList(slot % 2 == 0 ? "shop-row-even" : "shop-row-odd");
             if (staged) row.AddToClassList("shop-row-staged");
             return row;
