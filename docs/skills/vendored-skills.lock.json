@@ -122,6 +122,26 @@
       "adoptedAt": "2026-11-09"
     },
     {
+      "id": "ab-unity-build-pipeline",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/unity/unity-build-pipeline",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-unity-build-pipeline",
+      "modifications": "renamed; Unity 6.6; mobile profiles; dropped content-pipeline section",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-unity-csharp-scripting",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/unity/unity-csharp-scripting",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-unity-csharp-scripting",
+      "modifications": "renamed; Unity 6.6; presentation-only; removed coroutine/alloc examples",
+      "adoptedAt": "2026-11-09"
+    },
+    {
       "id": "ab-unity-input-system",
       "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
       "sourcePath": "skills/unity/unity-input-system",

@@ -16,5 +16,7 @@ One row per folder in `.agents/skills/`. Source, copyright and license come from
 | `ab-game-ui-workflow` | `guiguiyan930-source/game-ui-design-workflow` @ `skills/game-ui-workflow` | `1ec6046` | MIT | Translated to English; project header |
 | `ab-performance-optimization` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/disciplines/performance-optimization` | `19d93f9` | Apache-2.0 | Renamed; Unity 6.6 note |
 | `ab-physics-tuning` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/disciplines/physics-tuning` | `19d93f9` | Apache-2.0 | Rewritten for PhysicsCore2D / 60 Hz |
+| `ab-unity-build-pipeline` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/unity/unity-build-pipeline` | `19d93f9` | Apache-2.0 | Renamed; Unity 6.6; mobile profiles; dropped content-pipeline section |
+| `ab-unity-csharp-scripting` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/unity/unity-csharp-scripting` | `19d93f9` | Apache-2.0 | Renamed; Unity 6.6; presentation-only; removed coroutine/alloc examples |
 | `ab-unity-input-system` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/unity/unity-input-system` | `19d93f9` | Apache-2.0 | Renamed; Unity 6.6 note |
 | `ab-unity-scriptableobjects` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/unity/unity-scriptableobjects` | `19d93f9` | Apache-2.0 | Renamed; Unity 6.6 note |
