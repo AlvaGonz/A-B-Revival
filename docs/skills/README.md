@@ -60,4 +60,4 @@ The pre-commit hook runs it whenever `.agents/skills/` or the lockfile is staged
 
 ## Current state
 
-Vendored: 5 core Unity skills, 8 translated game-UI workflow skills and `ab-create-game-assets`. Agents: 3, in both harness formats. The lockfile is the source of truth for what is installed; `docs/skills/ATTRIBUTION.md` mirrors it for humans. Implementation tickets: #191-#195.
+Vendored: 21 skills across gameplay, UI, art, Unity runtime and testing, plus 3 agents in both harness formats. Phase 1 (#191-#195) and phase 2 (#198-#201). The lockfile is the source of truth for what is installed; `docs/skills/ATTRIBUTION.md` mirrors it for humans.
