@@ -37,6 +37,13 @@ is removed by the Unity importer so a 640x480 backdrop cannot evict the widget s
 The four 2250x2249 starfield tiles are standalone textures because they exceed the
 2048 atlas page; the 23 planet/prop composites share `BackgroundsAtlas`.
 
+UI Toolkit's `background-image` path samples an atlased sprite at its local rect on the
+atlas page instead of its `textureRect`, which renders an unrelated atlas fragment.
+Runtime UI art therefore goes through `UiSpriteSkin` (`Assets/Scripts/Presentation`),
+which renders every atlased button/tab/icon sprite in an `Image` child; the inline
+`background-image` remains as the serialized contract for existing tests. Original game
+IP: Vargames (2011).
+
 ## Fonts
 
 | Id | Family | Glyphs | Text tags | Output | Licensing risk |

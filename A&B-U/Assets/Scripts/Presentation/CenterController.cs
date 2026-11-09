@@ -454,36 +454,43 @@ namespace ABRevival.Presentation
 
         private void ApplySkin(VisualElement root)
         {
-            SetBackground(root, "center-root", centerBackground);
-            SetBackground(root, "center-header", centerHeader);
-            SetBackground(root, "preview-frame", previewFrame);
-            SetBackground(root, "craft-table", panel);
-            SetBackground(root, "help-button", helpButton);
-            SetBackground(root, "ready-button", buttonReady);
-            SetBackground(root, "center-placeholder", panel);
-            SetBackground(root, "placeholder-panel", panel);
+            SetPanelBackground(root, "center-root", centerBackground);
+            SetPanelBackground(root, "center-header", centerHeader);
+            SetPanelBackground(root, "preview-frame", previewFrame);
+            SetPanelBackground(root, "craft-table", panel);
+            SetPanelBackground(root, "center-placeholder", panel);
+            SetPanelBackground(root, "placeholder-panel", panel);
 
-            SetBackground(root, "info-button", buttonPlate);
-            SetBackground(root, "shop-button", buttonPlate);
-            SetBackground(root, "factory-button", buttonPlate);
-            SetBackground(root, "back-button", buttonPlate);
-            SetBackground(root, "reset-button", buttonPlate);
-            SetBackground(root, "best-button", buttonPlate);
-            SetBackground(root, "first-button", buttonPlate);
-            SetBackground(root, "prev-button", buttonPlate);
-            SetBackground(root, "next-button", buttonPlate);
-            SetBackground(root, "last-button", buttonPlate);
-            SetBackground(root, "placeholder-back", buttonPlate);
+            SetSpriteBackground(root, "help-button", helpButton, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "ready-button", buttonReady, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "info-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "shop-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "factory-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "back-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "reset-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "best-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "first-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "prev-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "next-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "last-button", buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "placeholder-back", buttonPlate, ScaleMode.ScaleAndCrop);
 
             for (int i = 0; i < CompanionSlotCount; i++)
-                SetBackground(root, "grade-" + i, gradePlate);
+                SetSpriteBackground(root, "grade-" + i, gradePlate, ScaleMode.ScaleAndCrop);
         }
 
-        private static void SetBackground(VisualElement root, string name, Sprite sprite)
+        private static void SetPanelBackground(VisualElement root, string name, Sprite sprite)
         {
             VisualElement element = root.Q(name);
             if (element != null && sprite != null)
                 element.style.backgroundImage = new StyleBackground(sprite);
+        }
+
+        private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
+        {
+            VisualElement element = root.Q(name);
+            if (element != null && sprite != null)
+                UiSpriteSkin.Apply(element, sprite, scaleMode);
         }
 
         // ---------------- Refresh ----------------
@@ -552,6 +559,7 @@ namespace ABRevival.Presentation
                 int craftIndex = _roster.CraftIndex(slot);
                 bool assigned = craftIndex >= 0;
                 button.text = assigned ? StatsFor(craftIndex).cls : "-";
+                UiSpriteSkin.SyncText(button);
                 button.SetEnabled(assigned);
                 button.tooltip = assigned ? "Remove companion " + (slot + 1) : "Empty companion slot";
             }

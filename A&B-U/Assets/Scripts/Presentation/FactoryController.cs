@@ -329,30 +329,37 @@ namespace ABRevival.Presentation
 
         private void ApplySkin(VisualElement root)
         {
-            SetBackground(root, "factory-root", factoryBackground);
-            SetBackground(root, "factory-header", factoryHeader);
-            SetBackground(root, "preview-frame", previewFrame);
-            SetBackground(root, "help-button", helpButton);
+            SetPanelBackground(root, "factory-root", factoryBackground);
+            SetPanelBackground(root, "factory-header", factoryHeader);
+            SetPanelBackground(root, "preview-frame", previewFrame);
 
-            SetBackground(root, "merge-button", buttonMerge != null ? buttonMerge : buttonPlate);
-            SetBackground(root, "new-button", buttonNew != null ? buttonNew : buttonPlate);
-            SetBackground(root, "add-button", buttonAdd != null ? buttonAdd : buttonPlate);
-            SetBackground(root, "back-to-center-button", buttonBackToCenter != null ? buttonBackToCenter : buttonPlate);
-            SetBackground(root, "parts-crafts-button", buttonPartsCrafts != null ? buttonPartsCrafts : buttonPlate);
-            SetBackground(root, "help-close", buttonPlate);
+            SetSpriteBackground(root, "help-button", helpButton, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "merge-button", buttonMerge != null ? buttonMerge : buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "new-button", buttonNew != null ? buttonNew : buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "add-button", buttonAdd != null ? buttonAdd : buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "back-to-center-button", buttonBackToCenter != null ? buttonBackToCenter : buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "parts-crafts-button", buttonPartsCrafts != null ? buttonPartsCrafts : buttonPlate, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "help-close", buttonPlate, ScaleMode.ScaleAndCrop);
 
-            SetBackground(root, "tab-all", categoryAll);
-            SetBackground(root, "tab-body", categoryBody);
-            SetBackground(root, "tab-wing", categoryWing);
-            SetBackground(root, "tab-engine", categoryEngine);
-            SetBackground(root, "tab-gun", categoryGun);
+            SetSpriteBackground(root, "tab-all", categoryAll, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "tab-body", categoryBody, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "tab-wing", categoryWing, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "tab-engine", categoryEngine, ScaleMode.ScaleAndCrop);
+            SetSpriteBackground(root, "tab-gun", categoryGun, ScaleMode.ScaleAndCrop);
         }
 
-        private static void SetBackground(VisualElement root, string name, Sprite sprite)
+        private static void SetPanelBackground(VisualElement root, string name, Sprite sprite)
         {
             if (sprite == null) return;
             VisualElement element = root.Q(name);
             if (element != null) element.style.backgroundImage = new StyleBackground(sprite);
+        }
+
+        private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
+        {
+            if (sprite == null) return;
+            VisualElement element = root.Q(name);
+            if (element != null) UiSpriteSkin.Apply(element, sprite, scaleMode);
         }
 
         private void ToggleHelp()

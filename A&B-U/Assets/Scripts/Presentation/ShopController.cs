@@ -165,18 +165,19 @@ namespace ABRevival.Presentation
 
         private void ApplySkin(VisualElement root)
         {
-            SetBackground(root, "shop-root", shopBackground);
-            SetBackground(root, "shop-title-plate", shopHeader);
-            SetBackground(root, "buy-panel", panel);
-            SetBackground(root, "sell-panel", panel);
-            SetBackground(root, "buy-detail", panel);
-            SetBackground(root, "sell-detail", panel);
-            SetBackground(root, "accept-button", buttonAccept);
-            SetBackground(root, "reset-button", buttonReset);
-            SetBackground(root, "center-button", buttonCenter);
-            SetBackground(root, "invert-button", buttonInvert);
-            SetBackground(root, "help-button", helpButton);
-            SetBackground(root, "shop-help-page", helpOverlay);
+            SetPanelBackground(root, "shop-root", shopBackground);
+            SetPanelBackground(root, "shop-title-plate", shopHeader);
+            SetPanelBackground(root, "buy-panel", panel);
+            SetPanelBackground(root, "sell-panel", panel);
+            SetPanelBackground(root, "buy-detail", panel);
+            SetPanelBackground(root, "sell-detail", panel);
+
+            SetSpriteBackground(root, "accept-button", buttonAccept, ScaleMode.ScaleToFit);
+            SetSpriteBackground(root, "reset-button", buttonReset, ScaleMode.ScaleToFit);
+            SetSpriteBackground(root, "center-button", buttonCenter, ScaleMode.ScaleToFit);
+            SetSpriteBackground(root, "invert-button", buttonInvert, ScaleMode.ScaleToFit);
+            SetSpriteBackground(root, "help-button", helpButton, ScaleMode.ScaleToFit);
+            SetPanelBackground(root, "shop-help-page", helpOverlay);
 
             Sprite[] categories = { categoryAll, categoryBody, categoryWing, categoryEngine, categoryGun };
             string[] tables = { "buy", "sell" };
@@ -184,15 +185,22 @@ namespace ABRevival.Presentation
             for (int table = 0; table < tables.Length; table++)
             {
                 for (int i = 0; i < suffixes.Length; i++)
-                    SetBackground(root, tables[table] + "-filter-" + suffixes[i], categories[i]);
+                    SetSpriteBackground(root, tables[table] + "-filter-" + suffixes[i], categories[i], ScaleMode.ScaleToFit);
             }
         }
 
-        private static void SetBackground(VisualElement root, string name, Sprite sprite)
+        private static void SetPanelBackground(VisualElement root, string name, Sprite sprite)
         {
             VisualElement element = root.Q(name);
             if (element != null && sprite != null)
                 element.style.backgroundImage = new StyleBackground(sprite);
+        }
+
+        private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
+        {
+            VisualElement element = root.Q(name);
+            if (element != null && sprite != null)
+                UiSpriteSkin.Apply(element, sprite, scaleMode);
         }
 
         private void ReconcileShop(PlayerSaveData payload)

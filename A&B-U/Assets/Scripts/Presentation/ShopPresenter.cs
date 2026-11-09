@@ -464,7 +464,7 @@ namespace ABRevival.Presentation
             var icon = new VisualElement { name = "shop-icon" };
             icon.AddToClassList("shop-icon");
             if (_parts.TryGetValue(partId, out PartDefinitionSO definition) && definition.partSprite != null)
-                icon.style.backgroundImage = new StyleBackground(definition.partSprite);
+                UiSpriteSkin.Apply(icon, definition.partSprite, ScaleMode.ScaleToFit);
             row.Add(icon);
         }
 
