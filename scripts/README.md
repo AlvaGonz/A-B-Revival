@@ -115,3 +115,10 @@ python scripts\validate_vendored_skills.py
 python scripts\test_validate_vendored_skills.py
 ```
 
+### 13. `validate_skill_routing.py`
+Fails when a vendored skill or project agent ID is missing from the `AGENTS.md` routing table, or when the table names a stale `ab-*` ID; runs from pre-commit when the skill tree, agent files or `AGENTS.md` change:
+```cmd
+python scripts\validate_skill_routing.py
+python scripts\test_validate_skill_routing.py
+```
+

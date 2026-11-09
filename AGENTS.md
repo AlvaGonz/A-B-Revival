@@ -47,6 +47,7 @@ Pre-commit hooks are version-controlled in `.githooks/` and enforce:
 2. `scripts/lint_shell_scripts.py --staged`: Static check ensuring all Windows `.bat` scripts enforce safe quoting and ampersand escaping.
 3. `scripts/lint_domain_leakage.py --staged`: Static check against domain leakage if legacy Flash AS3 files are touched (frozen baseline, ADR 0015).
 4. `scripts/validate_vendored_skills.py`: Checks vendored skill provenance, licenses and lockfile; refuses partially staged skill changes.
+5. `scripts/validate_skill_routing.py`: Fails when a vendored skill or project agent ID is missing from the **Project-local skills** routing table, or when the table names a stale `ab-*` ID; refuses partially staged routing changes.
 Activate via `scripts/install-hooks.bat` (Windows) or `sh scripts/install-hooks.sh` (Unix).
 
 ### Project documentation (`docs/` & `CONTEXT.md`)
