@@ -40,6 +40,10 @@ Project-local skill acquisition for OpenCode and Antigravity. Nothing is install
 
 `id`, `sourceRepo`, `sourcePath`, `commit`, `license` and `localPath` are required. `modifications` and `adoptedAt` are informational. `commit` must be a pinned hex SHA, not `HEAD` or a branch name.
 
+## Routing
+
+`AGENTS.md` carries the task -> skill/agent table under **Project-local skills**. Routing verified: 2026-11-09. Update the table in the same PR that adds, removes or renames a skill; no automatic check, because matching prose against the lockfile is brittle. The quarterly update policy below is the reminder.
+
 ## Update policy
 
 - Quarterly, or when an upstream release matters: diff the vendored skill against its pinned upstream commit, open a ticket, and apply the change with a fresh lockfile entry.
