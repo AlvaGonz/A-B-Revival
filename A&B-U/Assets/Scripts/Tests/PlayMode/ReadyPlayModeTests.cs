@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using ABRevival.Core.Data;
 using ABRevival.Core.Persistence;
+using ABRevival.Core.Shop;
 using ABRevival.Core.Simulation;
 using ABRevival.Presentation;
 using NUnit.Framework;
@@ -230,6 +231,87 @@ namespace ABRevival.Tests.PlayMode
             flow.Tick(GameFlowController.FixedStepSeconds);
             Assert.AreEqual(1, hud.State.AiCount,
                 "AI x N must drop to the surviving friendly wingman count when one is destroyed.");
+        }
+
+        [UnityTest]
+        public IEnumerator DestroyedWingman_RecordsEveryMountedPart()
+        {
+            yield return LoadBoot();
+
+            CenterController center = Object.FindAnyObjectByType<CenterController>();
+            Assert.IsTrue(center.AssignCompanion(2));
+            yield return null;
+            yield return OpenReady();
+
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            ClicksLaunchAndSkipsBriefing(flow, ActiveRoot(Object.FindAnyObjectByType<ReadyController>()));
+            yield return WaitForState(flow, GameFlowState.Mission);
+
+            Assert.AreEqual(1, flow.WingmanShipIndices.Count);
+            int wingman = flow.WingmanShipIndices[0];
+            int blueprint = flow.ActiveLoadout.CompanionCraftIndices[0];
+            int hull = flow.HullForShip(wingman);
+            Assert.GreaterOrEqual(hull, 0);
+
+            int partCount = flow.ContactSolver.GetHullPartCount(hull);
+            Assert.Greater(partCount, 0);
+
+            ShipEntity ship = flow.Simulation.GetShip(wingman);
+            ship.velocity = Unity.Mathematics.float2.zero;
+            ship.thrustPower = 0f;
+            ship.turnSpeed = 0f;
+            flow.Simulation.SetShip(wingman, ship);
+
+            // Keep every other hull out of the injected projectiles' single-frame sweep.
+            var spawns = flow.Runner.Spawns;
+            for (int i = 0; i < spawns.Count; i++)
+            {
+                int other = spawns[i].shipIndex;
+                if (other < 0 || other == wingman) continue;
+                ShipEntity moved = flow.Simulation.GetShip(other);
+                moved.position += new Unity.Mathematics.float2(10000f, 10000f);
+                flow.Simulation.SetShip(other, moved);
+            }
+
+            for (int pass = 0; pass < 2; pass++)
+            {
+                for (int partIndex = 0; partIndex < partCount; partIndex++)
+                {
+                    MountedPartData part = flow.ContactSolver.GetPart(hull, partIndex);
+                    float cos = Mathf.Cos(ship.rotation);
+                    float sin = Mathf.Sin(ship.rotation);
+                    var world = new Unity.Mathematics.float2(
+                        ship.position.x + (cos * part.localOffset.x) - (sin * part.localOffset.y),
+                        ship.position.y + (sin * part.localOffset.x) + (cos * part.localOffset.y));
+
+                    int index = flow.Simulation.ProjectileCount;
+                    flow.Simulation.SetProjectile(index, new ProjectileData
+                    {
+                        position = world - new Unity.Mathematics.float2(10f, 0f),
+                        velocity = new Unity.Mathematics.float2(600f, 0f),
+                        lifetime = 1f,
+                        damage = 1e9f,
+                        factionId = 1,
+                        projectileType = 1,
+                        isAlive = true
+                    });
+                    flow.Simulation.ProjectileCount = index + 1;
+                }
+            }
+
+            flow.Tick(GameFlowController.FixedStepSeconds);
+            Assert.IsTrue(flow.ContactSolver.IsHullDestroyed(hull),
+                "The injected wingman damage must destroy the hull.");
+
+            var recorded = new HashSet<int>();
+            IReadOnlyList<DamagedPart> damaged = flow.DamagedParts;
+            for (int i = 0; i < damaged.Count; i++)
+            {
+                if (damaged[i].blueprintIndex == blueprint) recorded.Add(damaged[i].mountedIndex);
+            }
+
+            Assert.AreEqual(partCount, recorded.Count,
+                "Every mounted part of the destroyed wingman must reach the repair/shop damaged-part path.");
         }
 
         [UnityTest]

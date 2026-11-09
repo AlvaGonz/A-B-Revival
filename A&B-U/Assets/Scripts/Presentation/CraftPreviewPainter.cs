@@ -274,7 +274,7 @@ namespace ABRevival.Presentation
                 element.style.top = centerY -
                     ((placement.localOffset.y + contentCenter.y - fit.boundsCenterY) * fit.scale) -
                     (height * 0.5f);
-                element.style.backgroundImage = new StyleBackground(sprite);
+                UiSpriteSkin.Apply(element, sprite, ScaleMode.StretchToFill, keepBackground: false);
                 element.style.rotate = new StyleRotate(
                     new Rotate(new Angle(placement.localRotation * Mathf.Rad2Deg, AngleUnit.Degree)));
                 if (placement.mirrored)

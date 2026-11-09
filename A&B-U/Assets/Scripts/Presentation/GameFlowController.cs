@@ -345,7 +345,6 @@ namespace ABRevival.Presentation
             try
             {
                 // Only the active screen owns the live fleet; capturing the other one would
-                // Only the active screen owns the live fleet; capturing the other one would
                 // write a stale blueprint list over the edit in progress. Result/Repair already
                 // mutate the payload's blueprints directly (repairs and lost parts).
                 if (State == GameFlowState.Factory) _factory?.CaptureSave(payload);
@@ -355,9 +354,14 @@ namespace ABRevival.Presentation
                 {
                     // Payload owns the fleet for this window.
                 }
+                else if (State == GameFlowState.Mission)
+                {
+                    // The mission-end save is payload-owned: the reward and every damaged part
+                    // are already on the payload, and Center's live shop is the pre-mission
+                    // snapshot that would overwrite them.
+                }
                 else if (State == GameFlowState.Center || State == GameFlowState.Ready ||
-                         State == GameFlowState.Briefing || State == GameFlowState.Mission ||
-                         State == GameFlowState.Return)
+                         State == GameFlowState.Briefing || State == GameFlowState.Return)
                     _center?.CaptureSave(payload);
                 PlayerSaveCodec.SaveToFile(_savePath, payload);
             }
@@ -380,8 +384,6 @@ namespace ABRevival.Presentation
         {
             DisposeMission();
             _briefingTalkActive = false;
-            _resultTalkPending = false;
-            _resultElapsed = 0f;
             _accumulator = 0f;
             _captainIndex = -1;
             _activeLoadout = null;
@@ -395,7 +397,6 @@ namespace ABRevival.Presentation
             _ready?.SetVisible(false);
             _center?.SetVisible(false);
             _options?.SetVisible(false);
-            if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
 
             _mainMenu?.Initialize(_save);
             _mainMenu?.SetVisible(true);
@@ -639,7 +640,8 @@ namespace ABRevival.Presentation
             if (State != GameFlowState.Center) return;
 
             _activeLoadout = MissionLoadout.Capture(
-                _save, _center != null ? _center.FleetCount : (_save.blueprints?.Count ?? 0));
+                _save, _center != null ? _center.FleetCount : (_save.blueprints?.Count ?? 0),
+                _center != null ? (Func<int, bool>)_center.IsCraftValid : null);
 
             try
             {
@@ -1375,6 +1377,14 @@ namespace ABRevival.Presentation
 
         void ICraftDestroyedSink.CraftDestroyed(int shipIndex)
         {
+            if (_simulation != null && shipIndex >= 0 && shipIndex < _simulation.ShipCount)
+            {
+                // Targeting reads health, so a destroyed craft must stop being a candidate.
+                ShipEntity ship = _simulation.GetShip(shipIndex);
+                ship.health = 0f;
+                _simulation.SetShip(shipIndex, ship);
+            }
+
             _runner?.NotifyCraftDestroyed(shipIndex);
         }
 
@@ -1428,6 +1438,17 @@ namespace ABRevival.Presentation
             ContactStepResult contacts = _solver.Step(_simulation.Projectiles, FixedStepSeconds);
             _damageHandoff?.Apply(_solver, _hud?.State, this);
 
+            // A destroyed hull unmounts its surviving parts in the solver; every mapped slot
+            // still belongs in the repair ledger (RepairPartsCtrl.removeParts removes them all).
+            var destroyed = _solver.DestroyedHulls;
+            for (int i = 0; i < destroyed.Length; i++)
+            {
+                int hull = destroyed[i].hullIndex;
+                int partCount = _solver.GetHullPartCount(hull);
+                for (int part = 0; part < partCount; part++)
+                    RecordDamagedPart(hull, part);
+            }
+
             if (contacts.hitCount == 0) return;
 
             var hits = _solver.Hits;
@@ -1447,11 +1468,16 @@ namespace ABRevival.Presentation
         /// </summary>
         private void RecordDamagedPart(in ProjectileHit hit)
         {
-            if (_hullPartBlueprint == null || _hullPartMounted == null) return;
-            if (hit.hullIndex < 0 || hit.hullIndex >= _maxShips) return;
-            if (hit.partIndex < 0 || hit.partIndex >= _contactPartsPerHull) return;
+            RecordDamagedPart(hit.hullIndex, hit.partIndex);
+        }
 
-            int slot = (hit.hullIndex * _contactPartsPerHull) + hit.partIndex;
+        private void RecordDamagedPart(int hullIndex, int partIndex)
+        {
+            if (_hullPartBlueprint == null || _hullPartMounted == null) return;
+            if (hullIndex < 0 || hullIndex >= _maxShips) return;
+            if (partIndex < 0 || partIndex >= _contactPartsPerHull) return;
+
+            int slot = (hullIndex * _contactPartsPerHull) + partIndex;
             if (slot < 0 || slot >= _hullPartBlueprint.Length) return;
 
             int blueprintIndex = _hullPartBlueprint[slot];
@@ -1632,7 +1658,11 @@ namespace ABRevival.Presentation
             // UIWin.retry restores the purse captured before the reward. A repair already
             // accepted stays paid so Retry cannot refund it and keep the repaired craft.
             if (State == GameFlowState.Result && (_repair == null || _repair.RepairedCount == 0))
+            {
                 _save.shop.money = _moneyBeforeResult;
+                // Persist the refund while the payload still owns the fleet.
+                Autosave(_save);
+            }
 
             _repair = null;
             _damagedParts.Clear();

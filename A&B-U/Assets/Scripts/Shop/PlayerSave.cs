@@ -17,7 +17,8 @@ namespace ABRevival.Core.Persistence
     [DataContract]
     public sealed class PlayerSaveData
     {
-        public const int CurrentVersion = 1;
+        /// <summary>v2 adds the six Options fields plus the battle control mode.</summary>
+        public const int CurrentVersion = 2;
 
         [DataMember(Order = 0)] public int version = CurrentVersion;
         [DataMember(Order = 1)] public ShopSaveData shop = new ShopSaveData();
@@ -55,6 +56,26 @@ namespace ABRevival.Core.Persistence
 
         /// <summary>Frozen CONFIG[4] (Music) drives the music bus.</summary>
         [DataMember(Order = 13)] public bool musicEnabled = true;
+
+        /// <summary>
+        /// DataContractJsonSerializer bypasses the constructor and field initialisers, so a
+        /// version-1 payload that predates these members would otherwise load 640x480, silent
+        /// and without bloom/background. Members present in the JSON still overwrite these.
+        /// </summary>
+        [OnDeserializing]
+        private void InitializeDefaults(StreamingContext context)
+        {
+            shop = new ShopSaveData();
+            blueprints = new List<BlueprintSaveData>();
+            companions = new List<CompanionSaveData>();
+            controlMode = PlayerControlMode.Keyboard;
+            displayMode = 2;
+            bloomEnabled = true;
+            candyEnabled = false;
+            backgroundEnabled = true;
+            soundEnabled = true;
+            musicEnabled = true;
+        }
     }
 
     /// <summary>One AI companion slot from Center, mirroring the frozen COMPANIONS record.</summary>
@@ -185,7 +206,7 @@ namespace ABRevival.Core.Persistence
                     throw new InvalidDataException("Save payload could not be deserialized.");
                 }
 
-                if (save.version != PlayerSaveData.CurrentVersion)
+                if (save.version < 1 || save.version > PlayerSaveData.CurrentVersion)
                 {
                     throw new InvalidDataException($"Unsupported save version {save.version}.");
                 }
@@ -201,6 +222,11 @@ namespace ABRevival.Core.Persistence
                     save.controlMode = PlayerControlMode.Keyboard;
                 if (save.displayMode < 0 || save.displayMode > 3)
                     save.displayMode = 2;
+
+                // v1 predates the Options fields; [OnDeserializing] already restored their
+                // intended defaults, so the migration only stamps the current version.
+                if (save.version < PlayerSaveData.CurrentVersion)
+                    save.version = PlayerSaveData.CurrentVersion;
                 return save;
             }
         }

@@ -130,8 +130,8 @@ namespace ABRevival.Tests.PlayMode
                 name + " must render the original " + spriteName + " art.");
 
             Background background = element.style.backgroundImage.value;
-            Assert.IsTrue(background.sprite != null || background.texture != null,
-                name + " lost its inline background contract.");
+            Assert.IsTrue(background.sprite == null && background.texture == null,
+                name + " must not use the atlased background-image path.");
 
             if (text == null) return;
             Label label = element.Q<Label>("sprite-text");
@@ -140,8 +140,8 @@ namespace ABRevival.Tests.PlayMode
         }
 
         /// <summary>
-        /// Info/Records opts out of the inline background contract: atlased sprites are only
-        /// rendered through their Image child (the background-image path samples the wrong rect).
+        /// Every section renders atlased art through its Image child only
+        /// (the background-image path samples the wrong rect).
         /// </summary>
         private static void AssertImageArt(VisualElement root, string name, string spriteName, string text = null)
         {

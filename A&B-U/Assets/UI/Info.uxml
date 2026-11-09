@@ -45,7 +45,7 @@
                         </ui:VisualElement>
                         <ui:VisualElement class="control-row">
                             <ui:Label text="Boost / fuel" class="control-key font-data" />
-                            <ui:Label name="control-boost" text="Space burns Super Jet booster fuel; it restores over time and from pickups." class="control-copy font-data" />
+                            <ui:Label name="control-boost" text="Space burns Super Jet booster fuel; it restores from fuel pickups only, never over time." class="control-copy font-data" />
                         </ui:VisualElement>
                         <ui:VisualElement class="control-row">
                             <ui:Label text="Camera" class="control-key font-data" />

@@ -64,17 +64,22 @@ namespace ABRevival.Tests.PlayMode
             Assert.GreaterOrEqual(center.PreviewPartCount, 4, "The player blueprint preview must render body, wings, engine and gun.");
             VisualElement bodyPart = root.Q("preview-part-0");
             Assert.IsNotNull(bodyPart, "The body preview part is missing.");
-            Sprite bodySprite = bodyPart.style.backgroundImage.value.sprite;
+            Image bodyArt = bodyPart.Q<Image>("sprite-art");
+            Assert.IsNotNull(bodyArt, "The body preview must render through an Image child.");
+            Sprite bodySprite = bodyArt.sprite;
             Assert.IsNotNull(bodySprite, "The body preview has no sprite.");
             Assert.Greater(bodySprite.rect.width, 50f,
                 "The preview must use the 2x in-game mount art, not the 1x shop thumbnail.");
+            Assert.IsTrue(bodyPart.style.backgroundImage.value.sprite == null,
+                "The preview must not sample its atlas sprite through background-image.");
             Assert.IsTrue(center.PreviewUsesMountArt,
                 "Every mounted preview part must resolve to PartMounts art; no thumbnail mixing.");
             for (int i = 0; i < bodyPart.parent.childCount; i++)
             {
-                Sprite partSprite = bodyPart.parent[i].style.backgroundImage.value.sprite;
-                Assert.IsNotNull(partSprite);
-                Assert.Greater(partSprite.rect.height, 30f,
+                Image partArt = bodyPart.parent[i].Q<Image>("sprite-art");
+                Assert.IsNotNull(partArt, "Preview part " + bodyPart.parent[i].name + " has no Image art.");
+                Assert.IsNotNull(partArt.sprite);
+                Assert.Greater(partArt.sprite.rect.height, 30f,
                     "Preview part " + bodyPart.parent[i].name + " is a 1x thumbnail.");
             }
 
@@ -443,9 +448,12 @@ namespace ABRevival.Tests.PlayMode
         private static void AssertSprite(VisualElement element, string label)
         {
             Assert.IsNotNull(element, label + " is missing.");
+            Image image = element.Q<Image>("sprite-art");
+            Assert.IsNotNull(image, label + " has no rendered sprite-art Image.");
+            Assert.IsNotNull(image.sprite, label + " has no sprite.");
             Background background = element.style.backgroundImage.value;
-            Assert.IsTrue(background.sprite != null || background.texture != null,
-                label + " has no extracted sprite background.");
+            Assert.IsTrue(background.sprite == null && background.texture == null,
+                label + " must not use the atlased background-image path.");
         }
     }
 }

@@ -302,7 +302,7 @@ namespace ABRevival.Presentation
             _payload.musicEnabled = _music;
             _payload.controlMode = _controlMode;
 
-            _flight?.SetControlMode(_controlMode);
+            _flight?.SetControlMode(_controlMode, notify: false);
             _audio?.SetSfxEnabled(_sound);
             _audio?.SetMusicEnabled(_music);
             ApplyDisplayMode(_displayMode);
@@ -322,7 +322,7 @@ namespace ABRevival.Presentation
             _music = _openedMusic;
             _controlMode = _openedControlMode;
 
-            _flight?.SetControlMode(_openedControlMode);
+            _flight?.SetControlMode(_openedControlMode, notify: false);
             _audio?.SetSfxEnabled(_openedSound);
             _audio?.SetMusicEnabled(_openedMusic);
             _audio?.MenuCancelled();
@@ -343,16 +343,8 @@ namespace ABRevival.Presentation
 
         private void FitPage(float width, float height)
         {
-            if (_page == null || width <= 1f || height <= 1f) return;
-            if (Mathf.Approximately(width, _lastRootSize.x) && Mathf.Approximately(height, _lastRootSize.y)) return;
-            _lastRootSize = new Vector2(width, height);
-
-            float scale = Mathf.Min(width / PageWidth, height / PageHeight);
-            _page.style.left = (width - PageWidth) * 0.5f;
-            _page.style.top = (height - PageHeight) * 0.5f;
-            _page.style.transformOrigin = new StyleTransformOrigin(
-                new TransformOrigin(Length.Percent(50f), Length.Percent(50f), 0f));
-            _page.style.scale = new StyleScale(new Scale(new Vector3(scale, scale, 1f)));
+            MenuPageFitter.Fit(
+                _page, width, height, PageWidth, PageHeight, cover: true, ref _lastRootSize);
         }
     }
 }

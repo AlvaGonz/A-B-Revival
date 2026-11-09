@@ -80,10 +80,10 @@ namespace ABRevival.Presentation
                     return;
                 }
 
-                _definitions = ResolveDefinitions();
-                _catalog = BuildCatalog(_definitions);
+                _definitions = PartCatalogBootstrap.Collect(catalogParts, "Shop");
+                _catalog = PartCatalogBootstrap.BuildCatalog(_definitions);
                 _shop = new ShopState(_catalog);
-                _mountTable = LoadMountTable();
+                _mountTable = PartCatalogBootstrap.LoadMountTable("Shop");
 
                 VisualElement root = _document.rootVisualElement;
                 ApplySkin(root);
@@ -193,14 +193,14 @@ namespace ABRevival.Presentation
         {
             VisualElement element = root.Q(name);
             if (element != null && sprite != null)
-                element.style.backgroundImage = new StyleBackground(sprite);
+                UiSpriteSkin.Apply(element, sprite, ScaleMode.StretchToFill, keepBackground: false);
         }
 
         private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
         {
             VisualElement element = root.Q(name);
             if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode);
+                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }
 
         private void ReconcileShop(PlayerSaveData payload)
@@ -223,50 +223,6 @@ namespace ABRevival.Presentation
             var partIds = new int[definitions.Count];
             for (int i = 0; i < definitions.Count; i++) partIds[i] = definitions[i].partId;
             return new[] { partIds };
-        }
-
-        private static ShopCatalog BuildCatalog(IReadOnlyList<PartDefinitionSO> definitions)
-        {
-            var parts = new List<ShopPart>(definitions.Count);
-            for (int i = 0; i < definitions.Count; i++)
-            {
-                PartDefinitionSO definition = definitions[i];
-                if (definition != null)
-                    parts.Add(new ShopPart(definition.partId, definition.partName, definition.category, definition.cost));
-            }
-
-            return new ShopCatalog(parts);
-        }
-
-        private List<PartDefinitionSO> ResolveDefinitions()
-        {
-            var definitions = new List<PartDefinitionSO>();
-            if (catalogParts != null)
-            {
-                for (int i = 0; i < catalogParts.Length; i++)
-                {
-                    if (catalogParts[i] != null) definitions.Add(catalogParts[i]);
-                }
-            }
-
-            if (definitions.Count == 0)
-                Debug.LogError("[Shop] No PartDefinitionSO catalog assigned; the shop is empty.");
-
-            return definitions;
-        }
-
-        private static PartMountTable LoadMountTable()
-        {
-            try
-            {
-                TextAsset table = Resources.Load<TextAsset>("Data/PartMounts");
-                return table != null ? PartMountTable.Parse(table.text) : null;
-            }
-            catch (Exception exception)
-            {
-                Debug.LogWarning("[Shop] Part mount table unavailable: " + exception.Message);
-                return null;
-            }
         }
     }
 }

@@ -99,15 +99,19 @@ namespace ABRevival.Presentation
                     : PlayerControlMode.Keyboard);
         }
 
-        /// <summary>Sets the battle control scheme; the game flow persists it (#181 Options).</summary>
-        public void SetControlMode(PlayerControlMode mode)
+        /// <summary>
+        /// Sets the battle control scheme; the game flow persists it (#181 Options).
+        /// Options applies the value with <paramref name="notify"/> false so its single save
+        /// owns the write instead of also firing the in-battle persistence branch.
+        /// </summary>
+        public void SetControlMode(PlayerControlMode mode, bool notify = true)
         {
             if (mode != PlayerControlMode.Keyboard && mode != PlayerControlMode.Mouse)
                 throw new ArgumentOutOfRangeException(nameof(mode), mode, "Unknown player control mode.");
             if (_controlMode == mode) return;
 
             _controlMode = mode;
-            ControlModeChanged?.Invoke(mode);
+            if (notify) ControlModeChanged?.Invoke(mode);
         }
 
         /// <summary>Test and scripted-input hook: caches the pointer without a physical mouse.</summary>

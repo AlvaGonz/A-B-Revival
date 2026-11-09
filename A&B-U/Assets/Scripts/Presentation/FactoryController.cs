@@ -125,14 +125,14 @@ namespace ABRevival.Presentation
                     return;
                 }
 
-                _definitions = ResolveDefinitions();
+                _definitions = PartCatalogBootstrap.Collect(catalogParts, "Factory");
                 _byId = new Dictionary<int, PartDefinitionSO>(_definitions.Count);
                 for (int i = 0; i < _definitions.Count; i++)
                     _byId[_definitions[i].partId] = _definitions[i];
 
-                _catalog = BuildCatalog(_definitions);
+                _catalog = PartCatalogBootstrap.BuildCatalog(_definitions);
                 _shop = new ShopState(_catalog);
-                _mountTable = LoadMountTable();
+                _mountTable = PartCatalogBootstrap.LoadMountTable("Factory");
                 _mountArtLookup = new MountArtLookup(_mountTable, mountArt);
 
                 VisualElement root = _document.rootVisualElement;
@@ -352,14 +352,16 @@ namespace ABRevival.Presentation
         {
             if (sprite == null) return;
             VisualElement element = root.Q(name);
-            if (element != null) element.style.backgroundImage = new StyleBackground(sprite);
+            if (element != null)
+                UiSpriteSkin.Apply(element, sprite, ScaleMode.StretchToFill, keepBackground: false);
         }
 
         private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
         {
             if (sprite == null) return;
             VisualElement element = root.Q(name);
-            if (element != null) UiSpriteSkin.Apply(element, sprite, scaleMode);
+            if (element != null)
+                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }
 
         private void ToggleHelp()
@@ -689,50 +691,6 @@ namespace ABRevival.Presentation
         }
 
         // ---------------- Definitions / mounts ----------------
-
-        private List<PartDefinitionSO> ResolveDefinitions()
-        {
-            var definitions = new List<PartDefinitionSO>();
-            if (catalogParts != null)
-            {
-                for (int i = 0; i < catalogParts.Length; i++)
-                {
-                    if (catalogParts[i] != null) definitions.Add(catalogParts[i]);
-                }
-            }
-
-            if (definitions.Count == 0)
-                Debug.LogError("[Factory] No PartDefinitionSO catalog assigned; the parts list is empty.");
-
-            return definitions;
-        }
-
-        private static ShopCatalog BuildCatalog(IReadOnlyList<PartDefinitionSO> definitions)
-        {
-            var parts = new List<ShopPart>(definitions.Count);
-            for (int i = 0; i < definitions.Count; i++)
-            {
-                PartDefinitionSO definition = definitions[i];
-                if (definition != null)
-                    parts.Add(new ShopPart(definition.partId, definition.partName, definition.category, definition.cost));
-            }
-
-            return new ShopCatalog(parts);
-        }
-
-        private static PartMountTable LoadMountTable()
-        {
-            try
-            {
-                TextAsset table = Resources.Load<TextAsset>("Data/PartMounts");
-                return table != null ? PartMountTable.Parse(table.text) : null;
-            }
-            catch (Exception exception)
-            {
-                Debug.LogWarning($"[Factory] Part mount table unavailable: {exception.Message}");
-                return null;
-            }
-        }
 
         private int FirePointCount(int partId)
         {

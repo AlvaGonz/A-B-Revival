@@ -132,23 +132,16 @@ namespace ABRevival.Presentation
 
         private void FitPage(float width, float height)
         {
-            if (_page == null || width <= 1f || height <= 1f) return;
-            if (Mathf.Approximately(width, _lastRootSize.x) && Mathf.Approximately(height, _lastRootSize.y)) return;
-            _lastRootSize = new Vector2(width, height);
-
-            float scale = Mathf.Max(width / PageWidth, height / PageHeight);
-            _page.style.left = (width - PageWidth) * 0.5f;
-            _page.style.top = (height - PageHeight) * 0.5f;
-            _page.style.transformOrigin = new StyleTransformOrigin(
-                new TransformOrigin(Length.Percent(50f), Length.Percent(50f), 0f));
-            _page.style.scale = new StyleScale(new Scale(new Vector3(scale, scale, 1f)));
+            MenuPageFitter.Fit(
+                _page, width, height, PageWidth, PageHeight, cover: true, ref _lastRootSize);
         }
 
         private void Refresh()
         {
             int storyIndex = _payload.storyIndex;
             int fleetCount = _center != null ? _center.FleetCount : (_payload.blueprints?.Count ?? 0);
-            Loadout = MissionLoadout.Capture(_payload, fleetCount);
+            Loadout = MissionLoadout.Capture(
+                _payload, fleetCount, _center != null ? (Func<int, bool>)_center.IsCraftValid : null);
             CanLaunch = _center != null && _center.CanLaunch;
 
             if (_title != null) _title.text = "BATTLE-" + (storyIndex + 1);
@@ -161,18 +154,12 @@ namespace ABRevival.Presentation
         {
             if (!CanLaunch || Loadout.PlayerCraftIndex < 0) return "NO VALID PLAYER CRAFT";
 
-            int assigned = 0;
-            if (_payload.companions != null)
-            {
-                for (int i = 0; i < _payload.companions.Count; i++)
-                {
-                    int craft = _payload.companions[i].craftIndex;
-                    if (craft >= 0 && craft != Loadout.PlayerCraftIndex) assigned++;
-                }
-            }
-
-            return "PLAYER " + CraftLabel(Loadout.PlayerCraftIndex) +
-                   "   AI " + Mathf.Min(assigned, CompanionRoster.SlotCount) + "/" + CompanionRoster.SlotCount;
+            string line = "PLAYER " + CraftLabel(Loadout.PlayerCraftIndex) +
+                          "   AI " + Mathf.Min(Loadout.CompanionCount, CompanionRoster.SlotCount) +
+                          "/" + CompanionRoster.SlotCount;
+            if (Loadout.InvalidCompanionCount > 0)
+                line += "   (" + Loadout.InvalidCompanionCount + " invalid AI)";
+            return line;
         }
 
         private string CraftLabel(int index)

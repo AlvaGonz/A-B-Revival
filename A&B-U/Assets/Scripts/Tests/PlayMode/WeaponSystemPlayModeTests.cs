@@ -431,6 +431,28 @@ namespace ABRevival.Tests.PlayMode
                 "The highest-range mounted weapon sets the auto-target envelope.");
         }
 
+        [Test]
+        public void MouseAutoTarget_SkipsDestroyedShips()
+        {
+            using var simulation = new ScheduledCombatSimulation();
+            simulation.Init(maxShips: 4, maxProjectiles: 8);
+            simulation.ShipCount = 4;
+
+            simulation.SetShip(0, new ShipEntity { position = float2.zero, factionId = 0, health = 1000f, maxHealth = 1000f });
+            simulation.SetShip(1, new ShipEntity { position = new float2(0f, 400f), factionId = 1, health = 1000f, maxHealth = 1000f });
+            simulation.SetShip(2, new ShipEntity { position = new float2(120f, 0f), factionId = 1, health = 0f, maxHealth = 1000f });
+            simulation.SetShip(3, new ShipEntity { position = new float2(3000f, 0f), factionId = 1, health = 1000f, maxHealth = 1000f });
+
+            var weapons = new WeaponSystem(simulation, simulation);
+            Span<WeaponMount> mounts = stackalloc WeaponMount[1];
+            mounts[0] = new WeaponMount { spec = ReferenceGun(), localOffset = float2.zero };
+            weapons.RegisterCraft(0, mounts);
+
+            Assert.IsTrue(weapons.TryFindAutoTarget(0, out ShipEntity target));
+            Assert.AreEqual(400f, target.position.y, 0.001f,
+                "A destroyed ship must not capture the auto-target just because it is closest.");
+        }
+
         private static void StepWeapons(
             WeaponSystem weapons,
             ScheduledCombatSimulation simulation,

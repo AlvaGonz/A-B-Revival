@@ -42,6 +42,23 @@ namespace ABRevival.Tests
         }
 
         [Test]
+        public void MissionLoadout_SkipsAndCountsInvalidCompanions()
+        {
+            var save = new PlayerSaveData { playerBlueprintIndex = 0 };
+            save.companions.Add(new CompanionSaveData { craftIndex = 1 });
+            save.companions.Add(new CompanionSaveData { craftIndex = 2 });
+            save.companions.Add(new CompanionSaveData { craftIndex = 3 });
+
+            // Craft 2 has no hull; 3 is out of range and must not count as invalid.
+            MissionLoadout loadout = MissionLoadout.Capture(
+                save, 3, craft => craft != 2);
+
+            CollectionAssert.AreEqual(new[] { 1 }, loadout.CompanionCraftIndices);
+            Assert.AreEqual(1, loadout.InvalidCompanionCount,
+                "The invalid companion must be excluded from the loadout and flagged.");
+        }
+
+        [Test]
         public void MissionLoadout_ClampsThePlayerPickAndHandlesAnEmptyFleet()
         {
             var save = new PlayerSaveData { playerBlueprintIndex = 9 };

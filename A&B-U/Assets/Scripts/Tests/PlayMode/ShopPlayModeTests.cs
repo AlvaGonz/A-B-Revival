@@ -433,9 +433,11 @@ namespace ABRevival.Tests.PlayMode
                 Assert.IsNotNull(firstRow, "The capture frame must show a stock row.");
                 VisualElement icon = firstRow.Q("shop-icon");
                 Assert.IsNotNull(icon, "The capture frame must show the part icon.");
-                Background iconBackground = icon.style.backgroundImage.value;
-                Assert.IsTrue(iconBackground.sprite != null || iconBackground.texture != null,
-                    "The part icon must use the extracted part sprite.");
+                Image iconArt = icon.Q<Image>("sprite-art");
+                Assert.IsNotNull(iconArt, "The part icon must render through an Image child.");
+                Assert.IsNotNull(iconArt.sprite, "The part icon must use the extracted part sprite.");
+                Assert.IsTrue(icon.style.backgroundImage.value.sprite == null,
+                    "The part icon must not use the atlased background-image path.");
 
                 RenderTexture.active = target;
                 var image = new Texture2D(1920, 1080, TextureFormat.RGBA32, false);
@@ -651,9 +653,12 @@ namespace ABRevival.Tests.PlayMode
         private static void AssertSprite(VisualElement element, string label)
         {
             Assert.IsNotNull(element, label + " is missing.");
+            Image image = element.Q<Image>("sprite-art");
+            Assert.IsNotNull(image, label + " has no rendered sprite-art Image.");
+            Assert.IsNotNull(image.sprite, label + " has no sprite.");
             Background background = element.style.backgroundImage.value;
-            Assert.IsTrue(background.sprite != null || background.texture != null,
-                label + " has no extracted sprite background.");
+            Assert.IsTrue(background.sprite == null && background.texture == null,
+                label + " must not use the atlased background-image path.");
         }
 
         private static void DeleteSave()

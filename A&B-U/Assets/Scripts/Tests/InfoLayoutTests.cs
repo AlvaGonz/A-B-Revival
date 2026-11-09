@@ -95,6 +95,8 @@ namespace ABRevival.Tests
             StringAssert.Contains("rotate independently", uxml, "Turrets must be described as hull-independent.");
             StringAssert.Contains("Boost / fuel", uxml, "The reference must describe booster fuel.");
             StringAssert.Contains("Space burns", uxml, "Space must be documented as the boost key.");
+            StringAssert.Contains("pickups only", uxml, "Fuel must be documented as pickup-only.");
+            StringAssert.Contains("never over time", uxml, "Fuel must not claim passive regeneration.");
             StringAssert.Contains("C cycles", uxml, "C must document camera distance cycling.");
             StringAssert.Contains("E cycles the Captain", uxml, "E must document tactical mode cycling.");
             StringAssert.Contains("X toggles", uxml, "X must document autofire.");

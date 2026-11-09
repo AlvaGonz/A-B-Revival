@@ -89,6 +89,44 @@ namespace ABRevival.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator FuelPickup_RefillsTheTankAndTheHudBar()
+        {
+            if (File.Exists(SavePath)) File.Delete(SavePath);
+
+            SceneManager.LoadScene("Boot");
+            yield return null;
+
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            Assert.IsNotNull(flow);
+            yield return WaitForState(flow, GameFlowState.Center);
+
+            flow.LaunchMission();
+            yield return WaitForState(flow, GameFlowState.Briefing);
+            flow.SkipBriefing();
+            yield return WaitForState(flow, GameFlowState.Mission);
+
+            int playerIndex = flow.Runner.PlayerShipIndex;
+            Assert.GreaterOrEqual(playerIndex, 0);
+
+            ShipEntity ship = flow.Simulation.GetShip(playerIndex);
+            ship.boosterFuel = 100f;
+            flow.Simulation.SetShip(playerIndex, ship);
+
+            var hud = Object.FindAnyObjectByType<CombatHudBehaviour>();
+            Assert.IsNotNull(hud);
+            hud.State.SetFuelFraction(100f / 500f);
+            float fuelBefore = hud.State.FuelFraction;
+
+            Assert.IsTrue(flow.CollectFuelPickup(), "The frozen fuel pickup must refill the player tank.");
+            Assert.Greater(hud.State.FuelFraction, fuelBefore, "The fuel pickup must update the HUD bar.");
+            Assert.AreEqual(350f / 500f, hud.State.FuelFraction, 0.001f);
+
+            Assert.IsTrue(flow.CollectFuelPickup(10000f), "A large pickup must clamp at capacity.");
+            Assert.AreEqual(1f, hud.State.FuelFraction, 0.001f);
+            Assert.IsFalse(flow.CollectFuelPickup(), "A full tank must not report a pickup.");
+        }
+
+        [UnityTest]
         public IEnumerator BootScene_Lose_ReturnsWithoutAdvancingStory()
         {
             if (File.Exists(SavePath)) File.Delete(SavePath);

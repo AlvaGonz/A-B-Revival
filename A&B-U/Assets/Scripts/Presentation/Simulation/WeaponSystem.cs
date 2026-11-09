@@ -145,8 +145,9 @@ namespace ABRevival.Presentation
         }
 
         /// <summary>
-        /// Mouse-mode auto-target: the closest hostile inside the highest-range mounted weapon.
-        /// Returns false when no mount exists or every hostile is out of range.
+        /// Mouse-mode auto-target: the closest living hostile inside the highest-range mounted
+        /// weapon. Uses the same nearest-hostile rule as <see cref="TacticalAIJob"/>; returns
+        /// false when no mount exists or every hostile is out of range.
         /// </summary>
         public bool TryFindAutoTarget(int shipIndex, out ShipEntity target)
         {
@@ -156,27 +157,13 @@ namespace ABRevival.Presentation
             float range = MaxEffectiveRange(shipIndex);
             if (range <= 0f) return false;
 
+            if (!_simulation.TryFindNearestHostile(shipIndex, out ShipEntity candidate)) return false;
+
             ShipEntity origin = _simulation.GetShip(shipIndex);
-            float rangeSq = range * range;
-            float nearestSq = float.MaxValue;
-            bool found = false;
+            if (math.lengthsq(candidate.position - origin.position) > range * range) return false;
 
-            int shipCount = _simulation.ShipCount;
-            for (int i = 0; i < shipCount; i++)
-            {
-                if (i == shipIndex) continue;
-                ShipEntity candidate = _simulation.GetShip(i);
-                if (candidate.factionId == origin.factionId) continue;
-
-                float distanceSq = math.lengthsq(candidate.position - origin.position);
-                if (distanceSq > rangeSq || distanceSq >= nearestSq) continue;
-
-                nearestSq = distanceSq;
-                target = candidate;
-                found = true;
-            }
-
-            return found;
+            target = candidate;
+            return true;
         }
 
         /// <summary>World aim heading of the first mount belonging to a gun part.</summary>

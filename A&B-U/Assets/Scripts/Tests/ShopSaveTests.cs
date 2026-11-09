@@ -209,5 +209,25 @@ namespace ABRevival.Tests
 
             Assert.Throws<InvalidDataException>(() => PlayerSaveCodec.FromJson(json));
         }
+
+        [Test]
+        public void Save_LegacyVersionOneJson_KeepsTheOptionsDefaults()
+        {
+            const string legacy =
+                "{\"version\":1,\"storyIndex\":3,\"shop\":{\"money\":777,\"stock\":[],\"ownedParts\":[71]}}";
+
+            PlayerSaveData loaded = PlayerSaveCodec.FromJson(legacy);
+
+            Assert.AreEqual(3, loaded.storyIndex);
+            Assert.AreEqual(777, loaded.shop.money);
+            Assert.AreEqual(PlayerSaveData.CurrentVersion, loaded.version, "The v1 payload must migrate.");
+            Assert.AreEqual(2, loaded.displayMode, "A legacy save must not boot at 640x480.");
+            Assert.IsTrue(loaded.bloomEnabled, "Bloom defaults to On in the 2011 options set.");
+            Assert.IsFalse(loaded.candyEnabled, "Candy! defaults to Off in the 2011 options set.");
+            Assert.IsTrue(loaded.backgroundEnabled, "Background defaults to On in the 2011 options set.");
+            Assert.IsTrue(loaded.soundEnabled, "A legacy save must not boot silent.");
+            Assert.IsTrue(loaded.musicEnabled, "A legacy save must not boot without music.");
+            Assert.AreEqual(ABRevival.Core.Simulation.PlayerControlMode.Keyboard, loaded.controlMode);
+        }
     }
 }

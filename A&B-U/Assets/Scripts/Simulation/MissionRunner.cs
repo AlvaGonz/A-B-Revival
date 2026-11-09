@@ -241,6 +241,10 @@ namespace ABRevival.Core.Simulation
 
             public void SetShip(int index, in ShipEntity ship) => _simulation.SetShip(index, in ship);
             public ShipEntity GetShip(int index) => _simulation.GetShip(index);
+
+            public bool TryFindNearestHostile(int shipIndex, out ShipEntity target) =>
+                _simulation.TryFindNearestHostile(shipIndex, out target);
+
             public void Tick(float deltaTime) => _simulation.Tick(deltaTime);
         }
 

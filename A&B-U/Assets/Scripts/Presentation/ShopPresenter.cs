@@ -464,7 +464,7 @@ namespace ABRevival.Presentation
             var icon = new VisualElement { name = "shop-icon" };
             icon.AddToClassList("shop-icon");
             if (_parts.TryGetValue(partId, out PartDefinitionSO definition) && definition.partSprite != null)
-                UiSpriteSkin.Apply(icon, definition.partSprite, ScaleMode.ScaleToFit);
+                UiSpriteSkin.Apply(icon, definition.partSprite, ScaleMode.ScaleToFit, keepBackground: false);
             row.Add(icon);
         }
 
@@ -476,7 +476,7 @@ namespace ABRevival.Presentation
             {
                 var badge = new VisualElement { name = "shop-new-badge" };
                 badge.AddToClassList("shop-new-badge");
-                badge.style.backgroundImage = new StyleBackground(_newBadge);
+                UiSpriteSkin.Apply(badge, _newBadge, ScaleMode.ScaleToFit, keepBackground: false);
                 slot.Add(badge);
             }
 

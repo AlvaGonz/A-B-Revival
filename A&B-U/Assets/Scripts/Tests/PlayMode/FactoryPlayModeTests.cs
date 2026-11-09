@@ -78,10 +78,14 @@ namespace ABRevival.Tests.PlayMode
                 "Every Factory preview part must resolve to 2x PartMounts art.");
             VisualElement bodyPart = root.Q("preview-part-0");
             Assert.IsNotNull(bodyPart, "The body preview part is missing.");
-            Sprite bodySprite = bodyPart.style.backgroundImage.value.sprite;
+            Image bodyArt = bodyPart.Q<Image>("sprite-art");
+            Assert.IsNotNull(bodyArt, "The body preview must render through an Image child.");
+            Sprite bodySprite = bodyArt.sprite;
             Assert.IsNotNull(bodySprite);
             Assert.Greater(bodySprite.rect.width, 50f,
                 "Factory must use the 2x in-game mount art, not the 1x shop thumbnail.");
+            Assert.IsTrue(bodyPart.style.backgroundImage.value.sprite == null,
+                "Factory must not sample its atlas sprite through background-image.");
             Assert.Greater(factory.Presenter.PreviewFillFraction, 0.35f,
                 "The assembled craft must use the preview frame.");
 
@@ -412,9 +416,12 @@ namespace ABRevival.Tests.PlayMode
         private static void AssertSprite(VisualElement element, string label)
         {
             Assert.IsNotNull(element, label + " is missing.");
+            Image image = element.Q<Image>("sprite-art");
+            Assert.IsNotNull(image, label + " has no rendered sprite-art Image.");
+            Assert.IsNotNull(image.sprite, label + " has no sprite.");
             Background background = element.style.backgroundImage.value;
-            Assert.IsTrue(background.sprite != null || background.texture != null,
-                label + " has no extracted sprite background.");
+            Assert.IsTrue(background.sprite == null && background.texture == null,
+                label + " must not use the atlased background-image path.");
         }
 
         private static void DeleteSave()

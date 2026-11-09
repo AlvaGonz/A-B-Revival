@@ -270,10 +270,14 @@ namespace ABRevival.Tests.PlayMode
                         "Options must fill the panel width at " + size);
                     Assert.AreEqual(optionsPanel.height, optionsSurface.height, 1f,
                         "Options must fill the panel height at " + size);
-                    Assert.LessOrEqual(optionsPage.worldBound.height, optionsSurface.height + 1f,
-                        "The options page must fit the output height at " + size);
-                    Assert.Greater(optionsPage.worldBound.width, optionsSurface.width * 0.9f,
-                        "The options page must stay the dominant surface at " + size);
+                    Assert.GreaterOrEqual(optionsPage.worldBound.height, optionsSurface.height - 2f,
+                        "The options page must cover the output height at " + size);
+                    Assert.GreaterOrEqual(optionsPage.worldBound.width, optionsSurface.width * 0.99f,
+                        "The options page must cover the output width at " + size);
+                    Assert.LessOrEqual(optionsPage.worldBound.xMin, optionsSurface.xMin + 2f,
+                        "Options must not letterbox horizontally at " + size);
+                    Assert.LessOrEqual(optionsPage.worldBound.yMin, optionsSurface.yMin + 2f,
+                        "Options must not letterbox vertically at " + size);
 
                     PlayModeBoot.Click(ActiveRoot(options).Q<Button>("cancel-button"));
                     for (int i = 0; i < 8; i++) yield return null;

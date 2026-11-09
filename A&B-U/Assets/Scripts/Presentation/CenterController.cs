@@ -130,6 +130,12 @@ namespace ABRevival.Presentation
             _initialized && _fleet.Count > 0 && _playerIndex >= 0 &&
             _playerIndex < _assemblies.Count && _assemblies[_playerIndex].IsValid;
 
+        /// <summary>True when the fleet craft at the index has a valid assembly (hull present).</summary>
+        public bool IsCraftValid(int index)
+        {
+            return index >= 0 && index < _assemblies.Count && _assemblies[index].IsValid;
+        }
+
         public int FleetCount => _fleet.Count;
 
         public int PreviewPartCount => _previewCanvas != null ? _previewCanvas.childCount : 0;
@@ -196,14 +202,14 @@ namespace ABRevival.Presentation
                 return;
             }
 
-            _definitions = ResolveDefinitions();
+            _definitions = PartCatalogBootstrap.Collect(catalogParts, "Center");
             _byId = new Dictionary<int, PartDefinitionSO>(_definitions.Count);
             for (int i = 0; i < _definitions.Count; i++)
                 _byId[_definitions[i].partId] = _definitions[i];
 
-            _catalog = BuildCatalog(_definitions);
+            _catalog = PartCatalogBootstrap.BuildCatalog(_definitions);
             _shop = new ShopState(_catalog, startingMoney);
-            _mountTable = LoadMountTable();
+            _mountTable = PartCatalogBootstrap.LoadMountTable("Center");
             _mountArtLookup = new MountArtLookup(_mountTable, mountArt);
 
             VisualElement root = _document.rootVisualElement;
@@ -329,6 +335,7 @@ namespace ABRevival.Presentation
         public bool AssignCompanion(int index)
         {
             if (index < 0 || index >= _fleet.Count || index == _playerIndex) return false;
+            if (!IsCraftValid(index)) return false;
 
             bool changed = _roster.AssignFirstFree(index);
             if (changed) CommitChange();
@@ -503,14 +510,14 @@ namespace ABRevival.Presentation
         {
             VisualElement element = root.Q(name);
             if (element != null && sprite != null)
-                element.style.backgroundImage = new StyleBackground(sprite);
+                UiSpriteSkin.Apply(element, sprite, ScaleMode.StretchToFill, keepBackground: false);
         }
 
         private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
         {
             VisualElement element = root.Q(name);
             if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode);
+                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }
 
         // ---------------- Refresh ----------------
@@ -647,7 +654,7 @@ namespace ABRevival.Presentation
             aiCell.AddToClassList("cell-button");
             aiCell.AddToClassList("col-ai");
             if (slot >= 0) aiCell.AddToClassList("cell-active");
-            aiCell.SetEnabled(index != _playerIndex && _roster.FirstFreeSlot() >= 0);
+            aiCell.SetEnabled(index != _playerIndex && IsCraftValid(index) && _roster.FirstFreeSlot() >= 0);
             row.Add(aiCell);
 
             return row;
@@ -774,6 +781,7 @@ namespace ABRevival.Presentation
 
         private void RebuildFleet(List<BlueprintSaveData> saved)
         {
+            bool newCampaign = saved == null || saved.Count == 0;
             for (int i = 0; i < _assemblies.Count; i++) _assemblies[i]?.Dispose();
             _assemblies.Clear();
 
@@ -806,7 +814,9 @@ namespace ABRevival.Presentation
 
             CraftCatalog catalog = ResolveCraftCatalog();
             if (_fleet.Count == 0) _fleet.Add(CreatePlayerCraft(catalog));
-            if (_fleet.Count == 1) SeedAiCandidates(_fleet, catalog);
+            // Only a brand-new campaign seeds the AI fleet; reloading a save that already
+            // owns its crafts must not append nine duplicates on every Center visit.
+            if (newCampaign && _fleet.Count == 1) SeedAiCandidates(_fleet, catalog);
 
             for (int i = 0; i < _fleet.Count; i++) _assemblies.Add(BuildAssembly(_fleet[i]));
         }
@@ -978,36 +988,6 @@ namespace ABRevival.Presentation
             return assembly;
         }
 
-        private static ShopCatalog BuildCatalog(IReadOnlyList<PartDefinitionSO> definitions)
-        {
-            var parts = new List<ShopPart>(definitions.Count);
-            for (int i = 0; i < definitions.Count; i++)
-            {
-                PartDefinitionSO definition = definitions[i];
-                if (definition != null)
-                    parts.Add(new ShopPart(definition.partId, definition.partName, definition.category, definition.cost));
-            }
-
-            return new ShopCatalog(parts);
-        }
-
-        private List<PartDefinitionSO> ResolveDefinitions()
-        {
-            var definitions = new List<PartDefinitionSO>();
-            if (catalogParts != null)
-            {
-                for (int i = 0; i < catalogParts.Length; i++)
-                {
-                    if (catalogParts[i] != null) definitions.Add(catalogParts[i]);
-                }
-            }
-
-            if (definitions.Count == 0)
-                Debug.LogError("[Center] No PartDefinitionSO catalog assigned; the fleet and shop are empty.");
-
-            return definitions;
-        }
-
         private void ReconcileShop(int storyIndex)
         {
             var hullNames = new List<string>(_fleet.Count);
@@ -1059,20 +1039,6 @@ namespace ABRevival.Presentation
             }
 
             return _craftCatalog;
-        }
-
-        private static PartMountTable LoadMountTable()
-        {
-            try
-            {
-                TextAsset table = Resources.Load<TextAsset>("Data/PartMounts");
-                return table != null ? PartMountTable.Parse(table.text) : null;
-            }
-            catch (Exception exception)
-            {
-                Debug.LogWarning($"[Center] Part mount table unavailable: {exception.Message}");
-                return null;
-            }
         }
 
         private void OnDestroy()

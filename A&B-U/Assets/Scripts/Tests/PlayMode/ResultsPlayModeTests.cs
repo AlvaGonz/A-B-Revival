@@ -188,6 +188,100 @@ namespace ABRevival.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Results_Win_PersistsANonzeroRewardThroughTheMissionEndSave()
+        {
+            SeedCraft();
+            yield return LoadBoot();
+            yield return LaunchMission();
+
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            // Story 0 pays 0; raise the live campaign index so EvtCtrl.win pays one battle.
+            SetStoryIndex(flow, 1);
+            Assert.IsTrue(flow.ForceWin(), "The reference mission must reach its own win objective.");
+            Assert.AreEqual(5454, flow.LastSummary.reward);
+            Assert.AreEqual(GameFlowState.Result, flow.State);
+
+            PlayerSaveData saved = PlayerSaveCodec.LoadFromFile(SavePath);
+            Assert.AreEqual(105454, saved.shop.money,
+                "The mission-end autosave must keep the reward; Center's pre-mission shop snapshot must not overwrite it.");
+            Assert.AreEqual(1, saved.storyIndex, "The reward save still belongs to the current battle.");
+
+            Click(ActiveRoot(Object.FindAnyObjectByType<ResultsController>()).Q<Button>("results-right"));
+            yield return WaitForState(flow, GameFlowState.Center);
+
+            CenterController center = Object.FindAnyObjectByType<CenterController>();
+            Assert.AreEqual(105454, center.Money, "Center must show the rewarded purse after the result.");
+            saved = PlayerSaveCodec.LoadFromFile(SavePath);
+            Assert.AreEqual(105454, saved.shop.money);
+        }
+
+        [UnityTest]
+        public IEnumerator Results_RetryRefundsTheRewardAndDoesNotAdvance()
+        {
+            SeedCraft();
+            yield return LoadBoot();
+            yield return LaunchMission();
+
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            SetStoryIndex(flow, 1);
+            Assert.IsTrue(flow.ForceWin());
+            Assert.AreEqual(105454, PlayerSaveCodec.LoadFromFile(SavePath).shop.money);
+
+            Click(ActiveRoot(Object.FindAnyObjectByType<ResultsController>()).Q<Button>("results-left"));
+            yield return WaitForState(flow, GameFlowState.Center);
+
+            Assert.AreEqual(1, flow.StoryIndex, "Retry must not advance STORY.");
+            Assert.AreEqual(100000, Object.FindAnyObjectByType<CenterController>().Money,
+                "Retry must return the purse captured before the reward.");
+            Assert.AreEqual(100000, PlayerSaveCodec.LoadFromFile(SavePath).shop.money,
+                "The retry refund must be persisted, not only shown in memory.");
+        }
+
+        [UnityTest]
+        public IEnumerator Repair_PartialAccept_ClampsThePageIndex()
+        {
+            SeedCraft();
+            yield return LoadBoot();
+
+            RepairController repair = Object.FindAnyObjectByType<RepairController>();
+            PlayerSaveData save = PlayerSaveCodec.LoadFromFile(SavePath);
+            BlueprintSaveData blueprint = save.blueprints[0];
+            while (blueprint.mountedParts.Count < 12)
+            {
+                blueprint.mountedParts.Add(new MountedPartSaveData
+                {
+                    partId = 71,
+                    category = PartCategory.Gun,
+                    health = 1f,
+                    maxHealth = SeededPartHealth,
+                    mass = 17f
+                });
+            }
+
+            var damage = new List<DamagedPart>();
+            for (int i = 0; i < 11; i++)
+                damage.Add(new DamagedPart(0, i, blueprint.mountedParts[i].partId, blueprint.mountedParts[i].category));
+
+            RepairState state = repair.CreateRepairState(save, damage);
+            repair.Initialize(save, state);
+            yield return null;
+
+            VisualElement root = ActiveRoot(repair);
+            Click(root.Q<Button>("repair-next"));
+            yield return null;
+            Assert.AreEqual(1, repair.PageIndex, "11 damaged parts occupy two repair pages.");
+
+            Click(root.Q<Button>("repair-all"));
+            yield return null;
+            Click(root.Q<Button>("repair-accept"));
+            for (int i = 0; i < 6; i++) yield return null;
+
+            Assert.AreEqual(0, state.Items.Count, "ACCEPT must repair every selected part.");
+            Assert.AreEqual(0, repair.PageIndex, "The empty ledger must clamp the page index back to the first page.");
+            Assert.AreEqual(0, repair.VisibleRowCount);
+        }
+
+        [UnityTest]
         public IEnumerator Results_FillsTheRootAt1080p720pAnd16By10()
         {
             SeedCraft();
@@ -418,6 +512,24 @@ namespace ABRevival.Tests.PlayMode
                 1);
         }
 
+        private static IEnumerator LaunchMission()
+        {
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            Assert.IsNotNull(flow);
+            flow.LaunchMission();
+            yield return WaitForState(flow, GameFlowState.Briefing);
+            flow.SkipBriefing();
+            yield return WaitForState(flow, GameFlowState.Mission);
+        }
+
+        private static void SetStoryIndex(GameFlowController flow, int storyIndex)
+        {
+            FieldInfo field = typeof(GameFlowController).GetField(
+                "_save", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(field, "GameFlowController._save moved.");
+            ((PlayerSaveData)field.GetValue(flow)).storyIndex = storyIndex;
+        }
+
         private static IEnumerator LaunchAndWin(bool withDamage)
         {
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
@@ -449,28 +561,7 @@ namespace ABRevival.Tests.PlayMode
 
         private static IEnumerator LoadBoot()
         {
-            SceneManager.LoadScene("Boot");
-            yield return null;
-
-            for (int i = 0; i < WaitFrameLimit; i++)
-            {
-                CenterController center = Object.FindAnyObjectByType<CenterController>();
-                if (center != null && center.FleetCount > 0)
-                {
-                    var document = center.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("center-root") != null)
-                    {
-                        yield return null;
-                        yield return null;
-                        yield break;
-                    }
-                }
-
-                yield return null;
-            }
-
-            Assert.Fail("Boot did not reach the Center screen.");
+            yield return PlayModeBoot.LoadCenter();
         }
 
         private static IEnumerator WaitForState(GameFlowController flow, GameFlowState expected)
