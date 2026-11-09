@@ -167,7 +167,6 @@ namespace ABRevival.Tests.PlayMode
 
             foreach (var pair in new[]
                      {
-                         ("info-button", "INFO"),
                          ("ready-button", "READY"),
                          ("back-button", "MAIN MENU"),
                          ("help-button", "HELP")
@@ -185,8 +184,24 @@ namespace ABRevival.Tests.PlayMode
                 Assert.AreEqual(DisplayStyle.None, root.Q("center-placeholder").resolvedStyle.display);
             }
 
-            // FACTORY is a real screen (#175), not a placeholder.
+            // INFO is a real read-only screen (#177), not a placeholder.
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            InfoController info = Object.FindAnyObjectByType<InfoController>();
+            Assert.IsNotNull(flow);
+            Assert.IsNotNull(info, "Boot must host the dedicated Info screen.");
+            Click(root.Q<Button>("info-button"));
+            yield return null;
+            Assert.AreEqual(GameFlowState.Info, flow.State);
+            Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, info.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+
+            Click(info.GetComponent<UIDocument>().rootVisualElement.Q<Button>("back-button"));
+            yield return null;
+            Assert.AreEqual(GameFlowState.Center, flow.State);
+            Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, info.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+
+            // FACTORY is a real screen (#175), not a placeholder.
             FactoryController factory = Object.FindAnyObjectByType<FactoryController>();
             Assert.IsNotNull(flow);
             Assert.IsNotNull(factory, "Boot must host the dedicated Factory screen.");

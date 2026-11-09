@@ -104,6 +104,9 @@ namespace ABRevival.Presentation
         /// <summary>Raised when the player asks for the dedicated Shop screen (#176).</summary>
         public event Action ShopRequested;
 
+        /// <summary>Raised when the player asks for the Info/Records screen (#177).</summary>
+        public event Action InfoRequested;
+
         /// <summary>Current shop money, exposed for boot/save verification.</summary>
         public int Money => _shop != null ? _shop.Money : 0;
 
@@ -370,7 +373,7 @@ namespace ABRevival.Presentation
             RefreshTable();
         }
 
-        /// <summary>Opens the placeholder shell that #175-#178 replace with real sections.</summary>
+        /// <summary>Opens the placeholder shell that the remaining section tickets replace.</summary>
         public void OpenPlaceholder(string title)
         {
             if (_screen != null) _screen.style.display = DisplayStyle.None;
@@ -431,7 +434,7 @@ namespace ABRevival.Presentation
             if (_resetButton != null) _resetButton.clicked += ResetCompanions;
             if (_bestButton != null) _bestButton.clicked += FillBestCompanions;
             if (_helpButton != null) _helpButton.clicked += () => OpenPlaceholder("HELP");
-            if (_infoButton != null) _infoButton.clicked += () => OpenPlaceholder("INFO");
+            if (_infoButton != null) _infoButton.clicked += () => InfoRequested?.Invoke();
             if (_readyButton != null) _readyButton.clicked += () => OpenPlaceholder("READY");
             if (_shopButton != null) _shopButton.clicked += () => ShopRequested?.Invoke();
             if (_factoryButton != null) _factoryButton.clicked += () => FactoryRequested?.Invoke();

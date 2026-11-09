@@ -85,6 +85,7 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Center (`UIChooseFlyAI`)**: The hub screen for craft selection: left preview, selected-craft stats (`Inuse`), companion slots, `Reset`/`Best`, the `INFO`/`READY`/`SHOP`/`FACTORY`/`BACK` actions, and the paginated craft table with `Player` and `AI` columns. It is not the Shop and not the Factory.
 - **Factory (`UIMakePlayer`)**: The assembly/merge/edit screen reached from Center, where parts are mounted, merged and removed.
 - **Shop (`UIShop`)**: The purchase/sale screen reached from Center, separate from the dashboard.
+- **Info / Records (`UI_HelpGame`/`UI_Data`)**: The read-only help and campaign-data screen reached from Center's `INFO`: the two 2011 How-to-play sheets, the control reference, and story, money, fleet, companion and owned-part records. Nothing on this screen mutates the save.
 - **Booster Fuel (`powNum`, `pow` HUD bar, `powb` readiness)**: Temporary speed-boost resource consumed by the afterburner (`Space`) and replenished by `fuel` pickups. Displayed below hull health; distinct from shield and armor.
 - **Keyboard Control Mode**: Hull movement on `WASD`; the mouse points the turrets and left click fires. The default control mode, switchable with `Q` in battle and from Options.
 - **Mouse Control Mode**: Cursor distance from the craft sets throttle; left click fires; turrets auto-target the closest enemy within the range of the highest-range mounted weapon.

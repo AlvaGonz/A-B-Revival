@@ -52,9 +52,27 @@ namespace ABRevival.Tests.PlayMode
 
             Click(document.rootVisualElement.Q<Button>("info-button"));
             for (int i = 0; i < 8; i++) yield return null;
+            InfoController info = Object.FindAnyObjectByType<InfoController>();
+            Assert.IsNotNull(info, "Boot must host the Info screen for the font check.");
+            VisualElement infoRoot = info.GetComponent<UIDocument>().rootVisualElement;
+            Assert.AreEqual(DisplayStyle.Flex, infoRoot.resolvedStyle.display,
+                "The Info screen must be visible for the font check.");
+            AssertFont(infoRoot, "info-title", Sf);
+            AssertFont(infoRoot, "help-tab", Sf);
+            AssertFont(infoRoot, "records-tab", Sf);
+            AssertFont(infoRoot, "help-page-label", Sans);
+            AssertFont(infoRoot, "control-mouse", Arial);
+            AssertFont(infoRoot, "records-note", Sans);
+            AssertEveryTextUsesOriginalFont(infoRoot, "Info");
+            if (infoRoot.layout.width >= 1900f) AssertTextMetrics(infoRoot, "Info", false);
+            Click(infoRoot.Q<Button>("back-button"));
+            for (int i = 0; i < 8; i++) yield return null;
+
+            Click(document.rootVisualElement.Q<Button>("back-button"));
+            for (int i = 0; i < 8; i++) yield return null;
             VisualElement placeholder = document.rootVisualElement.Q("center-placeholder");
             Assert.AreEqual(DisplayStyle.Flex, placeholder.resolvedStyle.display,
-                "The Info placeholder must be visible for the font check.");
+                "The remaining placeholder shell must stay covered by the font check.");
             AssertFont(document.rootVisualElement, "placeholder-title", Sf);
             AssertFont(document.rootVisualElement, "placeholder-body", Sf);
             AssertFont(document.rootVisualElement, "placeholder-back", Sf);

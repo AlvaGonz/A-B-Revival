@@ -7,6 +7,10 @@ before any menu section is rebuilt (ADR 0020).
 |---|---|---:|---|
 | `factory-page.png` | `UI_MakePlayer` | 440 | 851x510 |
 | `shop-page.png` | `UI_Shop` | 205 | 770x510 |
+| `UI_HelpGame.png` | `UI_HelpGame` | 824 | 750x510 |
+| `UI_HelpGame2.png` | `UI_HelpGame2` | 794 | 750x510 |
+| `UI_Data.png` | `UI_Data` | 534 | 640x480 |
+| `UI_Mission.png` | `UI_Mission` | 300 | 640x480 |
 
 `factory-page.png` is the original `UI_MakePlayer` page export from
 `src/assets/binaryData/9_all.AllData_ui.bin` (FFDec page sprite, frame 1). It also ships
@@ -17,6 +21,10 @@ canonical review reference.
 sprite, frame 1). It also ships as
 `A&B-U/Assets/Art/Sprites/UI/ui_0205_reference_shop_page.png`; the copy here is the
 canonical review reference.
+
+The Info/Records references were used for #177. `UI_HelpGame.png` and `UI_HelpGame2.png`
+also ship under `A&B-U/Assets/Art/Sprites/UI/Help/`; `UI_Data.png` and `UI_Mission.png`
+under `A&B-U/Assets/Art/Sprites/UI/Screens/`. Both copies are byte-identical exports.
 
 Regenerate the asset-side copy with `scripts\export-ui-sprites.bat`
 (`ABRevival.Editor.UiSpriteExportPipeline.ExportBatch`), which also mirrors page

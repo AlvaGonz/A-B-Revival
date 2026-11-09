@@ -18,12 +18,16 @@ namespace ABRevival.Presentation
 
         /// <summary>Adds or updates the rendered art and, for text buttons, the text overlay.</summary>
         public static void Apply(VisualElement element, Sprite sprite, ScaleMode scaleMode,
-            TextAnchor textAlign = TextAnchor.MiddleCenter)
+            TextAnchor textAlign = TextAnchor.MiddleCenter, bool keepBackground = true)
         {
             if (element == null || sprite == null) return;
 
-            // Keep the original inline assignment: existing tests and serialized contracts read it.
-            element.style.backgroundImage = new StyleBackground(sprite);
+            // Existing sections keep the inline assignment as their serialized contract.
+            // New surfaces pass keepBackground: false so the atlased sprite is never sampled
+            // through UI Toolkit's broken background-image path.
+            element.style.backgroundImage = keepBackground
+                ? new StyleBackground(sprite)
+                : StyleKeyword.None;
 
             Image art = FindChild<Image>(element, ArtElement);
             if (art == null)

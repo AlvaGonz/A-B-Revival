@@ -62,6 +62,29 @@ namespace ABRevival.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Info_UsesTheFrozenHelpPageAndPlateArt()
+        {
+            yield return LoadBoot();
+            CenterController center = Object.FindAnyObjectByType<CenterController>();
+            Click(center.GetComponent<UIDocument>().rootVisualElement.Q<Button>("info-button"));
+            for (int i = 0; i < 10; i++) yield return null;
+
+            InfoController info = Object.FindAnyObjectByType<InfoController>();
+            Assert.IsNotNull(info, "Boot did not open Info.");
+            VisualElement root = info.GetComponent<UIDocument>().rootVisualElement;
+
+            AssertImageArt(root, "info-title-plate", "ui_0107_hangar_header");
+            AssertImageArt(root, "help-tab", "ui_0107_hangar_header", "HOW TO PLAY");
+            AssertImageArt(root, "records-tab", "ui_0107_hangar_header", "DATA");
+            AssertImageArt(root, "back-button", "ui_0324_hangar_button_back_to_center");
+            AssertImageArt(root, "help-art", "UI_HelpGame");
+
+            Click(root.Q<Button>("help-next"));
+            for (int i = 0; i < 6; i++) yield return null;
+            AssertImageArt(root, "help-art", "UI_HelpGame2");
+        }
+
+        [UnityTest]
         public IEnumerator Shop_UsesTheFrozenButtonAndCategoryArt()
         {
             yield return LoadBoot();
@@ -75,7 +98,7 @@ namespace ABRevival.Tests.PlayMode
 
             AssertArt(root, "accept-button", "ui_0170_hangar_button_accept");
             AssertArt(root, "reset-button", "ui_0167_hangar_button_reset");
-            AssertArt(root, "center-button", "ui_0324_hangar_button_back_to_center");
+            AssertArt(root, "center-button", "ui_0173_hangar_button_center");
 
             foreach (string prefix in new[] { "buy", "sell" })
             {
@@ -109,6 +132,31 @@ namespace ABRevival.Tests.PlayMode
             Background background = element.style.backgroundImage.value;
             Assert.IsTrue(background.sprite != null || background.texture != null,
                 name + " lost its inline background contract.");
+
+            if (text == null) return;
+            Label label = element.Q<Label>("sprite-text");
+            Assert.IsNotNull(label, name + " has no text overlay.");
+            Assert.AreEqual(text, label.text, name + " lost its visible label.");
+        }
+
+        /// <summary>
+        /// Info/Records opts out of the inline background contract: atlased sprites are only
+        /// rendered through their Image child (the background-image path samples the wrong rect).
+        /// </summary>
+        private static void AssertImageArt(VisualElement root, string name, string spriteName, string text = null)
+        {
+            VisualElement element = root.Q(name);
+            Assert.IsNotNull(element, name + " is missing.");
+
+            Image art = element.Q<Image>("sprite-art");
+            Assert.IsNotNull(art, name + " has no rendered sprite-art Image.");
+            Assert.IsNotNull(art.sprite, name + " has no sprite on its Image.");
+            StringAssert.Contains(spriteName, art.sprite.name,
+                name + " must render the original " + spriteName + " art.");
+
+            Background background = element.style.backgroundImage.value;
+            Assert.IsTrue(background.sprite == null && background.texture == null,
+                name + " must not use the atlased background-image path.");
 
             if (text == null) return;
             Label label = element.Q<Label>("sprite-text");

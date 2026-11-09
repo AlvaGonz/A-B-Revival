@@ -41,6 +41,7 @@ namespace ABRevival.Presentation
         [SerializeField] private CenterController _center;
         [SerializeField] private FactoryController _factory;
         [SerializeField] private ShopController _shop;
+        [SerializeField] private InfoController _info;
         [SerializeField] private TalkScreen _talkScreen;
         [SerializeField] private CinematicPlayer _cinematicPlayer;
         [SerializeField] private CombatHudBehaviour _hud;
@@ -122,10 +123,12 @@ namespace ABRevival.Presentation
             if (_center != null) _center.Changed += OnCenterChanged;
             if (_center != null) _center.FactoryRequested += OnFactoryRequested;
             if (_center != null) _center.ShopRequested += OnShopRequested;
+            if (_center != null) _center.InfoRequested += OnInfoRequested;
             if (_factory != null) _factory.Changed += OnCenterChanged;
             if (_factory != null) _factory.Closed += OnFactoryClosed;
             if (_shop != null) _shop.Changed += OnCenterChanged;
             if (_shop != null) _shop.Closed += OnShopClosed;
+            if (_info != null) _info.Closed += OnInfoClosed;
             if (_talkScreen != null)
             {
                 _talkScreen.Completed += OnTalkCompleted;
@@ -149,10 +152,12 @@ namespace ABRevival.Presentation
             if (_center != null) _center.Changed -= OnCenterChanged;
             if (_center != null) _center.FactoryRequested -= OnFactoryRequested;
             if (_center != null) _center.ShopRequested -= OnShopRequested;
+            if (_center != null) _center.InfoRequested -= OnInfoRequested;
             if (_factory != null) _factory.Changed -= OnCenterChanged;
             if (_factory != null) _factory.Closed -= OnFactoryClosed;
             if (_shop != null) _shop.Changed -= OnCenterChanged;
             if (_shop != null) _shop.Closed -= OnShopClosed;
+            if (_info != null) _info.Closed -= OnInfoClosed;
             if (_talkScreen != null) _talkScreen.Completed -= OnTalkCompleted;
             if (_flight != null)
             {
@@ -321,6 +326,33 @@ namespace ABRevival.Presentation
             _assemblyAudio?.PlayAssemblyMusic();
         }
 
+        // ---------------- Info / Records ----------------
+
+        /// <summary>
+        /// Center's INFO button opens the dedicated help/records screen (#177). The live Center
+        /// state is copied into the payload for display only; Info never writes the save.
+        /// </summary>
+        private void OnInfoRequested()
+        {
+            if (State != GameFlowState.Center || _center == null || _info == null) return;
+
+            _center.CaptureSave(_save);
+            _info.Initialize(_save);
+            _center.SetVisible(false);
+            _info.SetVisible(true);
+            State = GameFlowState.Info;
+        }
+
+        /// <summary>Info's BACK returns to Center without a save write; the screen is read-only.</summary>
+        private void OnInfoClosed()
+        {
+            if (State != GameFlowState.Info || _info == null) return;
+
+            _info.SetVisible(false);
+            _center?.SetVisible(true);
+            State = GameFlowState.Center;
+        }
+
         private void EnterCenter(bool firstBoot)
         {
             DisposeMission();
@@ -336,6 +368,7 @@ namespace ABRevival.Presentation
             _talkScreen?.SetVisible(false);
             _factory?.SetVisible(false);
             _shop?.SetVisible(false);
+            _info?.SetVisible(false);
             if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
 
             if (_center != null)
@@ -1408,6 +1441,7 @@ namespace ABRevival.Presentation
         Result = 4,
         Return = 5,
         Factory = 6,
-        Shop = 7
+        Shop = 7,
+        Info = 8
     }
 }
