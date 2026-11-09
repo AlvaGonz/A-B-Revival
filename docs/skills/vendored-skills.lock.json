@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "skills": [
     {
+      "id": "ab-camera-systems",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/camera-systems",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-camera-systems",
+      "modifications": "renamed; URP 2D CombatCameraRig; removed 3D/Cinemachine",
+      "adoptedAt": "2026-11-09"
+    },
+    {
       "id": "ab-create-game-assets",
       "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
       "sourcePath": "skills/disciplines/create-game-assets",
@@ -9,6 +19,26 @@
       "license": "Apache-2.0",
       "localPath": ".agents/skills/ab-create-game-assets",
       "modifications": "renamed; owner-gated generation; project tooling",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ai",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/game-ai",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-game-ai",
+      "modifications": "renamed; FSM/steering/target selection for TacticalAIJob; removed pathfinding and behavior trees",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-feel",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/game-feel",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-game-feel",
+      "modifications": "renamed; Unity C# and palette/owner-approval constraints; removed 3D bindings",
       "adoptedAt": "2026-11-09"
     },
     {
