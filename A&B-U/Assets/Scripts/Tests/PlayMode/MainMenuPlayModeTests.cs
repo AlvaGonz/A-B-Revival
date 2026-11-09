@@ -60,8 +60,14 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual(DisplayStyle.None, ActiveRoot(center).resolvedStyle.display,
                 "Center must stay hidden behind the main menu.");
 
-            AssertSprite(root.Q("main-art"), "UI_Main");
+            AssertSprite(root.Q("main-art"), "UI_Main_Hero");
             AssertSprite(root.Q("main-backdrop"), "ui_0005");
+            VisualElement page = root.Q("main-page");
+            Assert.IsNotNull(page);
+            Assert.GreaterOrEqual(page.resolvedStyle.width, root.resolvedStyle.width - 1f,
+                "The frozen hero must fill the screen width.");
+            Assert.Greater(page.resolvedStyle.height, 0f,
+                "The frozen hero must keep its cropped height.");
             AssertButtonArt(root, "play-button", "447_widget");
             AssertButtonArt(root, "data-button", "450_widget");
             AssertButtonArt(root, "options-button", "242_widget");
@@ -236,13 +242,17 @@ namespace ABRevival.Tests.PlayMode
                     Assert.Greater(surface.width, 1000f, "The main menu must use the full canvas at " + size);
                     Assert.Greater(surface.height, 700f, "The main menu must use the full canvas at " + size);
                     Assert.AreEqual(surface.width, backdrop.worldBound.width, 1f,
-                        "The starfield backdrop must cover the full width at " + size);
+                        "The single starfield must cover the full width at " + size);
                     Assert.AreEqual(surface.height, backdrop.worldBound.height, 1f,
-                        "The starfield backdrop must cover the full height at " + size);
-                    Assert.LessOrEqual(page.worldBound.height, surface.height + 1f,
-                        "The page must fit the output height at " + size);
-                    Assert.Greater(page.worldBound.width, surface.width * 0.6f,
-                        "The menu page must stay the dominant surface at " + size);
+                        "The single starfield must cover the full height at " + size);
+                    Assert.GreaterOrEqual(page.worldBound.width, surface.width - 1f,
+                        "The frozen hero must fill the output width at " + size);
+                    Assert.Greater(page.worldBound.height, 0f,
+                        "The frozen hero must keep its cropped height at " + size);
+                    Assert.LessOrEqual(page.worldBound.xMin, surface.xMin + 1f,
+                        "The frozen hero must not letterbox horizontally at " + size);
+                    Assert.LessOrEqual(page.worldBound.yMin, surface.yMin + 1f,
+                        "The frozen hero must be top-aligned at " + size);
 
                     foreach (string button in new[]
                              {

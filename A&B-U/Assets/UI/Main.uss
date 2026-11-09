@@ -15,23 +15,33 @@
 .main-backdrop {
     position: absolute;
     left: 0;
-    right: 0;
     top: 0;
+    right: 0;
     bottom: 0;
 }
 
 .main-page {
     position: absolute;
+    left: 0;
+    top: 0;
     width: 667px;
-    height: 535px;
-    transform-origin: center;
+    height: 455px;
+    overflow: hidden;
 }
 
 .main-art {
     position: absolute;
     left: 0;
-    right: 0;
     top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.main-ui {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
     bottom: 0;
 }
 

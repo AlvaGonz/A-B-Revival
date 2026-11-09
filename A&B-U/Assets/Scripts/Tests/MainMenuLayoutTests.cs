@@ -26,6 +26,7 @@ namespace ABRevival.Tests
         {
             "main-root",
             "main-backdrop",
+            "main-ui",
             "main-page",
             "main-art",
             "play-button",
@@ -123,7 +124,7 @@ namespace ABRevival.Tests
             StringAssert.Contains("height: 100%;", main);
             StringAssert.Contains(".main-page", main);
             StringAssert.Contains("width: 667px;", main);
-            StringAssert.Contains("height: 535px;", main);
+            StringAssert.Contains("height: 455px;", main);
             StringAssert.Contains(".menu-button", main);
             StringAssert.DoesNotContain("1280", main, "The retired fixed hangar root must not survive.");
 

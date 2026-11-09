@@ -18,6 +18,7 @@ namespace ABRevival.Presentation
     {
         private const float PageWidth = 667f;
         private const float PageHeight = 535f;
+        private const float HeroHeight = 455f;
 
         [Header("Main menu sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite backdrop;
@@ -183,8 +184,10 @@ namespace ABRevival.Presentation
 
         private void ApplySkin(VisualElement root)
         {
+            // One background: the frozen starfield. The hero crop above it is feathered at
+            // its bottom so the transition is continuous on tall/portrait screens.
             SetSprite(root, "main-backdrop", backdrop, ScaleMode.ScaleAndCrop);
-            SetSprite(root, "main-art", pageArt, ScaleMode.ScaleToFit);
+            SetSprite(root, "main-art", pageArt, ScaleMode.StretchToFill);
         }
 
         private static void SetSprite(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
@@ -202,8 +205,46 @@ namespace ABRevival.Presentation
 
         private void FitPage(float width, float height)
         {
-            MenuPageFitter.Fit(
-                _page, width, height, PageWidth, PageHeight, cover: false, ref _lastRootSize);
+            if (_page == null || width <= 0f || height <= 0f) return;
+            if (Mathf.Approximately(width, _lastRootSize.x) && Mathf.Approximately(height, _lastRootSize.y))
+                return;
+
+            _lastRootSize = new Vector2(width, height);
+            float scale = width / PageWidth;
+
+            // Full-bleed: the frozen page keeps its aspect, spans the screen width and is
+            // cropped at the bottom. No centred page rectangle and no second starfield.
+            _page.style.left = 0f;
+            _page.style.top = 0f;
+            _page.style.width = width;
+            _page.style.height = HeroHeight * scale;
+
+            LayoutBottomButton(_playButton, 20.15f, width, height, scale);
+            LayoutBottomButton(_dataButton, 176.55f, width, height, scale);
+            LayoutBottomButton(_optionsButton, 335.75f, width, height, scale);
+            LayoutBottomButton(_creditsButton, 492.15f, width, height, scale);
+            LayoutScreenButton(_linkButton, 492.15f, 51.2f, scale);
+            LayoutScreenButton(_playerButton, 492.15f, 103.85f, scale);
+        }
+
+        private static void LayoutBottomButton(Button button, float pageX, float width, float height, float scale)
+        {
+            if (button == null) return;
+            float buttonWidth = 153.7f * scale;
+            float buttonHeight = 42.2f * scale;
+            button.style.left = pageX * scale;
+            button.style.top = height - buttonHeight - (23.7f * scale);
+            button.style.width = buttonWidth;
+            button.style.height = buttonHeight;
+        }
+
+        private static void LayoutScreenButton(Button button, float pageX, float pageY, float scale)
+        {
+            if (button == null) return;
+            button.style.left = pageX * scale;
+            button.style.top = pageY * scale;
+            button.style.width = 153.7f * scale;
+            button.style.height = 42.2f * scale;
         }
     }
 }

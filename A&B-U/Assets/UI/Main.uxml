@@ -2,17 +2,22 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="Main.uss" />
     <ui:VisualElement name="main-root" class="main-root">
+        <!-- One full-screen starfield; the feathered hero crop blends into it. -->
         <ui:VisualElement name="main-backdrop" class="main-backdrop" picking-mode="Ignore" />
 
-        <ui:VisualElement name="main-page" class="main-page">
+        <!-- Frozen UI_Main title+ship only; the baked button strip is cropped away. -->
+        <ui:VisualElement name="main-page" class="main-page" picking-mode="Ignore">
             <ui:VisualElement name="main-art" class="main-art" picking-mode="Ignore" />
+        </ui:VisualElement>
 
-            <ui:Button name="play-button" class="menu-button play-button" tooltip="Play" />
-            <ui:Button name="data-button" class="menu-button data-button" tooltip="Data" />
-            <ui:Button name="options-button" class="menu-button options-button" tooltip="Options" />
-            <ui:Button name="credits-button" class="menu-button credits-button" tooltip="Credits" />
-            <ui:Button name="link-button" class="menu-button link-button" tooltip="Vargames" />
-            <ui:Button name="player-button" class="menu-button player-button" tooltip="Player" />
+        <!-- Live controls sit on the screen edges at the page's true scale, never inside the art. -->
+        <ui:VisualElement name="main-ui" class="main-ui">
+            <ui:Button name="play-button" class="menu-button" tooltip="Play" />
+            <ui:Button name="data-button" class="menu-button" tooltip="Data" />
+            <ui:Button name="options-button" class="menu-button" tooltip="Options" />
+            <ui:Button name="credits-button" class="menu-button" tooltip="Credits" />
+            <ui:Button name="link-button" class="menu-button" tooltip="Vargames" />
+            <ui:Button name="player-button" class="menu-button" tooltip="Player" />
         </ui:VisualElement>
 
         <ui:VisualElement name="main-deferred" class="main-deferred">
