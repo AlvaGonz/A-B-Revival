@@ -1,4 +1,5 @@
 using System;
+using ABRevival.Core.Rendering;
 using ABRevival.Core.Simulation;
 using Unity.Mathematics;
 
@@ -44,6 +45,7 @@ namespace ABRevival.Presentation
             public WeaponMount[] Mounts;
             public FireControlState[] States;
             public float MaxRange;
+            public int PaletteRole;
         }
 
         private readonly IMissionSimulation _simulation;
@@ -71,8 +73,12 @@ namespace ABRevival.Presentation
             return shipIndex >= 0 && shipIndex < _shotsByCraft.Length ? _shotsByCraft[shipIndex] : 0;
         }
 
-        /// <summary>Copies a craft's ports into weapon state. Safe to call once per craft; not a hot path.</summary>
-        public void RegisterCraft(int shipIndex, ReadOnlySpan<WeaponMount> mounts)
+        /// <summary>
+        /// Copies a craft's ports into weapon state. Safe to call once per craft; not a hot path.
+        /// <paramref name="isCaptain"/> only selects the frozen Captain palette row for the
+        /// projectiles this craft fires; it never changes targeting.
+        /// </summary>
+        public void RegisterCraft(int shipIndex, ReadOnlySpan<WeaponMount> mounts, bool isCaptain = false)
         {
             if (shipIndex < 0 || shipIndex >= _crafts.Length)
                 throw new ArgumentOutOfRangeException(nameof(shipIndex));
@@ -92,7 +98,10 @@ namespace ABRevival.Presentation
             {
                 Mounts = copied,
                 States = new FireControlState[copied.Length],
-                MaxRange = maxRange
+                MaxRange = maxRange,
+                PaletteRole = (int)(ship.factionId == 0
+                    ? (isCaptain ? ProjectileRole.Captain : ProjectileRole.Player)
+                    : ProjectileRole.Hostile)
             };
         }
 
@@ -240,6 +249,7 @@ namespace ABRevival.Presentation
 
                     ProjectileData projectile = WeaponFireControl.CreateProjectile(
                         in mount.spec, origin, heading, burstIndex, recoil, ship.factionId);
+                    projectile.paletteRole = craft.PaletteRole;
                     if (!projectile.isAlive || !TrySpawn(in projectile)) break;
                     spawned++;
                 }

@@ -90,6 +90,9 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Keyboard Control Mode**: Hull movement on `WASD`; the mouse points the turrets and left click fires. The default control mode, switchable with `Q` in battle and from Options.
 - **Mouse Control Mode**: Cursor distance from the craft sets throttle; left click fires; turrets auto-target the closest enemy within the range of the highest-range mounted weapon.
 - **Turret Aim**: Gun mounts rotate independently of the hull, up to a full 360°, toward the player's mouse target or an AI target. Wings, engines and armor stay hull-fixed.
+- **Procedural Projectile Body (`ProjectileGeometry`, `btwh`)**: Non-missile bullets are frozen square strokes, not sprites: thickness is `max(2, btwh)` scaled by the design scale and length is one 60 Hz frame of travel, so weak guns are small squares, heavy guns are chunky, and `G.L.` rounds are long thin railgun lines.
+- **Projectile Palette (`ProjectilePalette`, `ProjectileRole`)**: The frozen faction hue rule (`part.hue + 180`, S 0.8 / V 1) yields cyan for the player/wingmen and red for the canonical hostile row; the Captain uses the HUD's `COLOR_CAPTAIN_AMBER` identity, and the trail inherits the body colour.
+- **Missile Art Exception (`Blt_1`..`Blt_4`)**: Bullets whose frozen `mcName` is not `normal` use the extracted rocket art with a light faction wash; every other bullet id stays procedural.
 
 
 - **Sound Catalog (`SoundCatalog`)**: Pure C# catalogue preserving the frozen `SoundData` effect and music ids, clip names, mixer bus assignments, semantic trigger names, and original playback volumes.

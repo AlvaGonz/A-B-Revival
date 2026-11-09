@@ -1159,7 +1159,7 @@ namespace ABRevival.Presentation
                 }
             }
 
-            if (mountCount > 0) _weapons.RegisterCraft(shipIndex, mounts.Slice(0, mountCount));
+            if (mountCount > 0) _weapons.RegisterCraft(shipIndex, mounts.Slice(0, mountCount), shipIndex == _captainIndex);
         }
 
         private int BulletId(int partId)

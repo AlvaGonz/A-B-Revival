@@ -25,10 +25,6 @@ namespace ABRevival.Presentation
     public sealed class MissionSpriteView : MonoBehaviour
     {
         private const int MaxParticles = 512;
-        private static readonly uint FriendlyProjectileTint = SpriteUserValue.PackTint(190, 245, 255, 255);
-        private static readonly uint HostileProjectileTint = SpriteUserValue.PackTint(255, 150, 150, 255);
-        private static readonly uint FriendlyTrailTint = SpriteUserValue.PackTint(90, 220, 255, 90);
-        private static readonly uint HostileTrailTint = SpriteUserValue.PackTint(255, 90, 70, 90);
 
         private static readonly StarLayer[] StarLayers =
         {
@@ -43,11 +39,14 @@ namespace ABRevival.Presentation
         [SerializeField] private TextAsset _uvTableData;
         [SerializeField] private TextAsset _mountTableData;
         [SerializeField] private TextAsset _bulletTableData;
+        [SerializeField] private TextAsset _bulletCatalogData;
         [SerializeField] private Camera _camera;
 
         private SpriteUvTable _uvTable;
         private PartMountTable _mountTable;
         private BulletSpriteTable _bulletTable;
+        private ProjectileVisualTable _projectileVisuals;
+        private ProjectileRenderStyle[] _projectileStyles = Array.Empty<ProjectileRenderStyle>();
         private ScheduledCombatSimulation _simulation;
         private ProjectileContactSolver _solver;
         private WeaponSystem _weapons;
@@ -71,6 +70,7 @@ namespace ABRevival.Presentation
         public bool IsActive => _active;
         public SpriteUvTable UvTable => _uvTable;
         public PartMountTable MountTable => _mountTable;
+        public ProjectileVisualTable ProjectileVisuals => _projectileVisuals;
         public BatchSpriteRenderer Renderer => _renderer;
 
         /// <summary>Test hook: disables the procedural background so instance counts stay focused.</summary>
@@ -93,6 +93,8 @@ namespace ABRevival.Presentation
 
             if (_mountTable == null) _mountTable = LoadMountTable();
             if (_bulletTable == null) _bulletTable = LoadBulletTable();
+            if (_projectileVisuals == null) _projectileVisuals = LoadProjectileVisuals();
+            BuildProjectileStyles();
             if (_stars == null || _particles == null) AllocateEffects();
 
             _capacity = (capacity > 0 ? capacity : 512) + StarCapacity() + MaxParticles;
@@ -309,6 +311,8 @@ namespace ABRevival.Presentation
 
         private void AddProjectiles()
         {
+            if (_projectileStyles.Length == 0) return;
+
             Span<ProjectileData> projectiles = _simulation.Projectiles;
 
             for (int i = 0; i < projectiles.Length; i++)
@@ -319,65 +323,64 @@ namespace ABRevival.Presentation
                 float2 velocity = projectile.velocity;
                 float speed = math.length(velocity);
                 float heading = speed > 1e-4f ? math.atan2(-velocity.x, velocity.y) : 0f;
-                bool friendly = projectile.factionId == 0;
+                float2 forward = new float2(-math.sin(heading), math.cos(heading));
 
-                if (EffectsEnabled && speed > 1f)
+                int type = projectile.projectileType;
+                if ((uint)type >= (uint)_projectileStyles.Length) type = 0;
+                ProjectileRenderStyle style = _projectileStyles[type];
+
+                if (style.isMissile)
                 {
-                    float trailLength = math.min(39f, (10f + (speed * 0.01f)) * CameraDistancePresets.MountArtScale);
-                    float forwardX = -math.sin(heading);
-                    float forwardY = math.cos(heading);
-                    SpriteUvRect trail = _uvTable.White;
-                    _instance = new SpriteInstance
+                    float tail = style.height * 0.6f;
+                    if (EffectsEnabled)
                     {
-                        X = projectile.position.x - (forwardX * trailLength * 0.5f),
-                        Y = projectile.position.y - (forwardY * trailLength * 0.5f),
-                        Width = 4.5f,
-                        Height = trailLength,
-                        RotationRadians = heading,
-                        UvX = trail.UvX,
-                        UvY = trail.UvY,
-                        UvWidth = trail.UvWidth,
-                        UvHeight = trail.UvHeight,
-                        UserValue = friendly ? FriendlyTrailTint : HostileTrailTint
-                    };
-                    _renderer.AddInstance(in _instance);
+                        AddProjectileQuad(
+                            projectile.position - (forward * (style.height * 0.5f + tail * 0.5f)),
+                            math.max(2f, style.width * 0.1f), tail, heading,
+                            _uvTable.White, ProjectilePalette.Trail(projectile.paletteRole));
+                    }
+
+                    AddProjectileQuad(
+                        projectile.position, style.width, style.height, heading,
+                        style.uv, ProjectilePalette.MissileBody(projectile.paletteRole));
+                    continue;
                 }
 
-                SpriteUvRect rect;
-                float width;
-                float height;
-                BulletSprite bullet = _bulletTable?.Get(projectile.projectileType) ?? default;
-                if (bullet.symbol != null && _uvTable.TryGetSymbol(bullet.symbol, out SpriteUvRect bulletRect))
+                float thickness = style.thickness;
+                float length = ProjectileGeometry.Length(speed, thickness);
+                if (EffectsEnabled)
                 {
-                    rect = bulletRect;
-                    width = bullet.width;
-                    height = bullet.height;
-                }
-                else
-                {
-                    rect = _uvTable.White;
-                    width = 12f;
-                    height = 12f;
+                    float tail = length * 0.9f;
+                    AddProjectileQuad(
+                        projectile.position - (forward * (length + tail * 0.5f)),
+                        math.max(2f, thickness * 0.5f), tail, heading,
+                        _uvTable.White, ProjectilePalette.Trail(projectile.paletteRole));
                 }
 
-                width *= CameraDistancePresets.MountArtScale;
-                height *= CameraDistancePresets.MountArtScale;
-
-                _instance = new SpriteInstance
-                {
-                    X = projectile.position.x,
-                    Y = projectile.position.y,
-                    Width = width,
-                    Height = height,
-                    RotationRadians = heading,
-                    UvX = rect.UvX,
-                    UvY = rect.UvY,
-                    UvWidth = rect.UvWidth,
-                    UvHeight = rect.UvHeight,
-                    UserValue = friendly ? FriendlyProjectileTint : HostileProjectileTint
-                };
-                _renderer.AddInstance(in _instance);
+                AddProjectileQuad(
+                    projectile.position - (forward * (length * 0.5f)),
+                    thickness, length, heading,
+                    style.uv, ProjectilePalette.Body(projectile.paletteRole));
             }
+        }
+
+        private void AddProjectileQuad(
+            float2 position, float width, float height, float rotation, in SpriteUvRect rect, uint tint)
+        {
+            _instance = new SpriteInstance
+            {
+                X = position.x,
+                Y = position.y,
+                Width = width,
+                Height = height,
+                RotationRadians = rotation,
+                UvX = rect.UvX,
+                UvY = rect.UvY,
+                UvWidth = rect.UvWidth,
+                UvHeight = rect.UvHeight,
+                UserValue = tint
+            };
+            _renderer.AddInstance(in _instance);
         }
 
         // ---------------- Starfield ----------------
@@ -662,6 +665,61 @@ namespace ABRevival.Presentation
             }
         }
 
+        /// <summary>
+        /// Joins the frozen bullet XML (btwh and mcName) with the extracted art table. Mission
+        /// start only; the per-frame path just indexes the resolved style array.
+        /// </summary>
+        private ProjectileVisualTable LoadProjectileVisuals()
+        {
+            try
+            {
+                if (_bulletTable == null) _bulletTable = LoadBulletTable();
+                if (_bulletCatalogData != null)
+                    return ProjectileVisualTable.Build(BulletCatalog.Parse(_bulletCatalogData.text), _bulletTable);
+
+                TextAsset catalog = Resources.Load<TextAsset>("Data/11_all.AllData_defBullet");
+                return catalog != null
+                    ? ProjectileVisualTable.Build(BulletCatalog.Parse(catalog.text), _bulletTable)
+                    : ProjectileVisualTable.Build(null, _bulletTable);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"[MissionSpriteView] Bullet visual catalog unavailable: {exception.Message}");
+                return ProjectileVisualTable.Build(null, _bulletTable);
+            }
+        }
+
+        private void BuildProjectileStyles()
+        {
+            int count = ProjectileVisualTable.MaxBulletId + 1;
+            if (_projectileStyles == null || _projectileStyles.Length != count)
+                _projectileStyles = new ProjectileRenderStyle[count];
+
+            SpriteUvRect white = _uvTable != null ? _uvTable.White : default;
+            for (int id = 0; id < count; id++)
+            {
+                ProjectileVisual visual = _projectileVisuals != null ? _projectileVisuals.Get(id) : default;
+                if (visual.isMissile && _uvTable != null && _uvTable.TryGetSymbol(visual.symbol, out SpriteUvRect rect))
+                {
+                    _projectileStyles[id] = new ProjectileRenderStyle
+                    {
+                        isMissile = true,
+                        uv = rect,
+                        width = visual.spriteWidth * CameraDistancePresets.MountArtScale,
+                        height = visual.spriteHeight * CameraDistancePresets.MountArtScale
+                    };
+                    continue;
+                }
+
+                _projectileStyles[id] = new ProjectileRenderStyle
+                {
+                    isMissile = false,
+                    uv = white,
+                    thickness = ProjectileGeometry.Thickness(visual.thickness)
+                };
+            }
+        }
+
         private float NextFloat()
         {
             _randomState ^= _randomState << 13;
@@ -713,6 +771,16 @@ namespace ABRevival.Presentation
             public float size;
             public float drag;
             public Color32 color;
+        }
+
+        /// <summary>Resolved per-bullet draw rule: a procedural stroke size or extracted missile art.</summary>
+        private struct ProjectileRenderStyle
+        {
+            public bool isMissile;
+            public float thickness;
+            public SpriteUvRect uv;
+            public float width;
+            public float height;
         }
     }
 }

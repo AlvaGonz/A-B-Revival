@@ -4,12 +4,15 @@ using System.Xml.Linq;
 
 namespace ABRevival.Core.Data
 {
-    /// <summary>One frozen <c>F4DataBullet</c> art definition (index and SWF symbol name).</summary>
+    /// <summary>One frozen <c>F4DataBullet</c> definition (index, SWF symbol name and hit width).</summary>
     public sealed class BulletArtRecord
     {
         public int bulletId;
         public string name;
         public string mcName;
+
+        /// <summary><c>F4DataBullet.btwh</c>: side of the procedural square body, in stage pixels.</summary>
+        public float btwh;
     }
 
     /// <summary>
@@ -36,7 +39,8 @@ namespace ABRevival.Core.Data
                 {
                     bulletId = ParseInt(element.Element("index")?.Value, 0),
                     name = element.Element("name")?.Value ?? string.Empty,
-                    mcName = element.Element("mcName")?.Value ?? "normal"
+                    mcName = element.Element("mcName")?.Value ?? "normal",
+                    btwh = ParseFloat(element.Element("btwh")?.Value, 0f)
                 };
                 if (string.IsNullOrEmpty(record.mcName)) record.mcName = "normal";
                 results.Add(record);
@@ -49,6 +53,14 @@ namespace ABRevival.Core.Data
         private static int ParseInt(string value, int fallback)
         {
             return int.TryParse(value, out int result) ? result : fallback;
+        }
+
+        private static float ParseFloat(string value, float fallback)
+        {
+            return float.TryParse(value, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out float result)
+                ? result
+                : fallback;
         }
     }
 }
