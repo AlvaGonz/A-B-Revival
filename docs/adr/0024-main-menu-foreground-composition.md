@@ -43,3 +43,29 @@ Separate transparent layers are therefore possible without redrawing the ship or
 - `docs/adr/0020` still governs asset fidelity: this edit is approved and recorded.
 - #187 owns the decision; the layer-extraction and recomposition tickets implement it.
 - The pre-edit tag is the revert point if the owner rejects the result.
+
+## Implementation note (#206)
+
+Extraction confirmed the split described in Research and refined it in one way:
+
+- The title lettering is **not** a path inside shape 442. It is a separate `DefineSprite` **444**
+  wrapping shape **443** (394×52 lettering, both title lines, clean alpha). It is exported as
+  `UI_Main_Title.png` with a top-centre pivot.
+- Bitmap **441** (ship, 427×344, alpha preserved) is exported unchanged as `UI_Main_Ship.png`,
+  centre pivot.
+- Bitmap **5** is byte-identical to the already committed `A&B-U/Assets/Art/Sprites/UI/ui_0005.png`
+  (matching SHA-256), so no duplicate background file was added; `ui_0005.png` is the background
+  layer.
+- Shape 442's remaining vector paths are the page plate, top grey bar and side spikes. They are
+  **dropped wholesale**, so decision item 2's "edit the title plate" collapses to "do not draw the
+  plate": no lettering path had to be edited or deleted, and no redrawn title asset is produced.
+
+Provenance, pivots and import settings: `docs/assets/main-menu-layers.md`.
+
+## Implementation note (#207)
+
+The unfiltered `DefineSprite` 444 export carried a black subtitle (`THE STORY IN THE SPACE`)
+that disappeared against the darker starfield. With owner approval the subtitle was
+recoloured white; the main title gradient and the alpha channel are unchanged, and the
+sprite stays 394×52 with the same top-centre pivot and `.meta` GUID. This is the second
+owner-approved art adjustment under this ADR.

@@ -26,9 +26,9 @@ namespace ABRevival.Tests
         {
             "main-root",
             "main-backdrop",
+            "main-title",
+            "main-ship",
             "main-ui",
-            "main-page",
-            "main-art",
             "play-button",
             "data-button",
             "options-button",
@@ -80,6 +80,8 @@ namespace ABRevival.Tests
                 StringAssert.Contains("name=\"" + element + "\"", uxml, "Main menu element missing: " + element);
 
             StringAssert.Contains("src=\"Main.uss\"", uxml, "The main menu must use its stylesheet.");
+            StringAssert.DoesNotContain("main-page", uxml, "The baked UI_Main page wrapper must be retired.");
+            StringAssert.DoesNotContain("main-art", uxml, "The baked UI_Main_Hero crop must be retired.");
             StringAssert.DoesNotContain("1280px", uxml, "The main menu must not use a fixed-width root.");
             StringAssert.DoesNotContain("960px", uxml, "The main menu must not use a fixed-height root.");
         }
@@ -122,10 +124,10 @@ namespace ABRevival.Tests
             StringAssert.Contains(".main-root", main);
             StringAssert.Contains("width: 100%;", main);
             StringAssert.Contains("height: 100%;", main);
-            StringAssert.Contains(".main-page", main);
-            StringAssert.Contains("width: 667px;", main);
-            StringAssert.Contains("height: 455px;", main);
+            StringAssert.Contains(".main-title", main);
+            StringAssert.Contains(".main-ship", main);
             StringAssert.Contains(".menu-button", main);
+            StringAssert.DoesNotContain(".main-page", main, "The baked UI_Main page wrapper must be retired.");
             StringAssert.DoesNotContain("1280", main, "The retired fixed hangar root must not survive.");
 
             string options = File.ReadAllText(Path.Combine(FindRepoRoot(), OptionsUssFile));

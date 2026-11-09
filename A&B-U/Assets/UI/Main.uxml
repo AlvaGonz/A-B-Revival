@@ -2,13 +2,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="Main.uss" />
     <ui:VisualElement name="main-root" class="main-root">
-        <!-- One full-screen starfield; the feathered hero crop blends into it. -->
+        <!-- One full-screen starfield; title and ship are separate frozen layers (ADR 0024). -->
         <ui:VisualElement name="main-backdrop" class="main-backdrop" picking-mode="Ignore" />
-
-        <!-- Frozen UI_Main title+ship only; the baked button strip is cropped away. -->
-        <ui:VisualElement name="main-page" class="main-page" picking-mode="Ignore">
-            <ui:VisualElement name="main-art" class="main-art" picking-mode="Ignore" />
-        </ui:VisualElement>
+        <ui:VisualElement name="main-title" class="main-title" picking-mode="Ignore" />
+        <ui:VisualElement name="main-ship" class="main-ship" picking-mode="Ignore" />
 
         <!-- Live controls sit on the screen edges at the page's true scale, never inside the art. -->
         <ui:VisualElement name="main-ui" class="main-ui">

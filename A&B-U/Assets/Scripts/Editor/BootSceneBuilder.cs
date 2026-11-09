@@ -336,16 +336,13 @@ namespace ABRevival.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        /// <summary>
-        /// Wires the frozen UI_MapBuilding page and OK plate plus the shared title plate
-        /// into Ready. The runtime never guesses an asset path; missing art fails the scene build.
-        /// </summary>
-        /// <summary>Wires the frozen UIMain page and its six live button widgets.</summary>
+        /// <summary>Wires the frozen UIMain layers and its six live button widgets.</summary>
         private static void SetMainMenuSprites(Component mainMenu)
         {
             var serialized = new SerializedObject(mainMenu);
             SetSprite(serialized, "backdrop", UiSpriteFolder, "ui_0005.png");
-            SetSprite(serialized, "pageArt", UiSpriteFolder, "Screens/UI_Main_Hero.png");
+            SetSprite(serialized, "titleArt", UiSpriteFolder, "Screens/UI_Main_Title.png");
+            SetSprite(serialized, "shipArt", UiSpriteFolder, "Screens/UI_Main_Ship.png");
             SetSprite(serialized, "playNormal", UiSpriteFolder, "UI_Main/447_widget_normal.png");
             SetSprite(serialized, "playHover", UiSpriteFolder, "UI_Main/447_widget_hover.png");
             SetSprite(serialized, "dataNormal", UiSpriteFolder, "UI_Main/450_widget_normal.png");
@@ -354,6 +351,7 @@ namespace ABRevival.Editor
             SetSprite(serialized, "optionsHover", UiSpriteFolder, "Widgets/242_widget_hover.png");
             SetSprite(serialized, "creditsNormal", UiSpriteFolder, "UI_Main/453_widget_normal.png");
             SetSprite(serialized, "creditsHover", UiSpriteFolder, "UI_Main/453_widget_hover.png");
+            SetSprite(serialized, "linkNormal", UiSpriteFolder, "Widgets/20_widget_normal.png");
             SetSprite(serialized, "linkHover", UiSpriteFolder, "Widgets/20_widget_normal.png");
             SetSprite(serialized, "playerNormal", UiSpriteFolder, "UI_Main/458_widget_normal.png");
             SetSprite(serialized, "playerHover", UiSpriteFolder, "UI_Main/458_widget_hover.png");
@@ -372,6 +370,10 @@ namespace ABRevival.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        /// <summary>
+        /// Wires the frozen UI_MapBuilding page and OK plate plus the shared title plate
+        /// into Ready. The runtime never guesses an asset path; missing art fails the scene build.
+        /// </summary>
         private static void SetReadySprites(Component ready)
         {
             var serialized = new SerializedObject(ready);

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ABRevival.Core.Persistence;
 using ABRevival.Core.Simulation;
 using ABRevival.Presentation;
@@ -15,9 +16,9 @@ namespace ABRevival.Tests.PlayMode
 {
     /// <summary>
     /// Boot-scene verification for the frozen UIMain/UI_Options pages (#181): the main-menu
-    /// entries, PLAY to Center, Options control-mode/resolution/sound persistence, the Data
-    /// handoff, explicit deferred reasons, full-bleed layout at three output sizes and
-    /// 1920x1080 rendered captures.
+    /// layer composition and entries, PLAY to Center, Options control-mode/resolution/sound
+    /// persistence, the Data handoff, explicit deferred reasons, full-bleed layout at three
+    /// output sizes and reference captures for landscape, phone and tablet profiles.
     /// Original game IP: Vargames (2011).
     /// </summary>
     [TestFixture]
@@ -60,20 +61,16 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual(DisplayStyle.None, ActiveRoot(center).resolvedStyle.display,
                 "Center must stay hidden behind the main menu.");
 
-            AssertSprite(root.Q("main-art"), "UI_Main_Hero");
-            AssertSprite(root.Q("main-backdrop"), "ui_0005");
-            VisualElement page = root.Q("main-page");
-            Assert.IsNotNull(page);
-            Assert.GreaterOrEqual(page.resolvedStyle.width, root.resolvedStyle.width - 1f,
-                "The frozen hero must fill the screen width.");
-            Assert.Greater(page.resolvedStyle.height, 0f,
-                "The frozen hero must keep its cropped height.");
+            AssertMainMenuLayers(root);
             AssertButtonArt(root, "play-button", "447_widget");
             AssertButtonArt(root, "data-button", "450_widget");
             AssertButtonArt(root, "options-button", "242_widget");
             AssertButtonArt(root, "credits-button", "453_widget");
-            Assert.IsNotNull(root.Q<Button>("link-button"), "The frozen VARGAMES entry is missing.");
+            AssertButtonArt(root, "link-button", "20_widget");
             AssertButtonArt(root, "player-button", "458_widget");
+            foreach (string topButton in new[] { "link-button", "player-button" })
+                Assert.AreEqual(1f, root.Q(topButton).resolvedStyle.opacity, 0.001f,
+                    "The live top control must be visible: " + topButton);
 
             PlayModeBoot.Click(root.Q<Button>("play-button"));
             yield return PlayModeBoot.WaitForCenter();
@@ -226,15 +223,19 @@ namespace ABRevival.Tests.PlayMode
                     VisualElement root = document.rootVisualElement;
                     VisualElement screen = root.Q("main-root");
                     VisualElement backdrop = root.Q("main-backdrop");
-                    VisualElement page = root.Q("main-page");
+                    VisualElement title = root.Q("main-title");
+                    VisualElement ship = root.Q("main-ship");
                     Assert.IsNotNull(screen);
                     Assert.IsNotNull(backdrop);
-                    Assert.IsNotNull(page);
+                    Assert.IsNotNull(title);
+                    Assert.IsNotNull(ship);
+                    Assert.IsNull(root.Q("main-page"), "The baked UI_Main page wrapper must be retired at " + size);
+                    Assert.IsNull(root.Q("main-art"), "The baked UI_Main_Hero crop must be retired at " + size);
 
                     Rect surface = screen.worldBound;
                     Rect rootBound = root.worldBound;
                     Debug.Log("[Main Layout] " + size + " surface=" + surface + " root=" + rootBound +
-                              " page=" + page.worldBound);
+                              " title=" + title.worldBound + " ship=" + ship.worldBound);
                     Assert.AreEqual(rootBound.width, surface.width, 1f,
                         "The main root must fill the panel width at " + size);
                     Assert.AreEqual(rootBound.height, surface.height, 1f,
@@ -245,14 +246,27 @@ namespace ABRevival.Tests.PlayMode
                         "The single starfield must cover the full width at " + size);
                     Assert.AreEqual(surface.height, backdrop.worldBound.height, 1f,
                         "The single starfield must cover the full height at " + size);
-                    Assert.GreaterOrEqual(page.worldBound.width, surface.width - 1f,
-                        "The frozen hero must fill the output width at " + size);
-                    Assert.Greater(page.worldBound.height, 0f,
-                        "The frozen hero must keep its cropped height at " + size);
-                    Assert.LessOrEqual(page.worldBound.xMin, surface.xMin + 1f,
-                        "The frozen hero must not letterbox horizontally at " + size);
-                    Assert.LessOrEqual(page.worldBound.yMin, surface.yMin + 1f,
-                        "The frozen hero must be top-aligned at " + size);
+                    Assert.Greater(title.worldBound.width, 0f,
+                        "The title must render at " + size);
+                    Assert.Greater(title.worldBound.height, 0f,
+                        "The title must render at " + size);
+                    Assert.LessOrEqual(title.worldBound.yMin, surface.yMin + surface.height * 0.10f,
+                        "The title must sit at the top at " + size);
+                    Assert.AreEqual(surface.center.x, ship.worldBound.center.x, 2f,
+                        "The ship must be centred horizontally at " + size);
+
+                    float bottomControlsTop = float.MaxValue;
+                    foreach (string button in new[] { "play-button", "data-button", "options-button", "credits-button" })
+                        bottomControlsTop = Mathf.Min(bottomControlsTop, root.Q(button).worldBound.yMin);
+
+                    Assert.GreaterOrEqual(ship.worldBound.yMin, title.worldBound.yMax,
+                        "The ship must start below the title at " + size);
+                    Assert.LessOrEqual(ship.worldBound.yMax, bottomControlsTop,
+                        "The ship must end above the bottom controls at " + size);
+                    Assert.GreaterOrEqual(ship.worldBound.center.y, title.worldBound.yMax,
+                        "The ship centre must be below the title at " + size);
+                    Assert.LessOrEqual(ship.worldBound.center.y, bottomControlsTop,
+                        "The ship centre must be above the bottom controls at " + size);
 
                     foreach (string button in new[]
                              {
@@ -268,6 +282,12 @@ namespace ABRevival.Tests.PlayMode
                         Assert.GreaterOrEqual(rect.yMin, surface.yMin, button + " must stay inside the root at " + size);
                         Assert.LessOrEqual(rect.yMax, surface.yMax + 1f, button + " must stay inside the root at " + size);
                     }
+
+                    foreach (string topButton in new[] { "link-button", "player-button" })
+                        Assert.AreEqual(1f, root.Q(topButton).resolvedStyle.opacity, 0.001f,
+                            "The live top control must be visible at " + size + ": " + topButton);
+
+                    AssertMainMenuGeometry(root, size.ToString());
 
                     PlayModeBoot.Click(root.Q<Button>("options-button"));
                     for (int i = 0; i < 8; i++) yield return null;
@@ -303,7 +323,7 @@ namespace ABRevival.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator MainMenuAndOptions_Render1920x1080CapturesOutsideTheProject()
+        public IEnumerator MainMenuAndOptions_RenderReferenceCapturesOutsideTheProject()
         {
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
                 Assert.Ignore("Capture requires a graphics device; run the PlayMode gate without -nographics.");
@@ -313,41 +333,70 @@ namespace ABRevival.Tests.PlayMode
             MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
             var document = menu.GetComponent<UIDocument>();
             Assert.IsNotNull(document);
-            VisualElement root = document.rootVisualElement;
             PanelSettings settings = document.panelSettings;
             RenderTexture previous = settings.targetTexture;
-            var target = new RenderTexture(1920, 1080, 0, RenderTextureFormat.ARGB32);
-            target.Create();
+            string folder = Path.Combine(Path.GetTempPath(), "opencode");
+            Directory.CreateDirectory(folder);
+            RenderTexture target = null;
 
             try
             {
+                foreach (Vector2Int size in new[]
+                         {
+                             new Vector2Int(1920, 1080),
+                             new Vector2Int(750, 1334),
+                             new Vector2Int(1170, 2532),
+                             new Vector2Int(2048, 2732),
+                             new Vector2Int(1024, 768)
+                         })
+                {
+                    target = new RenderTexture(size.x, size.y, 0, RenderTextureFormat.ARGB32);
+                    target.Create();
+                    settings.targetTexture = target;
+                    for (int i = 0; i < 12; i++) yield return null;
+
+                    VisualElement root = document.rootVisualElement;
+                    AssertMainMenuLayers(root);
+                    AssertMainMenuGeometry(root, size.ToString());
+                    string mainPath = Path.Combine(folder, "main-menu-" + size.x + "x" + size.y + ".png");
+                    WriteCapture(target, mainPath);
+                    AssertCaptureHasContent(mainPath, "Main menu " + size);
+
+                    target.Release();
+                    Object.Destroy(target);
+                    target = null;
+                }
+
+                target = new RenderTexture(1920, 1080, 0, RenderTextureFormat.ARGB32);
+                target.Create();
                 settings.targetTexture = target;
                 for (int i = 0; i < 12; i++) yield return null;
 
-                AssertSprite(root.Q("main-art"), "UI_Main");
-                string folder = Path.Combine(Path.GetTempPath(), "opencode");
-                Directory.CreateDirectory(folder);
-                string mainPath = Path.Combine(folder, "main-menu-1920x1080.png");
-                WriteCapture(target, mainPath);
-
-                PlayModeBoot.Click(root.Q<Button>("options-button"));
+                VisualElement menuRoot = document.rootVisualElement;
+                PlayModeBoot.Click(menuRoot.Q<Button>("options-button"));
                 for (int i = 0; i < 12; i++) yield return null;
                 OptionsController options = Object.FindAnyObjectByType<OptionsController>();
                 VisualElement optionsRoot = ActiveRoot(options);
                 AssertSprite(optionsRoot.Q("options-art"), "UI_Options");
                 string optionsPath = Path.Combine(folder, "options-1920x1080.png");
                 WriteCapture(target, optionsPath);
-
-                AssertCaptureHasContent(mainPath, "Main menu");
                 AssertCaptureHasContent(optionsPath, "Options");
-                Debug.Log("[Main Menu Capture] main=" + mainPath + " options=" + optionsPath);
+
+                target.Release();
+                Object.Destroy(target);
+                target = null;
+                Debug.Log("[Main Menu Capture] folder=" + folder + " options=" + optionsPath);
             }
             finally
             {
+                if (target != null)
+                {
+                    target.Release();
+                    Object.Destroy(target);
+                }
+
                 settings.targetTexture = previous;
                 RenderTexture.active = null;
-                target.Release();
-                Object.Destroy(target);
             }
         }
 
@@ -355,8 +404,8 @@ namespace ABRevival.Tests.PlayMode
         {
             if (File.Exists(path)) File.Delete(path);
             RenderTexture.active = target;
-            var image = new Texture2D(1920, 1080, TextureFormat.RGBA32, false);
-            image.ReadPixels(new Rect(0, 0, 1920, 1080), 0, 0);
+            var image = new Texture2D(target.width, target.height, TextureFormat.RGBA32, false);
+            image.ReadPixels(new Rect(0, 0, target.width, target.height), 0, 0);
             image.Apply();
             RenderTexture.active = null;
             File.WriteAllBytes(path, image.EncodeToPNG());
@@ -387,6 +436,51 @@ namespace ABRevival.Tests.PlayMode
         {
             var document = component != null ? component.GetComponent<UIDocument>() : null;
             return document != null ? document.rootVisualElement : null;
+        }
+
+        private static void AssertMainMenuLayers(VisualElement root)
+        {
+            AssertSprite(root.Q("main-backdrop"), "ui_0005");
+            AssertSprite(root.Q("main-title"), "UI_Main_Title");
+            AssertSprite(root.Q("main-ship"), "UI_Main_Ship");
+            Assert.IsNull(root.Q("main-page"), "The baked UI_Main page wrapper is retired.");
+            Assert.IsNull(root.Q("main-art"), "The baked UI_Main_Hero crop is retired.");
+            foreach (Image image in root.Query<Image>("sprite-art").ToList())
+                Assert.IsFalse(image.sprite != null && image.sprite.name.Contains("UI_Main_Hero"),
+                    "UI_Main_Hero must not be drawn by the main menu.");
+        }
+
+        private static void AssertMainMenuGeometry(VisualElement root, string label)
+        {
+            VisualElement surface = root.Q("main-root");
+            VisualElement title = root.Q("main-title");
+            VisualElement ship = root.Q("main-ship");
+            Assert.IsNotNull(surface, "Main root is missing at " + label);
+            Assert.IsNotNull(title, "Main title is missing at " + label);
+            Assert.IsNotNull(ship, "Main ship is missing at " + label);
+
+            Assert.Greater(ship.worldBound.width, 0f, "Ship width must be positive at " + label);
+            Assert.Greater(ship.worldBound.height, 0f, "Ship height must be positive at " + label);
+            Assert.GreaterOrEqual(title.worldBound.xMin, surface.worldBound.xMin - 1f,
+                "The title must stay inside the root at " + label);
+            Assert.LessOrEqual(title.worldBound.xMax, surface.worldBound.xMax + 1f,
+                "The title must stay inside the root at " + label);
+
+            float bottomControlsTop = float.MaxValue;
+            foreach (string button in new[] { "play-button", "data-button", "options-button", "credits-button" })
+                bottomControlsTop = Mathf.Min(bottomControlsTop, root.Q(button).worldBound.yMin);
+
+            float bandHeight = bottomControlsTop - title.worldBound.yMax;
+            float gapTop = ship.worldBound.yMin - title.worldBound.yMax;
+            float gapBottom = bottomControlsTop - ship.worldBound.yMax;
+            Assert.AreEqual(gapTop, gapBottom, bandHeight * 0.01f,
+                "Ship top and bottom gaps must match within 1% of the band at " + label);
+
+            Rect shipBounds = ship.worldBound;
+            shipBounds.width = Mathf.Max(0f, shipBounds.width - 0.01f);
+            foreach (string topButton in new[] { "link-button", "player-button" })
+                Assert.IsFalse(shipBounds.Overlaps(root.Q(topButton).worldBound),
+                    "The ship must not overlap " + topButton + " at " + label);
         }
 
         private static void AssertSprite(VisualElement element, string spriteName)
