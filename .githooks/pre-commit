@@ -60,8 +60,31 @@ if [ -n "$STAGED_BAT" ]; then
     echo "[pre-commit] Shell script linter passed successfully."
 fi
 
-# 4. If nothing requiring gates was staged
-if [ -z "$STAGED_UNITY" ] && [ -z "$STAGED_AS3" ] && [ -z "$STAGED_BAT" ]; then
+# 4. Check for staged vendored skills or lockfile changes
+SKILLS_PATHS=".agents/skills docs/skills/vendored-skills.lock.json"
+STAGED_SKILLS=$(git diff --cached --name-only -- $SKILLS_PATHS)
+
+if [ -n "$STAGED_SKILLS" ]; then
+    # The validator reads the working tree; refuse partial staging so the index is what gets checked.
+    if git status --porcelain -uall -- $SKILLS_PATHS | grep -qvE '^[A-Z]  '; then
+        echo ""
+        echo "================================================================"
+        echo " [pre-commit ERROR] Unstaged or untracked changes under the skill tree."
+        echo " Stage them and commit again."
+        echo "================================================================"
+        exit 1
+    fi
+    echo "[pre-commit] Vendored skill changes detected. Validating provenance and lockfile..."
+    python scripts/validate_vendored_skills.py
+    SKILLS_STATUS=$?
+    if [ $SKILLS_STATUS -ne 0 ]; then
+        echo "[pre-commit ERROR] Vendored skill validation failed."
+        exit 1
+    fi
+fi
+
+# 5. If nothing requiring gates was staged
+if [ -z "$STAGED_UNITY" ] && [ -z "$STAGED_AS3" ] && [ -z "$STAGED_BAT" ] && [ -z "$STAGED_SKILLS" ]; then
     echo "[pre-commit] Documentation or metadata changes staged. Skipping test runner."
 fi
 

@@ -108,3 +108,10 @@ Generates a self-signed developer certificate and packages the modified SWF into
 scripts\package_android_apk.bat
 ```
 
+### 12. `validate_vendored_skills.py`
+Validates `.agents/skills/` provenance, licenses and lockfile; runs from pre-commit when the tree changes:
+```cmd
+python scripts\validate_vendored_skills.py
+python scripts\test_validate_vendored_skills.py
+```
+

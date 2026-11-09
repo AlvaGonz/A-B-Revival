@@ -26,6 +26,9 @@ Canonical five-role triage labels (`needs-triage`, `needs-info`, `ready-for-agen
 ### Domain docs & standards
 Single-context domain model with `GLOSSARY.md`, `docs/adr/`, and `CODING_STANDARDS.md`. See `docs/agents/domain.md`.
 
+### Project-local skills
+Vendored skills live in `.agents/skills/` (flat, `ab-` prefix) and are committed with provenance in `docs/skills/`. They are additions: the workflow in this file always prevails. Never install skills globally. After changing the tree, run `python scripts/validate_vendored_skills.py`; see `docs/skills/README.md`.
+
 ### Codebase navigation (`graphify` & `as3_search`)
 
 A persistent knowledge graph exists at `graphify-out/` (`graph.json`,
@@ -46,6 +49,7 @@ Pre-commit hooks are version-controlled in `.githooks/` and enforce:
 1. `dotnet test "A&B-U/Assets/Scripts/Tests/ABRevival.Tests.csproj"`: Tier 1 fast automated testing gate (ADR 0016) verifying all pure C# domain, simulation, and catalog tests pass with exit code `0`.
 2. `scripts/lint_shell_scripts.py --staged`: Static check ensuring all Windows `.bat` scripts enforce safe quoting and ampersand escaping.
 3. `scripts/lint_domain_leakage.py --staged`: Static check against domain leakage if legacy Flash AS3 files are touched (frozen baseline, ADR 0015).
+4. `scripts/validate_vendored_skills.py`: Checks vendored skill provenance, licenses and lockfile; refuses partially staged skill changes.
 Activate via `scripts/install-hooks.bat` (Windows) or `sh scripts/install-hooks.sh` (Unix).
 
 ### Project documentation (`docs/` & `CONTEXT.md`)
