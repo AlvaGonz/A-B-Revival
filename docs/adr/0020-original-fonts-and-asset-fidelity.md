@@ -16,16 +16,20 @@ The owner rejected replacement: the project is a non-commercial preservation and
 2. **Do not substitute** open fonts, system fonts, or Unity defaults anywhere in the game UI.
 3. **Document the source**: each font asset records its SWF symbol, family and usage. The extraction manifest is the source of truth.
 4. **Record the licensing risk** here instead of silently shipping a substitute. This is a non-commercial fan preservation build; if distribution policy changes, this ADR must be revisited before any public release.
-5. **Original art has the same precedence**: frames, icons, portraits, ships, effects and audio are reproduced from the frozen assets, not redesigned. Where an asset does not exist (procedural bullets/VFX), reimplement the behaviour with the original palette and rules rather than inventing art.
+5. **Original art is the baseline**: frames, icons, portraits, ships, effects and audio are reproduced from the frozen assets. Where an asset does not exist (procedural bullets/VFX), reimplement the behaviour with the original palette and rules rather than inventing art.
+6. **Improvements are allowed only with explicit owner approval.** Layout, UX and art may be improved (for example responsive menus or readability fixes) when the owner approves the specific change in its issue or PR. Preserve the original palette and document what changed and why. Preservation remains the default; improvement is opt-in, never an assumption.
 
 ## Consequences
 
-- Positive: glyph metrics, layout and visual fidelity match the 2011 release.
+- Positive: glyph metrics, layout and visual fidelity match the 2011 release, while owner-approved improvements can fix responsive/readability problems.
 - Negative: commercial font subsets are redistributed with the project; legal risk remains until a distribution decision changes it.
 - Constraint: any agent touching UI must use the extracted fonts. Do not "fix" text metrics by swapping fonts.
+- Constraint: agents must not silently restyle, redraw or "modernise" approved assets. An unapproved visual change is a review failure.
 
 ## Enforcement
 
 - `AGENTS.md` carries the rule as a durable agent instruction.
 - The extraction ticket must commit the original font assets and their manifest entries.
 - A UI section is not accepted if it renders with a substitute font.
+- A visual improvement is not accepted unless the issue/PR records the owner's approval and the original asset it replaces or adjusts.
+- Imported skills that generate or restyle art must keep generation behind explicit owner approval (see `docs/skills/`).
