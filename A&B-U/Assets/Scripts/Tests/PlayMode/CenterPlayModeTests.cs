@@ -167,7 +167,6 @@ namespace ABRevival.Tests.PlayMode
 
             foreach (var pair in new[]
                      {
-                         ("ready-button", "READY"),
                          ("back-button", "MAIN MENU"),
                          ("help-button", "HELP")
                      })
@@ -184,8 +183,27 @@ namespace ABRevival.Tests.PlayMode
                 Assert.AreEqual(DisplayStyle.None, root.Q("center-placeholder").resolvedStyle.display);
             }
 
-            // INFO is a real read-only screen (#177), not a placeholder.
+            // READY is a real handoff screen (#178), not a placeholder.
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            ReadyController ready = Object.FindAnyObjectByType<ReadyController>();
+            Assert.IsNotNull(flow);
+            Assert.IsNotNull(ready, "Boot must host the dedicated Ready screen.");
+            Assert.IsTrue(center.CanLaunch, "The seeded Player craft must be launchable.");
+            Assert.IsTrue(root.Q<Button>("ready-button").enabledSelf,
+                "READY must be enabled when the Player craft is valid.");
+            Click(root.Q<Button>("ready-button"));
+            yield return null;
+            Assert.AreEqual(GameFlowState.Ready, flow.State);
+            Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, ready.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+
+            Click(ready.GetComponent<UIDocument>().rootVisualElement.Q<Button>("back-button"));
+            yield return null;
+            Assert.AreEqual(GameFlowState.Center, flow.State);
+            Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, ready.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+
+            // INFO is a real read-only screen (#177), not a placeholder.
             InfoController info = Object.FindAnyObjectByType<InfoController>();
             Assert.IsNotNull(flow);
             Assert.IsNotNull(info, "Boot must host the dedicated Info screen.");

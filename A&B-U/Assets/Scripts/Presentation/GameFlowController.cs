@@ -42,6 +42,7 @@ namespace ABRevival.Presentation
         [SerializeField] private FactoryController _factory;
         [SerializeField] private ShopController _shop;
         [SerializeField] private InfoController _info;
+        [SerializeField] private ReadyController _ready;
         [SerializeField] private TalkScreen _talkScreen;
         [SerializeField] private CinematicPlayer _cinematicPlayer;
         [SerializeField] private CombatHudBehaviour _hud;
@@ -78,6 +79,7 @@ namespace ABRevival.Presentation
         private int _playerHull = -1;
         private float _playerHullMax = 1f;
         private MissionResult? _lastResult;
+        private MissionLoadout _activeLoadout;
 
         private IMissionAudio _missionAudio;
         private IAssemblyAudio _assemblyAudio;
@@ -92,6 +94,7 @@ namespace ABRevival.Presentation
         private int _captainIndex = -1;
         private bool _briefingTalkActive;
         private bool _resultTalkPending;
+        private bool _cinematicSkipBound;
 
         public GameFlowState State { get; private set; } = GameFlowState.Boot;
         public int StoryIndex => _save != null ? _save.storyIndex : 0;
@@ -101,6 +104,9 @@ namespace ABRevival.Presentation
         public ProjectileContactSolver ContactSolver => _solver;
         public MissionResult? LastResult => _lastResult;
         public string SavePath => _savePath;
+
+        /// <summary>Selected Player craft and AI companions handed to the current mission.</summary>
+        public MissionLoadout ActiveLoadout => _activeLoadout;
 
         /// <summary>Projectiles fired by the player craft this mission (real setup path telemetry).</summary>
         public int ShotsFired => _weapons != null ? _weapons.ShotsFired : 0;
@@ -124,11 +130,14 @@ namespace ABRevival.Presentation
             if (_center != null) _center.FactoryRequested += OnFactoryRequested;
             if (_center != null) _center.ShopRequested += OnShopRequested;
             if (_center != null) _center.InfoRequested += OnInfoRequested;
+            if (_center != null) _center.ReadyRequested += OnReadyRequested;
             if (_factory != null) _factory.Changed += OnCenterChanged;
             if (_factory != null) _factory.Closed += OnFactoryClosed;
             if (_shop != null) _shop.Changed += OnCenterChanged;
             if (_shop != null) _shop.Closed += OnShopClosed;
             if (_info != null) _info.Closed += OnInfoClosed;
+            if (_ready != null) _ready.Closed += OnReadyClosed;
+            if (_ready != null) _ready.LaunchRequested += OnReadyLaunch;
             if (_talkScreen != null)
             {
                 _talkScreen.Completed += OnTalkCompleted;
@@ -154,11 +163,14 @@ namespace ABRevival.Presentation
             if (_center != null) _center.FactoryRequested -= OnFactoryRequested;
             if (_center != null) _center.ShopRequested -= OnShopRequested;
             if (_center != null) _center.InfoRequested -= OnInfoRequested;
+            if (_center != null) _center.ReadyRequested -= OnReadyRequested;
             if (_factory != null) _factory.Changed -= OnCenterChanged;
             if (_factory != null) _factory.Closed -= OnFactoryClosed;
             if (_shop != null) _shop.Changed -= OnCenterChanged;
             if (_shop != null) _shop.Closed -= OnShopClosed;
             if (_info != null) _info.Closed -= OnInfoClosed;
+            if (_ready != null) _ready.Closed -= OnReadyClosed;
+            if (_ready != null) _ready.LaunchRequested -= OnReadyLaunch;
             if (_talkScreen != null) _talkScreen.Completed -= OnTalkCompleted;
             if (_flight != null)
             {
@@ -356,6 +368,47 @@ namespace ABRevival.Presentation
             State = GameFlowState.Center;
         }
 
+        // ---------------- Ready / Briefing ----------------
+
+        /// <summary>
+        /// Center's READY opens the mission handoff (#178). The live loadout is copied into
+        /// the payload so the screen validates the same craft set the mission will use.
+        /// </summary>
+        private void OnReadyRequested()
+        {
+            if (State != GameFlowState.Center || _center == null || _ready == null) return;
+            if (!_center.CanLaunch) return;
+
+            _center.CaptureSave(_save);
+            _ready.Initialize(_save, _center);
+            _center.SetVisible(false);
+            State = GameFlowState.Ready;
+        }
+
+        /// <summary>Ready's BACK cancels the handoff and returns to Center without launching.</summary>
+        private void OnReadyClosed()
+        {
+            if (State != GameFlowState.Ready || _ready == null) return;
+
+            _ready.SetVisible(false);
+            _center?.SetVisible(true);
+            State = GameFlowState.Center;
+        }
+
+        /// <summary>
+        /// Ready's launch hands the captured save to the existing briefing path:
+        /// talkBefore, the opening cinematic and then the mission.
+        /// </summary>
+        private void OnReadyLaunch()
+        {
+            if (State != GameFlowState.Ready || _ready == null) return;
+
+            _ready.SetVisible(false);
+            State = GameFlowState.Center;
+            LaunchMission();
+            if (State == GameFlowState.Center) _center?.SetVisible(true);
+        }
+
         private void EnterCenter(bool firstBoot)
         {
             DisposeMission();
@@ -364,6 +417,7 @@ namespace ABRevival.Presentation
             _resultElapsed = 0f;
             _accumulator = 0f;
             _captainIndex = -1;
+            _activeLoadout = null;
             // The next launch resolves its level from the saved STORY index.
             _level = null;
 
@@ -372,6 +426,7 @@ namespace ABRevival.Presentation
             _factory?.SetVisible(false);
             _shop?.SetVisible(false);
             _info?.SetVisible(false);
+            _ready?.SetVisible(false);
             if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
 
             if (_center != null)
@@ -391,6 +446,9 @@ namespace ABRevival.Presentation
         public void LaunchMission()
         {
             if (State != GameFlowState.Center) return;
+
+            _activeLoadout = MissionLoadout.Capture(
+                _save, _center != null ? _center.FleetCount : (_save.blueprints?.Count ?? 0));
 
             try
             {
@@ -746,7 +804,9 @@ namespace ABRevival.Presentation
         {
             if (_save.blueprints == null || _save.blueprints.Count == 0) return 0;
 
-            int playerBlueprint = Math.Clamp(_save.playerBlueprintIndex, 0, _save.blueprints.Count - 1);
+            int playerBlueprint = _activeLoadout != null && _activeLoadout.PlayerCraftIndex >= 0
+                ? _activeLoadout.PlayerCraftIndex
+                : Math.Clamp(_save.playerBlueprintIndex, 0, _save.blueprints.Count - 1);
             BlueprintSaveData blueprint = _save.blueprints[playerBlueprint];
             if (blueprint?.mountedParts == null) return 0;
 
@@ -1434,7 +1494,20 @@ namespace ABRevival.Presentation
             {
                 _resultLabel ??= _flowDocument.rootVisualElement.Q<Label>("flow-result-label");
                 _cinematicSurface ??= _flowDocument.rootVisualElement.Q<VisualElement>("flow-cinematic-surface");
+
+                // The frozen UIMovie overlay skipped on click; the revival clip has no
+                // separate control, so the whole movie surface is the skip target.
+                if (_cinematicSurface != null && !_cinematicSkipBound)
+                {
+                    _cinematicSurface.RegisterCallback<ClickEvent>(OnCinematicSurfaceClicked);
+                    _cinematicSkipBound = true;
+                }
             }
+        }
+
+        private void OnCinematicSurfaceClicked(ClickEvent clickEvent)
+        {
+            SkipBriefing();
         }
 
         private void SetFlowVisible(bool visible)
@@ -1484,6 +1557,7 @@ namespace ABRevival.Presentation
         Return = 5,
         Factory = 6,
         Shop = 7,
-        Info = 8
+        Info = 8,
+        Ready = 9
     }
 }

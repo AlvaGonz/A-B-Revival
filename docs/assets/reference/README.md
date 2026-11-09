@@ -11,6 +11,7 @@ before any menu section is rebuilt (ADR 0020).
 | `UI_HelpGame2.png` | `UI_HelpGame2` | 794 | 750x510 |
 | `UI_Data.png` | `UI_Data` | 534 | 640x480 |
 | `UI_Mission.png` | `UI_Mission` | 300 | 640x480 |
+| `UI_MapBuilding.png` | `UI_MapBuilding` | 311 | 851x521 |
 
 `factory-page.png` is the original `UI_MakePlayer` page export from
 `src/assets/binaryData/9_all.AllData_ui.bin` (FFDec page sprite, frame 1). It also ships
@@ -25,6 +26,13 @@ canonical review reference.
 The Info/Records references were used for #177. `UI_HelpGame.png` and `UI_HelpGame2.png`
 also ship under `A&B-U/Assets/Art/Sprites/UI/Help/`; `UI_Data.png` and `UI_Mission.png`
 under `A&B-U/Assets/Art/Sprites/UI/Screens/`. Both copies are byte-identical exports.
+
+`UI_MapBuilding.png` is the actual Ready/Briefing handoff used by #178: the frozen
+`UIMapBuild` page prints `MISSIONS.missionWords[STORY]` behind the OK button and then
+starts the level. `UI_Mission.png` is the pause-menu objective sheet (`UIPause`), not the
+ready handoff; it stays committed for the pause/objectives surface. The source copy lives
+at `A&B-U/Assets/Art/Sprites/UI/Screens/UI_MapBuilding.png` and the widget exports
+(`306` loader mark, `310` OK button) at `A&B-U/Assets/Art/Sprites/UI/UI_MapBuilding/`.
 
 Regenerate the asset-side copy with `scripts\export-ui-sprites.bat`
 (`ABRevival.Editor.UiSpriteExportPipeline.ExportBatch`), which also mirrors page

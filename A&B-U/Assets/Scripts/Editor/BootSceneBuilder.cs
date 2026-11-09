@@ -24,6 +24,8 @@ namespace ABRevival.Editor
         private const string CenterUxmlPath = "Assets/UI/Center.uxml";
         private const string FactoryUxmlPath = "Assets/UI/Factory.uxml";
         private const string ShopUxmlPath = "Assets/UI/Shop.uxml";
+        private const string InfoUxmlPath = "Assets/UI/Info.uxml";
+        private const string ReadyUxmlPath = "Assets/UI/Ready.uxml";
         private const string HudUxmlPath = "Assets/UI/CombatHud.uxml";
         private const string PanelSettingsPath = "Assets/UI/HangarPanelSettings.asset";
         private const string PortraitPath = "Assets/Resources/Talk/TalkPortraitCatalog.asset";
@@ -44,6 +46,8 @@ namespace ABRevival.Editor
             VisualTreeAsset centerUxml = LoadRequired<VisualTreeAsset>(CenterUxmlPath);
             VisualTreeAsset factoryUxml = LoadRequired<VisualTreeAsset>(FactoryUxmlPath);
             VisualTreeAsset shopUxml = LoadRequired<VisualTreeAsset>(ShopUxmlPath);
+            VisualTreeAsset infoUxml = LoadRequired<VisualTreeAsset>(InfoUxmlPath);
+            VisualTreeAsset readyUxml = LoadRequired<VisualTreeAsset>(ReadyUxmlPath);
             VisualTreeAsset hudUxml = LoadRequired<VisualTreeAsset>(HudUxmlPath);
             UnityEngine.Object portraits = LoadRequired<UnityEngine.Object>(PortraitPath);
             TextAsset talkData = LoadRequired<TextAsset>(TalkDataPath);
@@ -78,6 +82,20 @@ namespace ABRevival.Editor
             SetReference(shopDocument, "sourceAsset", shopUxml);
             shopDocument.sortingOrder = 1;
             Component shop = AddPresentationComponent(shopObject, "ABRevival.Presentation.ShopController");
+
+            var infoObject = new GameObject("Info");
+            UIDocument infoDocument = infoObject.AddComponent<UIDocument>();
+            SetReference(infoDocument, "m_PanelSettings", panelSettings);
+            SetReference(infoDocument, "sourceAsset", infoUxml);
+            infoDocument.sortingOrder = 1;
+            Component info = AddPresentationComponent(infoObject, "ABRevival.Presentation.InfoController");
+
+            var readyObject = new GameObject("Ready");
+            UIDocument readyDocument = readyObject.AddComponent<UIDocument>();
+            SetReference(readyDocument, "m_PanelSettings", panelSettings);
+            SetReference(readyDocument, "sourceAsset", readyUxml);
+            readyDocument.sortingOrder = 1;
+            Component ready = AddPresentationComponent(readyObject, "ABRevival.Presentation.ReadyController");
 
             var talkObject = new GameObject("Talk");
             UIDocument talkDocument = talkObject.AddComponent<UIDocument>();
@@ -127,6 +145,9 @@ namespace ABRevival.Editor
             SetFactorySprites(factory);
             SetCatalog(shop);
             SetShopSprites(shop);
+            SetCatalog(info);
+            SetInfoSprites(info);
+            SetReadySprites(ready);
 
             Texture2D partsAtlas = LoadRequired<Texture2D>(PartsAtlasBuilder.AtlasPath);
             TextAsset partsUvTable = LoadRequired<TextAsset>(PartsAtlasBuilder.UvTablePath);
@@ -141,6 +162,8 @@ namespace ABRevival.Editor
             SetReference(flowSerialized, "_center", center);
             SetReference(flowSerialized, "_factory", factory);
             SetReference(flowSerialized, "_shop", shop);
+            SetReference(flowSerialized, "_info", info);
+            SetReference(flowSerialized, "_ready", ready);
             SetReference(flowSerialized, "_talkScreen", talk);
             SetReference(flowSerialized, "_cinematicPlayer", cinematic);
             SetReference(flowSerialized, "_hud", hud);
@@ -204,10 +227,10 @@ namespace ABRevival.Editor
         }
 
         /// <summary>
-        /// Assigns every generated PartDefinitionSO to Center, sorted by legacy part id so
+        /// Assigns every generated PartDefinitionSO to a screen, sorted by legacy part id so
         /// the scene is deterministic across import runs.
         /// </summary>
-        private static void SetCatalog(Component center)
+        private static void SetCatalog(Component screen)
         {
             string[] guids = AssetDatabase.FindAssets("t:PartDefinitionSO", new[] { CatalogFolder });
             var parts = new List<PartDefinitionSO>(guids.Length);
@@ -218,11 +241,11 @@ namespace ABRevival.Editor
             }
             parts.Sort((left, right) => left.partId.CompareTo(right.partId));
 
-            var serialized = new SerializedObject(center);
+            var serialized = new SerializedObject(screen);
             SerializedProperty catalog = serialized.FindProperty("catalogParts");
             if (catalog == null)
             {
-                throw new InvalidOperationException("[BootSceneBuilder] CenterController is missing catalogParts.");
+                throw new InvalidOperationException("[BootSceneBuilder] " + screen.GetType().Name + " is missing catalogParts.");
             }
 
             catalog.arraySize = parts.Count;
@@ -230,7 +253,7 @@ namespace ABRevival.Editor
                 catalog.GetArrayElementAtIndex(i).objectReferenceValue = parts[i];
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
-            Debug.Log($"[BootSceneBuilder] Assigned {parts.Count} PartDefinitionSO assets to Center.");
+            Debug.Log($"[BootSceneBuilder] Assigned {parts.Count} PartDefinitionSO assets to {screen.GetType().Name}.");
         }
 
         /// <summary>
@@ -249,6 +272,38 @@ namespace ABRevival.Editor
             SetSprite(serialized, "gradePlate", UiSpriteFolder, "ui_0061_hud_portrait_backing.png");
             SetSprite(serialized, "helpButton", UiSpriteFolder, "ui_0073_hud_button_help.png");
             SetMountArt(serialized);
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// Wires the frozen 2011 UI_HelpGame/UI_Data sprites into Info's serialized fields.
+        /// The runtime never guesses an asset path; missing art fails the scene build.
+        /// </summary>
+        private static void SetInfoSprites(Component info)
+        {
+            var serialized = new SerializedObject(info);
+            SetSprite(serialized, "infoBackground", UiSpriteFolder, "ui_0312_hangar_background.png");
+            SetSprite(serialized, "infoHeader", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "buttonPlate", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "backButton", UiSpriteFolder, "ui_0324_hangar_button_back_to_center.png");
+            SetSprite(serialized, "helpPageOne", UiSpriteFolder, "Help/UI_HelpGame.png");
+            SetSprite(serialized, "helpPageTwo", UiSpriteFolder, "Help/UI_HelpGame2.png");
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// Wires the frozen UI_MapBuilding loading mark and OK button plus the shared
+        /// backdrop and title plate into Ready. The runtime never guesses an asset path;
+        /// missing art fails the scene build.
+        /// </summary>
+        private static void SetReadySprites(Component ready)
+        {
+            var serialized = new SerializedObject(ready);
+            SetSprite(serialized, "readyBackground", UiSpriteFolder, "ui_0312_hangar_background.png");
+            SetSprite(serialized, "titlePlate", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "launchButton", UiSpriteFolder, "UI_MapBuilding/310_widget_normal.png");
+            SetSprite(serialized, "backButton", UiSpriteFolder, "ui_0324_hangar_button_back_to_center.png");
+            SetSprite(serialized, "loadingMark", UiSpriteFolder, "UI_MapBuilding/306_widget_normal.png");
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 

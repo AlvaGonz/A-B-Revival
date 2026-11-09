@@ -107,6 +107,9 @@ namespace ABRevival.Presentation
         /// <summary>Raised when the player asks for the Info/Records screen (#177).</summary>
         public event Action InfoRequested;
 
+        /// <summary>Raised when the player asks for the Ready/Briefing handoff (#178).</summary>
+        public event Action ReadyRequested;
+
         /// <summary>Current shop money, exposed for boot/save verification.</summary>
         public int Money => _shop != null ? _shop.Money : 0;
 
@@ -115,6 +118,14 @@ namespace ABRevival.Presentation
 
         /// <summary>The craft currently shown in the preview and stat card.</summary>
         public int SelectedCraftIndex => _selectedIndex;
+
+        /// <summary>
+        /// True when the selected Player craft is a valid assembly. The frozen Center
+        /// disables READY when no Player fly link exists (UIChooseFlyAI.afterFadeIn).
+        /// </summary>
+        public bool CanLaunch =>
+            _initialized && _fleet.Count > 0 && _playerIndex >= 0 &&
+            _playerIndex < _assemblies.Count && _assemblies[_playerIndex].IsValid;
 
         public int FleetCount => _fleet.Count;
 
@@ -435,7 +446,10 @@ namespace ABRevival.Presentation
             if (_bestButton != null) _bestButton.clicked += FillBestCompanions;
             if (_helpButton != null) _helpButton.clicked += () => OpenPlaceholder("HELP");
             if (_infoButton != null) _infoButton.clicked += () => InfoRequested?.Invoke();
-            if (_readyButton != null) _readyButton.clicked += () => OpenPlaceholder("READY");
+            if (_readyButton != null) _readyButton.clicked += () =>
+            {
+                if (CanLaunch) ReadyRequested?.Invoke();
+            };
             if (_shopButton != null) _shopButton.clicked += () => ShopRequested?.Invoke();
             if (_factoryButton != null) _factoryButton.clicked += () => FactoryRequested?.Invoke();
             if (_backButton != null) _backButton.clicked += () => OpenPlaceholder("MAIN MENU");
@@ -512,6 +526,12 @@ namespace ABRevival.Presentation
             RefreshTable();
             RefreshSelected();
             RefreshCompanions();
+            RefreshReady();
+        }
+
+        private void RefreshReady()
+        {
+            if (_readyButton != null) _readyButton.SetEnabled(CanLaunch);
         }
 
         private void RefreshHeader()
