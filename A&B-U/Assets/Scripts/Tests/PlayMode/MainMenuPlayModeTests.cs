@@ -287,6 +287,8 @@ namespace ABRevival.Tests.PlayMode
                         Assert.AreEqual(1f, root.Q(topButton).resolvedStyle.opacity, 0.001f,
                             "The live top control must be visible at " + size + ": " + topButton);
 
+                    AssertMainMenuGeometry(root, size.ToString());
+
                     PlayModeBoot.Click(root.Q<Button>("options-button"));
                     for (int i = 0; i < 8; i++) yield return null;
                     OptionsController options = Object.FindAnyObjectByType<OptionsController>();
@@ -355,6 +357,7 @@ namespace ABRevival.Tests.PlayMode
 
                     VisualElement root = document.rootVisualElement;
                     AssertMainMenuLayers(root);
+                    AssertMainMenuGeometry(root, size.ToString());
                     string mainPath = Path.Combine(folder, "main-menu-" + size.x + "x" + size.y + ".png");
                     WriteCapture(target, mainPath);
                     AssertCaptureHasContent(mainPath, "Main menu " + size);
@@ -445,6 +448,39 @@ namespace ABRevival.Tests.PlayMode
             foreach (Image image in root.Query<Image>("sprite-art").ToList())
                 Assert.IsFalse(image.sprite != null && image.sprite.name.Contains("UI_Main_Hero"),
                     "UI_Main_Hero must not be drawn by the main menu.");
+        }
+
+        private static void AssertMainMenuGeometry(VisualElement root, string label)
+        {
+            VisualElement surface = root.Q("main-root");
+            VisualElement title = root.Q("main-title");
+            VisualElement ship = root.Q("main-ship");
+            Assert.IsNotNull(surface, "Main root is missing at " + label);
+            Assert.IsNotNull(title, "Main title is missing at " + label);
+            Assert.IsNotNull(ship, "Main ship is missing at " + label);
+
+            Assert.Greater(ship.worldBound.width, 0f, "Ship width must be positive at " + label);
+            Assert.Greater(ship.worldBound.height, 0f, "Ship height must be positive at " + label);
+            Assert.GreaterOrEqual(title.worldBound.xMin, surface.worldBound.xMin - 1f,
+                "The title must stay inside the root at " + label);
+            Assert.LessOrEqual(title.worldBound.xMax, surface.worldBound.xMax + 1f,
+                "The title must stay inside the root at " + label);
+
+            float bottomControlsTop = float.MaxValue;
+            foreach (string button in new[] { "play-button", "data-button", "options-button", "credits-button" })
+                bottomControlsTop = Mathf.Min(bottomControlsTop, root.Q(button).worldBound.yMin);
+
+            float bandHeight = bottomControlsTop - title.worldBound.yMax;
+            float gapTop = ship.worldBound.yMin - title.worldBound.yMax;
+            float gapBottom = bottomControlsTop - ship.worldBound.yMax;
+            Assert.AreEqual(gapTop, gapBottom, bandHeight * 0.01f,
+                "Ship top and bottom gaps must match within 1% of the band at " + label);
+
+            Rect shipBounds = ship.worldBound;
+            shipBounds.width = Mathf.Max(0f, shipBounds.width - 0.01f);
+            foreach (string topButton in new[] { "link-button", "player-button" })
+                Assert.IsFalse(shipBounds.Overlaps(root.Q(topButton).worldBound),
+                    "The ship must not overlap " + topButton + " at " + label);
         }
 
         private static void AssertSprite(VisualElement element, string spriteName)

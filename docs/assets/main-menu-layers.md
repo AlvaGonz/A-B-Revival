@@ -57,6 +57,13 @@ compiled asset. It contains `ASSEMBLY AND BATTLE` and the `THE STORY IN THE SPAC
 with no clipping on any edge (content bbox `0,0–393,52`). Top-centre pivot `(0.5, 1.0)` =
 (197, 0) px, so the sprite hangs down from the anchored top edge.
 
+### Subtitle colour (#207)
+
+The unfiltered sprite 444 export rendered the sub-line black, which vanished against the
+starfield. Owner-approved #207 recoloured **only the subtitle** white to match the 2011 page
+render; the main title gradient and the alpha channel are unchanged. `UI_Main_Title.png`
+stays 394×52 and keeps its original `.meta` (GUID `2f3617872ba41259c97de1f2bde65c15`).
+
 ## Intentionally not used: shape 442 plate
 
 The grey page plate, top bar and side spikes are all vector paths in shape 442. They are
@@ -93,7 +100,8 @@ Neither sprite is in `UiScreensAtlas.spriteatlasv2`: the main menu renders them 
 # title sprite 444, frame 1
 & "C:\Program Files (x86)\FFDec\ffdec-cli.exe" -export sprite <temp> `
   "src\assets\binaryData\9_all.AllData_ui.bin"
-# -> <temp>\DefineSprite_444\1.png
+# -> <temp>\DefineSprite_444\1.png (black subtitle: apply the owner-approved
+#    white subtitle recolour from #207 before committing)
 ```
 
 ## Revert point
@@ -114,3 +122,9 @@ Neither sprite is in `UiScreensAtlas.spriteatlasv2`: the main menu renders them 
 - Title pivot is its top-centre; anchor it to the top of the screen so the sprite grows down.
 - `UI_Main.png` and `UI_Main_Hero.png` remain in the tree as reference but are no longer drawn
   by the menu.
+- The ship sits in the band between the title bottom and the bottom control row with equal
+  top and bottom gaps. The PlayMode guard allows a mismatch of at most **1 % of the band
+  height**.
+- Safe area: the title top and the bottom control margin use the larger of the designed inset
+  and the reported safe-area inset + 8 logical px. A full safe area (desktop/editor) leaves
+  the designed layout unchanged.

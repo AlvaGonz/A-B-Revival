@@ -7,8 +7,8 @@ namespace ABRevival.Presentation
 {
     /// <summary>
     /// Scene entry point for the frozen 2011 UIMain page: play, options, data, credits and
-    /// the player entry at 1920x1080 full-bleed. The menu recomposes the frozen background,
-    /// title lettering and ship as separate layers (ADR 0024); the starfield fills the screen.
+    /// the player entry. The menu recomposes the frozen background, title lettering and ship
+    /// as separate responsive layers (ADR 0024); the starfield fills the screen.
     /// Credits, player and the VARGAMES link have no revival screen yet and report that
     /// explicitly instead of silently doing nothing.
     /// Original game IP: Vargames (2011).
@@ -28,6 +28,7 @@ namespace ABRevival.Presentation
         private const float ShipWidthFraction = 0.8f;
         private const float ShipBandMargin = 20f;
         private const float TopControlLeft = 492.15f;
+        private const float SafeAreaPadding = 8f;
 
         [Header("Manual layout (tune in the Boot scene Inspector)")]
         [Tooltip("Multiplier on the live button size.")]
@@ -217,32 +218,46 @@ namespace ABRevival.Presentation
 
             _lastRootSize = new Vector2(width, height);
             float pageScale = width / PageWidth;
+            float titleLeft = TitleLeft * pageScale;
+            float titleWidth = TitleWidth * pageScale;
+            float titleHeight = TitleHeight * pageScale;
 
-            _title.style.left = TitleLeft * pageScale;
-            _title.style.top = TitleTop * pageScale;
-            _title.style.width = TitleWidth * pageScale;
-            _title.style.height = TitleHeight * pageScale;
+            float safeTop = 0f;
+            float safeBottom = 0f;
+            if (Screen.height > 0f)
+            {
+                Rect safeArea = Screen.safeArea;
+                safeTop = (1f - safeArea.yMax / Screen.height) * height;
+                safeBottom = safeArea.yMin / Screen.height * height;
+            }
 
-            LayoutBottomButton(_playButton, 20.15f, height, pageScale, buttonScale, bottomMargin);
-            LayoutBottomButton(_dataButton, 176.55f, height, pageScale, buttonScale, bottomMargin);
-            LayoutBottomButton(_optionsButton, 335.75f, height, pageScale, buttonScale, bottomMargin);
-            LayoutBottomButton(_creditsButton, 492.15f, height, pageScale, buttonScale, bottomMargin);
+            float titleTop = Mathf.Max(TitleTop * pageScale, safeTop + SafeAreaPadding);
+            _title.style.left = titleLeft;
+            _title.style.top = titleTop;
+            _title.style.width = titleWidth;
+            _title.style.height = titleHeight;
+
+            float scaledBottomMargin = Mathf.Max(bottomMargin * pageScale, safeBottom + SafeAreaPadding);
+            LayoutBottomButton(_playButton, 20.15f, height, pageScale, buttonScale, scaledBottomMargin);
+            LayoutBottomButton(_dataButton, 176.55f, height, pageScale, buttonScale, scaledBottomMargin);
+            LayoutBottomButton(_optionsButton, 335.75f, height, pageScale, buttonScale, scaledBottomMargin);
+            LayoutBottomButton(_creditsButton, 492.15f, height, pageScale, buttonScale, scaledBottomMargin);
             LayoutScreenButton(_linkButton, TopControlLeft, 51.2f, pageScale, buttonScale);
             LayoutScreenButton(_playerButton, TopControlLeft, 103.85f, pageScale, buttonScale);
 
             // Ship fills a centred band between the title bottom and the bottom control row,
             // capped at 80% of the width so portrait phones keep side margins.
             float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
-            float controlTop = height - ButtonHeight * sizeScale - bottomMargin * pageScale;
-            float bandTop = (TitleTop + TitleHeight) * pageScale + ShipBandMargin * pageScale;
+            float controlTop = height - ButtonHeight * sizeScale - scaledBottomMargin;
+            float bandTop = titleTop + titleHeight + ShipBandMargin * pageScale;
             float bandBottom = controlTop - ShipBandMargin * pageScale;
             float bandHeight = Mathf.Max(0f, bandBottom - bandTop);
+            float topControlLeft = TopControlLeft * pageScale;
             float maxShipWidth = width * ShipWidthFraction;
             if (width > height)
             {
                 // A centred landscape ship stops at the top-right control column instead of
                 // passing behind VARGAMES/MUSIC PLAYER (visible on 4:3 tablets).
-                float topControlLeft = TopControlLeft * pageScale;
                 maxShipWidth = Mathf.Min(maxShipWidth,
                     Mathf.Max(0f, 2f * (topControlLeft - width * 0.5f)));
             }
@@ -252,21 +267,48 @@ namespace ABRevival.Presentation
 
             float shipWidth = ShipWidth * shipScale;
             float shipHeight = ShipHeight * shipScale;
-            _ship.style.left = (width - shipWidth) * 0.5f;
-            _ship.style.top = bandTop + (bandHeight - shipHeight) * 0.5f;
+            float shipLeft = (width - shipWidth) * 0.5f;
+            float shipTop = bandTop + (bandHeight - shipHeight) * 0.5f;
+            _ship.style.left = shipLeft;
+            _ship.style.top = shipTop;
             _ship.style.width = shipWidth;
             _ship.style.height = shipHeight;
+
+            // Development guards for the responsive contract.
+            Debug.Assert(shipWidth > 0f && shipHeight > 0f,
+                "[MainMenu] Ship collapsed to a non-positive size.");
+            Debug.Assert(titleLeft >= 0f && titleLeft + titleWidth <= width,
+                "[MainMenu] Title leaves the horizontal root bounds.");
+            float gapTop = shipTop - bandTop;
+            float gapBottom = bandBottom - (shipTop + shipHeight);
+            Debug.Assert(Mathf.Abs(gapTop - gapBottom) <= bandHeight * 0.01f,
+                "[MainMenu] Ship is not vertically centred in its band.");
+            if (width > height)
+            {
+                // The landscape cap above guarantees horizontal separation from the top-right
+                // controls; the epsilon keeps the touching 4:3 edge from tripping the guard.
+                float buttonWidth = ButtonWidth * sizeScale;
+                float buttonHeight = ButtonHeight * sizeScale;
+                var shipRect = new Rect(shipLeft, shipTop,
+                    Mathf.Max(0f, shipWidth - 0.01f), shipHeight);
+                Debug.Assert(!shipRect.Overlaps(new Rect(
+                        topControlLeft, 51.2f * pageScale, buttonWidth, buttonHeight)),
+                    "[MainMenu] Ship overlaps the VARGAMES control.");
+                Debug.Assert(!shipRect.Overlaps(new Rect(
+                        topControlLeft, 103.85f * pageScale, buttonWidth, buttonHeight)),
+                    "[MainMenu] Ship overlaps the MUSIC PLAYER control.");
+            }
         }
 
         private static void LayoutBottomButton(Button button, float pageX, float screenHeight,
-            float pageScale, float buttonScale, float bottomMargin)
+            float pageScale, float buttonScale, float scaledBottomMargin)
         {
             if (button == null) return;
             float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
             float buttonWidth = ButtonWidth * sizeScale;
             float buttonHeight = ButtonHeight * sizeScale;
             button.style.left = pageX * pageScale;
-            button.style.top = screenHeight - buttonHeight - (bottomMargin * pageScale);
+            button.style.top = screenHeight - buttonHeight - scaledBottomMargin;
             button.style.width = buttonWidth;
             button.style.height = buttonHeight;
         }

@@ -61,3 +61,11 @@ Extraction confirmed the split described in Research and refined it in one way:
   plate": no lettering path had to be edited or deleted, and no redrawn title asset is produced.
 
 Provenance, pivots and import settings: `docs/assets/main-menu-layers.md`.
+
+## Implementation note (#207)
+
+The unfiltered `DefineSprite` 444 export carried a black subtitle (`THE STORY IN THE SPACE`)
+that disappeared against the darker starfield. With owner approval the subtitle was
+recoloured white; the main title gradient and the alpha channel are unchanged, and the
+sprite stays 394×52 with the same top-centre pivot and `.meta` GUID. This is the second
+owner-approved art adjustment under this ADR.

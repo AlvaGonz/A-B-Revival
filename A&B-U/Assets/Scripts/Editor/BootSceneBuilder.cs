@@ -336,10 +336,6 @@ namespace ABRevival.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        /// <summary>
-        /// Wires the frozen UI_MapBuilding page and OK plate plus the shared title plate
-        /// into Ready. The runtime never guesses an asset path; missing art fails the scene build.
-        /// </summary>
         /// <summary>Wires the frozen UIMain layers and its six live button widgets.</summary>
         private static void SetMainMenuSprites(Component mainMenu)
         {
@@ -374,6 +370,10 @@ namespace ABRevival.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        /// <summary>
+        /// Wires the frozen UI_MapBuilding page and OK plate plus the shared title plate
+        /// into Ready. The runtime never guesses an asset path; missing art fails the scene build.
+        /// </summary>
         private static void SetReadySprites(Component ready)
         {
             var serialized = new SerializedObject(ready);

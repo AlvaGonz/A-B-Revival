@@ -1,7 +1,7 @@
-/* Main menu (frozen 2011 UI_Main): 1920x1080 full-bleed.
+/* Main menu (frozen 2011 UI_Main): responsive full-bleed composition.
    The menu recomposes the frozen layers: one starfield, the title lettering at
    the top, the ship centred between the title and the controls (ADR 0024). The
-   six live buttons keep the frozen page positions and carry the original widget
+   six live buttons keep the frozen page proportions and carry the original widget
    art. Original game IP: Vargames (2011). */
 
 .main-root {
