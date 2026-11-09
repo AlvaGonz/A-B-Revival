@@ -23,21 +23,35 @@ namespace ABRevival.Presentation
         private const float TitleHeight = 52f;
         private const float TitleLeft = 20.15f;
         private const float TitleTop = 10f;
+        private const float TitlePlateWidth = 440f;
+        private const float TitlePlateHeight = 71f;
+        private const float TitlePlateLeft = 14f;
+        private const float TitlePlateTop = 0f;
         private const float ShipWidth = 427f;
         private const float ShipHeight = 344f;
         private const float ShipWidthFraction = 0.8f;
         private const float ShipBandMargin = 20f;
-        private const float TopControlLeft = 492.15f;
         private const float SafeAreaPadding = 8f;
 
         [Header("Manual layout (tune in the Boot scene Inspector)")]
         [Tooltip("Multiplier on the live button size.")]
         [SerializeField] private float buttonScale = 1f;
-        [Tooltip("Bottom margin in page pixels before scaling.")]
+        [Tooltip("Bottom margin in page pixels; used when Anchor Bottom Row is on.")]
         [SerializeField] private float bottomMargin = 20f;
+        [Tooltip("Keep the four bottom buttons bottom-anchored. Off uses each authored Y.")]
+        [SerializeField] private bool anchorBottomRow = true;
+
+        [Header("Button positions (page pixels)")]
+        [SerializeField] private Vector2 playButtonPosition = new Vector2(20.15f, 469.1f);
+        [SerializeField] private Vector2 dataButtonPosition = new Vector2(176.55f, 469.1f);
+        [SerializeField] private Vector2 optionsButtonPosition = new Vector2(335.75f, 470.1f);
+        [SerializeField] private Vector2 creditsButtonPosition = new Vector2(492.15f, 470.1f);
+        [SerializeField] private Vector2 linkButtonPosition = new Vector2(492.15f, 51.2f);
+        [SerializeField] private Vector2 playerButtonPosition = new Vector2(492.15f, 103.85f);
 
         [Header("Main menu sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite backdrop;
+        [SerializeField] private Sprite titlePlateArt;
         [SerializeField] private Sprite titleArt;
         [SerializeField] private Sprite shipArt;
         [SerializeField] private Sprite playNormal;
@@ -55,6 +69,7 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite playerHover;
 
         private UIDocument _document;
+        private VisualElement _titlePlate;
         private VisualElement _title;
         private VisualElement _ship;
         private VisualElement _deferred;
@@ -136,6 +151,7 @@ namespace ABRevival.Presentation
 
         private void Bind(VisualElement root)
         {
+            _titlePlate = root.Q("main-title-plate");
             _title = root.Q("main-title");
             _ship = root.Q("main-ship");
             _deferred = root.Q("main-deferred");
@@ -191,8 +207,9 @@ namespace ABRevival.Presentation
 
         private void ApplySkin(VisualElement root)
         {
-            // One background: the frozen starfield. Title and ship are separate layers.
+            // One background: the frozen starfield. Title plate, title and ship are separate layers.
             SetSprite(root, "main-backdrop", backdrop, ScaleMode.ScaleAndCrop);
+            SetSprite(root, "main-title-plate", titlePlateArt, ScaleMode.StretchToFill);
             SetSprite(root, "main-title", titleArt, ScaleMode.StretchToFill);
             SetSprite(root, "main-ship", shipArt, ScaleMode.StretchToFill);
         }
@@ -212,7 +229,7 @@ namespace ABRevival.Presentation
 
         private void FitPage(float width, float height)
         {
-            if (_title == null || _ship == null || width <= 0f || height <= 0f) return;
+            if (_titlePlate == null || _title == null || _ship == null || width <= 0f || height <= 0f) return;
             if (Mathf.Approximately(width, _lastRootSize.x) && Mathf.Approximately(height, _lastRootSize.y))
                 return;
 
@@ -237,13 +254,23 @@ namespace ABRevival.Presentation
             _title.style.width = titleWidth;
             _title.style.height = titleHeight;
 
+            // The plate moves with the title; the top bar and outer spike tips are not in the asset.
+            _titlePlate.style.left = titleLeft - (TitleLeft - TitlePlateLeft) * pageScale;
+            _titlePlate.style.top = titleTop - (TitleTop - TitlePlateTop) * pageScale;
+            _titlePlate.style.width = TitlePlateWidth * pageScale;
+            _titlePlate.style.height = TitlePlateHeight * pageScale;
+
             float scaledBottomMargin = Mathf.Max(bottomMargin * pageScale, safeBottom + SafeAreaPadding);
-            LayoutBottomButton(_playButton, 20.15f, height, pageScale, buttonScale, scaledBottomMargin);
-            LayoutBottomButton(_dataButton, 176.55f, height, pageScale, buttonScale, scaledBottomMargin);
-            LayoutBottomButton(_optionsButton, 335.75f, height, pageScale, buttonScale, scaledBottomMargin);
-            LayoutBottomButton(_creditsButton, 492.15f, height, pageScale, buttonScale, scaledBottomMargin);
-            LayoutScreenButton(_linkButton, TopControlLeft, 51.2f, pageScale, buttonScale);
-            LayoutScreenButton(_playerButton, TopControlLeft, 103.85f, pageScale, buttonScale);
+            LayoutBottomButton(_playButton, playButtonPosition, height, pageScale, buttonScale,
+                scaledBottomMargin, anchorBottomRow);
+            LayoutBottomButton(_dataButton, dataButtonPosition, height, pageScale, buttonScale,
+                scaledBottomMargin, anchorBottomRow);
+            LayoutBottomButton(_optionsButton, optionsButtonPosition, height, pageScale, buttonScale,
+                scaledBottomMargin, anchorBottomRow);
+            LayoutBottomButton(_creditsButton, creditsButtonPosition, height, pageScale, buttonScale,
+                scaledBottomMargin, anchorBottomRow);
+            LayoutScreenButton(_linkButton, linkButtonPosition, pageScale, buttonScale);
+            LayoutScreenButton(_playerButton, playerButtonPosition, pageScale, buttonScale);
 
             // Ship fills a centred band between the title bottom and the bottom control row,
             // capped at 80% of the width so portrait phones keep side margins.
@@ -252,7 +279,7 @@ namespace ABRevival.Presentation
             float bandTop = titleTop + titleHeight + ShipBandMargin * pageScale;
             float bandBottom = controlTop - ShipBandMargin * pageScale;
             float bandHeight = Mathf.Max(0f, bandBottom - bandTop);
-            float topControlLeft = TopControlLeft * pageScale;
+            float topControlLeft = linkButtonPosition.x * pageScale;
             float maxShipWidth = width * ShipWidthFraction;
             if (width > height)
             {
@@ -275,26 +302,28 @@ namespace ABRevival.Presentation
             _ship.style.height = shipHeight;
         }
 
-        private static void LayoutBottomButton(Button button, float pageX, float screenHeight,
-            float pageScale, float buttonScale, float scaledBottomMargin)
+        private static void LayoutBottomButton(Button button, Vector2 position, float screenHeight,
+            float pageScale, float buttonScale, float scaledBottomMargin, bool anchorBottom)
         {
             if (button == null) return;
             float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
             float buttonWidth = ButtonWidth * sizeScale;
             float buttonHeight = ButtonHeight * sizeScale;
-            button.style.left = pageX * pageScale;
-            button.style.top = screenHeight - buttonHeight - scaledBottomMargin;
+            button.style.left = position.x * pageScale;
+            button.style.top = anchorBottom
+                ? screenHeight - buttonHeight - scaledBottomMargin
+                : position.y * pageScale;
             button.style.width = buttonWidth;
             button.style.height = buttonHeight;
         }
 
-        private static void LayoutScreenButton(Button button, float pageX, float pageY,
+        private static void LayoutScreenButton(Button button, Vector2 position,
             float pageScale, float buttonScale)
         {
             if (button == null) return;
             float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
-            button.style.left = pageX * pageScale;
-            button.style.top = pageY * pageScale;
+            button.style.left = position.x * pageScale;
+            button.style.top = position.y * pageScale;
             button.style.width = ButtonWidth * sizeScale;
             button.style.height = ButtonHeight * sizeScale;
         }

@@ -19,6 +19,7 @@ background and the ship; the lettering comes from a separate sprite 444 / shape 
 | Layer | Source symbol | Committed PNG | Native size | Pivot | Alpha |
 |---|---|---|---:|---|---|
 | Background | bitmap **5** | `A&B-U/Assets/Art/Sprites/UI/ui_0005.png` (unchanged, already committed) | 640×480 | (0.021028, 0.923337) | opaque, alpha 255 everywhere |
+| Title plate | shape **442** (vector, plate only) | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_TitlePlate.png` | 440×71 | (0, 1) top-left | 0–255, transparent outside the plate |
 | Ship | bitmap **441** | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_Ship.png` | 427×344 | (0.5, 0.5) centre | 0–255, 75,400 fully transparent px, all four corners transparent |
 | Title lettering | `DefineSprite` **444** → shape **443** | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_Title.png` | 394×52 | (0.5, 1.0) top-centre | 0–255, clean edges, all four corners transparent |
 
@@ -64,13 +65,13 @@ starfield. Owner-approved #207 recoloured **only the subtitle** white to match t
 render; the main title gradient and the alpha channel are unchanged. `UI_Main_Title.png`
 stays 394×52 and keeps its original `.meta` (GUID `2f3617872ba41259c97de1f2bde65c15`).
 
-## Intentionally not used: shape 442 plate
+## Title plate (#210)
 
-The grey page plate, top bar and side spikes are all vector paths in shape 442. They are
-**not** extracted, **not** committed and **not** drawn by the menu. There is consequently no
-lettering path edit and no title-plate PNG: the lettering lives in sprite 444 / shape 443, so
-dropping the plate is enough to remove the bar and the spikes. This is the owner-approved
-change from ADR 0024; nothing else about the art is modified.
+The grey page plate is restored from the same shape 442 vector render, cropped to the page
+rectangle `(14, 0)–(454, 71)`. The crop excludes the top grey bar and the outermost spike
+tips; the inner plate decoration remains. The lettering stays sprite 444 / shape 443 and is
+drawn on top of the plate. The plate is 440×71 at PPU 1, pivot `(0, 1)` top-left, and moves
+with the title (including safe-area insets). This supersedes the "not used" note from #206.
 
 ## Import contract
 
@@ -84,6 +85,7 @@ Both new PNGs use `TextureImporter` settings copied from `ui_0005.png.meta` (see
 
 | PNG | Meta GUID |
 |---|---|
+| `UI_Main_TitlePlate.png` | `0d4fca79ec274f1286b3b3e4be21f64b` |
 | `UI_Main_Ship.png` | `091aa3c533f7116874136a9a56468412` |
 | `UI_Main_Title.png` | `2f3617872ba41259c97de1f2bde65c15` |
 
@@ -128,3 +130,7 @@ Neither sprite is in `UiScreensAtlas.spriteatlasv2`: the main menu renders them 
 - Safe area: the title top and the bottom control margin use the larger of the designed inset
   and the reported safe-area inset + 8 logical px. A full safe area (desktop/editor) leaves
   the designed layout unchanged.
+- Button positions are serialized on `MainMenuController` in page pixels. `anchorBottomRow`
+  defaults on; turning it off uses each bottom button's authored Y.
+- The title plate is drawn behind the title and moves with it; it is not the full shape 442
+  page plate (top bar and outer spike tips are cropped).
