@@ -20,7 +20,7 @@ background and the ship; the plate is vector; the lettering comes from sprite 44
 | Layer | Source | Committed PNG | Native size | Pivot | Alpha |
 |---|---|---|---:|---|---|
 | Background | bitmap **5** | `A&B-U/Assets/Art/Sprites/UI/ui_0005.png` (already committed) | 640×480 | (0.021028, 0.923337) | opaque |
-| Title composite | plate (shape 442) + main title + subtitle | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_TitleComposite.png` | 460×92 | (0, 1) top-left | 0–255, transparent outside the plate |
+| Title (full) | plate (shape 442) + letters | `A&B-U/Assets/Art/Sprites/UI/Screens/Title/UI_Main_TitleFull.png` | 460×92 | (0, 1) top-left | 0–255, transparent outside the plate |
 | Ship | bitmap **441** | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_Ship.png` | 427×344 | (0.5, 0.5) centre | 0–255, 75,400 fully transparent px |
 
 ### Background: no new file
@@ -34,17 +34,28 @@ sha256(ui_0005.png)     = 8FD2CC34B81032A518DE120BC14C16149028FE06B37E72D82CBD60
 
 `ui_0005.png` **is** the background layer; do not stack a second starfield.
 
-### Title composite (#210)
+### Title components (#210)
 
-One image, built from the original parts — not a page crop:
+The title is extracted both as a ready-to-render full image and as separate components for
+editing. All are 460×92 canvases except the two letter crops; offsets are page pixels inside
+the full canvas.
 
-- **Plate:** full shape 442 vector render, cool-tinted to match the page.
+| Component | File | Size | Offset | GUID |
+|---|---|---|---:|---|
+| Plate only | `Screens/Title/UI_Main_TitlePlate.png` | 460×92 | 0, 0 | `9add6c342666455c872f8b91a6e96d5a` |
+| Letters only | `Screens/Title/UI_Main_TitleLetters.png` | 460×92 | 0, 0 | `3aad2517b8a74ea1a4c31e6ffcc2992e` |
+| Main title only | `Screens/Title/UI_Main_TitleMain.png` | 418×63 | 8, 0 | `54c3109ef3f248cfbb2717338f5fa171` |
+| Subtitle only | `Screens/Title/UI_Main_TitleSubtitle.png` | 402×21 | 16, 47 | `994b151d84604c0db0480b2b9971a554` |
+| Full (runtime) | `Screens/Title/UI_Main_TitleFull.png` | 460×92 | 0, 0 | `548dea93128743d5978f373d56082727` |
+
+- **Plate:** full shape 442 vector render, cool-tinted to match the page; includes the top bar
+  and side decoration.
 - **Main title:** sprite 444 main lettering with a blue outer glow (12 px padding).
 - **Subtitle:** sprite 444 subtitle rebuilt as black fill with a white outline.
+- **Full:** plate + letters, the runtime sprite used by `MainMenuController` (`titleArt`).
 
-The parts are composited at page scale into a 460×92 image. The composite is one runtime layer,
-so the whole title moves and scales as a unit; the position and size are serialized on
-`MainMenuController`. The raw export's unreadable black subtitle and missing glow are corrected.
+The raw export's unreadable black subtitle and missing glow are corrected; the original page
+and library remain the source of truth.
 
 ### Ship
 
@@ -63,7 +74,11 @@ Settings copied from `ui_0005.png.meta`:
 
 | PNG | Meta GUID |
 |---|---|
-| `UI_Main_TitleComposite.png` | `1d621215c8d5403c82fcdc07d54d2c02` |
+| `Title/UI_Main_TitlePlate.png` | `9add6c342666455c872f8b91a6e96d5a` |
+| `Title/UI_Main_TitleLetters.png` | `3aad2517b8a74ea1a4c31e6ffcc2992e` |
+| `Title/UI_Main_TitleMain.png` | `54c3109ef3f248cfbb2717338f5fa171` |
+| `Title/UI_Main_TitleSubtitle.png` | `994b151d84604c0db0480b2b9971a554` |
+| `Title/UI_Main_TitleFull.png` | `548dea93128743d5978f373d56082727` |
 | `UI_Main_Ship.png` | `091aa3c533f7116874136a9a56468412` |
 
 Neither is in `UiScreensAtlas.spriteatlasv2`; the menu renders them through `UiSpriteSkin`'s
