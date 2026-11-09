@@ -15,6 +15,7 @@
   - Removed all Cinemachine and virtual-camera references from the body and the references file.
   - Reworked `references/follow-and-framing.md` for the 2D rig; kept the smoothing derivation, deadzone/look-ahead tuning, bounds clamp, group framing and transitions.
   - Retargeted related skills to the project's `ab-*` tree.
+  - Moved shake composition into `CombatCameraRig` (`_focus` + `_shakeOffset`, `ScreenToWorld` on `_focus`), removed the parallel follow component and rebased units on ADR 0017/0021.
 
 ## Why this copy exists
 

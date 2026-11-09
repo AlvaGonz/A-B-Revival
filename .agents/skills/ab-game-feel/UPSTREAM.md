@@ -15,6 +15,7 @@
   - Replaced the Godot tween/particle/Cinemachine binding summary with this project's presentation hooks and `AudioTrigger` values.
   - Removed the 3D orbit/Cinemachine shake references and the Godot/Phaser bindings.
   - Added references to ADR 0004 combat telemetry, ADR 0010 fixed timestep and ADR 0022 palette roles.
+  - Replaced the coroutine/timescale hit-stop with an unscaled presentation deadline and routed VFX/audio through `MissionSpriteView.SpawnImpact` and `AudioTrigger`; rebased shake units on ADR 0017/0021.
 
 ## Why this copy exists
 

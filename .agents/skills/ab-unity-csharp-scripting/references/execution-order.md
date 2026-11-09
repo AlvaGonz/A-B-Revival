@@ -13,7 +13,7 @@ Per object, the engine calls these in this order:
 | Load | `Awake` | once, when the object loads — even if the script component is disabled, but not while the GameObject is inactive | cache `GetComponent`, set up self |
 | Enable | `OnEnable` | each time the object/script enables | subscribe to events |
 | Init | `Start` | once, before first `Update`, after every `Awake` | wiring that depends on other objects |
-| Physics | `FixedUpdate` | every fixed step (default 0.02s) | engine-level fixed work; keep gameplay simulation out of it in this project |
+| Physics | `FixedUpdate` | every fixed step (0.0166667 s, 60 Hz) | engine-level fixed work; keep gameplay simulation out of it in this project |
 | Physics | `OnTriggerXXX` / `OnCollisionXXX` | during the physics step | collision/trigger response |
 | Frame | `Update` | once per rendered frame | presentation state, non-physics logic |
 | Frame | `LateUpdate` | once per frame, after all `Update`s | camera/view follow, final pose apply |

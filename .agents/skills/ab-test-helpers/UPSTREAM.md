@@ -12,6 +12,7 @@
   - Retargeted the helper layout to `A&B-U/Assets/Scripts/Tests` and `A&B-U/Assets/Scripts/Tests/PlayMode`, with the existing `ABRevival.Tests` and `ABRevival.Tests.PlayMode` assemblies.
   - Reworked the content from a generated helper library into project-wide patterns and small reusable helpers for the whole suite, not one screen.
   - Removed non-Unity engine sections, the generated-helper workflow, studio automation modes, studio output paths and upstream slash commands.
+  - Documented per-assembly `TestPaths` copies (no shared test-support assembly without owner approval) and corrected the duplication inventory.
 
 ## Why this copy exists
 

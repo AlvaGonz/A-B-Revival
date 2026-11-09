@@ -76,13 +76,13 @@ keep it coherent:
 ### 1. Screen shake by decaying trauma (smooth, not random jitter)
 
 ```csharp
-// Trauma 0..1; shake = trauma^2. Write the offset to a small added hook on the
-// existing camera rig (see ab-camera-systems), never to the ship body. It decays
-// every frame and ends on its own.
+// Trauma 0..1; shake = trauma^2. Write the offset to the rig's `_shakeOffset`
+// hook (see ab-camera-systems), never to the ship body. It decays every frame
+// and ends on its own.
 float _trauma;
 float _time;
 const float Decay = 1.2f;
-static readonly Vector2 MaxOffset = new Vector2(8f, 6f); // design-space pixels
+static readonly Vector2 MaxOffset = new Vector2(8f, 6f); // world units
 
 public void AddTrauma(float amount) => _trauma = Mathf.Clamp01(_trauma + amount);
 
@@ -99,31 +99,38 @@ void LateUpdate()
 }
 ```
 
-The rig applies this after its focus position (pass the combined position to
-`Focus`, or add a `SetShakeOffset` hook as `ab-camera-systems` describes) and
-keeps `ScreenToWorld` on the un-shaken focus so aiming does not drift. Keep the
-offset small: the game is designed at 640x480 (ADR 0005/0021), where 8 px is
-already visible.
+The rig composes `_focus + _shakeOffset` in `LateUpdate` (see
+`ab-camera-systems`) and keeps `ScreenToWorld` on `_focus` so aiming does not
+drift. Keep the offset small: one world unit is one frozen stage pixel (ADR
+0017) and the Short view is 1920x1080 design px -- the 640x360 stage at 3x (ADR
+0021) -- so 8 units is already a visible jolt.
 
 ### 2. Hit-stop / freeze frame (sell impact without stalling logic)
 
 ```csharp
-// Global slow uses Time.timeScale; a real-time wait restores it even at scale 0.
-// Only the newest hit-stop may restore, so overlapping hits do not cancel.
-int _hitStopId;
+// Presentation-only freeze: leaves the time scale untouched, so the 60 Hz
+// simulation keeps stepping (ADR 0010). A later hit only extends the deadline.
+float _hitStopUntilUnscaled;
+float _animTime;      // advanced by hand so the held frames are exact
 
-IEnumerator HitStop(float duration = 0.06f, float slow = 0.05f)
+public void RequestHitStop(float seconds) =>
+    _hitStopUntilUnscaled = Mathf.Max(_hitStopUntilUnscaled, Time.unscaledTime + seconds);
+
+bool IsFrozen => Time.unscaledTime < _hitStopUntilUnscaled;
+
+void LateUpdate()
 {
-    int id = ++_hitStopId;
-    Time.timeScale = slow;
-    yield return new WaitForSecondsRealtime(duration);
-    if (id == _hitStopId) Time.timeScale = 1f;
+    // Frozen frames hold the VFX pose and animation; gameplay, input and audio
+    // keep running. Advance the effect with the supplied step, not a coroutine.
+    float step = IsFrozen ? 0f : Time.unscaledDeltaTime;
+    _animTime += step;
+    AdvanceEffect(step);
 }
 ```
 
-Prefer a **local** freeze (pause the hit VFX, recoil pose or attacker animation)
-when the simulation must stay deterministic under ADR 0010. Use the global
-version only for a short impact moment and always restore with a real-time wait.
+The freeze lives entirely in presentation state, evaluated in `LateUpdate`.
+Never scale game time: the simulation, input and audio must stay on the real
+60 Hz step, and a stopped scale breaks job scheduling and the test gate.
 
 ### 3. Recoil on the firing craft (visual only)
 
@@ -133,7 +140,7 @@ version only for a short impact moment and always restore with a real-time wait.
 Vector2 _visualOffset;
 void OnFired(Vector2 shotDirection, float impulse)
 {
-    _visualOffset -= shotDirection.normalized * impulse; // 1..3 design px
+    _visualOffset -= shotDirection.normalized * impulse; // 1..3 world units
 }
 void Update()
 {
@@ -148,22 +155,35 @@ not recolor them per effect.
 ### 4. A feedback bundle scaled by importance
 
 ```csharp
-// One call per event; the tier keeps the whole game consistent.
-void Feedback(Vector2 at, Tier tier)
+// One call per event; the tier keeps the whole game consistent. Particles go
+// through MissionSpriteView.SpawnImpact, which fans out to the pooled
+// explosion/flash paths; never play a particle system directly.
+void Feedback(float2 at, Tier tier)
 {
     switch (tier)
     {
-        case Tier.Small:  _audio.Play(AudioTrigger.CombatWeaponLight); _shake.AddTrauma(0.15f); break;
-        case Tier.Medium: _audio.Play(AudioTrigger.CombatWeaponMedium); _shake.AddTrauma(0.4f);
-                          StartCoroutine(HitStop(0.04f)); _sparks.Play(at, 8); break;
-        case Tier.Large:  _audio.Play(AudioTrigger.CombatExplosion); _shake.AddTrauma(0.8f);
-                          StartCoroutine(HitStop(0.10f)); _sparks.Play(at, 24); break;
+        case Tier.Small:
+            _audio.PlayTrigger(AudioTrigger.CombatWeaponLight);
+            _shake.AddTrauma(0.15f);
+            break;
+        case Tier.Medium:
+            _audio.PlayTrigger(AudioTrigger.CombatWeaponMedium);
+            _shake.AddTrauma(0.4f);
+            RequestHitStop(0.04f);
+            _spriteView.SpawnImpact(at, partDetached: true, hullDestroyed: false);
+            break;
+        case Tier.Large:
+            _audio.PlayTrigger(AudioTrigger.CombatExplosion);
+            _shake.AddTrauma(0.8f);
+            RequestHitStop(0.10f);
+            _spriteView.SpawnImpact(at, partDetached: false, hullDestroyed: true);
+            break;
     }
 }
 ```
 
-Use the real `AudioTrigger` and particle assets that already exist; adding a new
-sound or sprite is asset work that needs ADR 0020 approval.
+Use the real `AudioTrigger` values and the existing `MissionSpriteView` effect
+paths; adding a new sound or sprite is asset work that needs ADR 0020 approval.
 
 ## Pitfalls
 
@@ -171,12 +191,12 @@ sound or sprite is asset work that needs ADR 0020 approval.
   collision, aiming and the HUD reticle mapping.
 - **Random offset every frame** buzzes like static. Drive shake from sampled
   sines and a decaying trauma so it is smooth and self-ending.
-- **Hit-stop with `WaitForSeconds`** never resumes at scale 0. Use
-  `WaitForSecondsRealtime`, and let only the newest hit-stop restore time.
-- **Hit-stop on every frame of a held attack** locks the game. Trigger once per
-  impact.
-- **Overlapping hit-stops** let an older timer restore time in the middle of a
-  newer freeze. Guard with an id, as above.
+- **Hit-stop by slowing game time** freezes the simulation, input and the
+  fixed-step gate. Hold the presentation state instead.
+- **Hit-stop on every frame of a held attack** locks the presentation. Trigger
+  once per impact.
+- **Overlapping hit-stops** let an older timer end a newer freeze. Guard with a
+  `Mathf.Max` on the deadline, as above.
 - **Permanent exaggeration** (scale never returns, shake never decays) becomes
   the new normal and stops reading as feedback.
 - **New colors or full-screen flashes.** They break the original palette and can

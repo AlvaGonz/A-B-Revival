@@ -15,6 +15,7 @@
   - Removed all 3D navigation and engine navmesh guidance; the project has no navmesh, ECS or 3D movement layer.
   - Replaced the target-selection guidance with a nearest-hostile `NativeArray` loop and deterministic tie-break.
   - Retargeted related skills to the project's `ab-*` tree.
+  - Corrected the steering sample to produce `ShipInput` (throttle/steering/boost), described the real `ShipMovementJob` integration, and aligned the Anchor/Escort sketch with `TacticalAIJob`.
 
 ## Why this copy exists
 

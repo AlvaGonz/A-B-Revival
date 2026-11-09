@@ -48,12 +48,12 @@ itself, use `ab-game-ai` or the player input path. For render cost, use
 5. **Clamp the visible rectangle, not the center.** Use the rig's
    `WorldViewportWidth` / `WorldViewportHeight` so the camera never shows outside
    the level at any aspect ratio.
-6. **Update after the simulation.** Read the player position after the 60 Hz
-   jobs complete and apply the camera in `LateUpdate` (or an equivalent
-   post-simulation step) to avoid one-frame lag.
+6. **Update after the simulation.** `RenderMissionFrame` calls `Focus` once per
+   rendered frame, after the 60 Hz mission step; the rig then applies the
+   composed transform in `LateUpdate`. Never read the player pose mid-step.
 7. **Preserve the input mapping.** `ScreenToWorld` and `ScreenToViewport`
-   already account for the preset and real aspect; any follow offset must be
-   removed from that mapping so aiming does not drift.
+   already account for the preset and real aspect; `ScreenToWorld` must read
+   `_focus`, so follow is included but the shake offset never is.
 8. **Verify at every preset and aspect.** Move the craft to corners and level
    edges at Short, Medium and Far, at 16:9 and 16:10; confirm no jitter, no
    peeking past bounds and a smooth stop.
@@ -76,77 +76,42 @@ float height = rig.WorldViewportHeight;
 turret mapping; if a new behavior needs those, add it to the rig behind owner
 approval.
 
-### 2. Frame-rate-independent smooth follow
+`GameFlowController.RenderMissionFrame` is the only per-frame caller: after the
+mission step it calls `_cameraRig?.Focus(player.position)` and then
+`_spriteView.Render(deltaTime)`. Follow work belongs in the rig that call
+reaches, not in a second component.
 
-```csharp
-// RIGHT: exponential smoothing; same feel at 30, 60 or 144 FPS. rate ~ 5..12.
-Vector2 Smooth(Vector2 current, Vector2 target, float rate, float dt)
-{
-    float t = 1f - Mathf.Exp(-rate * dt);
-    return Vector2.Lerp(current, target, t);
-}
-// WRONG: Vector2.Lerp(current, target, 0.1f) every frame.
-// Unity alternative: Vector2.SmoothDamp(current, target, ref velocity, smoothTime, maxSpeed, dt).
-```
+### 2. Follow, deadzone, look-ahead and bounds live in the rig
 
-Follow the focus point in `LateUpdate`, after `ScheduledCombatSimulation`
-completes and the player transform has moved.
+Keep the existing `Focus(Vector2)` entry point and make it the follow step:
+smooth toward the requested point with exponential smoothing
+(`1 - exp(-rate * dt)`), move `_focus` only by the overflow past the deadzone,
+ease the look-ahead offset toward the direction of travel, then clamp the
+visible rectangle with `WorldViewportWidth` / `WorldViewportHeight`.
 
-### 3. Deadzone + look-ahead (lead the craft, ignore jitter)
+Do not add a parallel follow component with its own `_focus` or `CameraTarget`:
+two owners of the camera position fight each other and break `ScreenToWorld`.
+The worked implementation, tuning ranges and the clamp helper are in
+`references/follow-and-framing.md` §1 and §2.
 
-```csharp
-// Move the focus only by the overflow beyond the deadzone, then aim ahead.
-Vector2 _focus;
-Vector2 CameraTarget(Vector2 playerPos, Vector2 playerVelocity, float dt)
-{
-    Vector2 to = playerPos - _focus;
-    Vector2 dz = new Vector2(48f, 32f);             // design-space pixels
-    _focus.x += Mathf.Max(Mathf.Abs(to.x) - dz.x, 0f) * Mathf.Sign(to.x);
-    _focus.y += Mathf.Max(Mathf.Abs(to.y) - dz.y, 0f) * Mathf.Sign(to.y);
+### 3. Shake is composed inside the rig
 
-    Vector2 leadGoal = playerVelocity.normalized * 64f;   // 40..120 px at 640x480
-    _lead = Vector2.Lerp(_lead, leadGoal, 1f - Mathf.Exp(-6f * dt)); // ease the lead
-    return _focus + _lead;
-}
-```
+`ab-game-feel` only calls `SetShakeOffset`; the rig keeps `_focus` unshaken and
+applies `_focus + _shakeOffset` in `LateUpdate`. Never pass a shaken position to
+`Focus`, and never let the shake offset enter `ScreenToWorld`, or the turret
+reticle jitters with the effect.
 
-Tune in design-space pixels: the base view is 640x480 and the world art runs at
-3x density (ADR 0021). A deadzone that feels right at Short is too tight at Far;
-scale the values by `CameraDistancePresets.ViewScale(preset)` if you expose them.
-
-### 4. Clamp the visible rectangle inside the level
-
-```csharp
-Vector2 ClampToLevel(Vector2 center, Rect level, float viewWidth, float viewHeight)
-{
-    float halfW = viewWidth * 0.5f, halfH = viewHeight * 0.5f;
-    float x = level.width  <= viewWidth  ? level.center.x : Mathf.Clamp(center.x, level.xMin + halfW, level.xMax - halfW);
-    float y = level.height <= viewHeight ? level.center.y : Mathf.Clamp(center.y, level.yMin + halfH, level.yMax - halfH);
-    return new Vector2(x, y);
-}
-```
-
-If the level is smaller than the view on an axis, center on that axis instead of
-clamping; otherwise the camera fights itself at the edges.
-
-### 5. Additive shake hook (owned trigger lives in `ab-game-feel`)
-
-```csharp
-// Smooth follow first, shake offset last. The offset is visual only and must
-// not feed ScreenToWorld, or the turret reticle will jitter with the shake.
-Vector2 finalFocus = ClampToLevel(CameraTarget(playerPos, playerVel, dt), level, w, h);
-rig.Focus(finalFocus + _shakeOffset);
-```
-
-If the rig needs a dedicated `SetShakeOffset` to keep the mapping clean, add it
-to `CombatCameraRig` and test `ScreenToWorld` at a non-zero offset.
+`SetShakeOffset(Vector2)` is **a hook to add** to `CombatCameraRig`, not an
+existing API. The full component (fields, `Focus`, `LateUpdate`, `ScreenToWorld`
+reading `_focus`, `SetShakeOffset`) is in
+`references/follow-and-framing.md` §4.
 
 ## Pitfalls
 
 - **`Lerp(pos, target, const)` per frame** is frame-rate dependent -- floatier at
   30 FPS, snappier at 144. Use `1 - exp(-rate * dt)` or `SmoothDamp`.
-- **Following before the target has moved** gives a one-frame lag jitter. Follow
-  in `LateUpdate`, after the simulation jobs complete.
+- **Following before the target has moved** gives a one-frame lag jitter. Focus
+  from `RenderMissionFrame`, after the mission step, and render in `LateUpdate`.
 - **No bounds clamp** shows background past the level edge. Clamp the view rect.
 - **No deadzone in a twitchy dogfight** makes the camera shake with every
   correction.
@@ -157,8 +122,8 @@ to `CombatCameraRig` and test `ScreenToWorld` at a non-zero offset.
 - **Snapping on respawn or mission start** is jarring. Hard-cut intentionally and
   reset the smoothing state; never let a large smoothing distance whip across
   the level.
-- **Shake driving the follow target** makes follow fight shake. Compose: follow,
-  clamp, then add the offset.
+- **Shake driving the follow target** makes follow fight shake. The rig keeps
+  `_focus` unshaken and composes `_focus + _shakeOffset` for rendering only.
 - **Assuming 3D depth or collision push-in.** This is a flat orthographic 2D
   view; level bounds and layering are the only spatial constraints.
 

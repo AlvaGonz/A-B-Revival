@@ -2,7 +2,8 @@
 
 Detail the `ab-game-feel` body defers here: the trauma math, easing cheat
 sheet, the rest of the feedback menu, importance tiers and accessibility.
-Snippets target Unity 6.6 C# and this project's 640x480 design space.
+Snippets target Unity 6.6 C#. One world unit is one frozen stage pixel (ADR
+0017); the Short view is 1920x1080 design px, the 640x360 stage at 3x (ADR 0021).
 
 ## 1. The trauma model (why shake feels good)
 
@@ -23,10 +24,10 @@ static float ShakeAxis(float phase, float t)
     => 0.6f * Mathf.Sin(t * 11f + phase) + 0.4f * Mathf.Sin(t * 23f + phase * 2f);
 ```
 
-Starting points in design-space pixels: `maxOffset = (6..10, 4..8)`, `decay =
+Starting points in world units: `maxOffset = (6..10, 4..8)`, `decay =
 1.0..1.5` trauma/sec, per-hit trauma `0.15` (light) -> `0.8` (heavy). Keep shake
-smaller than the upstream defaults: the base view is 640x480, so 8 px is already
-a visible jolt.
+smaller than the upstream defaults: one unit is one frozen stage pixel (ADR
+0017), so 8 units is already a visible jolt in the Short view.
 
 ## 2. Easing cheat sheet — which curve for which job
 
@@ -39,7 +40,8 @@ a visible jolt.
 | Smooth A to B both ends | ease-in-out | `Mathf.SmoothStep` | camera moves, menu slides |
 
 The project has no tween library. Prefer `Vector2.SmoothDamp`, `Mathf.SmoothStep`
-or a small hand-rolled ease in a coroutine; do not add a dependency for this.
+or a small hand-rolled ease evaluated in `LateUpdate`; do not add a dependency
+for this.
 
 ```csharp
 static float EaseOutBack(float k)                 // 0 -> 1, peaks ~10% past 1
@@ -49,20 +51,34 @@ static float EaseOutBack(float k)                 // 0 -> 1, peaks ~10% past 1
     return 1f + c3 * m * m * m + c1 * m * m;
 }
 
-IEnumerator Pop(Transform t, float duration = 0.18f)
+// Timestamp + delta evaluation, no coroutine: idle is a negative elapsed value.
+float _popElapsed = -1f;
+const float PopSeconds = 0.18f;
+Transform _popTarget;
+
+public void StartPop(Transform target)
 {
-    Vector3 squash = new Vector3(1.3f, 0.7f, 1f);
-    for (float e = 0f; e < duration; e += Time.deltaTime)
-    {
-        // Unclamped so the overshoot past Vector3.one survives the lerp.
-        t.localScale = Vector3.LerpUnclamped(squash, Vector3.one, EaseOutBack(e / duration));
-        yield return null;
-    }
-    t.localScale = Vector3.one;
+    _popTarget = target;
+    _popElapsed = 0f;
+}
+
+void LateUpdate()
+{
+    if (_popElapsed < 0f) return;
+
+    _popElapsed += Time.unscaledDeltaTime;
+    float k = Mathf.Clamp01(_popElapsed / PopSeconds);
+    // Unclamped so the overshoot past Vector3.one survives the lerp.
+    _popTarget.localScale = Vector3.LerpUnclamped(
+        new Vector3(1.3f, 0.7f, 1f), Vector3.one, EaseOutBack(k));
+
+    if (k < 1f) return;
+    _popTarget.localScale = Vector3.one;
+    _popElapsed = -1f;
 }
 ```
 
-`Pop` is for UI or a presentation sprite. Do not scale simulated ships: their
+`StartPop` is for UI or a presentation sprite. Do not scale simulated ships: their
 colliders and hit bounds are authored at world scale (ADR 0017).
 
 ## 3. The rest of the feedback menu
@@ -79,8 +95,8 @@ colliders and hit bounds are authored at world scale (ADR 0017).
 - **Particles:** a short burst at the contact point. Pool them — do not
   instantiate and destroy per hit.
 - **Freeze frame:** the hit-stop in the body; 0.04 s light -> 0.15 s heavy.
-  Prefer freezing the attacker/target visuals when the simulation must stay
-  deterministic (ADR 0010).
+  Hold the VFX pose and animation from an unscaled deadline in `LateUpdate`;
+  never scale game time, so the 60 Hz simulation stays deterministic (ADR 0010).
 - **Anticipation and follow-through:** a tiny wind-up before a big action and a
   settle after read as weight; that is animation, not code.
 - **Zoom punch:** a brief orthographic nudge through `CombatCameraRig`, restored
@@ -116,11 +132,13 @@ These toggles belong in the settings screen; see `ab-game-ui-ux` for the layout.
 
 ## 6. Project binding summary
 
-- **Hit-stop:** `Time.timeScale` + `WaitForSecondsRealtime`, newest-call guard;
-  local VFX freeze when global slow would disturb the 60 Hz step.
-- **Shake:** decaying trauma -> additive camera/pivot offset, applied after follow.
-- **Tweens:** `Vector2.SmoothDamp`, `Mathf.SmoothStep` or a hand-rolled ease; no
-  new package.
-- **Particles and audio:** the existing pooled presentation systems and
-  `AudioTrigger` values; new assets need owner approval under ADR 0020.
+- **Hit-stop:** an unscaled deadline (`_hitStopUntilUnscaled`) that holds VFX
+  and animation in `LateUpdate`; never the time scale, so the 60 Hz step keeps
+  running.
+- **Shake:** decaying trauma -> `_shakeOffset` composed by `CombatCameraRig`
+  after follow, ignored by `ScreenToWorld`.
+- **Tweens:** `Vector2.SmoothDamp`, `Mathf.SmoothStep` or a hand-rolled ease
+  advanced by `Time.unscaledDeltaTime` in `LateUpdate`; no new package.
+- **Particles and audio:** `MissionSpriteView.SpawnImpact` and `AudioTrigger`
+  values; new assets need owner approval under ADR 0020.
 - **Palette:** faction hues and Captain amber from ADR 0022 only.

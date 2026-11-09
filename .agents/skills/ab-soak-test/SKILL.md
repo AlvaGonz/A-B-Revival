@@ -1,6 +1,6 @@
 ---
 name: ab-soak-test
-description: Long-run soak test protocol for the Unity 6.6 target - timed checkpoints for slow memory leaks, frame-time drift, late-appearing edge cases and fun fatigue, using the Unity Memory Profiler and the ADR 0008 lifecycle invariants. Use after a leak fix, when extended play degrades, or before a release soak.
+description: Long-run soak test protocol for the Unity 6.6 target - timed checkpoints for slow memory leaks, frame-time drift, late-appearing edge cases and fun fatigue, using the Unity Memory Profiler when installed or the built-in Profiler Memory module, and the ADR 0008 lifecycle invariants. Use after a leak fix, when extended play degrades, or before a release soak.
 ---
 
 > **Project constraint (A&B Revival).** Original Flash art, fonts and audio are the baseline (ADR 0020); improvements need explicit owner approval recorded in the issue/PR. The simulation runs at a 60 Hz fixed step (`GameFlowController.FixedStepSeconds`, 16.666 ms frame budget). The repository workflow (wayfinder -> to-spec -> to-tickets -> TDD -> review) prevails over any step in this skill.
@@ -104,9 +104,20 @@ restart the run. Growth across cycles is the signal; a single load spike is not.
 
 ### 4.1 Memory and frame time
 
-Use the **Unity Memory Profiler** package (`com.unity.memoryprofiler`, Window > Analysis >
-Memory Profiler). Confirm the menu path in the installed Unity version at T+0 and record
-the tool you actually used.
+**Prerequisite: the memory tool.** `com.unity.memoryprofiler` is **not** in this
+project's `Packages/manifest.json`. Do not add it as part of a soak. Pick one
+option and record it:
+
+1. The owner approves an **editor-only** install of the Unity Memory Profiler
+   (`Window > Analysis > Memory Profiler`). Confirm the menu path in the
+   installed Unity version at T+0.
+2. Otherwise use the built-in **Profiler** window's **Memory** module
+   (`Window > Analysis > Profiler`), which ships with the editor.
+3. If neither is available (a player-only run with no profiler), mark the memory
+   checkpoint `NOT ASSESSED` and say so in the verdict.
+
+Record the tool and menu path you actually used at T+0. The two tools do not
+report the same numbers and must not be mixed within one run.
 
 > **Record the unit the tool displays; never convert it.** A soak looks for growth, so
 > every threshold is a ratio or a delta against this run's own T+0 baseline. Write the unit
@@ -114,12 +125,12 @@ the tool you actually used.
 
 At T+0 and at every checkpoint:
 
-- Take a Memory Profiler snapshot: `Capture New Snapshot` in the editor, or capture from
-  the connected development player.
+- Take a snapshot in the chosen tool: `Capture New Snapshot` in the Memory
+  Profiler, or capture a frame and open the Memory module in the Profiler.
 - Record: Total Reserved Memory, Total Allocated, GC Allocated / Managed Heap, Object
   Count, and native and graphics totals **as displayed**.
-- Use the snapshot comparison view between T+0 and the current snapshot, and note the
-  types whose count or size only rises.
+- Compare the chosen tool's own snapshots (or frames) between T+0 and the current
+  checkpoint, and note the types whose count or size only rises.
 
 Alert thresholds:
 
@@ -198,7 +209,7 @@ tracker is the canonical home for project records.
 
 - [ ] Fresh launch, not resumed from a previous session.
 - [ ] Background applications closed to reduce OS memory interference.
-- [ ] Memory Profiler open and able to capture a snapshot: [tool and menu path used]
+- [ ] Memory tool open and able to capture at T+0: [Memory Profiler | built-in Profiler Memory module | none -> NOT ASSESSED]
 - [ ] Target 60 FPS confirmed; `TimeManager.asset` fixed timestep is 0.0166667.
 - [ ] Prior known issues to watch: [from tracker]
 
@@ -212,7 +223,7 @@ tracker is the canonical home for project records.
 | Object Count | |
 | Native / Graphics memory | |
 | FPS and frame time (first 30 s) | |
-| Memory Profiler snapshot name | |
+| Memory snapshot / frame label | |
 
 ## Checkpoint Log
 
@@ -226,7 +237,7 @@ tracker is the canonical home for project records.
 | Native / Graphics memory | | | |
 | CPU / render / GPU frame time | | | |
 | Crashes / hangs | | | |
-| Snapshot name | | | |
+| Snapshot / frame label | | | |
 
 Stability checks:
 

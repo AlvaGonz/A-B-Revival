@@ -45,11 +45,12 @@ projectile or hit feedback that follows an AI decision, use `ab-game-feel`.
 3. **Select the target once per evaluation.** Nearest living hostile with
    squared distance, deterministic tie-break by ship index. The player craft is
    skipped so its input stays under player control.
-4. **Steer with a force, not a teleport.** Compute a desired velocity, subtract
-   the current velocity, clamp the result to a maximum steering force, and let
-   the movement job integrate at the fixed 60 Hz step (ADR 0010).
-5. **Clamp every output.** Throttle and turn are bounded (`-1..1` and the ship
-   turn rate); an unclamped steering force makes the ship twitch.
+4. **Steer by throttle and turn, not by force.** Write a `ShipInput`
+   (`throttle` 0..1, `steering` -1..1, `boost`); the movement job turns throttle
+   into acceleration and steering into rotation at the fixed 60 Hz step (ADR
+   0010). Do not integrate a velocity or a force inside the AI job.
+5. **Clamp every output.** Throttle is `0..1`, steering `-1..1`; both feed the
+   ship's turn rate and thrust directly, so an unclamped value makes it twitch.
 6. **Verify by observation.** Watch the ship, not only the numbers: does it
    reach the holder/escort slot, does it overshoot, does it flip between two
    modes at a boundary? Add hysteresis rather than shrinking the threshold.
@@ -66,9 +67,11 @@ switch (mode)
     case CaptainTacticalMode.Anchor:
         targetPos = ship.spawnPosition;          // hold the mission spawn point
         input.throttle = ThrottleTo(ship.position, targetPos);
+        steerToTarget = true;
         break;
     case CaptainTacticalMode.Escort:
-        targetPos = player.position - ShipEntity.Forward(player.rotation) * EscortTrailDistance;
+        targetPos = player.position - ShipEntity.Forward(player.rotation) * EscortTrailDistance
+                    + SlotOffset(ShipEntity.Forward(player.rotation), ship.formationSlot);
         input.throttle = ThrottleTo(ship.position, targetPos);
         steerToTarget = true;
         break;
@@ -124,30 +127,32 @@ Tie-breaking on index matters: two identical distances otherwise resolve by
 iteration order accidentally, and replays/tests drift. The real job also skips
 the player index so the player craft stays under player control.
 
-### 3. Seek and arrive (frame-rate independent steering force)
+### 3. Seek and arrive as `ShipInput` (throttle and turn, not force)
 
 ```csharp
-// Seek: full-speed desired velocity; Arrive: ramp down inside slowRadius.
-static float2 Seek(float2 pos, float2 vel, float2 target, float maxSpeed, float maxForce)
+// Seek: full throttle at the target; Arrive: throttle ramps down inside
+// SlowRadius. Output is the same ShipInput the movement job consumes.
+static void SeekArrive(in ShipEntity ship, float2 target, out ShipInput input)
 {
-    float2 desired = math.normalizesafe(target - pos) * maxSpeed;
-    return math.clamp(desired - vel, -maxForce, maxForce);
-}
+    float2 toTarget = target - ship.position;
+    float dist = math.length(toTarget);
 
-static float2 Arrive(float2 pos, float2 vel, float2 target,
-                     float maxSpeed, float maxForce, float slowRadius)
-{
-    float2 offset = target - pos;
-    float dist = math.length(offset);
-    if (dist < 0.001f) return math.clamp(-vel, -maxForce, maxForce); // brake
-    float ramped = maxSpeed * math.min(dist / slowRadius, 1f);
-    float2 desired = offset / dist * ramped;
-    return math.clamp(desired - vel, -maxForce, maxForce);
+    input = default;
+    input.throttle = math.clamp(dist / SlowRadius, 0f, 1f); // ramps down on arrival
+    if (dist <= 0.001f) return;
+
+    float2 forward = ShipEntity.Forward(ship.rotation);
+    float2 right = new float2(forward.y, -forward.x);
+    input.steering = math.clamp(-math.dot(right, toTarget / dist), -1f, 1f);
 }
 ```
 
-The movement job integrates `vel += steering * dt` and `pos += vel * dt` at the
-fixed timestep. Never apply the steering force directly to the transform.
+The movement job (`ShipMovementJob.Integrate`) turns those three fields into
+motion at the fixed 60 Hz step: `appliedThrust = throttle * thrustPower` (boost
+multiplies it), `velocity += forward * appliedThrust / mass * dt`, then
+`velocity *= clamp(1 - drag * dt, 0, 1)`, then `position += velocity * dt`.
+Steering only rotates the hull; there is no steering force to integrate. Never
+apply the input directly to the transform.
 
 ### 4. Utility scoring when modes compete
 
@@ -175,8 +180,8 @@ six ADR 0006 modes, the enum switch is easier to test and review.
   root only for a radius check that needs real units.
 - **Mode flicker at a threshold.** Add hysteresis or a minimum dwell time
   instead of tuning the same threshold forever.
-- **Unbounded turn or throttle.** Clamp outputs in the job; a physics body with
-  a huge force destabilizes the 60 Hz step.
+- **Unbounded turn or throttle.** Clamp `steering` to `-1..1` and `throttle` to
+  `0..1` in the job; the movement job multiplies them by turn speed and thrust.
 - **State kept in a MonoBehaviour.** The decision state that affects gameplay
   belongs in the simulation data (`ShipEntity`), not in presentation fields that
   tests cannot see. Presentation-only state (HUD badge fade) stays in

@@ -12,6 +12,7 @@
   - Ported the memory protocol to the Unity Memory Profiler and the ADR 0008 lifecycle invariants.
   - Removed non-Unity engine sections, studio automation modes, studio output paths and upstream slash commands.
   - Aligned checkpoints and cycles with Boot and the GameFlowController mission loop.
+  - Replaced the assumed Memory Profiler package with a prerequisite: editor-only install, built-in Profiler Memory module, or `NOT ASSESSED`.
 
 ## Why this copy exists
 
