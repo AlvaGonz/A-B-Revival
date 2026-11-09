@@ -4,7 +4,10 @@ One row per folder in `.agents/skills/`. Source, copyright and license come from
 
 | Local id | Upstream | Commit | License | Modifications |
 |---|---|---|---|---|
+| `ab-camera-systems` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/disciplines/camera-systems` | `19d93f9` | Apache-2.0 | Renamed; URP 2D CombatCameraRig; removed 3D/Cinemachine |
 | `ab-create-game-assets` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/disciplines/create-game-assets` | `19d93f9` | Apache-2.0 | Renamed; owner-gated generation; project tooling |
+| `ab-game-ai` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/disciplines/game-ai` | `19d93f9` | Apache-2.0 | Renamed; FSM/steering/target selection for TacticalAIJob; removed pathfinding and behavior trees |
+| `ab-game-feel` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/disciplines/game-feel` | `19d93f9` | Apache-2.0 | Renamed; Unity C# and palette/owner-approval constraints; removed 3D bindings |
 | `ab-game-ui-asset-pipeline` | `guiguiyan930-source/game-ui-design-workflow` @ `skills/game-ui-asset-pipeline` | `1ec6046` | MIT | Translated to English; project header |
 | `ab-game-ui-component-breakdown` | `guiguiyan930-source/game-ui-design-workflow` @ `skills/game-ui-component-breakdown` | `1ec6046` | MIT | Translated to English; owner-gated generation |
 | `ab-game-ui-extension` | `guiguiyan930-source/game-ui-design-workflow` @ `skills/game-ui-extension` | `1ec6046` | MIT | Translated to English; project header |
