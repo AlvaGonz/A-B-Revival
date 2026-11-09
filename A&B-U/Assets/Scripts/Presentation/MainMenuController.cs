@@ -296,11 +296,8 @@ namespace ABRevival.Presentation
             }
 
             float fitScale = Mathf.Min(bandHeight / ShipHeight, maxShipWidth / ShipWidth);
-            // The multiplier can grow the ship up to the safe band/width cap, never past it.
-            float maxShipWidthFull = width > height ? maxShipWidth : width;
-            float maxShipScale = Mathf.Min(bandHeight / ShipHeight, maxShipWidthFull / ShipWidth);
-            float appliedShipScale = Mathf.Min(fitScale * Mathf.Max(0f, shipScale), maxShipScale);
-            appliedShipScale = Mathf.Max(0f, appliedShipScale);
+            // Owner-authored multiplier: no clamp; the Inspector value is authoritative.
+            float appliedShipScale = Mathf.Max(0f, fitScale * Mathf.Max(0f, shipScale));
             float shipWidth = ShipWidth * appliedShipScale;
             float shipHeight = ShipHeight * appliedShipScale;
             _ship.style.left = (width - shipWidth) * 0.5f;
