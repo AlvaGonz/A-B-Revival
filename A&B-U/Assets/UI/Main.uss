@@ -22,7 +22,9 @@
 
 /* Left/top/width/height are set by MainMenuController.FitPage for the current
    screen so the title and ship stay independent of each other. */
+.main-title-plate,
 .main-title,
+.main-title-subtitle,
 .main-ship {
     position: absolute;
 }

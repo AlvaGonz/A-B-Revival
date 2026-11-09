@@ -20,7 +20,9 @@ background and the ship; the plate is vector; the lettering comes from sprite 44
 | Layer | Source | Committed PNG | Native size | Pivot | Alpha |
 |---|---|---|---:|---|---|
 | Background | bitmap **5** | `A&B-U/Assets/Art/Sprites/UI/ui_0005.png` (already committed) | 640×480 | (0.021028, 0.923337) | opaque |
-| Title banner | rendered `UI_Main.png` crop, masked by the full shape 442 plate | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_TitleBanner.png` | 460×92 | (0, 1) top-left | 0–255, transparent outside the plate |
+| Title plate | full shape 442 vector render, cool-tinted | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_TitlePlate.png` | 460×92 | (0, 1) top-left | 0–255, transparent outside the plate |
+| Main title | sprite 444 rows 0–38, blue glow added | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_TitleMain.png` | 418×63 (12 px glow padding) | (0, 1) top-left | 0–255 |
+| Subtitle | sprite 444 rows 39–51, black fill + white outline | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_TitleSubtitle.png` | 402×21 (4 px outline padding) | (0, 1) top-left | 0–255 |
 | Ship | bitmap **441** | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_Ship.png` | 427×344 | (0.5, 0.5) centre | 0–255, 75,400 fully transparent px |
 
 ### Background: no new file
@@ -34,17 +36,19 @@ sha256(ui_0005.png)     = 8FD2CC34B81032A518DE120BC14C16149028FE06B37E72D82CBD60
 
 `ui_0005.png` **is** the background layer; do not stack a second starfield.
 
-### Title banner (#210)
+### Title parts (#210)
 
-The shipped title is a single 460×92 banner cropped from the frozen page render
-`UI_Main.png` at the page rectangle `(0, 0)–(460, 92)`, alpha-masked by the full shape 442
-plate silhouette. It contains the complete plate, the blue title glow and the subtitle with
-its white outline — exactly the 2011 composited look. The crop excludes only the pixels
-outside the plate.
+The title is deliberately split so each piece stays legible at 1920×1080 and on tall screens:
 
-This supersedes the earlier split attempt: the unfiltered sprite 444 lost the blue glow and
-the baked subtitle colour, so the page-rendered banner is the faithful source. The plate is
-complete (top bar and side decoration included); no path edit is required.
+- **Plate:** full shape 442 vector render cropped to `(0,0)–(460,92)`, cool-tinted to match the
+  page. It keeps the top bar and side decoration.
+- **Main title:** sprite 444 rows 0–38, with a blue outer glow and a 12 px transparent padding
+  so the glow is not clipped. The original white/gradient lettering is unchanged.
+- **Subtitle:** sprite 444 rows 39–51, rebuilt as black fill with a white outline (the raw
+  export was black and unreadable on the starfield).
+
+The plate, main title and subtitle are independent layers; the page-space defaults align them
+exactly as the 2011 page. No page-rendered banner crop is used.
 
 ### Ship
 
@@ -63,25 +67,31 @@ Settings copied from `ui_0005.png.meta`:
 
 | PNG | Meta GUID |
 |---|---|
-| `UI_Main_TitleBanner.png` | `1a42bcc1614a49d6a0a317104ea6ffa4` |
+| `UI_Main_TitlePlate.png` | `d860aa0907ab4612b814dd27517519a7` |
+| `UI_Main_TitleMain.png` | `bfb1bc4186e94b4188ac2b1e985f33e1` |
+| `UI_Main_TitleSubtitle.png` | `7e33ed8b0540454e9d901dc79b659eb1` |
 | `UI_Main_Ship.png` | `091aa3c533f7116874136a9a56468412` |
 
-Neither is in `UiScreensAtlas.spriteatlasv2`; the menu renders them through `UiSpriteSkin`'s
+None is in `UiScreensAtlas.spriteatlasv2`; the menu renders them through `UiSpriteSkin`'s
 `Image` child, not UI Toolkit's atlased `background-image` path.
 
 ## Layout controls (#210)
 
 `MainMenuController` exposes page-pixel layout for every visible menu object:
 
-- `titleBannerPosition` / `titleBannerSize` (default 0,0 / 460×92)
-- `manualShipLayout` + `shipPosition` / `shipSize` (default 427×344)
+- `titlePlatePosition` / `titlePlateSize` (default 0,0 / 460×92)
+- `titleMainPosition` / `titleMainSize` (default 8,-2 / 418×63)
+- `titleSubtitlePosition` / `titleSubtitleSize` (default 16,45 / 402×21)
+- `shipScale` — multiplier on the auto-fitted ship scale; the ship position remains automatic,
+  centred in the band between the subtitle and the bottom control row
 - `buttonSize` and six per-button positions (`playButtonPosition`, … `playerButtonPosition`)
 - `backdropOffset` / `backdropSize` (zero size = full screen)
 - `anchorBottomRow` keeps the four bottom buttons anchored; off uses each authored Y
 - `buttonScale` / `bottomMargin` remain for size and bottom inset
 
-The automatic ship band remains the default when `manualShipLayout` is off: title bottom to
-the bottom control row, equal gaps, 1 % band-height tolerance.
+The automatic ship band uses equal top and bottom gaps; the PlayMode guard allows a mismatch
+of at most **1 % of the band height**. Safe area: the title layers and the bottom control
+margin use the larger of the designed inset and the reported safe-area inset + 8 logical px.
 
 ## Revert point
 

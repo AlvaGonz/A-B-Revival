@@ -32,11 +32,14 @@ namespace ABRevival.Presentation
         [SerializeField] private bool anchorBottomRow = true;
 
         [Header("Object layout (page pixels; zero backdrop size = full screen)")]
-        [SerializeField] private Vector2 titleBannerPosition = new Vector2(0f, 0f);
-        [SerializeField] private Vector2 titleBannerSize = new Vector2(460f, 92f);
-        [SerializeField] private bool manualShipLayout;
-        [SerializeField] private Vector2 shipPosition = new Vector2(0f, 0f);
-        [SerializeField] private Vector2 shipSize = new Vector2(427f, 344f);
+        [SerializeField] private Vector2 titlePlatePosition = new Vector2(0f, 0f);
+        [SerializeField] private Vector2 titlePlateSize = new Vector2(460f, 92f);
+        [SerializeField] private Vector2 titleMainPosition = new Vector2(8f, -2f);
+        [SerializeField] private Vector2 titleMainSize = new Vector2(418f, 63f);
+        [SerializeField] private Vector2 titleSubtitlePosition = new Vector2(16f, 45f);
+        [SerializeField] private Vector2 titleSubtitleSize = new Vector2(402f, 21f);
+        [Tooltip("Multiplier on the auto-fitted ship scale; 1 = fit the available band.")]
+        [SerializeField] private float shipScale = 1f;
         [SerializeField] private Vector2 buttonSize = new Vector2(153.7f, 42.2f);
         [SerializeField] private Vector2 backdropOffset = Vector2.zero;
         [SerializeField] private Vector2 backdropSize = Vector2.zero;
@@ -51,7 +54,9 @@ namespace ABRevival.Presentation
 
         [Header("Main menu sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite backdrop;
+        [SerializeField] private Sprite titlePlateArt;
         [SerializeField] private Sprite titleArt;
+        [SerializeField] private Sprite titleSubtitleArt;
         [SerializeField] private Sprite shipArt;
         [SerializeField] private Sprite playNormal;
         [SerializeField] private Sprite playHover;
@@ -69,7 +74,9 @@ namespace ABRevival.Presentation
 
         private UIDocument _document;
         private VisualElement _backdrop;
+        private VisualElement _titlePlate;
         private VisualElement _title;
+        private VisualElement _titleSubtitle;
         private VisualElement _ship;
         private VisualElement _deferred;
         private Label _deferredTitle;
@@ -151,7 +158,9 @@ namespace ABRevival.Presentation
         private void Bind(VisualElement root)
         {
             _backdrop = root.Q("main-backdrop");
+            _titlePlate = root.Q("main-title-plate");
             _title = root.Q("main-title");
+            _titleSubtitle = root.Q("main-title-subtitle");
             _ship = root.Q("main-ship");
             _deferred = root.Q("main-deferred");
             _deferredTitle = root.Q<Label>("deferred-title");
@@ -206,9 +215,11 @@ namespace ABRevival.Presentation
 
         private void ApplySkin(VisualElement root)
         {
-            // One background: the frozen starfield. The title banner is the frozen plate + lettering.
+            // One background: the frozen starfield. Title plate, main lettering and subtitle are separate.
             SetSprite(root, "main-backdrop", backdrop, ScaleMode.ScaleAndCrop);
+            SetSprite(root, "main-title-plate", titlePlateArt, ScaleMode.StretchToFill);
             SetSprite(root, "main-title", titleArt, ScaleMode.StretchToFill);
+            SetSprite(root, "main-title-subtitle", titleSubtitleArt, ScaleMode.StretchToFill);
             SetSprite(root, "main-ship", shipArt, ScaleMode.StretchToFill);
         }
 
@@ -227,7 +238,8 @@ namespace ABRevival.Presentation
 
         private void FitPage(float width, float height)
         {
-            if (_backdrop == null || _title == null || _ship == null || width <= 0f || height <= 0f) return;
+            if (_backdrop == null || _titlePlate == null || _title == null || _titleSubtitle == null ||
+                _ship == null || width <= 0f || height <= 0f) return;
             if (Mathf.Approximately(width, _lastRootSize.x) && Mathf.Approximately(height, _lastRootSize.y))
                 return;
 
@@ -259,15 +271,27 @@ namespace ABRevival.Presentation
                 _backdrop.style.height = backdropSize.y * pageScale;
             }
 
-            // Title banner: full original plate + lettering + glow, moving with the safe area.
-            float titleLeft = titleBannerPosition.x * pageScale;
-            float titleTop = Mathf.Max(titleBannerPosition.y * pageScale, safeTop);
-            float titleWidth = titleBannerSize.x * pageScale;
-            float titleHeight = titleBannerSize.y * pageScale;
-            _title.style.left = titleLeft;
-            _title.style.top = titleTop;
-            _title.style.width = titleWidth;
-            _title.style.height = titleHeight;
+            // Title: plate, main lettering and subtitle are independent page-space layers.
+            float plateLeft = titlePlatePosition.x * pageScale;
+            float plateTop = Mathf.Max(titlePlatePosition.y * pageScale, safeTop);
+            float titleDelta = plateTop - titlePlatePosition.y * pageScale;
+            _titlePlate.style.left = plateLeft;
+            _titlePlate.style.top = plateTop;
+            _titlePlate.style.width = titlePlateSize.x * pageScale;
+            _titlePlate.style.height = titlePlateSize.y * pageScale;
+
+            _title.style.left = titleMainPosition.x * pageScale;
+            _title.style.top = titleMainPosition.y * pageScale + titleDelta;
+            _title.style.width = titleMainSize.x * pageScale;
+            _title.style.height = titleMainSize.y * pageScale;
+
+            _titleSubtitle.style.left = titleSubtitlePosition.x * pageScale;
+            _titleSubtitle.style.top = titleSubtitlePosition.y * pageScale + titleDelta;
+            _titleSubtitle.style.width = titleSubtitleSize.x * pageScale;
+            _titleSubtitle.style.height = titleSubtitleSize.y * pageScale;
+
+            float subtitleBottom = titleSubtitlePosition.y * pageScale + titleDelta +
+                                   titleSubtitleSize.y * pageScale;
 
             float scaledBottomMargin = Mathf.Max(bottomMargin * pageScale, safeBottom + SafeAreaPadding);
             LayoutBottomButton(_playButton, playButtonPosition, height, pageScale, buttonScale,
@@ -281,19 +305,10 @@ namespace ABRevival.Presentation
             LayoutScreenButton(_linkButton, linkButtonPosition, pageScale, buttonScale, buttonSize);
             LayoutScreenButton(_playerButton, playerButtonPosition, pageScale, buttonScale, buttonSize);
 
-            if (manualShipLayout)
-            {
-                _ship.style.left = shipPosition.x * pageScale;
-                _ship.style.top = shipPosition.y * pageScale;
-                _ship.style.width = shipSize.x * pageScale;
-                _ship.style.height = shipSize.y * pageScale;
-                return;
-            }
-
-            // Automatic ship: centred band between the title bottom and the bottom control row.
+            // Automatic ship: centred band between the subtitle bottom and the bottom control row.
             float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
             float controlTop = height - buttonSize.y * sizeScale - scaledBottomMargin;
-            float bandTop = titleTop + titleHeight + ShipBandMargin * pageScale;
+            float bandTop = subtitleBottom + ShipBandMargin * pageScale;
             float bandBottom = controlTop - ShipBandMargin * pageScale;
             float bandHeight = Mathf.Max(0f, bandBottom - bandTop);
             float topControlLeft = linkButtonPosition.x * pageScale;
@@ -306,10 +321,10 @@ namespace ABRevival.Presentation
                     Mathf.Max(0f, 2f * (topControlLeft - width * 0.5f)));
             }
 
-            float shipScale = Mathf.Min(bandHeight / ShipHeight, maxShipWidth / ShipWidth);
-            shipScale = Mathf.Max(0f, shipScale);
-            float shipWidth = ShipWidth * shipScale;
-            float shipHeight = ShipHeight * shipScale;
+            float fitScale = Mathf.Min(bandHeight / ShipHeight, maxShipWidth / ShipWidth);
+            float appliedShipScale = Mathf.Max(0f, fitScale * Mathf.Max(0f, shipScale));
+            float shipWidth = ShipWidth * appliedShipScale;
+            float shipHeight = ShipHeight * appliedShipScale;
             _ship.style.left = (width - shipWidth) * 0.5f;
             _ship.style.top = bandTop + (bandHeight - shipHeight) * 0.5f;
             _ship.style.width = shipWidth;

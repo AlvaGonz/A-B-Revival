@@ -46,9 +46,9 @@ Separate transparent layers are therefore possible without redrawing the ship or
 
 ## Implementation note (#210)
 
-The shipped title is the page-rendered banner (plate + blue glow + subtitle), not the split
-plate/lettering pair. The shape 442 / sprite 444 analysis above remains the source map; the
-banner is the faithful composite of that art.
+The shipped title is three independent layers: the full vector plate, the main lettering with a
+blue glow, and the subtitle with a black fill and white outline. The shape 442 / sprite 444
+analysis above is the source map; no page-rendered crop is used.
 
 ## Implementation note (#206)
 

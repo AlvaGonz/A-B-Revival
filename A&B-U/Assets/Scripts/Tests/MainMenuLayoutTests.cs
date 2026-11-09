@@ -26,7 +26,9 @@ namespace ABRevival.Tests
         {
             "main-root",
             "main-backdrop",
+            "main-title-plate",
             "main-title",
+            "main-title-subtitle",
             "main-ship",
             "main-ui",
             "play-button",
@@ -124,7 +126,9 @@ namespace ABRevival.Tests
             StringAssert.Contains(".main-root", main);
             StringAssert.Contains("width: 100%;", main);
             StringAssert.Contains("height: 100%;", main);
+            StringAssert.Contains(".main-title-plate", main);
             StringAssert.Contains(".main-title", main);
+            StringAssert.Contains(".main-title-subtitle", main);
             StringAssert.Contains(".main-ship", main);
             StringAssert.Contains(".menu-button", main);
             StringAssert.DoesNotContain(".main-page", main, "The baked UI_Main page wrapper must be retired.");
