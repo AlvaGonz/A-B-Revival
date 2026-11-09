@@ -1,0 +1,743 @@
+fileFormatVersion: 2
+guid: 8b7f9fb6408fe324a8a923145eb334ff
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1403079104648744937
+    second: BGU14copy_0
+  - first:
+      213: -1141332761313578572
+    second: BGU14copy_1
+  - first:
+      213: -4958121620649658361
+    second: BGU14copy_2
+  - first:
+      213: -8131353833797411384
+    second: BGU14copy_3
+  - first:
+      213: 7395347195639984489
+    second: BGU14copy_4
+  - first:
+      213: -7312813518744926634
+    second: BGU14copy_5
+  - first:
+      213: 2616176290728495615
+    second: BGU14copy_6
+  - first:
+      213: 236232257381412411
+    second: BGU14copy_7
+  - first:
+      213: -7315124666077122786
+    second: BGU14copy_8
+  - first:
+      213: -822232676240069350
+    second: BGU14copy_9
+  - first:
+      213: 1992770332875929843
+    second: BGU14copy_10
+  - first:
+      213: -1194119904070252945
+    second: BGU14copy_11
+  - first:
+      213: -6725497093967926797
+    second: BGU14copy_12
+  - first:
+      213: 3839034721414261833
+    second: BGU14copy_13
+  - first:
+      213: -930566491766803762
+    second: BGU14copy_14
+  - first:
+      213: -1584058141396475701
+    second: BGU14copy_15
+  - first:
+      213: 2638205089556294551
+    second: BGU14copy_16
+  - first:
+      213: 2794676358399854656
+    second: BGU14copy_17
+  - first:
+      213: 3345826970366701259
+    second: BGU14copy_18
+  - first:
+      213: -2335913776298575642
+    second: BGU14copy_19
+  - first:
+      213: 4244503521702647520
+    second: BGU14copy_20
+  - first:
+      213: 7852368147332059358
+    second: BGU14copy_21
+  - first:
+      213: 4447850802050985233
+    second: BGU14copy_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 9
+  spritePivot: {x: 0.4955, y: 0.5}
+  spritePixelsToUnits: 1
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BGU14copy_0
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 835
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71073a7fcf2478ce0800000000000000
+      internalID: -1403079104648744937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_1
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 824
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b1736f86eb2920f0800000000000000
+      internalID: -1141332761313578572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_2
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 141
+        width: 550
+        height: 785
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7083effb7a6313bb0800000000000000
+      internalID: -4958121620649658361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 751
+        width: 15
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cd9e7915c0a72f80800000000000000
+      internalID: -8131353833797411384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_4
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 701
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9617dca971d81a660800000000000000
+      internalID: 7395347195639984489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_5
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 632
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 656c88289daa38a90800000000000000
+      internalID: -7312813518744926634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_6
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 636
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff9cbaea9768e4420800000000000000
+      internalID: 2616176290728495615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_7
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 617
+        width: 12
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3e25b98cf3474300800000000000000
+      internalID: 236232257381412411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_8
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 625
+        width: 11
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1f66c69fd47b7a90800000000000000
+      internalID: -7315124666077122786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_9
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 564
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1dedf1ccb7d694f0800000000000000
+      internalID: -822232676240069350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_10
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 570
+        width: 27
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f8b1024f0eb7ab10800000000000000
+      internalID: 1992770332875929843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_11
+      rect:
+        serializedVersion: 2
+        x: 920
+        y: 526
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f664ba22642ad6fe0800000000000000
+      internalID: -1194119904070252945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_12
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 492
+        width: 43
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f9ae18b60c3aa2a0800000000000000
+      internalID: -6725497093967926797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_13
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 491
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94ca9423dbdf64530800000000000000
+      internalID: 3839034721414261833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_14
+      rect:
+        serializedVersion: 2
+        x: 785
+        y: 462
+        width: 26
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec2bb52c4b6f513f0800000000000000
+      internalID: -930566491766803762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_15
+      rect:
+        serializedVersion: 2
+        x: 789
+        y: 473
+        width: 14
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc06f7a538b440ae0800000000000000
+      internalID: -1584058141396475701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_16
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 473
+        width: 11
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79b61a71d89cc9420800000000000000
+      internalID: 2638205089556294551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_17
+      rect:
+        serializedVersion: 2
+        x: 475
+        y: 119
+        width: 348
+        height: 311
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0480b94575fa8c620800000000000000
+      internalID: 2794676358399854656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_18
+      rect:
+        serializedVersion: 2
+        x: 908
+        y: 400
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcee0a017e3ce6e20800000000000000
+      internalID: 3345826970366701259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_19
+      rect:
+        serializedVersion: 2
+        x: 898
+        y: 389
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e838c1fbca259fd0800000000000000
+      internalID: -2335913776298575642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_20
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 361
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e61bf2f67187ea30800000000000000
+      internalID: 4244503521702647520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_21
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 347
+        width: 19
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed0d153f93739fc60800000000000000
+      internalID: 7852368147332059358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGU14copy_22
+      rect:
+        serializedVersion: 2
+        x: 844
+        y: 326
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11d6f2e1db0f9bd30800000000000000
+      internalID: 4447850802050985233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BGU14copy_0: -1403079104648744937
+      BGU14copy_1: -1141332761313578572
+      BGU14copy_10: 1992770332875929843
+      BGU14copy_11: -1194119904070252945
+      BGU14copy_12: -6725497093967926797
+      BGU14copy_13: 3839034721414261833
+      BGU14copy_14: -930566491766803762
+      BGU14copy_15: -1584058141396475701
+      BGU14copy_16: 2638205089556294551
+      BGU14copy_17: 2794676358399854656
+      BGU14copy_18: 3345826970366701259
+      BGU14copy_19: -2335913776298575642
+      BGU14copy_2: -4958121620649658361
+      BGU14copy_20: 4244503521702647520
+      BGU14copy_21: 7852368147332059358
+      BGU14copy_22: 4447850802050985233
+      BGU14copy_3: -8131353833797411384
+      BGU14copy_4: 7395347195639984489
+      BGU14copy_5: -7312813518744926634
+      BGU14copy_6: 2616176290728495615
+      BGU14copy_7: 236232257381412411
+      BGU14copy_8: -7315124666077122786
+      BGU14copy_9: -822232676240069350
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

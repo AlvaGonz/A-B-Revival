@@ -465,7 +465,7 @@ namespace ABRevival.Editor
             Debug.Log($"[SpriteExportPipeline] Atlas rebuilt: {atlasPath}");
         }
 
-        private static TextureImporterPlatformSettings PlatformSettings(string platform, TextureImporterFormat format)
+        internal static TextureImporterPlatformSettings PlatformSettings(string platform, TextureImporterFormat format)
         {
             return new TextureImporterPlatformSettings
             {

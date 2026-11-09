@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "note": "Per-widget nine-slice borders in pixels [left, bottom, right, top] for the original UI widgets. Zero means the widget is not stretched. Consumed by scripts/export_all_assets.py when it writes the extraction manifest.",
+  "overrides": {
+    "73": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "114": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "119": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "318": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "321": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "466": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "467": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "499": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "505": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "737": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "792": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "822": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "850": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "897": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "908": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "916": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}

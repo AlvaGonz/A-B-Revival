@@ -1,0 +1,717 @@
+fileFormatVersion: 2
+guid: 7b6702cbbece94b4d8ef9d8f17eb5059
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6240316668093700098
+    second: BGWord8_0
+  - first:
+      213: -1086099152431575294
+    second: BGWord8_1
+  - first:
+      213: 1332723839796795046
+    second: BGWord8_2
+  - first:
+      213: -8164051868858427976
+    second: BGWord8_3
+  - first:
+      213: 3539141889021277444
+    second: BGWord8_4
+  - first:
+      213: -8444593096679097909
+    second: BGWord8_5
+  - first:
+      213: 9196001293328973565
+    second: BGWord8_6
+  - first:
+      213: -902766412587335287
+    second: BGWord8_7
+  - first:
+      213: -3386336833513354941
+    second: BGWord8_8
+  - first:
+      213: 6771098777304878413
+    second: BGWord8_9
+  - first:
+      213: -816021728276717340
+    second: BGWord8_10
+  - first:
+      213: 3807898121920333043
+    second: BGWord8_11
+  - first:
+      213: -8390340552894669182
+    second: BGWord8_12
+  - first:
+      213: -4558263337044198363
+    second: BGWord8_13
+  - first:
+      213: 7760682659352536713
+    second: BGWord8_14
+  - first:
+      213: -1072193963519948828
+    second: BGWord8_15
+  - first:
+      213: 3988777446235648433
+    second: BGWord8_16
+  - first:
+      213: -2804724344062224559
+    second: BGWord8_17
+  - first:
+      213: 8752359013143662738
+    second: BGWord8_18
+  - first:
+      213: 5175093500039065141
+    second: BGWord8_19
+  - first:
+      213: -3221203171235116125
+    second: BGWord8_20
+  - first:
+      213: 4125758813253030520
+    second: BGWord8_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 9
+  spritePivot: {x: 0.4987, y: 0.5}
+  spritePixelsToUnits: 1
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BGWord8_0
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 449
+        width: 24
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2089caf62fe0a9650800000000000000
+      internalID: 6240316668093700098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_1
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 436
+        width: 29
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20f867443966de0f0800000000000000
+      internalID: -1086099152431575294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_2
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 436
+        width: 23
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a658ce6549ce7210800000000000000
+      internalID: 1332723839796795046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_3
+      rect:
+        serializedVersion: 2
+        x: 226
+        y: 436
+        width: 27
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b554dc841673be80800000000000000
+      internalID: -8164051868858427976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_4
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 436
+        width: 27
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40571d00cce8d1130800000000000000
+      internalID: 3539141889021277444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_5
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 436
+        width: 24
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc9f9b7e157ceca80800000000000000
+      internalID: -8444593096679097909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_6
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 436
+        width: 27
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfef7ea2472ce9f70800000000000000
+      internalID: 9196001293328973565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_7
+      rect:
+        serializedVersion: 2
+        x: 348
+        y: 449
+        width: 25
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98104961bbab873f0800000000000000
+      internalID: -902766412587335287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_8
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 288
+        width: 24
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3498d9c67905101d0800000000000000
+      internalID: -3386336833513354941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_9
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 217
+        width: 106
+        height: 144
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4dc6509676c7fd50800000000000000
+      internalID: 6771098777304878413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_10
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 120
+        width: 314
+        height: 259
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e0e015cf88eca4f0800000000000000
+      internalID: -816021728276717340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_11
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 11
+        width: 103
+        height: 206
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f440f1ba2f58d430800000000000000
+      internalID: 3807898121920333043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_12
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 15
+        width: 52
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28e982898b58f8b80800000000000000
+      internalID: -8390340552894669182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_13
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 57
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52c3bca45abcdb0c0800000000000000
+      internalID: -4558263337044198363
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_14
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 18
+        width: 14
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 986ed35c2cb73bb60800000000000000
+      internalID: 7760682659352536713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_15
+      rect:
+        serializedVersion: 2
+        x: 401
+        y: 56
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e7431a554dce11f0800000000000000
+      internalID: -1072193963519948828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_16
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 26
+        width: 14
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b137f234fbfa5730800000000000000
+      internalID: 3988777446235648433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_17
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 22
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 157d743b11e9319d0800000000000000
+      internalID: -2804724344062224559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_18
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 20
+        width: 46
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 290dd158620a67970800000000000000
+      internalID: 8752359013143662738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_19
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 16
+        width: 27
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53ee2459e10a1d740800000000000000
+      internalID: 5175093500039065141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_20
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 12
+        width: 30
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ab4b2d48ccfb43d0800000000000000
+      internalID: -3221203171235116125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BGWord8_21
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 18
+        width: 12
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87252ec08c3a14930800000000000000
+      internalID: 4125758813253030520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BGWord8_0: 6240316668093700098
+      BGWord8_1: -1086099152431575294
+      BGWord8_10: -816021728276717340
+      BGWord8_11: 3807898121920333043
+      BGWord8_12: -8390340552894669182
+      BGWord8_13: -4558263337044198363
+      BGWord8_14: 7760682659352536713
+      BGWord8_15: -1072193963519948828
+      BGWord8_16: 3988777446235648433
+      BGWord8_17: -2804724344062224559
+      BGWord8_18: 8752359013143662738
+      BGWord8_19: 5175093500039065141
+      BGWord8_2: 1332723839796795046
+      BGWord8_20: -3221203171235116125
+      BGWord8_21: 4125758813253030520
+      BGWord8_3: -8164051868858427976
+      BGWord8_4: 3539141889021277444
+      BGWord8_5: -8444593096679097909
+      BGWord8_6: 9196001293328973565
+      BGWord8_7: -902766412587335287
+      BGWord8_8: -3386336833513354941
+      BGWord8_9: 6771098777304878413
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
