@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "skills": [
     {
+      "id": "ab-camera-systems",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/camera-systems",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-camera-systems",
+      "modifications": "renamed; URP 2D CombatCameraRig; removed 3D/Cinemachine",
+      "adoptedAt": "2026-11-09"
+    },
+    {
       "id": "ab-create-game-assets",
       "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
       "sourcePath": "skills/disciplines/create-game-assets",
@@ -9,6 +19,26 @@
       "license": "Apache-2.0",
       "localPath": ".agents/skills/ab-create-game-assets",
       "modifications": "renamed; owner-gated generation; project tooling",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ai",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/game-ai",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-game-ai",
+      "modifications": "renamed; FSM/steering/target selection for TacticalAIJob; removed pathfinding and behavior trees",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-feel",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/game-feel",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-game-feel",
+      "modifications": "renamed; Unity C# and palette/owner-approval constraints; removed 3D bindings",
       "adoptedAt": "2026-11-09"
     },
     {
@@ -119,6 +149,46 @@
       "license": "Apache-2.0",
       "localPath": ".agents/skills/ab-physics-tuning",
       "modifications": "rewritten for PhysicsCore2D / 60 Hz",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-unity-build-pipeline",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/unity/unity-build-pipeline",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-unity-build-pipeline",
+      "modifications": "renamed; Unity 6.6; mobile profiles; dropped content-pipeline section",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-unity-csharp-scripting",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/unity/unity-csharp-scripting",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-unity-csharp-scripting",
+      "modifications": "renamed; Unity 6.6; presentation-only; removed coroutine/alloc examples",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-soak-test",
+      "sourceRepo": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "sourcePath": ".claude/skills/soak-test",
+      "commit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-soak-test",
+      "modifications": "renamed; Unity Memory Profiler/ADR 0008 port; project header",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-test-helpers",
+      "sourceRepo": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "sourcePath": ".claude/skills/test-helpers",
+      "commit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-test-helpers",
+      "modifications": "renamed; retargeted to EditMode/PlayMode test roots; project header",
       "adoptedAt": "2026-11-09"
     },
     {

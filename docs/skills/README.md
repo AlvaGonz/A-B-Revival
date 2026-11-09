@@ -40,6 +40,10 @@ Project-local skill acquisition for OpenCode and Antigravity. Nothing is install
 
 `id`, `sourceRepo`, `sourcePath`, `commit`, `license` and `localPath` are required. `modifications` and `adoptedAt` are informational. `commit` must be a pinned hex SHA, not `HEAD` or a branch name.
 
+## Routing
+
+`AGENTS.md` carries the task -> skill/agent table under **Project-local skills**. Routing verified: 2026-11-09. Update the table in the same PR that adds, removes or renames a skill; `python scripts/validate_skill_routing.py` checks coverage only, not task-to-skill fit. The quarterly update policy below is the reminder.
+
 ## Update policy
 
 - Quarterly, or when an upstream release matters: diff the vendored skill against its pinned upstream commit, open a ticket, and apply the change with a fresh lockfile entry.
@@ -58,6 +62,8 @@ Project-local skill acquisition for OpenCode and Antigravity. Nothing is install
 
 The pre-commit hook runs it whenever `.agents/skills/` or the lockfile is staged. Self-checks: `python scripts/test_validate_vendored_skills.py`.
 
+`python scripts/validate_skill_routing.py` checks that every `.agents/skills/ab-*/` folder and every `ab-*` agent stem in `.opencode/agents/` and `.agents/agents/` appears literally in the `AGENTS.md` routing table, and reports `ab-*` tokens in that file with no skill folder or agent file. The pre-commit hook runs it whenever the skill tree, either agent directory or `AGENTS.md` is staged. Self-checks: `python scripts/test_validate_skill_routing.py`.
+
 ## Current state
 
-Vendored: 5 core Unity skills, 8 translated game-UI workflow skills and `ab-create-game-assets`. Agents: 3, in both harness formats. The lockfile is the source of truth for what is installed; `docs/skills/ATTRIBUTION.md` mirrors it for humans. Implementation tickets: #191-#195.
+Vendored: 21 skills across gameplay, UI, art, Unity runtime and testing, plus 3 agents in both harness formats. Phase 1 (#191-#195) and phase 2 (#198-#201). The lockfile is the source of truth for what is installed; `docs/skills/ATTRIBUTION.md` mirrors it for humans.

@@ -15,7 +15,7 @@ This project is an unofficial fan tribute, preservation, and modding effort for 
 - `CODING_STANDARDS.md`: Repository coding standards, domain boundaries, and Fowler smells.
 - `LICENSE.md`: Intellectual property disclaimer and MIT fan tooling license.
 
-## Agent skills
+## Agent operating rules
 
 ### Issue tracker
 GitHub Issues is the canonical tracker for this repository. See `docs/agents/issue-tracker.md`.
@@ -25,9 +25,6 @@ Canonical five-role triage labels (`needs-triage`, `needs-info`, `ready-for-agen
 
 ### Domain docs & standards
 Single-context domain model with `GLOSSARY.md`, `docs/adr/`, and `CODING_STANDARDS.md`. See `docs/agents/domain.md`.
-
-### Project-local skills
-Vendored skills live in `.agents/skills/` (flat, `ab-` prefix) and are committed with provenance in `docs/skills/`. They are additions: the workflow in this file always prevails. Never install skills globally. After changing the tree, run `python scripts/validate_vendored_skills.py`; see `docs/skills/README.md`.
 
 ### Codebase navigation (`graphify` & `as3_search`)
 
@@ -50,6 +47,7 @@ Pre-commit hooks are version-controlled in `.githooks/` and enforce:
 2. `scripts/lint_shell_scripts.py --staged`: Static check ensuring all Windows `.bat` scripts enforce safe quoting and ampersand escaping.
 3. `scripts/lint_domain_leakage.py --staged`: Static check against domain leakage if legacy Flash AS3 files are touched (frozen baseline, ADR 0015).
 4. `scripts/validate_vendored_skills.py`: Checks vendored skill provenance, licenses and lockfile; refuses partially staged skill changes.
+5. `scripts/validate_skill_routing.py`: Fails when a vendored skill or project agent ID is missing from the **Project-local skills** routing table, or when the table names a stale `ab-*` ID; refuses partially staged routing changes.
 Activate via `scripts/install-hooks.bat` (Windows) or `sh scripts/install-hooks.sh` (Unix).
 
 ### Project documentation (`docs/` & `CONTEXT.md`)
@@ -61,6 +59,34 @@ Consult existing documentation whenever you need domain or project context befor
   - `docs/agents/domain.md`: How to consume domain documentation.
   - `docs/agents/issue-tracker.md`: Operating issues and wayfinding maps.
   - `docs/agents/triage-labels.md`: Canonical issue triage roles.
+
+## Project-local skills
+
+Vendored skills live in `.agents/skills/` (flat, `ab-` prefix) and are committed with provenance in `docs/skills/`. They are additions: the workflow in this file always prevails. Never install skills globally. After changing the tree, run `python scripts/validate_vendored_skills.py`; see `docs/skills/README.md`.
+
+### Skill and agent routing
+
+Before starting a task in a listed area, read the named skill. Reading is mandatory; its content is advisory — `CODING_STANDARDS.md`, ADRs and the workflow prevail. Delegate only when the table names an agent and the task is in its domain; do not delegate general work.
+
+| Area | Read | Delegate |
+|---|---|---|
+| UI Toolkit screens, menus, layout | `ab-game-ui-ux` | `ab-unity-ui-specialist` |
+| Accessibility audit | — | `ab-accessibility-specialist` |
+| Jobs/Burst/NativeArray simulation | `ab-physics-tuning` | `ab-unity-dots-specialist` |
+| Tactical AI / steering | `ab-game-ai` | — |
+| Camera follow / framing | `ab-camera-systems` | — |
+| Hit-stop / shake / feedback | `ab-game-feel` | — |
+| MonoBehaviour / presentation C# | `ab-unity-csharp-scripting` | — |
+| Builds / IL2CPP / mobile | `ab-unity-build-pipeline` | — |
+| Tests, helpers, soak runs | `ab-test-helpers`, `ab-soak-test` | — |
+| Performance profiling | `ab-performance-optimization` | — |
+| Input System / rebinding | `ab-unity-input-system` | — |
+| Data assets / ScriptableObjects | `ab-unity-scriptableobjects` | — |
+| Art direction, manifests, normalization | `ab-create-game-assets` | — |
+| Game-UI planning, specs and workflow | `ab-game-ui-product-design`, `ab-game-ui-extension`, `ab-game-ui-specification`, `ab-game-ui-workflow` (advisory) | — |
+| Game-UI pages, components, slicing, atlas | `ab-game-ui-page-generator`, `ab-game-ui-component-breakdown`, `ab-game-ui-sprite-sheet-splitter`, `ab-game-ui-asset-pipeline` (owner gate) | — |
+
+Image generation is off by default and needs explicit owner approval per use; see `docs/skills/image-generation-policy.md`.
 
 ## Coding Standards & Performance Constraints
 Consult [`CODING_STANDARDS.md`](CODING_STANDARDS.md) for canonical guidelines:
