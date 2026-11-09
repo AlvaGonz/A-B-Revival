@@ -80,8 +80,8 @@ Both new PNGs use `TextureImporter` settings copied from `ui_0005.png.meta` (see
 | `UI_Main_Ship.png` | `091aa3c533f7116874136a9a56468412` |
 | `UI_Main_Title.png` | `2f3617872ba41259c97de1f2bde65c15` |
 
-Neither sprite is in `UiScreensAtlas.spriteatlasv2` yet — the atlas lists textures by GUID, so
-adding them is a recomposition concern (#207), not part of this extraction.
+Neither sprite is in `UiScreensAtlas.spriteatlasv2`: the main menu renders them through
+`UiSpriteSkin`'s `Image` child, not UI Toolkit's atlased `background-image` path (#207).
 
 ## Re-extract
 

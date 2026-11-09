@@ -3538,14 +3538,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c39dc5d7e9ebd8d4e8d10c78a96d53fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ABRevival.Presentation::ABRevival.Presentation.MainMenuController
-  heroScale: 1
-  heroOffsetX: 0
-  heroOffsetY: -18
   buttonScale: 1
-  bottomMargin: 23.7
-  showLiveTopButtons: 0
+  bottomMargin: 20
   backdrop: {fileID: 21300000, guid: 8b809bff4b9d1514ca4017981e53737c, type: 3}
-  pageArt: {fileID: 4398005435742729896, guid: 9809bf7286a3d244c964ed6419e8e711, type: 3}
+  titleArt: {fileID: 21300000, guid: 2f3617872ba41259c97de1f2bde65c15, type: 3}
+  shipArt: {fileID: 21300000, guid: 091aa3c533f7116874136a9a56468412, type: 3}
   playNormal: {fileID: 21300000, guid: 250d077b6ccf31b4ba490548f5465b4b, type: 3}
   playHover: {fileID: 21300000, guid: acd31acc48efcde48b7d7feb1a3ec596, type: 3}
   dataNormal: {fileID: 21300000, guid: 4820a4364ddec8046ba3fd44a4edadc1, type: 3}
@@ -3554,6 +3551,7 @@ MonoBehaviour:
   optionsHover: {fileID: 21300000, guid: 5c4651c0d6000bd45beaf2c1f3fc679e, type: 3}
   creditsNormal: {fileID: 21300000, guid: f901689de8d3ec4449479ba3a4b95c5e, type: 3}
   creditsHover: {fileID: 21300000, guid: aeb269f02785b38478f807db070560dc, type: 3}
+  linkNormal: {fileID: 21300000, guid: 87452d9d37cdeb04483a2bb24cd8370a, type: 3}
   linkHover: {fileID: 21300000, guid: 87452d9d37cdeb04483a2bb24cd8370a, type: 3}
   playerNormal: {fileID: 21300000, guid: 539c8e63d50b46b48b52a4f8acbffd65, type: 3}
   playerHover: {fileID: 21300000, guid: 63de4be62fdfad0488346815d3cb99c4, type: 3}
