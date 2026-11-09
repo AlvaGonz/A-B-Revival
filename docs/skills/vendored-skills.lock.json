@@ -2,6 +2,86 @@
   "schemaVersion": 1,
   "skills": [
     {
+      "id": "ab-create-game-assets",
+      "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "sourcePath": "skills/disciplines/create-game-assets",
+      "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+      "license": "Apache-2.0",
+      "localPath": ".agents/skills/ab-create-game-assets",
+      "modifications": "renamed; owner-gated generation; project tooling",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ui-asset-pipeline",
+      "sourceRepo": "https://github.com/guiguiyan930-source/game-ui-design-workflow",
+      "sourcePath": "skills/game-ui-asset-pipeline",
+      "commit": "1ec604638dd1a27198576206eb3e47632725a078",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-game-ui-asset-pipeline",
+      "modifications": "translated to English; project header",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ui-component-breakdown",
+      "sourceRepo": "https://github.com/guiguiyan930-source/game-ui-design-workflow",
+      "sourcePath": "skills/game-ui-component-breakdown",
+      "commit": "1ec604638dd1a27198576206eb3e47632725a078",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-game-ui-component-breakdown",
+      "modifications": "translated to English; owner-gated generation",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ui-extension",
+      "sourceRepo": "https://github.com/guiguiyan930-source/game-ui-design-workflow",
+      "sourcePath": "skills/game-ui-extension",
+      "commit": "1ec604638dd1a27198576206eb3e47632725a078",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-game-ui-extension",
+      "modifications": "translated to English; project header",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ui-page-generator",
+      "sourceRepo": "https://github.com/guiguiyan930-source/game-ui-design-workflow",
+      "sourcePath": "skills/game-ui-page-generator",
+      "commit": "1ec604638dd1a27198576206eb3e47632725a078",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-game-ui-page-generator",
+      "modifications": "translated to English; owner-gated generation",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ui-product-design",
+      "sourceRepo": "https://github.com/guiguiyan930-source/game-ui-design-workflow",
+      "sourcePath": "skills/game-ui-product-design",
+      "commit": "1ec604638dd1a27198576206eb3e47632725a078",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-game-ui-product-design",
+      "modifications": "translated to English; project header",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ui-specification",
+      "sourceRepo": "https://github.com/guiguiyan930-source/game-ui-design-workflow",
+      "sourcePath": "skills/game-ui-specification",
+      "commit": "1ec604638dd1a27198576206eb3e47632725a078",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-game-ui-specification",
+      "modifications": "translated to English; project header",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ui-sprite-sheet-splitter",
+      "sourceRepo": "https://github.com/guiguiyan930-source/game-ui-design-workflow",
+      "sourcePath": "skills/game-ui-sprite-sheet-splitter",
+      "commit": "1ec604638dd1a27198576206eb3e47632725a078",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-game-ui-sprite-sheet-splitter",
+      "modifications": "translated to English; optional tooling",
+      "adoptedAt": "2026-11-09"
+    },
+    {
       "id": "ab-game-ui-ux",
       "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
       "sourcePath": "skills/disciplines/game-ui-ux",
@@ -9,6 +89,16 @@
       "license": "Apache-2.0",
       "localPath": ".agents/skills/ab-game-ui-ux",
       "modifications": "renamed; ADR 0020/UI Toolkit header",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-game-ui-workflow",
+      "sourceRepo": "https://github.com/guiguiyan930-source/game-ui-design-workflow",
+      "sourcePath": "skills/game-ui-workflow",
+      "commit": "1ec604638dd1a27198576206eb3e47632725a078",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-game-ui-workflow",
+      "modifications": "translated to English; project header",
       "adoptedAt": "2026-11-09"
     },
     {
