@@ -21,5 +21,7 @@ One row per folder in `.agents/skills/`. Source, copyright and license come from
 | `ab-physics-tuning` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/disciplines/physics-tuning` | `19d93f9` | Apache-2.0 | Rewritten for PhysicsCore2D / 60 Hz |
 | `ab-unity-build-pipeline` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/unity/unity-build-pipeline` | `19d93f9` | Apache-2.0 | Renamed; Unity 6.6; mobile profiles; dropped content-pipeline section |
 | `ab-unity-csharp-scripting` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/unity/unity-csharp-scripting` | `19d93f9` | Apache-2.0 | Renamed; Unity 6.6; presentation-only; removed coroutine/alloc examples |
+| `ab-soak-test` | `Donchitos/Claude-Code-Game-Studios` @ `.claude/skills/soak-test` | `05ad7c8` | MIT | Renamed; Unity Memory Profiler/ADR 0008 port; project header |
+| `ab-test-helpers` | `Donchitos/Claude-Code-Game-Studios` @ `.claude/skills/test-helpers` | `05ad7c8` | MIT | Renamed; retargeted to EditMode/PlayMode test roots; project header |
 | `ab-unity-input-system` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/unity/unity-input-system` | `19d93f9` | Apache-2.0 | Renamed; Unity 6.6 note |
 | `ab-unity-scriptableobjects` | `gamedev-skills/awesome-gamedev-agent-skills` @ `skills/unity/unity-scriptableobjects` | `19d93f9` | Apache-2.0 | Renamed; Unity 6.6 note |

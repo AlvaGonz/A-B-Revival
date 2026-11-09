@@ -172,6 +172,26 @@
       "adoptedAt": "2026-11-09"
     },
     {
+      "id": "ab-soak-test",
+      "sourceRepo": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "sourcePath": ".claude/skills/soak-test",
+      "commit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-soak-test",
+      "modifications": "renamed; Unity Memory Profiler/ADR 0008 port; project header",
+      "adoptedAt": "2026-11-09"
+    },
+    {
+      "id": "ab-test-helpers",
+      "sourceRepo": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "sourcePath": ".claude/skills/test-helpers",
+      "commit": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418",
+      "license": "MIT",
+      "localPath": ".agents/skills/ab-test-helpers",
+      "modifications": "renamed; retargeted to EditMode/PlayMode test roots; project header",
+      "adoptedAt": "2026-11-09"
+    },
+    {
       "id": "ab-unity-input-system",
       "sourceRepo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
       "sourcePath": "skills/unity/unity-input-system",
