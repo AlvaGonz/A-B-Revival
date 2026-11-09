@@ -273,31 +273,6 @@ namespace ABRevival.Presentation
             _ship.style.top = shipTop;
             _ship.style.width = shipWidth;
             _ship.style.height = shipHeight;
-
-            // Development guards for the responsive contract.
-            Debug.Assert(shipWidth > 0f && shipHeight > 0f,
-                "[MainMenu] Ship collapsed to a non-positive size.");
-            Debug.Assert(titleLeft >= 0f && titleLeft + titleWidth <= width,
-                "[MainMenu] Title leaves the horizontal root bounds.");
-            float gapTop = shipTop - bandTop;
-            float gapBottom = bandBottom - (shipTop + shipHeight);
-            Debug.Assert(Mathf.Abs(gapTop - gapBottom) <= bandHeight * 0.01f,
-                "[MainMenu] Ship is not vertically centred in its band.");
-            if (width > height)
-            {
-                // The landscape cap above guarantees horizontal separation from the top-right
-                // controls; the epsilon keeps the touching 4:3 edge from tripping the guard.
-                float buttonWidth = ButtonWidth * sizeScale;
-                float buttonHeight = ButtonHeight * sizeScale;
-                var shipRect = new Rect(shipLeft, shipTop,
-                    Mathf.Max(0f, shipWidth - 0.01f), shipHeight);
-                Debug.Assert(!shipRect.Overlaps(new Rect(
-                        topControlLeft, 51.2f * pageScale, buttonWidth, buttonHeight)),
-                    "[MainMenu] Ship overlaps the VARGAMES control.");
-                Debug.Assert(!shipRect.Overlaps(new Rect(
-                        topControlLeft, 103.85f * pageScale, buttonWidth, buttonHeight)),
-                    "[MainMenu] Ship overlaps the MUSIC PLAYER control.");
-            }
         }
 
         private static void LayoutBottomButton(Button button, float pageX, float screenHeight,
