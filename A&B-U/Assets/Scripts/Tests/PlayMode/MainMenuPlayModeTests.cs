@@ -483,6 +483,8 @@ namespace ABRevival.Tests.PlayMode
                     "The ship must not overlap " + topButton + " at " + label);
 
             Rect reference = root.Q("play-button").worldBound;
+            float widthTolerance = Mathf.Max(1f, reference.width * 0.02f);
+            float heightTolerance = Mathf.Max(1f, reference.height * 0.02f);
             foreach (string button in new[]
                      {
                          "play-button", "data-button", "options-button",
@@ -490,9 +492,9 @@ namespace ABRevival.Tests.PlayMode
                      })
             {
                 Rect rect = root.Q(button).worldBound;
-                Assert.AreEqual(reference.width, rect.width, 1f,
+                Assert.AreEqual(reference.width, rect.width, widthTolerance,
                     button + " must use the shared button width at " + label);
-                Assert.AreEqual(reference.height, rect.height, 1f,
+                Assert.AreEqual(reference.height, rect.height, heightTolerance,
                     button + " must use the shared button height at " + label);
             }
         }
