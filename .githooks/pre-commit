@@ -83,8 +83,31 @@ if [ -n "$STAGED_SKILLS" ]; then
     fi
 fi
 
-# 5. If nothing requiring gates was staged
-if [ -z "$STAGED_UNITY" ] && [ -z "$STAGED_AS3" ] && [ -z "$STAGED_BAT" ] && [ -z "$STAGED_SKILLS" ]; then
+# 5. Check for staged skills, agents or routing table changes
+ROUTING_PATHS=".agents/skills .opencode/agents .agents/agents AGENTS.md"
+STAGED_ROUTING=$(git diff --cached --name-only -- $ROUTING_PATHS)
+
+if [ -n "$STAGED_ROUTING" ]; then
+    # The validator reads the working tree; refuse partial staging so the index is what gets checked.
+    if git status --porcelain -uall -- $ROUTING_PATHS | grep -qvE '^[A-Z]  '; then
+        echo ""
+        echo "================================================================"
+        echo " [pre-commit ERROR] Unstaged or untracked changes under skills, agents or AGENTS.md."
+        echo " Stage them and commit again."
+        echo "================================================================"
+        exit 1
+    fi
+    echo "[pre-commit] Skill, agent or routing changes detected. Validating routing coverage..."
+    python scripts/validate_skill_routing.py
+    ROUTING_STATUS=$?
+    if [ $ROUTING_STATUS -ne 0 ]; then
+        echo "[pre-commit ERROR] Skill routing validation failed."
+        exit 1
+    fi
+fi
+
+# 6. If nothing requiring gates was staged
+if [ -z "$STAGED_UNITY" ] && [ -z "$STAGED_AS3" ] && [ -z "$STAGED_BAT" ] && [ -z "$STAGED_SKILLS" ] && [ -z "$STAGED_ROUTING" ]; then
     echo "[pre-commit] Documentation or metadata changes staged. Skipping test runner."
 fi
 

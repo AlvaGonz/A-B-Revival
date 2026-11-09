@@ -42,7 +42,7 @@ Project-local skill acquisition for OpenCode and Antigravity. Nothing is install
 
 ## Routing
 
-`AGENTS.md` carries the task -> skill/agent table under **Project-local skills**. Routing verified: 2026-11-09. Update the table in the same PR that adds, removes or renames a skill; no automatic check, because matching prose against the lockfile is brittle. The quarterly update policy below is the reminder.
+`AGENTS.md` carries the task -> skill/agent table under **Project-local skills**. Routing verified: 2026-11-09. Update the table in the same PR that adds, removes or renames a skill; `python scripts/validate_skill_routing.py` checks coverage only, not task-to-skill fit. The quarterly update policy below is the reminder.
 
 ## Update policy
 
@@ -61,6 +61,8 @@ Project-local skill acquisition for OpenCode and Antigravity. Nothing is install
 5. No stale lock entries and no folder outside the `ab-` prefix.
 
 The pre-commit hook runs it whenever `.agents/skills/` or the lockfile is staged. Self-checks: `python scripts/test_validate_vendored_skills.py`.
+
+`python scripts/validate_skill_routing.py` checks that every `.agents/skills/ab-*/` folder and every `ab-*` agent stem in `.opencode/agents/` and `.agents/agents/` appears literally in the `AGENTS.md` routing table, and reports `ab-*` tokens in that file with no skill folder or agent file. The pre-commit hook runs it whenever the skill tree, either agent directory or `AGENTS.md` is staged. Self-checks: `python scripts/test_validate_skill_routing.py`.
 
 ## Current state
 
