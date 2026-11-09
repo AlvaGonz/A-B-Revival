@@ -441,8 +441,7 @@ namespace ABRevival.Tests.PlayMode
         private static void AssertMainMenuLayers(VisualElement root)
         {
             AssertSprite(root.Q("main-backdrop"), "ui_0005");
-            AssertSprite(root.Q("main-title-plate"), "UI_Main_TitlePlate");
-            AssertSprite(root.Q("main-title"), "UI_Main_Title");
+            AssertSprite(root.Q("main-title"), "UI_Main_TitleBanner");
             AssertSprite(root.Q("main-ship"), "UI_Main_Ship");
             Assert.IsNull(root.Q("main-page"), "The baked UI_Main page wrapper is retired.");
             Assert.IsNull(root.Q("main-art"), "The baked UI_Main_Hero crop is retired.");

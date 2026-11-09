@@ -4,7 +4,6 @@
     <ui:VisualElement name="main-root" class="main-root">
         <!-- One full-screen starfield; title and ship are separate frozen layers (ADR 0024). -->
         <ui:VisualElement name="main-backdrop" class="main-backdrop" picking-mode="Ignore" />
-        <ui:VisualElement name="main-title-plate" class="main-title-plate" picking-mode="Ignore" />
         <ui:VisualElement name="main-title" class="main-title" picking-mode="Ignore" />
         <ui:VisualElement name="main-ship" class="main-ship" picking-mode="Ignore" />
 

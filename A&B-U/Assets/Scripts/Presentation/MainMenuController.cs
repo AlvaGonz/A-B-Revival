@@ -17,16 +17,6 @@ namespace ABRevival.Presentation
     public sealed class MainMenuController : MonoBehaviour
     {
         private const float PageWidth = 667f;
-        private const float ButtonWidth = 153.7f;
-        private const float ButtonHeight = 42.2f;
-        private const float TitleWidth = 394f;
-        private const float TitleHeight = 52f;
-        private const float TitleLeft = 20.15f;
-        private const float TitleTop = 10f;
-        private const float TitlePlateWidth = 440f;
-        private const float TitlePlateHeight = 71f;
-        private const float TitlePlateLeft = 14f;
-        private const float TitlePlateTop = 0f;
         private const float ShipWidth = 427f;
         private const float ShipHeight = 344f;
         private const float ShipWidthFraction = 0.8f;
@@ -41,6 +31,16 @@ namespace ABRevival.Presentation
         [Tooltip("Keep the four bottom buttons bottom-anchored. Off uses each authored Y.")]
         [SerializeField] private bool anchorBottomRow = true;
 
+        [Header("Object layout (page pixels; zero backdrop size = full screen)")]
+        [SerializeField] private Vector2 titleBannerPosition = new Vector2(0f, 0f);
+        [SerializeField] private Vector2 titleBannerSize = new Vector2(460f, 92f);
+        [SerializeField] private bool manualShipLayout;
+        [SerializeField] private Vector2 shipPosition = new Vector2(0f, 0f);
+        [SerializeField] private Vector2 shipSize = new Vector2(427f, 344f);
+        [SerializeField] private Vector2 buttonSize = new Vector2(153.7f, 42.2f);
+        [SerializeField] private Vector2 backdropOffset = Vector2.zero;
+        [SerializeField] private Vector2 backdropSize = Vector2.zero;
+
         [Header("Button positions (page pixels)")]
         [SerializeField] private Vector2 playButtonPosition = new Vector2(20.15f, 469.1f);
         [SerializeField] private Vector2 dataButtonPosition = new Vector2(176.55f, 469.1f);
@@ -51,7 +51,6 @@ namespace ABRevival.Presentation
 
         [Header("Main menu sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite backdrop;
-        [SerializeField] private Sprite titlePlateArt;
         [SerializeField] private Sprite titleArt;
         [SerializeField] private Sprite shipArt;
         [SerializeField] private Sprite playNormal;
@@ -69,7 +68,7 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite playerHover;
 
         private UIDocument _document;
-        private VisualElement _titlePlate;
+        private VisualElement _backdrop;
         private VisualElement _title;
         private VisualElement _ship;
         private VisualElement _deferred;
@@ -151,7 +150,7 @@ namespace ABRevival.Presentation
 
         private void Bind(VisualElement root)
         {
-            _titlePlate = root.Q("main-title-plate");
+            _backdrop = root.Q("main-backdrop");
             _title = root.Q("main-title");
             _ship = root.Q("main-ship");
             _deferred = root.Q("main-deferred");
@@ -207,9 +206,8 @@ namespace ABRevival.Presentation
 
         private void ApplySkin(VisualElement root)
         {
-            // One background: the frozen starfield. Title plate, title and ship are separate layers.
+            // One background: the frozen starfield. The title banner is the frozen plate + lettering.
             SetSprite(root, "main-backdrop", backdrop, ScaleMode.ScaleAndCrop);
-            SetSprite(root, "main-title-plate", titlePlateArt, ScaleMode.StretchToFill);
             SetSprite(root, "main-title", titleArt, ScaleMode.StretchToFill);
             SetSprite(root, "main-ship", shipArt, ScaleMode.StretchToFill);
         }
@@ -229,15 +227,12 @@ namespace ABRevival.Presentation
 
         private void FitPage(float width, float height)
         {
-            if (_titlePlate == null || _title == null || _ship == null || width <= 0f || height <= 0f) return;
+            if (_backdrop == null || _title == null || _ship == null || width <= 0f || height <= 0f) return;
             if (Mathf.Approximately(width, _lastRootSize.x) && Mathf.Approximately(height, _lastRootSize.y))
                 return;
 
             _lastRootSize = new Vector2(width, height);
             float pageScale = width / PageWidth;
-            float titleLeft = TitleLeft * pageScale;
-            float titleWidth = TitleWidth * pageScale;
-            float titleHeight = TitleHeight * pageScale;
 
             float safeTop = 0f;
             float safeBottom = 0f;
@@ -248,34 +243,56 @@ namespace ABRevival.Presentation
                 safeBottom = safeArea.yMin / Screen.height * height;
             }
 
-            float titleTop = Mathf.Max(TitleTop * pageScale, safeTop + SafeAreaPadding);
+            // Backdrop: full screen by default; a non-zero authored size opts into manual control.
+            if (backdropSize.x <= 0f || backdropSize.y <= 0f)
+            {
+                _backdrop.style.left = 0f;
+                _backdrop.style.top = 0f;
+                _backdrop.style.width = width;
+                _backdrop.style.height = height;
+            }
+            else
+            {
+                _backdrop.style.left = backdropOffset.x * pageScale;
+                _backdrop.style.top = backdropOffset.y * pageScale;
+                _backdrop.style.width = backdropSize.x * pageScale;
+                _backdrop.style.height = backdropSize.y * pageScale;
+            }
+
+            // Title banner: full original plate + lettering + glow, moving with the safe area.
+            float titleLeft = titleBannerPosition.x * pageScale;
+            float titleTop = Mathf.Max(titleBannerPosition.y * pageScale, safeTop);
+            float titleWidth = titleBannerSize.x * pageScale;
+            float titleHeight = titleBannerSize.y * pageScale;
             _title.style.left = titleLeft;
             _title.style.top = titleTop;
             _title.style.width = titleWidth;
             _title.style.height = titleHeight;
 
-            // The plate moves with the title; the top bar and outer spike tips are not in the asset.
-            _titlePlate.style.left = titleLeft - (TitleLeft - TitlePlateLeft) * pageScale;
-            _titlePlate.style.top = titleTop - (TitleTop - TitlePlateTop) * pageScale;
-            _titlePlate.style.width = TitlePlateWidth * pageScale;
-            _titlePlate.style.height = TitlePlateHeight * pageScale;
-
             float scaledBottomMargin = Mathf.Max(bottomMargin * pageScale, safeBottom + SafeAreaPadding);
             LayoutBottomButton(_playButton, playButtonPosition, height, pageScale, buttonScale,
-                scaledBottomMargin, anchorBottomRow);
+                scaledBottomMargin, anchorBottomRow, buttonSize);
             LayoutBottomButton(_dataButton, dataButtonPosition, height, pageScale, buttonScale,
-                scaledBottomMargin, anchorBottomRow);
+                scaledBottomMargin, anchorBottomRow, buttonSize);
             LayoutBottomButton(_optionsButton, optionsButtonPosition, height, pageScale, buttonScale,
-                scaledBottomMargin, anchorBottomRow);
+                scaledBottomMargin, anchorBottomRow, buttonSize);
             LayoutBottomButton(_creditsButton, creditsButtonPosition, height, pageScale, buttonScale,
-                scaledBottomMargin, anchorBottomRow);
-            LayoutScreenButton(_linkButton, linkButtonPosition, pageScale, buttonScale);
-            LayoutScreenButton(_playerButton, playerButtonPosition, pageScale, buttonScale);
+                scaledBottomMargin, anchorBottomRow, buttonSize);
+            LayoutScreenButton(_linkButton, linkButtonPosition, pageScale, buttonScale, buttonSize);
+            LayoutScreenButton(_playerButton, playerButtonPosition, pageScale, buttonScale, buttonSize);
 
-            // Ship fills a centred band between the title bottom and the bottom control row,
-            // capped at 80% of the width so portrait phones keep side margins.
+            if (manualShipLayout)
+            {
+                _ship.style.left = shipPosition.x * pageScale;
+                _ship.style.top = shipPosition.y * pageScale;
+                _ship.style.width = shipSize.x * pageScale;
+                _ship.style.height = shipSize.y * pageScale;
+                return;
+            }
+
+            // Automatic ship: centred band between the title bottom and the bottom control row.
             float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
-            float controlTop = height - ButtonHeight * sizeScale - scaledBottomMargin;
+            float controlTop = height - buttonSize.y * sizeScale - scaledBottomMargin;
             float bandTop = titleTop + titleHeight + ShipBandMargin * pageScale;
             float bandBottom = controlTop - ShipBandMargin * pageScale;
             float bandHeight = Mathf.Max(0f, bandBottom - bandTop);
@@ -291,24 +308,22 @@ namespace ABRevival.Presentation
 
             float shipScale = Mathf.Min(bandHeight / ShipHeight, maxShipWidth / ShipWidth);
             shipScale = Mathf.Max(0f, shipScale);
-
             float shipWidth = ShipWidth * shipScale;
             float shipHeight = ShipHeight * shipScale;
-            float shipLeft = (width - shipWidth) * 0.5f;
-            float shipTop = bandTop + (bandHeight - shipHeight) * 0.5f;
-            _ship.style.left = shipLeft;
-            _ship.style.top = shipTop;
+            _ship.style.left = (width - shipWidth) * 0.5f;
+            _ship.style.top = bandTop + (bandHeight - shipHeight) * 0.5f;
             _ship.style.width = shipWidth;
             _ship.style.height = shipHeight;
         }
 
         private static void LayoutBottomButton(Button button, Vector2 position, float screenHeight,
-            float pageScale, float buttonScale, float scaledBottomMargin, bool anchorBottom)
+            float pageScale, float buttonScale, float scaledBottomMargin, bool anchorBottom,
+            Vector2 authoredSize)
         {
             if (button == null) return;
             float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
-            float buttonWidth = ButtonWidth * sizeScale;
-            float buttonHeight = ButtonHeight * sizeScale;
+            float buttonWidth = authoredSize.x * sizeScale;
+            float buttonHeight = authoredSize.y * sizeScale;
             button.style.left = position.x * pageScale;
             button.style.top = anchorBottom
                 ? screenHeight - buttonHeight - scaledBottomMargin
@@ -318,14 +333,14 @@ namespace ABRevival.Presentation
         }
 
         private static void LayoutScreenButton(Button button, Vector2 position,
-            float pageScale, float buttonScale)
+            float pageScale, float buttonScale, Vector2 authoredSize)
         {
             if (button == null) return;
             float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
             button.style.left = position.x * pageScale;
             button.style.top = position.y * pageScale;
-            button.style.width = ButtonWidth * sizeScale;
-            button.style.height = ButtonHeight * sizeScale;
+            button.style.width = authoredSize.x * sizeScale;
+            button.style.height = authoredSize.y * sizeScale;
         }
 
         /// <summary>

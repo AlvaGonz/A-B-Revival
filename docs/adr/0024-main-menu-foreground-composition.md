@@ -44,6 +44,12 @@ Separate transparent layers are therefore possible without redrawing the ship or
 - #187 owns the decision; the layer-extraction and recomposition tickets implement it.
 - The pre-edit tag is the revert point if the owner rejects the result.
 
+## Implementation note (#210)
+
+The shipped title is the page-rendered banner (plate + blue glow + subtitle), not the split
+plate/lettering pair. The shape 442 / sprite 444 analysis above remains the source map; the
+banner is the faithful composite of that art.
+
 ## Implementation note (#206)
 
 Extraction confirmed the split described in Research and refined it in one way:
