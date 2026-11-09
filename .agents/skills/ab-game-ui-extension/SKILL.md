@@ -4,6 +4,8 @@ description: Extends a game concept or partial interface into a coherent screen 
 ---
 
 > **Project constraint (A&B Revival).** Original Flash art and fonts are the baseline (ADR 0020); layout, UX and art improvements need explicit owner approval recorded in the issue/PR. This project renders UI with Unity UI Toolkit (UXML/USS, PanelSettings). Imported workflow steps are advisory: the repository workflow (wayfinder -> to-spec -> to-tickets -> TDD -> review) prevails.
+>
+> **Repository artifacts.** Specs and tickets live in GitHub Issues (`docs/agents/issue-tracker.md`). The `specs/`, `plan.md`, `contracts/` and `tasks.md` paths below are upstream notation; do not create them unless the owner explicitly asks for a local artifact. Upstream Python tools and templates are not vendored.
 
 # Game UI Extension
 

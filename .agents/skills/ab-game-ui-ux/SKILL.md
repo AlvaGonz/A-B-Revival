@@ -167,3 +167,5 @@ func _on_health_changed(current: int, max_health: int) -> void:
 - `dialogue-systems` — conversation/choice UI that lives inside this UI shell.
 - `input-systems` — device switching, rebinding screens, and accessible controls.
 - `rpg`, `card-game`, `tower-defense`, `visual-novel` — UI-heavy genres that compose this skill.
+
+Skills without the `ab-` prefix are upstream references and are not vendored in this repository.

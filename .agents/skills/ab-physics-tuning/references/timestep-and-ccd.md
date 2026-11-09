@@ -1,5 +1,7 @@
 # Fixed timestep, interpolation, CCD, and stability
 
+> **Project note.** This reference is engine-neutral upstream material. Godot settings and legacy Unity `Rigidbody`/`Physics2D` examples do not apply to this project; use the PhysicsCore2D API in `../SKILL.md`.
+
 The root cause of most physics problems is the relationship between a **fixed**
 simulation step and a **variable** render frame. Get the loop right and most
 "jitter" and "frame-rate dependence" complaints disappear.

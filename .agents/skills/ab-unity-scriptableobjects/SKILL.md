@@ -7,7 +7,7 @@ description: >
   CreateAssetMenu, or when the user mentions ScriptableObject, SO architecture, or data assets.
 ---
 
-> **Project note.** Written against Unity 6.3 LTS; this project pins Unity 6000.6.8f1. Verify any API before use; ScriptableObject itself is stable, but project data belongs under the existing architecture.
+> **Project note.** Written against Unity 6.3 LTS; this project pins Unity 6000.6.8f1. Verify any API before use; ScriptableObject itself is stable, but project data belongs under the existing architecture. Imported workflow steps are advisory; the repository workflow (wayfinder -> to-spec -> to-tickets -> TDD -> review) prevails.
 
 # Unity ScriptableObject Architecture
 

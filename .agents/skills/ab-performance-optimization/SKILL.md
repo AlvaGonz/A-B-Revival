@@ -9,14 +9,14 @@ description: >
   batching, garbage collection/GC spikes, object pooling, or "the game runs slow".
 ---
 
-> **Project note.** Written against Unity 6.3 LTS; this project pins Unity 6000.6.8f1. Verify any API before use and follow `CODING_STANDARDS.md` section 2 (zero-alloc, Burst, atlases) where it is stricter.
+> **Project note.** Written against Unity 6.3 LTS; this project pins Unity 6000.6.8f1. Verify any API before use and follow `CODING_STANDARDS.md` section 2 (zero-alloc, Burst, atlases) where it is stricter. Imported workflow steps are advisory; the repository workflow (wayfinder -> to-spec -> to-tickets -> TDD -> review) prevails.
 
 # Performance optimization
 
 Performance work is a measurement discipline, not a bag of tricks. The method is always the
 same: **profile → find the one bottleneck → fix that → measure again**. This skill teaches that
 loop and the highest-leverage fixes (pooling, batching, allocation control, asset budgets), and
-points you at each engine's profiler. It pairs with `physics-tuning` for simulation cost.
+points you at each engine's profiler. It pairs with `ab-physics-tuning` for simulation cost.
 
 ## When to use
 
@@ -27,7 +27,7 @@ points you at each engine's profiler. It pairs with `physics-tuning` for simulat
 - Use to apply specific fixes: object pooling, draw-call/batch reduction, removing per-frame
   allocations and GC spikes, and setting asset budgets.
 
-**When *not* to use:** for physics jitter/tunneling/timestep specifically, use `physics-tuning`.
+**When *not* to use:** for physics jitter/tunneling/timestep specifically, use `ab-physics-tuning`.
 For the engine's concrete profiler UI and rendering settings, use that
 engine skill (`godot-export` covers some build settings; engine cores cover the rest). This skill
 is the cross-engine method and the shared fixes.
@@ -168,7 +168,7 @@ void Update() {
 
 ## Related skills
 
-- `physics-tuning` — simulation cost, fixed-step budget, sleeping bodies, broadphase layers.
+- `ab-physics-tuning` — simulation cost, fixed-step budget, sleeping bodies, broadphase layers.
 - `godot-export` — release/build settings that affect measured performance.
 - `procedural-gen`, `game-ai` — common CPU hotspots (generation, pathfinding) to budget and defer.
 - `roguelike`, `tower-defense`, `survival-crafting` — entity-heavy genres that need pooling/budgets.

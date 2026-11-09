@@ -1,4 +1,4 @@
-# Upstream
+﻿# Upstream
 
 - Source: https://github.com/guiguiyan930-source/game-ui-design-workflow
 - Path: skills/game-ui-component-breakdown
@@ -9,7 +9,7 @@
 - Local modifications:
   - Translated from Simplified Chinese to English.
   - Renamed frontmatter `name` to `ab-game-ui-component-breakdown` and updated sibling skill references to the `ab-` prefixed names.
-  - Added the project constraint header.
+  - Added the project constraint header and the repository-artifacts/upstream-tooling note.
   - Added the image-generation gate: generation is off by default and needs explicit owner approval for each use.
 
 ## Why this copy exists

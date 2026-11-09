@@ -4,6 +4,8 @@ description: Packs semantically named transparent game UI PNG files into an atla
 ---
 
 > **Project constraint (A&B Revival).** Original Flash art and fonts are the baseline (ADR 0020); layout, UX and art improvements need explicit owner approval recorded in the issue/PR. This project renders UI with Unity UI Toolkit (UXML/USS, PanelSettings). Imported workflow steps are advisory: the repository workflow (wayfinder -> to-spec -> to-tickets -> TDD -> review) prevails.
+>
+> **Upstream tooling.** The Python scripts referenced below are not vendored; run them from an upstream checkout or use project tooling. They are optional and do not replace `scripts/export-*.bat` or ticket #124.
 
 # Game UI Atlas and Engine Handoff
 

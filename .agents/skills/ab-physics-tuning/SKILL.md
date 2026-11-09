@@ -17,14 +17,14 @@ Most "bad physics" here is not an engine bug: it is a mismatch between the fixed
 | Units | 1 unit = 1 pixel, `lengthUnitsPerMeter = 100` | `PhysicsSettingsConfigurator.cs`, ADR 0017 |
 | Gravity | `(0, -981)` px/s^2 | `PhysicsSettingsConfigurator.cs` |
 | Max linear speed | `40000` px/s | `PhysicsSettingsConfigurator.cs` |
-| Fixed step | `1 / 60` s | `GameFlowController`, `WorldUnitPhysicsTests` |
+| Fixed step | `1 / 60` s accumulator, max 4 substeps per frame | `GameFlowController.TickMission` |
 | Sleep threshold | `5` | `PhysicsSettingsConfigurator.cs` |
 
 Use the settings asset at `Assets/Settings/PhysicsCoreSettings2D.asset`; run **Tools > A&B Revival > Apply Physics Core 2D World-Unit Baseline** before creating bodies. Changing `lengthUnitsPerMeter` after bodies exist is a migration, not a setting.
 
 ## Core workflow
 
-1. **Simulate on the fixed step.** Integrate velocities and call `world.Simulate(Time.fixedDeltaTime)` from `FixedUpdate`. Never integrate with `Time.deltaTime` in `Update`.
+1. **Simulate on the fixed step.** `GameFlowController.TickMission` accumulates `deltaTime` and calls `StepMission()` once per `FixedStepSeconds` (1/60). Never integrate with `Time.deltaTime` in `Update`.
 2. **Interpolate only presentation.** The renderer may lerp between previous and current physics poses; the simulation stays at 60 Hz.
 3. **Sweep fast movers.** Projectiles use `Ballistics.SweepSegment` and a ray cast from previous to current position (`ProjectileContactSolver.Step`). Do not rely on discrete contacts for bullets.
 4. **Cap speed against the thinnest collider.** `speed / 60` is the distance travelled per step; keep it below the thinnest wall, or sweep.
@@ -34,11 +34,17 @@ Use the settings asset at `Assets/Settings/PhysicsCoreSettings2D.asset`; run **T
 
 ## Patterns
 
-### 1. Fixed step and a scripted world for tests
+### 1. Fixed-step accumulator, scripted world for tests
 
 ```csharp
-// Runtime: one step per FixedUpdate, fixed dt.
-world.Simulate(Time.fixedDeltaTime);
+// Runtime: GameFlowController.TickMission
+_accumulator += deltaTime;
+float maxFrameDelta = FixedStepSeconds * MaxSubstepsPerFrame;   // 1/60 * 4
+if (_accumulator > maxFrameDelta) _accumulator = maxFrameDelta;
+while (_accumulator >= FixedStepSeconds) { _accumulator -= FixedStepSeconds; StepMission(); }
+
+// StepMission runs the simulation; the physics world uses its automatic mode.
+_solver.Step(_simulation.Projectiles, FixedStepSeconds);
 
 // Tests: deterministic stepping, no automatic simulation.
 var definition = PhysicsWorldDefinition.defaultDefinition;
@@ -46,6 +52,8 @@ definition.simulationType = PhysicsWorld.SimulationType.Script;
 var world = PhysicsWorld.Create(definition);
 while (elapsed < 3f) { world.Simulate(1f / 60f); elapsed += 1f / 60f; }
 ```
+
+Do not add a manual `world.Simulate` to the runtime path while `SimulationType` is automatic — it double-steps. `Simulate` is for scripted tests.
 
 ### 2. Sweep instead of discrete contacts
 
@@ -61,21 +69,24 @@ A 4000 px/s shot moves ~66.7 px per 60 Hz step; a 40 px hull is smaller than tha
 ### 3. Speed cap
 
 ```csharp
-const float MaxSpeed = 40000f;                 // engine ceiling from the settings asset
-float maxTravelPerStep = MaxSpeed / 60f;        // ~667 px
-// Keep projectile speed below MaxSpeed; raise the physics rate only as a last resort.
+const float MaxSpeed = 40000f;                  // engine ceiling from the settings asset
+float thinnestHullPx = 40f;
+float maxSafeSpeed = thinnestHullPx * 60f;      // 2400 px/s: travels one hull per step
+// The engine ceiling is not a safe cap. Keep shots near maxSafeSpeed, or sweep them.
 ```
+
+Sweeping (pattern 2) is what makes 4000 px/s shots safe against a 40 px hull; the cap alone is not.
 
 ### 4. Contact filters and factions
 
 ```csharp
 shapeDefinition.contactFilter = new PhysicsShape.ContactFilter(
-    category: FactionCategory(factionId),      // 0..30
-    mask: PhysicsMask.All,
-    group: 0);                                  // same non-zero group = no collision
+    FactionCategory(factionId),                 // categories: 0..30
+    PhysicsMask.All,                            // contacts
+    0);                                         // groupIndex
 ```
 
-Both sides of a pair must agree. A projectile that ignores its own faction filters by `factionId` before the cast; keep that as an explicit rule.
+`PhysicsCoreSettings2D` uses `m_ContactFilterGroupMode: 0` (Filtering): different groups never collide; the same group decides with the category/contact masks. Both sides of a pair must agree. A projectile that ignores its own faction filters by `factionId` before the cast; keep that as an explicit rule.
 
 ### 5. Body and shape tuning
 
@@ -106,12 +117,12 @@ Resting bodies sleep at `sleepThreshold = 5`; do not keep them awake for nothing
 - **Per-frame managed allocation** in the step (`new`, LINQ, boxing) violates `CODING_STANDARDS.md` section 2 and causes GC hitches.
 - **Writing physics objects from worker jobs.** `PhysicsBody`/`PhysicsShape` writes are main-thread; parallelize your own `NativeArray` data, not the physics world.
 - **Too many solver iterations or extreme mass ratios** explode stacks. Keep ratios modest.
-- **Ignoring the maximum step.** A stall must not produce one giant `deltaTime`; clamp the step (Unity *Maximum Allowed Timestep*).
+- **Ignoring the maximum step.** A stall must not produce one giant `deltaTime`; the accumulator clamps to `FixedStepSeconds * MaxSubstepsPerFrame` (4).
 - **Expecting `Rigidbody2D` behaviour.** `interpolation`, `collisionDetectionMode` and `Physics2D.IgnoreLayerCollision` do not apply here.
 
 ## Verification checklist
 
-- [ ] One `world.Simulate(Time.fixedDeltaTime)` per `FixedUpdate`.
+- [ ] One `StepMission`/solver step per accumulated fixed tick; no manual `world.Simulate` in the runtime path.
 - [ ] Fastest projectile swept; thinnest hull not tunnelled.
 - [ ] `PhysicsWorld.lengthUnitsPerMeter == 100` in a PlayMode test.
 - [ ] No managed allocation in the step.

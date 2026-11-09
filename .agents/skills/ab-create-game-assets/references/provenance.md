@@ -16,8 +16,7 @@ production recordkeeping workflow, not legal advice.
 - edits, derivatives, and the person/tool responsible
 - approval status and reviewer
 
-The bundled `assets/asset-manifest.json` has fields for these records. Keep proof of purchase and
-license snapshots outside a public repository when they contain personal or account data.
+The project asset manifest (`docs/assets/extraction-manifest.json`) records these fields. The upstream `assets/asset-manifest.json` schema is not vendored. Keep proof of purchase and license snapshots outside a public repository when they contain personal or account data.
 
 ## Decision rules
 

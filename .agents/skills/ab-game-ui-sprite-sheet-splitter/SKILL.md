@@ -4,6 +4,8 @@ description: Splits a generated game UI sprite sheet or component board into ind
 ---
 
 > **Project constraint (A&B Revival).** Original Flash art and fonts are the baseline (ADR 0020); layout, UX and art improvements need explicit owner approval recorded in the issue/PR. This project renders UI with Unity UI Toolkit (UXML/USS, PanelSettings). Imported workflow steps are advisory: the repository workflow (wayfinder -> to-spec -> to-tickets -> TDD -> review) prevails.
+>
+> **Upstream tooling.** The Python scripts referenced below are not vendored; run them from an upstream checkout or use project tooling. They are optional and do not replace `scripts/export-*.bat` or ticket #124.
 
 # Game UI Sprite-Sheet Splitting and PNG Packaging
 

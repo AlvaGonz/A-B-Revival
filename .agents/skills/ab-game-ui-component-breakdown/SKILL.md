@@ -4,6 +4,8 @@ description: Breaks an approved game UI page or visual style into reusable, indi
 ---
 
 > **Project constraint (A&B Revival).** Original Flash art and fonts are the baseline (ADR 0020); layout, UX and art improvements need explicit owner approval recorded in the issue/PR. This project renders UI with Unity UI Toolkit (UXML/USS, PanelSettings). Imported workflow steps are advisory: the repository workflow (wayfinder -> to-spec -> to-tickets -> TDD -> review) prevails.
+>
+> **Upstream tooling.** The Python scripts referenced below are not vendored; run them from an upstream checkout or use project tooling. Generation is off by default and needs explicit owner approval for each use.
 
 # Game UI Component Breakdown
 

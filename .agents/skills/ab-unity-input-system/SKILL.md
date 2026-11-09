@@ -7,7 +7,7 @@ description: >
   Unity Input System, InputAction, action maps, PlayerInput, control schemes, or rebinding.
 ---
 
-> **Project note.** Written against Unity 6.3 LTS; this project pins Unity 6000.6.8f1. Use it only if `com.unity.inputsystem` is present in `Packages/manifest.json`; otherwise read input through the project's existing path and treat this as migration guidance.
+> **Project note.** Written against Unity 6.3 LTS; this project pins Unity 6000.6.8f1 and ships `com.unity.inputsystem` 1.20.1. Verify any API before use. Imported workflow steps are advisory; the repository workflow (wayfinder -> to-spec -> to-tickets -> TDD -> review) prevails.
 
 # Unity Input System (new)
 
@@ -25,7 +25,7 @@ replacement for the legacy `Input.GetAxis`/`Input.GetKey` Input Manager.
 
 **When *not* to use:** rebindable-control *architecture* across engines → `input-systems`
 (this skill is the Unity-specific API). Moving the character once you have the input vector
-→ `unity-physics` / `unity-csharp-scripting`.
+→ the project simulation layer (`A&B-U/Assets/Scripts/Simulation`).
 
 ## Core workflow
 
@@ -179,4 +179,4 @@ private void Shoot() { }
 
 - `input-systems` — engine-agnostic input architecture (rebinding, buffering, multi-device).
 - `unity-csharp-scripting` — the MonoBehaviour these handlers live in.
-- `unity-physics` — applying the input vector to a Rigidbody.
+- `ab-physics-tuning` — PhysicsCore2D movement, contacts and the fixed step.

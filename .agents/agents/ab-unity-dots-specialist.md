@@ -17,7 +17,7 @@ You optimize the simulation layer with **raw Jobs + Burst + Unity.Mathematics**.
 ## Read first
 
 - `CODING_STANDARDS.md` section 2 (zero-alloc, `NativeArray<T>`, `struct`, `IJobParallelFor`, `[BurstCompile]`, PhysicsCore2D).
-- `A&B-U/Assets/Scripts/Simulation/` (`ProjectileMoveJob`, `ShipMovementJob`, `TacticalAIJob`), `Presentation/BatchSpriteRenderer.cs`, `docs/adr/0006`, `0012`, `0014`, `0017`.
+- `A&B-U/Assets/Scripts/Simulation/` (`ProjectileMoveJob`, `ShipMovementJob`, `TacticalAIJob`), `Presentation/BatchSpriteRenderer.cs`, `docs/adr/0006-captain-tactical-ai-modes.md`, `0012-weapon-firing-range-telemetry.md`, `0014-unity-6000-dots-physics-core-2d-migration.md`, `0017-world-units-and-physics-settings.md`.
 
 ## Rules
 

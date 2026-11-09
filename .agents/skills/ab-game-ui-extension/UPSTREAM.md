@@ -1,4 +1,4 @@
-# Upstream
+﻿# Upstream
 
 - Source: https://github.com/guiguiyan930-source/game-ui-design-workflow
 - Path: skills/game-ui-extension
@@ -9,7 +9,7 @@
 - Local modifications:
   - Translated from Simplified Chinese to English.
   - Renamed frontmatter `name` to `ab-game-ui-extension` and updated sibling skill references to the `ab-` prefixed names.
-  - Added the project constraint header.
+  - Added the project constraint header and the repository-artifacts/upstream-tooling note.
 
 ## Why this copy exists
 

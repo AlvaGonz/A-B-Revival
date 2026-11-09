@@ -37,7 +37,7 @@ Turn visual intent into a consistent, engine-ready asset set. Generation is one 
 
 ## Image-generation gate
 
-Generation runs only when the owner approves the specific use in the issue/PR. The brief stills owns the constraints; the generation call happens outside this repository.
+Generation runs only when the owner approves the specific use in the issue/PR. The brief still owns the constraints; the generation call happens outside this repository.
 
 Build prompts from these blocks:
 
@@ -86,5 +86,7 @@ Do not call an asset production-ready from a prompt result alone. Approval requi
 ## Related skills
 
 - `ab-game-ui-ux` — layout, navigation, readability and accessible interaction.
+- `ab-game-ui-page-generator` — approved page generation with the owner gate.
+- `ab-game-ui-component-breakdown` — approved component breakdown with the owner gate.
 - `ab-performance-optimization` — texture, atlas and draw-call budgets.
 - The project's extraction pipeline: `scripts/export_all_assets.py`, `docs/assets/extraction-manifest.json`.
