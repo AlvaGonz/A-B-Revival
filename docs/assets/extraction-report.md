@@ -99,6 +99,16 @@ the two-glyph/one-glyph fallbacks are recorded in `docs/assets/reference/README.
 | `effects-missiles` | no-source-art | - | The SWF contains no explosion, smoke, spark, trail, debris or missile symbols. Effects are procedural in Particle.as; the combat atlas therefore contains the four Blt_* sprites, the baked procedural normal disc and the four pickups only. |
 | `font-licensing` | accepted-risk | 2, 7, 81, 478, 496, 595, 627, 701 | The eight frozen fonts are embedded exactly; no substitute is used. Arial and Times New Roman are commercial subsets, SF TransRobotics/SF Zero Gravity have undocumented ShyFonts-era terms, and _sans is an unidentified generic subset. ADR 0020 accepts the risk for this non-commercial preservation build only. |
 
+## Results/Repair child widgets (#180)
+
+`UIWin`/`UIAllWin`/`UIFail`/`UIRepair` place their buttons as unnamed composite children, so the
+batch leaves them out of the standalone set. Ticket #180 exports the plates used by the dedicated
+screens directly from the frozen library: NEXT (13), REPAIR (16), VARGAMES (20), BACK (299),
+RESET (167), SELECT ALL (225) and the help mark (73), each with the extracted frame states. The
+full-page space backdrops `ui_0005.png` (win/all-win) and `ui_0511.png` (fail) are the original
+backdrop symbols behind those pages, so the live dialog can carry real text without baked
+placeholders. No replacement art was drawn.
+
 ## Contact sheets
 
 - `docs/assets/contact-sheets/ui-screens.png`

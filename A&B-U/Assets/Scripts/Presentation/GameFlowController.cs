@@ -5,6 +5,7 @@ using ABRevival.Core.Camera;
 using ABRevival.Core.Data;
 using ABRevival.Core.Hud;
 using ABRevival.Core.Persistence;
+using ABRevival.Core.Shop;
 using ABRevival.Core.Simulation;
 using ABRevival.Core.Story;
 using ABRevival.Presentation.Audio;
@@ -17,10 +18,11 @@ using UnityEngine.Video;
 namespace ABRevival.Presentation
 {
     /// <summary>
-    /// Story-0 game loop seam: Boot -> Center -> Briefing -> Mission -> Result -> Return.
+    /// Story-0 game loop seam: Boot -> Center -> Briefing -> Mission -> Result/Fail -> Return.
     /// Owns the single player save, drives <see cref="CenterController"/>, resolves story cues,
     /// steps the Burst-scheduled simulation with the PhysicsCore2D contact layer, feeds the HUD,
-    /// consumes the mission result exactly once and advances STORY on a win.
+    /// consumes the mission result exactly once, shows the dedicated Results/Repair screens and
+    /// advances STORY on the win's Next (UIWin.toNext / UIWin.nextGame).
     /// Original game IP: Vargames (2011).
     /// </summary>
     [DisallowMultipleComponent]
@@ -32,7 +34,6 @@ namespace ABRevival.Presentation
         private const int MaxSubstepsPerFrame = 4;
         private const int MaxTalkAdvancesPerSkip = 1024;
         private const int TacticalModeCount = (int)CaptainTacticalMode.Shield + 1;
-        public const float ResultDwellSeconds = 1.5f;
 
         private const string DefFlyResourcePath = "Data/3_all.AllData_defFly";
         private const string DefPartResourcePath = "Data/8_all.AllData_defPart";
@@ -46,6 +47,8 @@ namespace ABRevival.Presentation
         [SerializeField] private ShopController _shop;
         [SerializeField] private InfoController _info;
         [SerializeField] private ReadyController _ready;
+        [SerializeField] private ResultsController _results;
+        [SerializeField] private RepairController _repairScreen;
         [SerializeField] private TalkScreen _talkScreen;
         [SerializeField] private CinematicPlayer _cinematicPlayer;
         [SerializeField] private CombatHudBehaviour _hud;
@@ -82,21 +85,24 @@ namespace ABRevival.Presentation
         private int _playerHull = -1;
         private float _playerHullMax = 1f;
         private MissionResult? _lastResult;
+        private MissionSummary _lastSummary;
+        private RepairState _repair;
+        private int _moneyBeforeResult;
+        private readonly List<DamagedPart> _damagedParts = new List<DamagedPart>();
+        private int[] _hullPartBlueprint;
+        private int[] _hullPartMounted;
         private MissionLoadout _activeLoadout;
 
         private IMissionAudio _missionAudio;
         private IAssemblyAudio _assemblyAudio;
         private ICombatAudio _combatAudio;
 
-        private Label _resultLabel;
         private VisualElement _cinematicSurface;
         private RenderTexture _renderTexture;
 
         private float _accumulator;
-        private float _resultElapsed;
         private int _captainIndex = -1;
         private bool _briefingTalkActive;
-        private bool _resultTalkPending;
         private bool _cinematicSkipBound;
         private bool _centerStarted;
         private bool _infoReturnToMainMenu;
@@ -110,6 +116,9 @@ namespace ABRevival.Presentation
         public PlayerFlightController Flight => _flight;
         public ProjectileContactSolver ContactSolver => _solver;
         public MissionResult? LastResult => _lastResult;
+        public MissionSummary LastSummary => _lastSummary;
+        public RepairState CurrentRepair => _repair;
+        public IReadOnlyList<DamagedPart> DamagedParts => _damagedParts;
         public string SavePath => _savePath;
 
         /// <summary>Selected Player craft and AI companions handed to the current mission.</summary>
@@ -174,6 +183,18 @@ namespace ABRevival.Presentation
             if (_info != null) _info.Closed += OnInfoClosed;
             if (_ready != null) _ready.Closed += OnReadyClosed;
             if (_ready != null) _ready.LaunchRequested += OnReadyLaunch;
+            if (_results != null)
+            {
+                _results.NextRequested += OnResultNext;
+                _results.RetryRequested += OnResultRetry;
+                _results.ContinueRequested += OnResultContinue;
+                _results.RepairRequested += OnResultRepair;
+            }
+            if (_repairScreen != null)
+            {
+                _repairScreen.Closed += OnRepairClosed;
+                _repairScreen.Changed += OnRepairChanged;
+            }
             if (_talkScreen != null)
             {
                 _talkScreen.Completed += OnTalkCompleted;
@@ -221,6 +242,18 @@ namespace ABRevival.Presentation
             if (_info != null) _info.Closed -= OnInfoClosed;
             if (_ready != null) _ready.Closed -= OnReadyClosed;
             if (_ready != null) _ready.LaunchRequested -= OnReadyLaunch;
+            if (_results != null)
+            {
+                _results.NextRequested -= OnResultNext;
+                _results.RetryRequested -= OnResultRetry;
+                _results.ContinueRequested -= OnResultContinue;
+                _results.RepairRequested -= OnResultRepair;
+            }
+            if (_repairScreen != null)
+            {
+                _repairScreen.Closed -= OnRepairClosed;
+                _repairScreen.Changed -= OnRepairChanged;
+            }
             if (_talkScreen != null) _talkScreen.Completed -= OnTalkCompleted;
             if (_flight != null)
             {
@@ -253,12 +286,6 @@ namespace ABRevival.Presentation
             {
                 case GameFlowState.Mission:
                     TickMission(deltaTime);
-                    break;
-                case GameFlowState.Result:
-                    // Hold the outcome long enough to be read; a loss must be observable.
-                    _resultElapsed += deltaTime;
-                    if (!_resultTalkPending && _resultElapsed >= ResultDwellSeconds)
-                        State = GameFlowState.Return;
                     break;
                 case GameFlowState.Return:
                     EnterCenter(firstBoot: false);
@@ -318,13 +345,19 @@ namespace ABRevival.Presentation
             try
             {
                 // Only the active screen owns the live fleet; capturing the other one would
-                // write a stale blueprint list over the edit in progress. Menu screens never
-                // capture Center: its fleet is not the live selection until PLAY opens it.
+                // Only the active screen owns the live fleet; capturing the other one would
+                // write a stale blueprint list over the edit in progress. Result/Repair already
+                // mutate the payload's blueprints directly (repairs and lost parts).
                 if (State == GameFlowState.Factory) _factory?.CaptureSave(payload);
                 else if (State == GameFlowState.Shop) _shop?.CaptureSave(payload);
+                else if (State == GameFlowState.Result || State == GameFlowState.Fail ||
+                         State == GameFlowState.Repair)
+                {
+                    // Payload owns the fleet for this window.
+                }
                 else if (State == GameFlowState.Center || State == GameFlowState.Ready ||
                          State == GameFlowState.Briefing || State == GameFlowState.Mission ||
-                         State == GameFlowState.Result || State == GameFlowState.Return)
+                         State == GameFlowState.Return)
                     _center?.CaptureSave(payload);
                 PlayerSaveCodec.SaveToFile(_savePath, payload);
             }
@@ -566,11 +599,11 @@ namespace ABRevival.Presentation
         {
             DisposeMission();
             _briefingTalkActive = false;
-            _resultTalkPending = false;
-            _resultElapsed = 0f;
             _accumulator = 0f;
             _captainIndex = -1;
             _activeLoadout = null;
+            _repair = null;
+            _damagedParts.Clear();
             // The next launch resolves its level from the saved STORY index.
             _level = null;
 
@@ -582,12 +615,13 @@ namespace ABRevival.Presentation
             _shop?.SetVisible(false);
             _info?.SetVisible(false);
             _ready?.SetVisible(false);
-            if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
+            _results?.SetVisible(false);
+            _repairScreen?.SetVisible(false);
 
             if (_center != null)
             {
                 if (firstBoot) _center.Initialize(_save);
-                else _center.SetStory(_save.storyIndex);
+                else _center.ApplySave(_save);
                 _center.SetVisible(true);
             }
 
@@ -620,7 +654,6 @@ namespace ABRevival.Presentation
             _center?.CaptureSave(_save);
             _center?.SetVisible(false);
             SetFlowVisible(false);
-            _resultTalkPending = false;
             _lastResult = null;
 
             _missionAudio?.PlayBriefingMusic();
@@ -683,7 +716,6 @@ namespace ABRevival.Presentation
             }
             else if (State == GameFlowState.Result)
             {
-                _resultTalkPending = false;
                 _talkScreen?.SetVisible(false);
             }
         }
@@ -844,8 +876,8 @@ namespace ABRevival.Presentation
             FeedStaticHudValues();
 
             _accumulator = 0f;
-            _resultElapsed = 0f;
-            if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
+            _damagedParts.Clear();
+            _repair = null;
 
             ShowCinematicSurface(false);
             SetFlowVisible(true);
@@ -954,8 +986,12 @@ namespace ABRevival.Presentation
 
             _hullToShip = new int[_simulation.MaxShips];
             _shipToHull = new int[_simulation.MaxShips];
+            _hullPartBlueprint = new int[_simulation.MaxShips * _contactPartsPerHull];
+            _hullPartMounted = new int[_simulation.MaxShips * _contactPartsPerHull];
             Array.Fill(_hullToShip, -1);
             Array.Fill(_shipToHull, -1);
+            Array.Fill(_hullPartBlueprint, -1);
+            Array.Fill(_hullPartMounted, -1);
             _registeredShipCount = 0;
             _playerHull = -1;
             _playerHullMax = 1f;
@@ -988,11 +1024,12 @@ namespace ABRevival.Presentation
             Span<CraftPartPlacement> placements = stackalloc CraftPartPlacement[_contactPartsPerHull];
             int partCount;
             int placementCount = 0;
+            int hull = _solver.RegisterHull(ship.position, ship.rotation, ship.factionId);
 
             if (isPlayer || isWingman)
             {
                 int blueprintIndex = isPlayer ? PlayerBlueprintIndex() : wingmanBlueprint;
-                partCount = BuildBlueprintParts(parts, ship, blueprintIndex);
+                partCount = BuildBlueprintParts(parts, ship, blueprintIndex, hull);
             }
             else
             {
@@ -1009,7 +1046,6 @@ namespace ABRevival.Presentation
                     float2.zero,
                     craft != null ? craft.hullPartId : 0);
 
-            int hull = _solver.RegisterHull(ship.position, ship.rotation, ship.factionId);
             _solver.SetHullParts(hull, parts.Slice(0, partCount));
             _shipToHull[shipIndex] = hull;
             _hullToShip[hull] = shipIndex;
@@ -1042,7 +1078,11 @@ namespace ABRevival.Presentation
         /// Composes one assembled blueprint through the shared Center/mission resolver:
         /// socket offsets, mirroring, and engine/hull/wing/gun layer order.
         /// </summary>
-        private int BuildBlueprintParts(Span<HullPartDefinition> parts, in ShipEntity ship, int blueprintIndex)
+        private int BuildBlueprintParts(
+            Span<HullPartDefinition> parts,
+            in ShipEntity ship,
+            int blueprintIndex,
+            int hull)
         {
             if (_save.blueprints == null || blueprintIndex < 0 || blueprintIndex >= _save.blueprints.Count)
                 return 0;
@@ -1063,6 +1103,7 @@ namespace ABRevival.Presentation
 
             if (mountedCount == 0) return 0;
 
+            bool syntheticBody = false;
             if (bodyIndex < 0)
             {
                 // Center may save a gun-only blueprint; the chassis is still part of the craft.
@@ -1078,12 +1119,14 @@ namespace ABRevival.Presentation
                     mass = blueprint.hullMass
                 };
                 mountedCount++;
+                syntheticBody = true;
             }
 
             Span<CraftPartPlacement> placements = stackalloc CraftPartPlacement[_contactPartsPerHull];
             int placementCount = CraftComposition.BuildPlayer(
                 mounted.Slice(0, mountedCount), _mountTable, placements);
 
+            int mapBase = hull * _contactPartsPerHull;
             int count = 0;
             for (int i = 0; i < placementCount && count < parts.Length; i++)
             {
@@ -1094,7 +1137,16 @@ namespace ABRevival.Presentation
                 part.localOffset = placement.localOffset * CameraDistancePresets.MountArtScale;
                 part.localRotation = placement.localRotation;
                 part.mirrored = placement.mirrored;
+                int before = count;
                 count = AddMountedPart(parts, count, in part);
+                if (count == before) continue;
+
+                if (_hullPartBlueprint != null && _hullPartMounted != null && mapBase + before < _hullPartBlueprint.Length)
+                {
+                    int mountedIndex = syntheticBody ? placement.partIndex - 1 : placement.partIndex;
+                    _hullPartBlueprint[mapBase + before] = blueprintIndex;
+                    _hullPartMounted[mapBase + before] = mountedIndex;
+                }
             }
 
             return count;
@@ -1381,11 +1433,61 @@ namespace ABRevival.Presentation
             var hits = _solver.Hits;
             for (int i = 0; i < hits.Length; i++)
             {
+                if (hits[i].partDetached) RecordDamagedPart(hits[i]);
                 _spriteView?.SpawnImpact(hits[i].point, hits[i].partDetached, hits[i].hullDestroyed);
                 if (_combatAudio == null) continue;
                 if (hits[i].hullDestroyed) _combatAudio.Explosion(1f);
                 else if (hits[i].partDetached) _combatAudio.ComponentLost();
             }
+        }
+
+        /// <summary>
+        /// Maps a detached hull part back to its saved blueprint slot. The player and every
+        /// wingman are registered through <see cref="BuildBlueprintParts"/>; hostiles keep -1.
+        /// </summary>
+        private void RecordDamagedPart(in ProjectileHit hit)
+        {
+            if (_hullPartBlueprint == null || _hullPartMounted == null) return;
+            if (hit.hullIndex < 0 || hit.hullIndex >= _maxShips) return;
+            if (hit.partIndex < 0 || hit.partIndex >= _contactPartsPerHull) return;
+
+            int slot = (hit.hullIndex * _contactPartsPerHull) + hit.partIndex;
+            if (slot < 0 || slot >= _hullPartBlueprint.Length) return;
+
+            int blueprintIndex = _hullPartBlueprint[slot];
+            int mountedIndex = _hullPartMounted[slot];
+            if (blueprintIndex < 0 || mountedIndex < 0) return;
+            AddDamagedPart(blueprintIndex, mountedIndex);
+        }
+
+        private bool AddDamagedPart(int blueprintIndex, int mountedIndex)
+        {
+            if (_save?.blueprints == null) return false;
+            if (blueprintIndex < 0 || blueprintIndex >= _save.blueprints.Count) return false;
+
+            BlueprintSaveData blueprint = _save.blueprints[blueprintIndex];
+            if (blueprint?.mountedParts == null) return false;
+            if (mountedIndex < 0 || mountedIndex >= blueprint.mountedParts.Count) return false;
+
+            for (int i = 0; i < _damagedParts.Count; i++)
+            {
+                DamagedPart recorded = _damagedParts[i];
+                if (recorded.blueprintIndex == blueprintIndex && recorded.mountedIndex == mountedIndex)
+                    return false;
+            }
+
+            MountedPartSaveData part = blueprint.mountedParts[mountedIndex];
+            _damagedParts.Add(new DamagedPart(blueprintIndex, mountedIndex, part.partId, part.category));
+            return true;
+        }
+
+        /// <summary>
+        /// Deterministic verification hook: records a mounted part as destroyed without a
+        /// projectile so the result/repair flow can be exercised at 1920x1080.
+        /// </summary>
+        public bool MarkDamagedPartForVerification(int blueprintIndex, int mountedIndex)
+        {
+            return AddDamagedPart(blueprintIndex, mountedIndex);
         }
 
         /// <summary>
@@ -1445,47 +1547,134 @@ namespace ABRevival.Presentation
 
         private void HandleMissionEnd(in MissionResult result)
         {
-            EnsureOverlayReferences();
             _lastResult = result;
-            _resultTalkPending = false;
-            _resultElapsed = 0f;
+            _moneyBeforeResult = _save.shop != null ? _save.shop.money : 0;
+            _lastSummary = MissionSummary.FromResult(result, _save.storyIndex, _damagedParts.Count);
 
             TalkScript after = null;
             if (result.state == MissionState.Win)
             {
                 after = ResolveCue(_story.ResolveTalkAfter);
-                // Applies the win once: STORY advances and the two Flash autosave points fire.
-                _story.ApplyMissionResult(result);
+                // UIWin constructor: pay the mission reward, then autoSaveMission before STORY advances.
+                if (_save.shop != null) _save.shop.money = _moneyBeforeResult + _lastSummary.reward;
+                _story.CompleteMission(result);
+                _repair = RepairState.Create(_save, _damagedParts, ResolveRepairInfo);
                 _missionAudio?.MissionWon();
             }
             else
             {
+                _repair = null;
                 _missionAudio?.MissionLost();
             }
 
             DisposeMission();
+            // The combat HUD document is the flow overlay; the dedicated result surface replaces it.
+            SetFlowVisible(false);
+            _repairScreen?.SetVisible(false);
+            _results?.Initialize(_lastSummary);
 
             if (after != null && _talkScreen != null)
             {
-                _resultTalkPending = true;
                 _talkScreen.SetVisible(true);
                 _talkScreen.Begin(after);
             }
 
-            if (_resultLabel != null)
-            {
-                _resultLabel.text = result.state == MissionState.Win ? "MISSION COMPLETE" : "MISSION FAILED";
-                _resultLabel.style.display = DisplayStyle.Flex;
-            }
-
-            State = GameFlowState.Result;
+            State = result.state == MissionState.Win ? GameFlowState.Result : GameFlowState.Fail;
         }
 
-        /// <summary>Ends the result hold immediately (result screen click/skip control).</summary>
+        private RepairPartInfo ResolveRepairInfo(int partId)
+        {
+            PartDefinitionSO definition = _center != null ? _center.FindPartDefinition(partId) : null;
+            if (definition == null) return default;
+
+            float firePower = definition.category == PartCategory.Gun
+                ? definition.CalculateDisplayFirePower(1)
+                : 0f;
+            return new RepairPartInfo(
+                definition.partName,
+                definition.category,
+                definition.lr,
+                definition.health,
+                definition.mass,
+                definition.thrust,
+                definition.turnFly,
+                firePower,
+                definition.cost);
+        }
+
+        /// <summary>
+        /// Ends the result hold immediately: win Next, or the loss Continue, both return to Center.
+        /// Kept as the deterministic PlayMode seam used by the existing flow tests.
+        /// </summary>
         public void SkipResult()
         {
+            if (State == GameFlowState.Result) OnResultNext();
+            else if (State == GameFlowState.Fail) OnResultContinue();
+        }
+
+        private void OnResultNext()
+        {
             if (State != GameFlowState.Result) return;
-            _resultElapsed = ResultDwellSeconds;
+
+            // UIWin.toNext: unrepaired parts leave their craft and become shop stock.
+            _repair?.SkipRemaining();
+            _repair = null;
+            _results?.SetVisible(false);
+            // UIWin.nextGame: STORY advances and the payload is saved at the new index.
+            _story.AdvanceStory();
+            State = GameFlowState.Return;
+        }
+
+        private void OnResultRetry()
+        {
+            if (State != GameFlowState.Result && State != GameFlowState.Fail) return;
+
+            // UIWin.retry restores the purse captured before the reward. A repair already
+            // accepted stays paid so Retry cannot refund it and keep the repaired craft.
+            if (State == GameFlowState.Result && (_repair == null || _repair.RepairedCount == 0))
+                _save.shop.money = _moneyBeforeResult;
+
+            _repair = null;
+            _damagedParts.Clear();
+            _results?.SetVisible(false);
+            State = GameFlowState.Return;
+        }
+
+        private void OnResultContinue()
+        {
+            if (State != GameFlowState.Fail) return;
+
+            _repair = null;
+            _damagedParts.Clear();
+            _results?.SetVisible(false);
+            State = GameFlowState.Return;
+        }
+
+        private void OnResultRepair()
+        {
+            if (State != GameFlowState.Result || _repair == null || !_repair.HasDamage) return;
+            if (_repairScreen == null) return;
+
+            _results?.SetVisible(false);
+            _repairScreen.Initialize(_save, _repair);
+            State = GameFlowState.Repair;
+        }
+
+        private void OnRepairChanged()
+        {
+            if (State != GameFlowState.Repair) return;
+            Autosave(_save);
+            _lastSummary = _lastSummary.WithDamagedParts(_repair != null ? _repair.Items.Count : 0);
+        }
+
+        private void OnRepairClosed()
+        {
+            if (State != GameFlowState.Repair) return;
+
+            _repairScreen?.SetVisible(false);
+            _lastSummary = _lastSummary.WithDamagedParts(_repair != null ? _repair.Items.Count : 0);
+            _results?.Initialize(_lastSummary);
+            State = GameFlowState.Result;
         }
 
         /// <summary>
@@ -1747,7 +1936,6 @@ namespace ABRevival.Presentation
         {
             if (_flowDocument != null && _flowDocument.rootVisualElement != null)
             {
-                _resultLabel ??= _flowDocument.rootVisualElement.Q<Label>("flow-result-label");
                 _cinematicSurface ??= _flowDocument.rootVisualElement.Q<VisualElement>("flow-cinematic-surface");
 
                 // The frozen UIMovie overlay skipped on click; the revival clip has no
@@ -1815,6 +2003,8 @@ namespace ABRevival.Presentation
         Info = 8,
         Ready = 9,
         MainMenu = 10,
-        Options = 11
+        Options = 11,
+        Fail = 12,
+        Repair = 13
     }
 }

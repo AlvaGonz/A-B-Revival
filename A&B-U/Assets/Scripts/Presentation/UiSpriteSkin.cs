@@ -48,6 +48,47 @@ namespace ABRevival.Presentation
                 SyncText(element, textAlign);
         }
 
+        /// <summary>Renders normal/hover/pressed frozen widget frames through one Image child.</summary>
+        public static void ApplyStates(Button button, Sprite normal, Sprite hover, Sprite pressed)
+        {
+            if (button == null || normal == null) return;
+
+            Apply(button, normal, ScaleMode.ScaleToFit, keepBackground: false);
+            if (!(button.userData is StateBinding binding))
+            {
+                binding = new StateBinding();
+                button.userData = binding;
+                button.RegisterCallback<PointerEnterEvent>(_ => SetState(button, 1));
+                button.RegisterCallback<PointerLeaveEvent>(_ => SetState(button, 0));
+                button.RegisterCallback<PointerDownEvent>(_ => SetState(button, 2));
+                button.RegisterCallback<PointerUpEvent>(_ => SetState(button, 1));
+            }
+
+            binding.normal = normal;
+            binding.hover = hover;
+            binding.pressed = pressed;
+        }
+
+        private static void SetState(Button button, int state)
+        {
+            if (!(button.userData is StateBinding binding)) return;
+            Image art = FindChild<Image>(button, ArtElement);
+            if (art == null) return;
+
+            art.sprite = state == 1
+                ? binding.hover != null ? binding.hover : binding.normal
+                : state == 2
+                    ? binding.pressed != null ? binding.pressed : binding.hover != null ? binding.hover : binding.normal
+                    : binding.normal;
+        }
+
+        private sealed class StateBinding
+        {
+            public Sprite normal;
+            public Sprite hover;
+            public Sprite pressed;
+        }
+
         /// <summary>Copies the button's live text to the overlay label after a text change.</summary>
         public static void SyncText(VisualElement element, TextAnchor textAlign = TextAnchor.MiddleCenter)
         {

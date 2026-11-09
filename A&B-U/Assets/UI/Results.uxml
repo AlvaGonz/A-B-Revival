@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Results.uss" />
+    <ui:VisualElement name="results-root" class="results-root">
+        <ui:VisualElement name="results-page" class="results-page">
+            <ui:VisualElement name="results-background" class="results-background" picking-mode="Ignore" />
+
+            <ui:VisualElement name="results-panel" class="results-panel">
+                <ui:Label name="results-title" text="You won!" class="results-title" />
+                <ui:VisualElement name="results-title-bar" class="results-title-bar" picking-mode="Ignore" />
+                <ui:Label name="results-battle" text="BATTLE-1" class="results-battle" />
+                <ui:Label name="results-cause" text="Cause: Objective complete" class="results-cause font-sans" />
+                <ui:Label name="results-body" text="No parts lost." class="results-body" />
+                <ui:Label name="results-money" text="Money: +0G" class="results-money" />
+                <ui:Label name="results-parts" text="Parts: 0" class="results-parts" />
+                <ui:Label name="results-verdict" text="Perfect" class="results-verdict" />
+                <ui:Label name="results-warning" text="" class="results-warning font-sans" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="results-actions" class="results-actions">
+                <ui:Button name="results-left" class="sprite-button result-button" tooltip="Retry this battle" />
+                <ui:Button name="results-link" class="sprite-button result-button result-button-link" tooltip="Vargames" />
+                <ui:Button name="results-right" class="sprite-button result-button" tooltip="Continue" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="results-repair-row" class="results-repair-row">
+                <ui:Button name="results-repair" class="sprite-button result-button result-button-repair" tooltip="Repair damaged parts" />
+            </ui:VisualElement>
+
+            <ui:Label name="results-tip" text="Tip 9 : It's always cheaper to repair a part than re-buy it." class="results-tip font-sans" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

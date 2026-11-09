@@ -73,14 +73,35 @@ namespace ABRevival.Core.Story
         public int StoryIndex => _save.storyIndex;
 
         /// <summary>
-        /// Applies a terminal mission result. Returns true only when STORY advanced.
-        /// Non-win results neither advance nor autosave, matching UIFail.
+        /// UIWin constructor / autoSaveMission: records the win and autosaves before STORY advances.
+        /// Returns false for non-win results, matching UIFail.
         /// </summary>
-        public bool ApplyMissionResult(MissionResult result)
+        public bool CompleteMission(MissionResult result)
         {
             if (result.state != MissionState.Win) return false;
 
             Autosave();
+            return true;
+        }
+
+        /// <summary>
+        /// UIWin.nextGame: advances STORY and autosaves. At the last battle the index stays at
+        /// <see cref="MaxStoryIndex"/> but the save still fires, matching UIAllWin.toNext.
+        /// </summary>
+        public bool AdvanceStory()
+        {
+            if (_save.storyIndex < MaxStoryIndex) _save.storyIndex++;
+            Autosave();
+            return true;
+        }
+
+        /// <summary>
+        /// Applies a terminal mission result in one call. Returns true only when STORY advanced.
+        /// Non-win results neither advance nor autosave, matching UIFail.
+        /// </summary>
+        public bool ApplyMissionResult(MissionResult result)
+        {
+            if (!CompleteMission(result)) return false;
             if (_save.storyIndex >= MaxStoryIndex) return false;
 
             _save.storyIndex++;

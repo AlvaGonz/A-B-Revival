@@ -48,6 +48,22 @@ namespace ABRevival.Tests
                 "Autosave must fire on mission completion, then again after STORY advances (Flash UIWin).");
         }
 
+        [Test]
+        public void CompleteMissionThenAdvanceStory_DefersTheIndexToNext()
+        {
+            var save = new PlayerSaveData();
+            var autosaveIndices = new List<int>();
+            var director = new StoryDirector(save, payload => autosaveIndices.Add(payload.storyIndex));
+
+            Assert.IsTrue(director.CompleteMission(Result(MissionState.Win)));
+            Assert.AreEqual(0, director.StoryIndex, "Mission completion must not advance STORY before Next.");
+            CollectionAssert.AreEqual(new[] { 0 }, autosaveIndices);
+
+            Assert.IsTrue(director.AdvanceStory());
+            Assert.AreEqual(1, director.StoryIndex);
+            CollectionAssert.AreEqual(new[] { 0, 1 }, autosaveIndices);
+        }
+
         [TestCase(MissionState.Lose)]
         [TestCase(MissionState.InProgress)]
         public void ApplyMissionResult_NonWin_DoesNotAdvanceOrAutosave(MissionState state)

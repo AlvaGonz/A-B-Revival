@@ -112,7 +112,7 @@ namespace ABRevival.Tests.PlayMode
             bool sawResult = false;
             for (int i = 0; i < WaitFrames && flow.State != GameFlowState.Center; i++)
             {
-                if (flow.State == GameFlowState.Result)
+                if (flow.State == GameFlowState.Fail)
                 {
                     sawResult = true;
                     flow.SkipResult();
@@ -121,7 +121,7 @@ namespace ABRevival.Tests.PlayMode
                 yield return null;
             }
 
-            Assert.IsTrue(sawResult, "A loss must be observable in the Result state before returning.");
+            Assert.IsTrue(sawResult, "A loss must be observable in the Fail state before returning.");
             Assert.AreEqual(GameFlowState.Center, flow.State);
             Assert.IsTrue(flow.LastResult.HasValue);
             Assert.AreEqual(MissionState.Lose, flow.LastResult.Value.state);
@@ -178,7 +178,8 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual(GameFlowState.Result, flow.State);
             Assert.IsTrue(flow.LastResult.HasValue);
             Assert.AreEqual(MissionState.Win, flow.LastResult.Value.state);
-            Assert.AreEqual(1, flow.StoryIndex, "A win must advance STORY from 0 to 1.");
+            Assert.AreEqual(0, flow.StoryIndex,
+                "UIWin keeps STORY at the current battle until Next (toNext/nextGame).");
 
             Assert.IsFalse(flow.ForceWin(), "A consumed mission result must not be reusable.");
 
@@ -197,7 +198,7 @@ namespace ABRevival.Tests.PlayMode
 
             Assert.AreEqual(GameFlowState.Center, flow.State, "The flow must return to the center after the result.");
             Assert.IsNull(flow.Runner, "Mission state is disposed on return.");
-            Assert.AreEqual(1, flow.StoryIndex, "STORY stays advanced in the center.");
+            Assert.AreEqual(1, flow.StoryIndex, "Next advances STORY before returning to Center.");
 
             Assert.IsTrue(File.Exists(SavePath), "A win must autosave the player payload.");
             PlayerSaveData saved = PlayerSaveCodec.LoadFromFile(SavePath);
@@ -314,7 +315,7 @@ namespace ABRevival.Tests.PlayMode
             }
 
             Assert.IsTrue(sawDamage, "Hostile projectiles must damage the player hull through the contact solver.");
-            Assert.AreEqual(GameFlowState.Result, flow.State, "Destroying the player must end the mission.");
+            Assert.AreEqual(GameFlowState.Fail, flow.State, "Destroying the player must end the mission.");
             Assert.IsTrue(flow.LastResult.HasValue);
             Assert.AreEqual(MissionState.Lose, flow.LastResult.Value.state);
             Assert.AreEqual(MissionEndCause.PlayerDestroyed, flow.LastResult.Value.cause,

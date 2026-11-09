@@ -1,0 +1,448 @@
+/* Repair (frozen UIRepair / UIAllWin): 1920x1080 full-bleed.
+   The table, damaged-craft card and cost rows follow the 2011 composition.
+   Button plates and the help page are the original widgets rendered through
+   UiSpriteSkin Image children; the background is the shared 2011 gradient. */
+
+.repair-root {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgb(0, 0, 0);
+}
+
+.repair-page {
+    position: absolute;
+    width: 1920px;
+    height: 1080px;
+}
+
+.repair-background {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.repair-header {
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 18px;
+    height: 82px;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 168, 214, 0.55);
+}
+
+.repair-header-plate {
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 420px;
+    height: 64px;
+}
+
+.repair-title {
+    position: absolute;
+    left: 120px;
+    top: 4px;
+    width: 300px;
+    height: 64px;
+    font-size: 36px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.header-spacer {
+    flex-grow: 1;
+}
+
+.repair-money {
+    width: 260px;
+    font-size: 28px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-right;
+    color: rgb(255, 214, 90);
+}
+
+.repair-help-button {
+    width: 44px;
+    height: 44px;
+    margin-left: 18px;
+}
+
+.repair-table {
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 118px;
+    height: 560px;
+    padding: 6px 8px;
+    flex-direction: column;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.repair-table-header {
+    height: 44px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px;
+    background-color: rgba(0, 34, 48, 0.94);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 200, 236, 0.65);
+}
+
+.repair-table-header .repair-cell {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: rgb(148, 204, 230);
+}
+
+.repair-rows {
+    flex-grow: 1;
+    min-height: 0;
+    flex-direction: column;
+}
+
+.repair-row {
+    flex-grow: 1;
+    min-height: 36px;
+    max-height: 46px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 190, 230, 0.38);
+}
+
+.repair-row-even {
+    background-color: rgba(0, 118, 150, 0.30);
+}
+
+.repair-row-odd {
+    background-color: rgba(0, 58, 82, 0.32);
+}
+
+.repair-row:hover {
+    background-color: rgba(0, 170, 210, 0.40);
+}
+
+.repair-row-selected {
+    background-color: rgba(0, 196, 236, 0.42);
+}
+
+.repair-row .repair-cell {
+    font-size: 16px;
+    color: rgb(204, 232, 246);
+}
+
+.repair-row-selected .col-sel {
+    color: rgb(255, 232, 140);
+    -unity-font-style: bold;
+}
+
+.repair-cell {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.col-index {
+    width: 68px;
+}
+
+.col-craft {
+    width: 240px;
+}
+
+.col-name {
+    flex-grow: 1;
+    min-width: 220px;
+}
+
+.col-type {
+    width: 84px;
+}
+
+.col-lr {
+    width: 54px;
+}
+
+.col-hp {
+    width: 76px;
+}
+
+.col-steering {
+    width: 100px;
+}
+
+.col-engine {
+    width: 96px;
+}
+
+.col-mass {
+    width: 88px;
+}
+
+.col-fire {
+    width: 112px;
+}
+
+.col-value {
+    width: 96px;
+    -unity-text-align: middle-right;
+}
+
+.col-sel {
+    width: 54px;
+    -unity-text-align: middle-center;
+}
+
+.repair-table-footer {
+    height: 42px;
+    flex-direction: row;
+    align-items: center;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 190, 230, 0.38);
+}
+
+.page-controls {
+    flex-direction: row;
+    align-items: center;
+}
+
+.page-button {
+    width: 54px;
+    height: 32px;
+    margin-right: 6px;
+    border-width: 1px;
+    border-color: rgba(0, 170, 214, 0.65);
+    background-color: rgba(4, 22, 32, 0.72);
+    font-size: 17px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.page-button:disabled {
+    opacity: 0.35;
+}
+
+.page-label {
+    width: 110px;
+    font-size: 18px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(224, 240, 250);
+}
+
+.filter-controls {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.filter-button {
+    width: 92px;
+    height: 32px;
+    margin-left: 6px;
+    border-width: 1px;
+    border-color: rgba(0, 170, 214, 0.65);
+    background-color: rgba(4, 22, 32, 0.72);
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(148, 204, 230);
+}
+
+.filter-button:hover {
+    color: rgb(220, 248, 255);
+}
+
+.filter-active {
+    color: rgb(0, 226, 255);
+    border-color: rgb(0, 226, 255);
+    background-color: rgba(0, 92, 116, 0.74);
+}
+
+.repair-empty {
+    height: 56px;
+    font-size: 20px;
+    -unity-text-align: middle-center;
+    color: rgb(186, 220, 238);
+}
+
+.repair-craft-card {
+    position: absolute;
+    left: 40px;
+    top: 700px;
+    width: 500px;
+    height: 240px;
+    padding: 12px 18px;
+    flex-direction: column;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.repair-card-title {
+    height: 32px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgb(0, 226, 255);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 200, 236, 0.65);
+}
+
+.repair-craft-list {
+    flex-grow: 1;
+    font-size: 18px;
+    color: rgb(204, 232, 246);
+    white-space: normal;
+}
+
+.repair-detail {
+    position: absolute;
+    left: 570px;
+    top: 700px;
+    right: 40px;
+    height: 240px;
+    flex-direction: column;
+    padding: 12px 20px;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.repair-instruction {
+    height: 56px;
+    font-size: 18px;
+    color: rgb(186, 220, 238);
+    white-space: normal;
+}
+
+.repair-cost-row {
+    height: 36px;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 160, 205, 0.34);
+}
+
+.repair-cost-key {
+    width: 120px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(164, 216, 240);
+}
+
+.repair-cost-value {
+    flex-grow: 1;
+    font-size: 22px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-right;
+    color: rgb(0, 226, 255);
+}
+
+.repair-negative {
+    color: rgb(255, 110, 90);
+}
+
+.repair-error {
+    flex-grow: 1;
+    font-size: 17px;
+    -unity-text-align: middle-center;
+    color: rgb(255, 140, 110);
+    white-space: normal;
+}
+
+.repair-actions {
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    bottom: 18px;
+    height: 82px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.actions-spacer {
+    flex-grow: 1;
+}
+
+.sprite-button {
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.sprite-button:hover {
+    -unity-background-image-tint-color: rgb(190, 232, 255);
+}
+
+.sprite-button:active {
+    -unity-background-image-tint-color: rgb(120, 190, 220);
+}
+
+.sprite-button:disabled {
+    opacity: 0.42;
+}
+
+.repair-button {
+    height: 78px;
+}
+
+.repair-exit {
+    width: 250px;
+}
+
+.repair-all {
+    width: 250px;
+}
+
+.repair-reset {
+    width: 210px;
+    margin-right: 18px;
+}
+
+.repair-accept {
+    width: 210px;
+}
+
+.repair-help {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.82);
+}
+
+.repair-help-page {
+    width: 70%;
+    height: 80%;
+}
+
+.repair-help-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    height: 28px;
+    font-size: 18px;
+    -unity-text-align: middle-center;
+    color: rgb(190, 226, 240);
+}

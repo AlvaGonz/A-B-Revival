@@ -28,6 +28,8 @@ namespace ABRevival.Editor
         private const string ShopUxmlPath = "Assets/UI/Shop.uxml";
         private const string InfoUxmlPath = "Assets/UI/Info.uxml";
         private const string ReadyUxmlPath = "Assets/UI/Ready.uxml";
+        private const string ResultsUxmlPath = "Assets/UI/Results.uxml";
+        private const string RepairUxmlPath = "Assets/UI/Repair.uxml";
         private const string HudUxmlPath = "Assets/UI/CombatHud.uxml";
         private const string PanelSettingsPath = "Assets/UI/HangarPanelSettings.asset";
         private const string PortraitPath = "Assets/Resources/Talk/TalkPortraitCatalog.asset";
@@ -52,6 +54,8 @@ namespace ABRevival.Editor
             VisualTreeAsset shopUxml = LoadRequired<VisualTreeAsset>(ShopUxmlPath);
             VisualTreeAsset infoUxml = LoadRequired<VisualTreeAsset>(InfoUxmlPath);
             VisualTreeAsset readyUxml = LoadRequired<VisualTreeAsset>(ReadyUxmlPath);
+            VisualTreeAsset resultsUxml = LoadRequired<VisualTreeAsset>(ResultsUxmlPath);
+            VisualTreeAsset repairUxml = LoadRequired<VisualTreeAsset>(RepairUxmlPath);
             VisualTreeAsset hudUxml = LoadRequired<VisualTreeAsset>(HudUxmlPath);
             UnityEngine.Object portraits = LoadRequired<UnityEngine.Object>(PortraitPath);
             TextAsset talkData = LoadRequired<TextAsset>(TalkDataPath);
@@ -115,6 +119,20 @@ namespace ABRevival.Editor
             readyDocument.sortingOrder = 1;
             Component ready = AddPresentationComponent(readyObject, "ABRevival.Presentation.ReadyController");
 
+            var resultsObject = new GameObject("Results");
+            UIDocument resultsDocument = resultsObject.AddComponent<UIDocument>();
+            SetReference(resultsDocument, "m_PanelSettings", panelSettings);
+            SetReference(resultsDocument, "sourceAsset", resultsUxml);
+            resultsDocument.sortingOrder = 6;
+            Component results = AddPresentationComponent(resultsObject, "ABRevival.Presentation.ResultsController");
+
+            var repairObject = new GameObject("Repair");
+            UIDocument repairDocument = repairObject.AddComponent<UIDocument>();
+            SetReference(repairDocument, "m_PanelSettings", panelSettings);
+            SetReference(repairDocument, "sourceAsset", repairUxml);
+            repairDocument.sortingOrder = 6;
+            Component repair = AddPresentationComponent(repairObject, "ABRevival.Presentation.RepairController");
+
             var talkObject = new GameObject("Talk");
             UIDocument talkDocument = talkObject.AddComponent<UIDocument>();
             SetReference(talkDocument, "m_PanelSettings", panelSettings);
@@ -168,6 +186,9 @@ namespace ABRevival.Editor
             SetCatalog(info);
             SetInfoSprites(info);
             SetReadySprites(ready);
+            SetResultsSprites(results);
+            SetCatalog(repair);
+            SetRepairSprites(repair);
 
             Texture2D partsAtlas = LoadRequired<Texture2D>(PartsAtlasBuilder.AtlasPath);
             TextAsset partsUvTable = LoadRequired<TextAsset>(PartsAtlasBuilder.UvTablePath);
@@ -186,6 +207,8 @@ namespace ABRevival.Editor
             SetReference(flowSerialized, "_shop", shop);
             SetReference(flowSerialized, "_info", info);
             SetReference(flowSerialized, "_ready", ready);
+            SetReference(flowSerialized, "_results", results);
+            SetReference(flowSerialized, "_repairScreen", repair);
             SetReference(flowSerialized, "_talkScreen", talk);
             SetReference(flowSerialized, "_cinematicPlayer", cinematic);
             SetReference(flowSerialized, "_hud", hud);
@@ -356,6 +379,68 @@ namespace ABRevival.Editor
             SetSprite(serialized, "titlePlate", UiSpriteFolder, "UI_MapBuilding/309_widget_normal.png");
             SetSprite(serialized, "launchButton", UiSpriteFolder, "UI_MapBuilding/310_widget_normal.png");
             SetSprite(serialized, "backButton", UiSpriteFolder, "ui_0324_hangar_button_back_to_center.png");
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// Wires the frozen UIWin/UIFail/UIAllWin backdrops and button plates into Results.
+        /// The 13/16/20 widgets are the original UIWin children; 299 is UIFail's BACK plate.
+        /// The runtime never guesses an asset path; missing art fails the scene build.
+        /// </summary>
+        private static void SetResultsSprites(Component results)
+        {
+            var serialized = new SerializedObject(results);
+            SetSprite(serialized, "winBackground", UiSpriteFolder, "ui_0005.png");
+            SetSprite(serialized, "failBackground", UiSpriteFolder, "ui_0511.png");
+            SetSprite(serialized, "nextButton", UiSpriteFolder, "UI_Win/13_widget_normal.png");
+            SetSprite(serialized, "nextButtonHover", UiSpriteFolder, "UI_Win/13_widget_hover.png");
+            SetSprite(serialized, "nextButtonPressed", UiSpriteFolder, "UI_Win/13_widget_pressed.png");
+            SetSprite(serialized, "restartButton", UiSpriteFolder, "UI_Win/28_widget_normal.png");
+            SetSprite(serialized, "restartButtonHover", UiSpriteFolder, "UI_Win/28_widget_hover.png");
+            SetSprite(serialized, "restartButtonPressed", UiSpriteFolder, "UI_Win/28_widget_pressed.png");
+            SetSprite(serialized, "repairButton", UiSpriteFolder, "UI_Win/16_widget_normal.png");
+            SetSprite(serialized, "repairButtonHover", UiSpriteFolder, "UI_Win/16_widget_hover.png");
+            SetSprite(serialized, "repairButtonPressed", UiSpriteFolder, "UI_Win/16_widget_pressed.png");
+            SetSprite(serialized, "retryButton", UiSpriteFolder, "UI_Fail/517_widget_normal.png");
+            SetSprite(serialized, "retryButtonHover", UiSpriteFolder, "UI_Fail/517_widget_hover.png");
+            SetSprite(serialized, "retryButtonPressed", UiSpriteFolder, "UI_Fail/517_widget_pressed.png");
+            SetSprite(serialized, "backButton", UiSpriteFolder, "UI_Fail/299_widget_normal.png");
+            SetSprite(serialized, "backButtonHover", UiSpriteFolder, "UI_Fail/299_widget_hover.png");
+            SetSprite(serialized, "backButtonPressed", UiSpriteFolder, "UI_Fail/299_widget_pressed.png");
+            SetSprite(serialized, "linkButton", UiSpriteFolder, "UI_Win/20_widget_normal.png");
+            SetSprite(serialized, "linkButtonHover", UiSpriteFolder, "UI_Win/20_widget_hover.png");
+            SetSprite(serialized, "endingButton", UiSpriteFolder, "UI_AllWin/614_widget_normal.png");
+            SetSprite(serialized, "endingButtonHover", UiSpriteFolder, "UI_AllWin/614_widget_hover.png");
+            SetSprite(serialized, "endingButtonPressed", UiSpriteFolder, "UI_AllWin/614_widget_pressed.png");
+            SetSprite(serialized, "allWinRestartButton", UiSpriteFolder, "UI_AllWin/615_widget_normal.png");
+            SetSprite(serialized, "allWinRestartButtonHover", UiSpriteFolder, "UI_AllWin/615_widget_hover.png");
+            SetSprite(serialized, "allWinRestartButtonPressed", UiSpriteFolder, "UI_AllWin/615_widget_pressed.png");
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// Wires the frozen UIRepair plates into Repair: the shared 2011 gradient/header,
+        /// EXIT/RESET/ACCEPT/SELECT ALL, the help icon and the original help page.
+        /// </summary>
+        private static void SetRepairSprites(Component repair)
+        {
+            var serialized = new SerializedObject(repair);
+            SetSprite(serialized, "repairBackground", UiSpriteFolder, "ui_0312_hangar_background.png");
+            SetSprite(serialized, "repairHeader", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "helpButton", UiSpriteFolder, "UI_Repair/73_widget_normal.png");
+            SetSprite(serialized, "exitButton", UiSpriteFolder, "UI_Repair/215_widget_normal.png");
+            SetSprite(serialized, "exitButtonHover", UiSpriteFolder, "UI_Repair/215_widget_hover.png");
+            SetSprite(serialized, "exitButtonPressed", UiSpriteFolder, "UI_Repair/215_widget_pressed.png");
+            SetSprite(serialized, "resetButton", UiSpriteFolder, "UI_Repair/167_widget_normal.png");
+            SetSprite(serialized, "resetButtonHover", UiSpriteFolder, "UI_Repair/167_widget_hover.png");
+            SetSprite(serialized, "resetButtonPressed", UiSpriteFolder, "UI_Repair/167_widget_pressed.png");
+            SetSprite(serialized, "acceptButton", UiSpriteFolder, "UI_Repair/216_widget_normal.png");
+            SetSprite(serialized, "acceptButtonHover", UiSpriteFolder, "UI_Repair/216_widget_hover.png");
+            SetSprite(serialized, "acceptButtonPressed", UiSpriteFolder, "UI_Repair/216_widget_pressed.png");
+            SetSprite(serialized, "selectAllButton", UiSpriteFolder, "UI_Repair/225_widget_normal.png");
+            SetSprite(serialized, "selectAllButtonHover", UiSpriteFolder, "UI_Repair/225_widget_hover.png");
+            SetSprite(serialized, "selectAllButtonPressed", UiSpriteFolder, "UI_Repair/225_widget_pressed.png");
+            SetSprite(serialized, "helpPage", UiSpriteFolder, "Help/UI_HelpRepair.png");
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
