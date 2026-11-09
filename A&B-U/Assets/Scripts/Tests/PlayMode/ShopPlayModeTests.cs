@@ -523,54 +523,12 @@ namespace ABRevival.Tests.PlayMode
 
         private static IEnumerator LoadBoot()
         {
-            SceneManager.LoadScene("Boot");
-            yield return null;
-
-            for (int i = 0; i < WaitFrames; i++)
-            {
-                CenterController center = Object.FindAnyObjectByType<CenterController>();
-                if (center != null && center.FleetCount > 0)
-                {
-                    var document = center.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("center-root") != null)
-                    {
-                        yield return null;
-                        yield return null;
-                        yield break;
-                    }
-                }
-
-                yield return null;
-            }
-
-            Assert.Fail("Boot did not reach the Center screen.");
+            yield return PlayModeBoot.LoadCenter();
         }
 
         private static IEnumerator ReloadBoot()
         {
-            SceneManager.LoadScene("Boot");
-            yield return null;
-
-            for (int i = 0; i < WaitFrames; i++)
-            {
-                CenterController center = Object.FindAnyObjectByType<CenterController>();
-                if (center != null && center.FleetCount > 0)
-                {
-                    var document = center.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("center-root") != null)
-                    {
-                        yield return null;
-                        yield return null;
-                        yield break;
-                    }
-                }
-
-                yield return null;
-            }
-
-            Assert.Fail("Boot did not restore Center.");
+            yield return PlayModeBoot.LoadCenter();
         }
 
         private static VisualElement ActiveRoot(Component component)

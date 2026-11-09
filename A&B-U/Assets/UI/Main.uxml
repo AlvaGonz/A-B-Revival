@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Main.uss" />
+    <ui:VisualElement name="main-root" class="main-root">
+        <ui:VisualElement name="main-backdrop" class="main-backdrop" picking-mode="Ignore" />
+
+        <ui:VisualElement name="main-page" class="main-page">
+            <ui:VisualElement name="main-art" class="main-art" picking-mode="Ignore" />
+
+            <ui:Button name="play-button" class="menu-button play-button" tooltip="Play" />
+            <ui:Button name="data-button" class="menu-button data-button" tooltip="Data" />
+            <ui:Button name="options-button" class="menu-button options-button" tooltip="Options" />
+            <ui:Button name="credits-button" class="menu-button credits-button" tooltip="Credits" />
+            <ui:Button name="link-button" class="menu-button link-button" tooltip="Vargames" />
+            <ui:Button name="player-button" class="menu-button player-button" tooltip="Player" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="main-deferred" class="main-deferred">
+            <ui:VisualElement name="deferred-panel" class="deferred-panel">
+                <ui:Label name="deferred-title" text="CREDITS" class="deferred-title font-ui" />
+                <ui:Label name="deferred-body" text="This section is delivered by its own ticket." class="deferred-body font-sans" />
+                <ui:Button name="deferred-back" text="BACK" class="deferred-back font-ui" tooltip="Back to the main menu" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -37,6 +37,24 @@ namespace ABRevival.Core.Persistence
 
         /// <summary>Battle control scheme (ticket #179); also the Options setting wired in #181.</summary>
         [DataMember(Order = 7)] public PlayerControlMode controlMode = PlayerControlMode.Keyboard;
+
+        /// <summary>Options display cycle: 0 = 640x480, 1 = 1280x720, 2 = 1920x1080, 3 = fullscreen.</summary>
+        [DataMember(Order = 8)] public int displayMode = 2;
+
+        /// <summary>Frozen CONFIG[0] (Bloom); persisted for the 2011 options set.</summary>
+        [DataMember(Order = 9)] public bool bloomEnabled = true;
+
+        /// <summary>Frozen CONFIG[1] (Candy!); persisted for the 2011 options set.</summary>
+        [DataMember(Order = 10)] public bool candyEnabled;
+
+        /// <summary>Frozen CONFIG[5] (Background); persisted for the 2011 options set.</summary>
+        [DataMember(Order = 11)] public bool backgroundEnabled = true;
+
+        /// <summary>Frozen CONFIG[3] (Sound) drives the SFX bus.</summary>
+        [DataMember(Order = 12)] public bool soundEnabled = true;
+
+        /// <summary>Frozen CONFIG[4] (Music) drives the music bus.</summary>
+        [DataMember(Order = 13)] public bool musicEnabled = true;
     }
 
     /// <summary>One AI companion slot from Center, mirroring the frozen COMPANIONS record.</summary>
@@ -181,6 +199,8 @@ namespace ABRevival.Core.Persistence
                     save.cameraPreset = CameraDistancePreset.Short;
                 if ((int)save.controlMode < 0 || (int)save.controlMode > (int)PlayerControlMode.Mouse)
                     save.controlMode = PlayerControlMode.Keyboard;
+                if (save.displayMode < 0 || save.displayMode > 3)
+                    save.displayMode = 2;
                 return save;
             }
         }

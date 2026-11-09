@@ -10,6 +10,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UIElements;
 
 namespace ABRevival.Tests.PlayMode
 {
@@ -338,6 +339,16 @@ namespace ABRevival.Tests.PlayMode
             for (int i = 0; i < WaitFrames; i++)
             {
                 if (flow.State == expected) yield break;
+
+                // The frozen boot order is UIMain -> PLAY -> Center (#181).
+                if (expected == GameFlowState.Center && flow.State == GameFlowState.MainMenu)
+                {
+                    MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
+                    UIDocument document = menu != null ? menu.GetComponent<UIDocument>() : null;
+                    Button play = document?.rootVisualElement?.Q<Button>("play-button");
+                    if (play != null) PlayModeBoot.Click(play);
+                }
+
                 yield return null;
             }
 

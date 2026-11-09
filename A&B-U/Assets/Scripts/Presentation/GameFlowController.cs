@@ -39,6 +39,8 @@ namespace ABRevival.Presentation
         private const string DefFireResourcePath = "Data/2_all.AllData_defFire";
         private const string DefBulletResourcePath = "Data/11_all.AllData_defBullet";
 
+        [SerializeField] private MainMenuController _mainMenu;
+        [SerializeField] private OptionsController _options;
         [SerializeField] private CenterController _center;
         [SerializeField] private FactoryController _factory;
         [SerializeField] private ShopController _shop;
@@ -96,6 +98,8 @@ namespace ABRevival.Presentation
         private bool _briefingTalkActive;
         private bool _resultTalkPending;
         private bool _cinematicSkipBound;
+        private bool _centerStarted;
+        private bool _infoReturnToMainMenu;
         private readonly List<int> _wingmanShipIndices = new List<int>();
         private readonly Dictionary<int, int> _wingmanBlueprints = new Dictionary<int, int>();
 
@@ -146,7 +150,19 @@ namespace ABRevival.Presentation
             _combatInput = GetComponent<MouseCombatFireInput>();
             if (_combatInput == null) _combatInput = gameObject.AddComponent<MouseCombatFireInput>();
 
+            if (_mainMenu != null)
+            {
+                _mainMenu.PlayRequested += OnMainMenuPlayRequested;
+                _mainMenu.OptionsRequested += OnMainMenuOptionsRequested;
+                _mainMenu.DataRequested += OnMainMenuDataRequested;
+            }
+            if (_options != null)
+            {
+                _options.Applied += OnOptionsApplied;
+                _options.Closed += OnOptionsClosed;
+            }
             if (_center != null) _center.Changed += OnCenterChanged;
+            if (_center != null) _center.MainMenuRequested += OnCenterMainMenuRequested;
             if (_center != null) _center.FactoryRequested += OnFactoryRequested;
             if (_center != null) _center.ShopRequested += OnShopRequested;
             if (_center != null) _center.InfoRequested += OnInfoRequested;
@@ -174,12 +190,26 @@ namespace ABRevival.Presentation
         private void Start()
         {
             EnsureOverlayReferences();
-            EnterCenter(firstBoot: true);
+            ApplyAudioSettings();
+            OptionsController.ApplyDisplayMode(_save.displayMode);
+            EnterMainMenu();
         }
 
         private void OnDestroy()
         {
+            if (_mainMenu != null)
+            {
+                _mainMenu.PlayRequested -= OnMainMenuPlayRequested;
+                _mainMenu.OptionsRequested -= OnMainMenuOptionsRequested;
+                _mainMenu.DataRequested -= OnMainMenuDataRequested;
+            }
+            if (_options != null)
+            {
+                _options.Applied -= OnOptionsApplied;
+                _options.Closed -= OnOptionsClosed;
+            }
             if (_center != null) _center.Changed -= OnCenterChanged;
+            if (_center != null) _center.MainMenuRequested -= OnCenterMainMenuRequested;
             if (_center != null) _center.FactoryRequested -= OnFactoryRequested;
             if (_center != null) _center.ShopRequested -= OnShopRequested;
             if (_center != null) _center.InfoRequested -= OnInfoRequested;
@@ -277,15 +307,25 @@ namespace ABRevival.Presentation
             _flight?.SetControlMode(_save.controlMode);
         }
 
+        private void ApplyAudioSettings()
+        {
+            _audio?.SetMusicEnabled(_save.musicEnabled);
+            _audio?.SetSfxEnabled(_save.soundEnabled);
+        }
+
         private void Autosave(PlayerSaveData payload)
         {
             try
             {
                 // Only the active screen owns the live fleet; capturing the other one would
-                // write a stale blueprint list over the edit in progress.
+                // write a stale blueprint list over the edit in progress. Menu screens never
+                // capture Center: its fleet is not the live selection until PLAY opens it.
                 if (State == GameFlowState.Factory) _factory?.CaptureSave(payload);
                 else if (State == GameFlowState.Shop) _shop?.CaptureSave(payload);
-                else _center?.CaptureSave(payload);
+                else if (State == GameFlowState.Center || State == GameFlowState.Ready ||
+                         State == GameFlowState.Briefing || State == GameFlowState.Mission ||
+                         State == GameFlowState.Result || State == GameFlowState.Return)
+                    _center?.CaptureSave(payload);
                 PlayerSaveCodec.SaveToFile(_savePath, payload);
             }
             catch (Exception exception)
@@ -298,6 +338,90 @@ namespace ABRevival.Presentation
         private void OnCenterChanged()
         {
             Autosave(_save);
+        }
+
+        // ---------------- Main menu / Options ----------------
+
+        /// <summary>Boot enters the frozen UIMain page; PLAY opens the saved campaign in Center.</summary>
+        private void EnterMainMenu()
+        {
+            DisposeMission();
+            _briefingTalkActive = false;
+            _resultTalkPending = false;
+            _resultElapsed = 0f;
+            _accumulator = 0f;
+            _captainIndex = -1;
+            _activeLoadout = null;
+            _level = null;
+
+            SetFlowVisible(false);
+            _talkScreen?.SetVisible(false);
+            _factory?.SetVisible(false);
+            _shop?.SetVisible(false);
+            _info?.SetVisible(false);
+            _ready?.SetVisible(false);
+            _center?.SetVisible(false);
+            _options?.SetVisible(false);
+            if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
+
+            _mainMenu?.Initialize(_save);
+            _mainMenu?.SetVisible(true);
+            _audio?.PlayMainMenuMusic();
+            State = GameFlowState.MainMenu;
+        }
+
+        private void OnMainMenuPlayRequested()
+        {
+            if (State != GameFlowState.MainMenu) return;
+
+            _mainMenu?.SetVisible(false);
+            EnterCenter(firstBoot: !_centerStarted);
+        }
+
+        private void OnMainMenuOptionsRequested()
+        {
+            if (State != GameFlowState.MainMenu || _options == null) return;
+
+            _mainMenu?.SetVisible(false);
+            _options.Initialize(_save, _flight, _audio);
+            State = GameFlowState.Options;
+        }
+
+        /// <summary>DATA opens the already-delivered Info/Records page on its records tab.</summary>
+        private void OnMainMenuDataRequested()
+        {
+            if (State != GameFlowState.MainMenu || _info == null) return;
+
+            _mainMenu?.SetVisible(false);
+            _info.Initialize(_save);
+            _info.ShowRecords();
+            _infoReturnToMainMenu = true;
+            State = GameFlowState.Info;
+        }
+
+        private void OnOptionsApplied()
+        {
+            if (State != GameFlowState.Options) return;
+            if (_flight != null) _save.controlMode = _flight.ControlMode;
+            Autosave(_save);
+        }
+
+        private void OnOptionsClosed()
+        {
+            if (State != GameFlowState.Options) return;
+
+            _mainMenu?.SetVisible(true);
+            _audio?.PlayMainMenuMusic();
+            State = GameFlowState.MainMenu;
+        }
+
+        /// <summary>Center's BACK returns to the main menu, matching UIMain/UIChooseFlyAI.</summary>
+        private void OnCenterMainMenuRequested()
+        {
+            if (State != GameFlowState.Center) return;
+
+            _center?.SetVisible(false);
+            EnterMainMenu();
         }
 
         // ---------------- Factory ----------------
@@ -378,12 +502,21 @@ namespace ABRevival.Presentation
             State = GameFlowState.Info;
         }
 
-        /// <summary>Info's BACK returns to Center without a save write; the screen is read-only.</summary>
+        /// <summary>Info's BACK returns to its opener without a save write; the screen is read-only.</summary>
         private void OnInfoClosed()
         {
             if (State != GameFlowState.Info || _info == null) return;
 
             _info.SetVisible(false);
+            if (_infoReturnToMainMenu)
+            {
+                _infoReturnToMainMenu = false;
+                _mainMenu?.SetVisible(true);
+                _audio?.PlayMainMenuMusic();
+                State = GameFlowState.MainMenu;
+                return;
+            }
+
             _center?.SetVisible(true);
             State = GameFlowState.Center;
         }
@@ -443,6 +576,8 @@ namespace ABRevival.Presentation
 
             SetFlowVisible(false);
             _talkScreen?.SetVisible(false);
+            _mainMenu?.SetVisible(false);
+            _options?.SetVisible(false);
             _factory?.SetVisible(false);
             _shop?.SetVisible(false);
             _info?.SetVisible(false);
@@ -456,6 +591,8 @@ namespace ABRevival.Presentation
                 _center.SetVisible(true);
             }
 
+            _centerStarted = true;
+            _infoReturnToMainMenu = false;
             _assemblyAudio?.PlayAssemblyMusic();
             State = GameFlowState.Center;
         }
@@ -1676,6 +1813,8 @@ namespace ABRevival.Presentation
         Factory = 6,
         Shop = 7,
         Info = 8,
-        Ready = 9
+        Ready = 9,
+        MainMenu = 10,
+        Options = 11
     }
 }

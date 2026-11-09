@@ -70,14 +70,22 @@ namespace ABRevival.Tests.PlayMode
 
             Click(document.rootVisualElement.Q<Button>("back-button"));
             for (int i = 0; i < 8; i++) yield return null;
-            VisualElement placeholder = document.rootVisualElement.Q("center-placeholder");
-            Assert.AreEqual(DisplayStyle.Flex, placeholder.resolvedStyle.display,
-                "The remaining placeholder shell must stay covered by the font check.");
-            AssertFont(document.rootVisualElement, "placeholder-title", Sf);
-            AssertFont(document.rootVisualElement, "placeholder-body", Sf);
-            AssertFont(document.rootVisualElement, "placeholder-back", Sf);
-            Click(document.rootVisualElement.Q<Button>("placeholder-back"));
-            for (int i = 0; i < 8; i++) yield return null;
+            MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
+            Assert.IsNotNull(menu, "Boot must host the main menu for the font check.");
+            VisualElement menuRoot = menu.GetComponent<UIDocument>().rootVisualElement;
+            Assert.AreEqual(DisplayStyle.Flex, menuRoot.resolvedStyle.display,
+                "The main menu must be visible after Center BACK.");
+            Click(menuRoot.Q<Button>("credits-button"));
+            yield return null;
+            AssertFont(menuRoot, "deferred-title", Sf);
+            AssertFont(menuRoot, "deferred-body", Sans);
+            AssertFont(menuRoot, "deferred-back", Sf);
+            Click(menuRoot.Q<Button>("deferred-back"));
+            yield return null;
+
+            PlayModeBoot.StartGame();
+            yield return PlayModeBoot.WaitForCenter();
+            document = Object.FindAnyObjectByType<CenterController>().GetComponent<UIDocument>();
 
             yield return EndReferenceResolution(document);
             yield return CaptureAtEveryResolution(document, "center", AssertCenterFonts);
@@ -136,8 +144,7 @@ namespace ABRevival.Tests.PlayMode
         [UnityTest]
         public IEnumerator Hud_UsesOriginalFontsAtEveryResolution()
         {
-            yield return SceneManager.LoadSceneAsync("Boot", LoadSceneMode.Single);
-            yield return null;
+            yield return PlayModeBoot.LoadCenter();
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
             Assert.IsNotNull(flow, "Boot scene must host the game flow.");
@@ -424,28 +431,7 @@ namespace ABRevival.Tests.PlayMode
 
         private static IEnumerator LoadBoot()
         {
-            SceneManager.LoadScene("Boot");
-            yield return null;
-
-            for (int i = 0; i < WaitFrames; i++)
-            {
-                CenterController center = Object.FindAnyObjectByType<CenterController>();
-                if (center != null && center.FleetCount > 0)
-                {
-                    UIDocument document = center.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("center-root") != null)
-                    {
-                        yield return null;
-                        yield return null;
-                        yield break;
-                    }
-                }
-
-                yield return null;
-            }
-
-            Assert.Fail("Boot did not reach the Center screen.");
+            yield return PlayModeBoot.LoadCenter();
         }
 
         private static void Click(Button button)

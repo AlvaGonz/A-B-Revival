@@ -21,6 +21,8 @@ namespace ABRevival.Editor
     public static class BootSceneBuilder
     {
         private const string ScenePath = "Assets/Scenes/Boot.unity";
+        private const string MainMenuUxmlPath = "Assets/UI/Main.uxml";
+        private const string OptionsUxmlPath = "Assets/UI/Options.uxml";
         private const string CenterUxmlPath = "Assets/UI/Center.uxml";
         private const string FactoryUxmlPath = "Assets/UI/Factory.uxml";
         private const string ShopUxmlPath = "Assets/UI/Shop.uxml";
@@ -43,6 +45,8 @@ namespace ABRevival.Editor
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             PanelSettings panelSettings = LoadRequired<PanelSettings>(PanelSettingsPath);
+            VisualTreeAsset mainMenuUxml = LoadRequired<VisualTreeAsset>(MainMenuUxmlPath);
+            VisualTreeAsset optionsUxml = LoadRequired<VisualTreeAsset>(OptionsUxmlPath);
             VisualTreeAsset centerUxml = LoadRequired<VisualTreeAsset>(CenterUxmlPath);
             VisualTreeAsset factoryUxml = LoadRequired<VisualTreeAsset>(FactoryUxmlPath);
             VisualTreeAsset shopUxml = LoadRequired<VisualTreeAsset>(ShopUxmlPath);
@@ -61,6 +65,20 @@ namespace ABRevival.Editor
             var eventSystemObject = new GameObject("EventSystem");
             eventSystemObject.AddComponent<UnityEngine.EventSystems.EventSystem>();
             eventSystemObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+
+            var mainMenuObject = new GameObject("MainMenu");
+            UIDocument mainMenuDocument = mainMenuObject.AddComponent<UIDocument>();
+            SetReference(mainMenuDocument, "m_PanelSettings", panelSettings);
+            SetReference(mainMenuDocument, "sourceAsset", mainMenuUxml);
+            mainMenuDocument.sortingOrder = 2;
+            Component mainMenu = AddPresentationComponent(mainMenuObject, "ABRevival.Presentation.MainMenuController");
+
+            var optionsObject = new GameObject("Options");
+            UIDocument optionsDocument = optionsObject.AddComponent<UIDocument>();
+            SetReference(optionsDocument, "m_PanelSettings", panelSettings);
+            SetReference(optionsDocument, "sourceAsset", optionsUxml);
+            optionsDocument.sortingOrder = 3;
+            Component options = AddPresentationComponent(optionsObject, "ABRevival.Presentation.OptionsController");
 
             var centerObject = new GameObject("Center");
             UIDocument centerDocument = centerObject.AddComponent<UIDocument>();
@@ -139,6 +157,8 @@ namespace ABRevival.Editor
 
             SetReference(hud, "_document", hudDocument);
             SetReference(hud, "_cameraRig", cameraRig);
+            SetMainMenuSprites(mainMenu);
+            SetOptionsSprites(options);
             SetCatalog(center);
             SetCenterSprites(center);
             SetCatalog(factory);
@@ -159,6 +179,8 @@ namespace ABRevival.Editor
             SetReference(spriteView, "_uvTableData", partsUvTable);
 
             var flowSerialized = new SerializedObject(flow);
+            SetReference(flowSerialized, "_mainMenu", mainMenu);
+            SetReference(flowSerialized, "_options", options);
             SetReference(flowSerialized, "_center", center);
             SetReference(flowSerialized, "_factory", factory);
             SetReference(flowSerialized, "_shop", shop);
@@ -295,6 +317,38 @@ namespace ABRevival.Editor
         /// Wires the frozen UI_MapBuilding page and OK plate plus the shared title plate
         /// into Ready. The runtime never guesses an asset path; missing art fails the scene build.
         /// </summary>
+        /// <summary>Wires the frozen UIMain page and its six live button widgets.</summary>
+        private static void SetMainMenuSprites(Component mainMenu)
+        {
+            var serialized = new SerializedObject(mainMenu);
+            SetSprite(serialized, "backdrop", UiSpriteFolder, "ui_0005.png");
+            SetSprite(serialized, "pageArt", UiSpriteFolder, "Screens/UI_Main.png");
+            SetSprite(serialized, "playNormal", UiSpriteFolder, "UI_Main/447_widget_normal.png");
+            SetSprite(serialized, "playHover", UiSpriteFolder, "UI_Main/447_widget_hover.png");
+            SetSprite(serialized, "dataNormal", UiSpriteFolder, "UI_Main/450_widget_normal.png");
+            SetSprite(serialized, "dataHover", UiSpriteFolder, "UI_Main/450_widget_hover.png");
+            SetSprite(serialized, "optionsNormal", UiSpriteFolder, "Widgets/242_widget_normal.png");
+            SetSprite(serialized, "optionsHover", UiSpriteFolder, "Widgets/242_widget_hover.png");
+            SetSprite(serialized, "creditsNormal", UiSpriteFolder, "UI_Main/453_widget_normal.png");
+            SetSprite(serialized, "creditsHover", UiSpriteFolder, "UI_Main/453_widget_hover.png");
+            SetSprite(serialized, "linkHover", UiSpriteFolder, "Widgets/20_widget_normal.png");
+            SetSprite(serialized, "playerNormal", UiSpriteFolder, "UI_Main/458_widget_normal.png");
+            SetSprite(serialized, "playerHover", UiSpriteFolder, "UI_Main/458_widget_hover.png");
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>Wires the frozen UI_Options page and its OK/CANCEL plates.</summary>
+        private static void SetOptionsSprites(Component options)
+        {
+            var serialized = new SerializedObject(options);
+            SetSprite(serialized, "pageArt", UiSpriteFolder, "Screens/UI_Options.png");
+            SetSprite(serialized, "okNormal", UiSpriteFolder, "UI_Options/276_widget_normal.png");
+            SetSprite(serialized, "okHover", UiSpriteFolder, "UI_Options/276_widget_hover.png");
+            SetSprite(serialized, "cancelNormal", UiSpriteFolder, "UI_Options/273_widget_normal.png");
+            SetSprite(serialized, "cancelHover", UiSpriteFolder, "UI_Options/273_widget_hover.png");
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         private static void SetReadySprites(Component ready)
         {
             var serialized = new SerializedObject(ready);

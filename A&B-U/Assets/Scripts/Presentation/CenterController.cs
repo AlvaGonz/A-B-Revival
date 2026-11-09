@@ -98,6 +98,9 @@ namespace ABRevival.Presentation
         /// <summary>Raised after a Center action mutates the save payload.</summary>
         public event Action Changed;
 
+        /// <summary>Raised when BACK asks to return to the frozen UIMain page (#181).</summary>
+        public event Action MainMenuRequested;
+
         /// <summary>Raised when the player asks for the dedicated Factory screen (#175).</summary>
         public event Action FactoryRequested;
 
@@ -452,7 +455,7 @@ namespace ABRevival.Presentation
             };
             if (_shopButton != null) _shopButton.clicked += () => ShopRequested?.Invoke();
             if (_factoryButton != null) _factoryButton.clicked += () => FactoryRequested?.Invoke();
-            if (_backButton != null) _backButton.clicked += () => OpenPlaceholder("MAIN MENU");
+            if (_backButton != null) _backButton.clicked += () => MainMenuRequested?.Invoke();
             if (_placeholderBack != null) _placeholderBack.clicked += ShowCenter;
             if (_firstButton != null) _firstButton.clicked += FirstPage;
             if (_previousButton != null) _previousButton.clicked += PreviousPage;

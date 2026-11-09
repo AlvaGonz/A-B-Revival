@@ -165,26 +165,31 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(center);
             Assert.IsNotNull(root);
 
-            foreach (var pair in new[]
-                     {
-                         ("back-button", "MAIN MENU"),
-                         ("help-button", "HELP")
-                     })
-            {
-                Click(root.Q<Button>(pair.Item1));
-                yield return null;
-                Assert.AreEqual(pair.Item2, center.PlaceholderTitle, pair.Item1 + " must reach its navigation target.");
-                Assert.AreEqual(DisplayStyle.None, root.Q("center-screen").resolvedStyle.display);
-                Assert.AreEqual(DisplayStyle.Flex, root.Q("center-placeholder").resolvedStyle.display);
+            // BACK is the real main-menu return (#181); HELP still uses the placeholder shell.
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            Click(root.Q<Button>("back-button"));
+            yield return null;
+            Assert.AreEqual(GameFlowState.MainMenu, flow.State, "Center BACK must return to the main menu.");
+            MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
+            Assert.IsNotNull(menu);
+            Assert.AreEqual(DisplayStyle.Flex, menu.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
 
-                Click(root.Q<Button>("placeholder-back"));
-                yield return null;
-                Assert.AreEqual(DisplayStyle.Flex, root.Q("center-screen").resolvedStyle.display);
-                Assert.AreEqual(DisplayStyle.None, root.Q("center-placeholder").resolvedStyle.display);
-            }
+            PlayModeBoot.StartGame();
+            yield return PlayModeBoot.WaitForCenter();
+
+            Click(root.Q<Button>("help-button"));
+            yield return null;
+            Assert.AreEqual("HELP", center.PlaceholderTitle, "HELP must reach its placeholder target.");
+            Assert.AreEqual(DisplayStyle.None, root.Q("center-screen").resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, root.Q("center-placeholder").resolvedStyle.display);
+
+            Click(root.Q<Button>("placeholder-back"));
+            yield return null;
+            Assert.AreEqual(DisplayStyle.Flex, root.Q("center-screen").resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, root.Q("center-placeholder").resolvedStyle.display);
 
             // READY is a real handoff screen (#178), not a placeholder.
-            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
             ReadyController ready = Object.FindAnyObjectByType<ReadyController>();
             Assert.IsNotNull(flow);
             Assert.IsNotNull(ready, "Boot must host the dedicated Ready screen.");
@@ -401,54 +406,12 @@ namespace ABRevival.Tests.PlayMode
 
         private static IEnumerator LoadCenter()
         {
-            SceneManager.LoadScene("Boot");
-            yield return null;
-
-            for (int i = 0; i < WaitFrames; i++)
-            {
-                CenterController center = Object.FindAnyObjectByType<CenterController>();
-                if (center != null && center.FleetCount > 0)
-                {
-                    var document = center.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("center-root") != null)
-                    {
-                        yield return null;
-                        yield return null;
-                        yield break;
-                    }
-                }
-
-                yield return null;
-            }
-
-            Assert.Fail("Boot did not reach the Center screen.");
+            yield return PlayModeBoot.LoadCenter();
         }
 
         private static IEnumerator ReloadCenter()
         {
-            SceneManager.LoadScene("Boot");
-            yield return null;
-
-            for (int i = 0; i < WaitFrames; i++)
-            {
-                CenterController center = Object.FindAnyObjectByType<CenterController>();
-                if (center != null && center.FleetCount > 0 && center.PlayerCraftIndex >= 0)
-                {
-                    var document = center.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("center-root") != null)
-                    {
-                        yield return null;
-                        yield return null;
-                        yield break;
-                    }
-                }
-
-                yield return null;
-            }
-
-            Assert.Fail("Boot did not restore Center.");
+            yield return PlayModeBoot.LoadCenter();
         }
 
         private static VisualElement ActiveRoot(CenterController center)
