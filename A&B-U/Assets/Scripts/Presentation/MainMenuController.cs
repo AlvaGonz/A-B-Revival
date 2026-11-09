@@ -20,6 +20,20 @@ namespace ABRevival.Presentation
         private const float PageHeight = 535f;
         private const float HeroHeight = 455f;
 
+        [Header("Manual layout (tune in the Boot scene Inspector)")]
+        [Tooltip("Multiplier on the full-width hero. 1 = exact screen width.")]
+        [SerializeField] private float heroScale = 1f;
+        [Tooltip("Hero X offset in page pixels at the current scale.")]
+        [SerializeField] private float heroOffsetX = 0f;
+        [Tooltip("Hero Y offset in page pixels. Negative hides the page's top plate line.")]
+        [SerializeField] private float heroOffsetY = -18f;
+        [Tooltip("Multiplier on the live button size.")]
+        [SerializeField] private float buttonScale = 1f;
+        [Tooltip("Bottom margin in page pixels before scaling.")]
+        [SerializeField] private float bottomMargin = 23.7f;
+        [Tooltip("Show the live VARGAMES/MUSIC PLAYER art. Leave off: the hero already contains the baked originals.")]
+        [SerializeField] private bool showLiveTopButtons = false;
+
         [Header("Main menu sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite backdrop;
         [SerializeField] private Sprite pageArt;
@@ -86,6 +100,7 @@ namespace ABRevival.Presentation
             VisualElement root = _document.rootVisualElement;
             ApplySkin(root);
             Bind(root);
+            ApplyTopControlVisibility();
             root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
             _initialized = true;
             SetVisible(true);
@@ -210,41 +225,52 @@ namespace ABRevival.Presentation
                 return;
 
             _lastRootSize = new Vector2(width, height);
-            float scale = width / PageWidth;
+            float pageWidth = width * Mathf.Max(0.1f, heroScale);
+            float scale = pageWidth / PageWidth;
 
-            // Full-bleed: the frozen page keeps its aspect, spans the screen width and is
-            // cropped at the bottom. No centred page rectangle and no second starfield.
-            _page.style.left = 0f;
-            _page.style.top = 0f;
-            _page.style.width = width;
+            // The hero is the manual tuning surface: offset/scale are Inspector fields.
+            _page.style.left = heroOffsetX * scale;
+            _page.style.top = heroOffsetY * scale;
+            _page.style.width = pageWidth;
             _page.style.height = HeroHeight * scale;
 
-            LayoutBottomButton(_playButton, 20.15f, width, height, scale);
-            LayoutBottomButton(_dataButton, 176.55f, width, height, scale);
-            LayoutBottomButton(_optionsButton, 335.75f, width, height, scale);
-            LayoutBottomButton(_creditsButton, 492.15f, width, height, scale);
-            LayoutScreenButton(_linkButton, 492.15f, 51.2f, scale);
-            LayoutScreenButton(_playerButton, 492.15f, 103.85f, scale);
+            LayoutBottomButton(_playButton, 20.15f, height, scale, buttonScale, bottomMargin, heroOffsetX);
+            LayoutBottomButton(_dataButton, 176.55f, height, scale, buttonScale, bottomMargin, heroOffsetX);
+            LayoutBottomButton(_optionsButton, 335.75f, height, scale, buttonScale, bottomMargin, heroOffsetX);
+            LayoutBottomButton(_creditsButton, 492.15f, height, scale, buttonScale, bottomMargin, heroOffsetX);
+            LayoutScreenButton(_linkButton, 492.15f, 51.2f, scale, buttonScale, heroOffsetX, heroOffsetY);
+            LayoutScreenButton(_playerButton, 492.15f, 103.85f, scale, buttonScale, heroOffsetX, heroOffsetY);
         }
 
-        private static void LayoutBottomButton(Button button, float pageX, float width, float height, float scale)
+        private static void LayoutBottomButton(Button button, float pageX, float screenHeight,
+            float scale, float buttonScale, float bottomMargin, float heroOffsetX)
         {
             if (button == null) return;
-            float buttonWidth = 153.7f * scale;
-            float buttonHeight = 42.2f * scale;
-            button.style.left = pageX * scale;
-            button.style.top = height - buttonHeight - (23.7f * scale);
+            float sizeScale = scale * Mathf.Max(0.1f, buttonScale);
+            float buttonWidth = 153.7f * sizeScale;
+            float buttonHeight = 42.2f * sizeScale;
+            button.style.left = (pageX + heroOffsetX) * scale;
+            button.style.top = screenHeight - buttonHeight - (bottomMargin * scale);
             button.style.width = buttonWidth;
             button.style.height = buttonHeight;
         }
 
-        private static void LayoutScreenButton(Button button, float pageX, float pageY, float scale)
+        private static void LayoutScreenButton(Button button, float pageX, float pageY,
+            float scale, float buttonScale, float heroOffsetX, float heroOffsetY)
         {
             if (button == null) return;
-            button.style.left = pageX * scale;
-            button.style.top = pageY * scale;
-            button.style.width = 153.7f * scale;
-            button.style.height = 42.2f * scale;
+            float sizeScale = scale * Mathf.Max(0.1f, buttonScale);
+            button.style.left = (pageX + heroOffsetX) * scale;
+            button.style.top = (pageY + heroOffsetY) * scale;
+            button.style.width = 153.7f * sizeScale;
+            button.style.height = 42.2f * sizeScale;
+        }
+
+        private void ApplyTopControlVisibility()
+        {
+            float opacity = showLiveTopButtons ? 1f : 0f;
+            if (_linkButton != null) _linkButton.style.opacity = opacity;
+            if (_playerButton != null) _playerButton.style.opacity = opacity;
         }
     }
 }
