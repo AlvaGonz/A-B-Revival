@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Shop.uss" />
+    <ui:VisualElement name="shop-root" class="shop-root">
+        <ui:VisualElement name="shop-screen" class="shop-screen">
+            <ui:VisualElement name="shop-header" class="shop-header">
+                <ui:VisualElement name="shop-title-plate" class="title-plate">
+                    <ui:Label name="shop-title" text="Shop" class="shop-title" />
+                </ui:VisualElement>
+                <ui:VisualElement class="header-spacer" />
+                <ui:Label name="money-label" text="0 G" class="money-label" />
+            </ui:VisualElement>
+
+            <!-- form1: shop stock (infinite modules, finite hulls). -->
+            <ui:VisualElement name="buy-panel" class="shop-panel">
+                <ui:VisualElement name="buy-header" class="table-header">
+                    <ui:Label text="" class="cell col-icon" />
+                    <ui:Label text="Index" class="cell col-index" />
+                    <ui:Label text="Name" class="cell col-name" />
+                    <ui:Label text="Type" class="cell col-type" />
+                    <ui:Label text="L.R." class="cell col-lr" />
+                    <ui:Label text="Hp" class="cell col-hp" />
+                    <ui:Label text="Steering" class="cell col-steering" />
+                    <ui:Label text="Engine" class="cell col-engine" />
+                    <ui:Label text="Mass" class="cell col-mass" />
+                    <ui:Label text="Fire Power" class="cell col-fire" />
+                    <ui:Label text="Value" class="cell col-value" />
+                    <ui:Label text="Stock" class="cell col-stock" />
+                    <ui:Label text="Sel." class="cell col-sel" />
+                </ui:VisualElement>
+                <ui:VisualElement name="buy-rows" class="shop-rows" />
+                <ui:VisualElement name="buy-footer" class="table-footer">
+                    <ui:VisualElement class="page-controls">
+                        <ui:Button name="buy-first" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
+                        <ui:Button name="buy-prev" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
+                        <ui:Label name="buy-page-label" text="1 / 1" class="page-label" />
+                        <ui:Button name="buy-next" text="&gt;" class="sprite-button page-button" tooltip="Next page" />
+                        <ui:Button name="buy-last" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="buy-filters" class="filter-controls">
+                        <ui:Button name="buy-filter-all" class="sprite-button filter-button" tooltip="All parts" />
+                        <ui:Button name="buy-filter-body" class="sprite-button filter-button" tooltip="Body parts" />
+                        <ui:Button name="buy-filter-wing" class="sprite-button filter-button" tooltip="Wing parts" />
+                        <ui:Button name="buy-filter-engine" class="sprite-button filter-button" tooltip="Engine parts" />
+                        <ui:Button name="buy-filter-gun" class="sprite-button filter-button" tooltip="Gun parts" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="shop-middle" class="shop-middle">
+                <ui:VisualElement class="trade-column">
+                    <ui:Label name="cost-label" text="Cost= 0 G" class="trade-label" />
+                    <ui:Label name="now-label" text="Now= 0 G" class="trade-label" />
+                    <ui:VisualElement class="trade-spacer" />
+                    <ui:Button name="accept-button" class="sprite-button trade-button accept-button" tooltip="Accept the deal" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="detail-column">
+                    <ui:VisualElement name="buy-detail" class="detail-card">
+                        <ui:Label text="SHOP PART" class="detail-title" />
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Type" class="detail-key" />
+                            <ui:Label name="buy-detail-type" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Name" class="detail-key" />
+                            <ui:Label name="buy-detail-name" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Hp" class="detail-key" />
+                            <ui:Label name="buy-detail-hp" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Str." class="detail-key" />
+                            <ui:Label name="buy-detail-steering" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Eng." class="detail-key" />
+                            <ui:Label name="buy-detail-engine" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Fire" class="detail-key" />
+                            <ui:Label name="buy-detail-fire" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Mass" class="detail-key" />
+                            <ui:Label name="buy-detail-mass" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Value" class="detail-key" />
+                            <ui:Label name="buy-detail-value" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement name="sell-detail" class="detail-card">
+                        <ui:Label text="YOUR PART" class="detail-title" />
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Type" class="detail-key" />
+                            <ui:Label name="sell-detail-type" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Name" class="detail-key" />
+                            <ui:Label name="sell-detail-name" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Hp" class="detail-key" />
+                            <ui:Label name="sell-detail-hp" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Str." class="detail-key" />
+                            <ui:Label name="sell-detail-steering" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Eng." class="detail-key" />
+                            <ui:Label name="sell-detail-engine" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Fire" class="detail-key" />
+                            <ui:Label name="sell-detail-fire" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Mass" class="detail-key" />
+                            <ui:Label name="sell-detail-mass" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="detail-row">
+                            <ui:Label text="Value" class="detail-key" />
+                            <ui:Label name="sell-detail-value" text="-" class="detail-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="action-column">
+                    <ui:VisualElement class="trade-spacer" />
+                    <ui:Button name="reset-button" class="sprite-button trade-button reset-button" tooltip="Cancel the deal" />
+                    <ui:Button name="center-button" class="sprite-button trade-button center-button" tooltip="Back to Center" />
+                    <ui:Label name="shop-error" text="" class="error-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- form2: player parts, sold one unit per row. -->
+            <ui:VisualElement name="sell-panel" class="shop-panel">
+                <ui:VisualElement name="sell-title-row" class="sell-title-row">
+                    <ui:Label name="player-label" text="Michael" class="player-label" />
+                </ui:VisualElement>
+                <ui:VisualElement name="sell-header" class="table-header">
+                    <ui:Label text="" class="cell col-icon" />
+                    <ui:Label text="Index" class="cell col-index" />
+                    <ui:Label text="Name" class="cell col-name" />
+                    <ui:Label text="Type" class="cell col-type" />
+                    <ui:Label text="L.R." class="cell col-lr" />
+                    <ui:Label text="Hp" class="cell col-hp" />
+                    <ui:Label text="Steering" class="cell col-steering" />
+                    <ui:Label text="Engine" class="cell col-engine" />
+                    <ui:Label text="Mass" class="cell col-mass" />
+                    <ui:Label text="Fire Power" class="cell col-fire" />
+                    <ui:Label text="Sell" class="cell col-value" />
+                    <ui:Label text="Owned" class="cell col-stock" />
+                    <ui:Label text="Sel." class="cell col-sel" />
+                </ui:VisualElement>
+                <ui:VisualElement name="sell-rows" class="shop-rows" />
+                <ui:VisualElement name="sell-footer" class="table-footer">
+                    <ui:VisualElement class="page-controls">
+                        <ui:Button name="sell-first" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
+                        <ui:Button name="sell-prev" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
+                        <ui:Label name="sell-page-label" text="1 / 1" class="page-label" />
+                        <ui:Button name="sell-next" text="&gt;" class="sprite-button page-button" tooltip="Next page" />
+                        <ui:Button name="sell-last" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="sell-filters" class="filter-controls">
+                        <ui:Button name="sell-filter-all" class="sprite-button filter-button" tooltip="All parts" />
+                        <ui:Button name="sell-filter-body" class="sprite-button filter-button" tooltip="Body parts" />
+                        <ui:Button name="sell-filter-wing" class="sprite-button filter-button" tooltip="Wing parts" />
+                        <ui:Button name="sell-filter-engine" class="sprite-button filter-button" tooltip="Engine parts" />
+                        <ui:Button name="sell-filter-gun" class="sprite-button filter-button" tooltip="Gun parts" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

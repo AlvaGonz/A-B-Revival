@@ -40,6 +40,7 @@ namespace ABRevival.Presentation
 
         [SerializeField] private CenterController _center;
         [SerializeField] private FactoryController _factory;
+        [SerializeField] private ShopController _shop;
         [SerializeField] private TalkScreen _talkScreen;
         [SerializeField] private CinematicPlayer _cinematicPlayer;
         [SerializeField] private CombatHudBehaviour _hud;
@@ -120,8 +121,11 @@ namespace ABRevival.Presentation
 
             if (_center != null) _center.Changed += OnCenterChanged;
             if (_center != null) _center.FactoryRequested += OnFactoryRequested;
+            if (_center != null) _center.ShopRequested += OnShopRequested;
             if (_factory != null) _factory.Changed += OnCenterChanged;
             if (_factory != null) _factory.Closed += OnFactoryClosed;
+            if (_shop != null) _shop.Changed += OnCenterChanged;
+            if (_shop != null) _shop.Closed += OnShopClosed;
             if (_talkScreen != null)
             {
                 _talkScreen.Completed += OnTalkCompleted;
@@ -144,8 +148,11 @@ namespace ABRevival.Presentation
         {
             if (_center != null) _center.Changed -= OnCenterChanged;
             if (_center != null) _center.FactoryRequested -= OnFactoryRequested;
+            if (_center != null) _center.ShopRequested -= OnShopRequested;
             if (_factory != null) _factory.Changed -= OnCenterChanged;
             if (_factory != null) _factory.Closed -= OnFactoryClosed;
+            if (_shop != null) _shop.Changed -= OnCenterChanged;
+            if (_shop != null) _shop.Closed -= OnShopClosed;
             if (_talkScreen != null) _talkScreen.Completed -= OnTalkCompleted;
             if (_flight != null)
             {
@@ -237,6 +244,7 @@ namespace ABRevival.Presentation
                 // Only the active screen owns the live fleet; capturing the other one would
                 // write a stale blueprint list over the edit in progress.
                 if (State == GameFlowState.Factory) _factory?.CaptureSave(payload);
+                else if (State == GameFlowState.Shop) _shop?.CaptureSave(payload);
                 else _center?.CaptureSave(payload);
                 PlayerSaveCodec.SaveToFile(_savePath, payload);
             }
@@ -281,6 +289,38 @@ namespace ABRevival.Presentation
             _assemblyAudio?.PlayAssemblyMusic();
         }
 
+        // ---------------- Shop ----------------
+
+        /// <summary>Center's SHOP button opens the dedicated purchase screen (#176).</summary>
+        private void OnShopRequested()
+        {
+            if (State != GameFlowState.Center || _center == null || _shop == null) return;
+
+            _center.CaptureSave(_save);
+            _shop.Initialize(_save);
+            _center.SetVisible(false);
+            _shop.SetVisible(true);
+            _assemblyAudio?.PlayAssemblyMusic();
+            State = GameFlowState.Shop;
+        }
+
+        /// <summary>
+        /// Shop's CENTER button persists money, stock and owned parts, then Center reloads only
+        /// that slice so its fleet, Player pick and companion state survive the visit.
+        /// </summary>
+        private void OnShopClosed()
+        {
+            if (State != GameFlowState.Shop || _shop == null) return;
+
+            _shop.CaptureSave(_save);
+            _shop.SetVisible(false);
+            _center?.ApplyShopSave();
+            _center?.SetVisible(true);
+            State = GameFlowState.Center;
+            Autosave(_save);
+            _assemblyAudio?.PlayAssemblyMusic();
+        }
+
         private void EnterCenter(bool firstBoot)
         {
             DisposeMission();
@@ -295,6 +335,7 @@ namespace ABRevival.Presentation
             SetFlowVisible(false);
             _talkScreen?.SetVisible(false);
             _factory?.SetVisible(false);
+            _shop?.SetVisible(false);
             if (_resultLabel != null) _resultLabel.style.display = DisplayStyle.None;
 
             if (_center != null)
@@ -1366,6 +1407,7 @@ namespace ABRevival.Presentation
         Mission = 3,
         Result = 4,
         Return = 5,
-        Factory = 6
+        Factory = 6,
+        Shop = 7
     }
 }

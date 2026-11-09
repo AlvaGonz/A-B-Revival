@@ -169,7 +169,6 @@ namespace ABRevival.Tests.PlayMode
                      {
                          ("info-button", "INFO"),
                          ("ready-button", "READY"),
-                         ("shop-button", "SHOP"),
                          ("back-button", "MAIN MENU"),
                          ("help-button", "HELP")
                      })
@@ -202,6 +201,21 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual(GameFlowState.Center, flow.State);
             Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
             Assert.AreEqual(DisplayStyle.None, factory.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+
+            // SHOP is a real screen (#176), not a placeholder.
+            ShopController shop = Object.FindAnyObjectByType<ShopController>();
+            Assert.IsNotNull(shop, "Boot must host the dedicated Shop screen.");
+            Click(root.Q<Button>("shop-button"));
+            yield return null;
+            Assert.AreEqual(GameFlowState.Shop, flow.State);
+            Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, shop.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+
+            Click(shop.GetComponent<UIDocument>().rootVisualElement.Q<Button>("center-button"));
+            yield return null;
+            Assert.AreEqual(GameFlowState.Center, flow.State);
+            Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, shop.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
         }
 
         [UnityTest]

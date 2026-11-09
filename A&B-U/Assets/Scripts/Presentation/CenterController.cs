@@ -101,6 +101,9 @@ namespace ABRevival.Presentation
         /// <summary>Raised when the player asks for the dedicated Factory screen (#175).</summary>
         public event Action FactoryRequested;
 
+        /// <summary>Raised when the player asks for the dedicated Shop screen (#176).</summary>
+        public event Action ShopRequested;
+
         /// <summary>Current shop money, exposed for boot/save verification.</summary>
         public int Money => _shop != null ? _shop.Money : 0;
 
@@ -161,7 +164,11 @@ namespace ABRevival.Presentation
         {
             if (_initialized)
             {
-                if (save != null) ApplySave(save);
+                if (save != null)
+                {
+                    ApplySave(save);
+                    SeedStartingMoney(save);
+                }
                 return;
             }
 
@@ -190,6 +197,7 @@ namespace ABRevival.Presentation
             if (save != null)
             {
                 ApplySave(save);
+                SeedStartingMoney(save);
             }
             else
             {
@@ -198,6 +206,22 @@ namespace ABRevival.Presentation
                 _selectedIndex = 0;
                 RefreshAll();
             }
+        }
+
+        /// <summary>
+        /// A brand-new campaign has an empty payload; the constructed ShopState's starting
+        /// money would otherwise be overwritten by LoadFrom. Existing saves (even a spent
+        /// 0 G balance) are left untouched.
+        /// </summary>
+        private void SeedStartingMoney(PlayerSaveData save)
+        {
+            if (save.shop == null || save.shop.money != 0) return;
+            if (save.shop.stock.Count > 0 || save.shop.ownedParts.Count > 0) return;
+            if (save.blueprints != null && save.blueprints.Count > 0) return;
+
+            _shop = new ShopState(_catalog, startingMoney);
+            ReconcileShop(save.storyIndex);
+            RefreshHeader();
         }
 
         /// <summary>Captures the shop, every fleet craft, the Player pick and companion slots.</summary>
@@ -230,6 +254,19 @@ namespace ABRevival.Presentation
 
             ReconcileShop(payload.storyIndex);
             RefreshAll();
+        }
+
+        /// <summary>
+        /// Reloads only the shop slice after the dedicated Shop screen (#176) changed money,
+        /// stock or owned parts. The fleet, Player pick, companions and selection stay untouched.
+        /// </summary>
+        public void ApplyShopSave()
+        {
+            if (!_initialized) return;
+
+            _shop.LoadFrom(_payload.shop);
+            ReconcileShop(_payload.storyIndex);
+            RefreshHeader();
         }
 
         /// <summary>Shows or hides the whole Center overlay.</summary>
@@ -396,7 +433,7 @@ namespace ABRevival.Presentation
             if (_helpButton != null) _helpButton.clicked += () => OpenPlaceholder("HELP");
             if (_infoButton != null) _infoButton.clicked += () => OpenPlaceholder("INFO");
             if (_readyButton != null) _readyButton.clicked += () => OpenPlaceholder("READY");
-            if (_shopButton != null) _shopButton.clicked += () => OpenPlaceholder("SHOP");
+            if (_shopButton != null) _shopButton.clicked += () => ShopRequested?.Invoke();
             if (_factoryButton != null) _factoryButton.clicked += () => FactoryRequested?.Invoke();
             if (_backButton != null) _backButton.clicked += () => OpenPlaceholder("MAIN MENU");
             if (_placeholderBack != null) _placeholderBack.clicked += ShowCenter;
