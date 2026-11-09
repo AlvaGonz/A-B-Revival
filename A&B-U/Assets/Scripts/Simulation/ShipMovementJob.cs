@@ -36,9 +36,18 @@ namespace ABRevival.Core.Simulation
             // 2. Forward vector from heading angle (0 rad = up / positive Y)
             float2 forward = ShipEntity.Forward(ship.rotation);
 
-            // 3. Acceleration & Thrust
+            // 3. Acceleration & Thrust, with the frozen Space afterburner while fuel remains.
+            float throttle = math.clamp(input.throttle, 0f, 1f);
+            bool boosting = input.boost && throttle > 0f && ship.boosterFuel > 0f;
+            if (boosting)
+            {
+                throttle *= ShipEntity.BoosterThrustMultiplier;
+                ship.boosterFuel = math.max(
+                    0f, ship.boosterFuel - (ShipEntity.BoosterFuelDrainPerSecond * deltaTime));
+            }
+
             float safeMass = math.max(1f, ship.mass);
-            float appliedThrust = math.clamp(input.throttle, 0f, 1f) * ship.thrustPower;
+            float appliedThrust = throttle * ship.thrustPower;
             float2 acceleration = (forward * appliedThrust) / safeMass;
 
             ship.velocity += acceleration * deltaTime;

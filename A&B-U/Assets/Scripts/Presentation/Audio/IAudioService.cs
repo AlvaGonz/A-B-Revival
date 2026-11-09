@@ -18,7 +18,8 @@ namespace ABRevival.Presentation.Audio
     {
         Health = 0,
         Money = 1,
-        Part = 2
+        Part = 2,
+        Fuel = 3
     }
 
     /// <summary>

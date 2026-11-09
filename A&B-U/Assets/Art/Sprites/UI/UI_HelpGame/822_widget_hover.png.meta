@@ -1,0 +1,1055 @@
+fileFormatVersion: 2
+guid: 11bfc53201c59c94aa7ddaa2e296ca59
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7905831853259734046
+    second: 822_widget_hover_0
+  - first:
+      213: -3268545824473120141
+    second: 822_widget_hover_1
+  - first:
+      213: 2342452464648085171
+    second: 822_widget_hover_2
+  - first:
+      213: 903559821620198795
+    second: 822_widget_hover_3
+  - first:
+      213: 1342466188258233465
+    second: 822_widget_hover_4
+  - first:
+      213: 5219537294761191378
+    second: 822_widget_hover_5
+  - first:
+      213: -8900779959053489165
+    second: 822_widget_hover_6
+  - first:
+      213: -661848835468201566
+    second: 822_widget_hover_7
+  - first:
+      213: -6866104488353770536
+    second: 822_widget_hover_8
+  - first:
+      213: -4131512737382422527
+    second: 822_widget_hover_9
+  - first:
+      213: 7269397783514845440
+    second: 822_widget_hover_10
+  - first:
+      213: 331397645373191482
+    second: 822_widget_hover_11
+  - first:
+      213: 1190166306001990022
+    second: 822_widget_hover_12
+  - first:
+      213: 3889345535197678978
+    second: 822_widget_hover_13
+  - first:
+      213: 8931958138757034059
+    second: 822_widget_hover_14
+  - first:
+      213: -746792755308613676
+    second: 822_widget_hover_15
+  - first:
+      213: 8527112852872908041
+    second: 822_widget_hover_16
+  - first:
+      213: 5585708082701109035
+    second: 822_widget_hover_17
+  - first:
+      213: 7612797767203463268
+    second: 822_widget_hover_18
+  - first:
+      213: -5270602645380472713
+    second: 822_widget_hover_19
+  - first:
+      213: -1849009577118195293
+    second: 822_widget_hover_20
+  - first:
+      213: 7107637865973618857
+    second: 822_widget_hover_21
+  - first:
+      213: -3129735087143424652
+    second: 822_widget_hover_22
+  - first:
+      213: 4458689207850941284
+    second: 822_widget_hover_23
+  - first:
+      213: -7352428424032897597
+    second: 822_widget_hover_24
+  - first:
+      213: 1494235988884323989
+    second: 822_widget_hover_25
+  - first:
+      213: 8284545455847196253
+    second: 822_widget_hover_26
+  - first:
+      213: -4138734964563923728
+    second: 822_widget_hover_27
+  - first:
+      213: -7886711516650259054
+    second: 822_widget_hover_28
+  - first:
+      213: 4416269850116448319
+    second: 822_widget_hover_29
+  - first:
+      213: -3268880681922336193
+    second: 822_widget_hover_30
+  - first:
+      213: -6661713059990273625
+    second: 822_widget_hover_31
+  - first:
+      213: -3363623262701482733
+    second: 822_widget_hover_32
+  - first:
+      213: 8651243728939993280
+    second: 822_widget_hover_33
+  - first:
+      213: -4294055313152621801
+    second: 822_widget_hover_34
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 9
+  spritePivot: {x: -0.0047, y: 1.0084}
+  spritePixelsToUnits: 1
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 822_widget_hover_0
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 379
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e34c7cf0d7d84290800000000000000
+      internalID: -7905831853259734046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_1
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 379
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3728130e3eac3a2d0800000000000000
+      internalID: -3268545824473120141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 373
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3be56921b10128020800000000000000
+      internalID: 2342452464648085171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_3
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 379
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8dbcf8ded61a8c00800000000000000
+      internalID: 903559821620198795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_4
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 379
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97cca12b2e561a210800000000000000
+      internalID: 1342466188258233465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_5
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 379
+        width: 12
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d7e42ae3858f6840800000000000000
+      internalID: 5219537294761191378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_6
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 379
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fb63bc19c31a7480800000000000000
+      internalID: -8900779959053489165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_7
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 379
+        width: 14
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a179e2adf3a0d6f0800000000000000
+      internalID: -661848835468201566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_8
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 379
+        width: 56
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d355f49852b6b0a0800000000000000
+      internalID: -6866104488353770536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_9
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 379
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 108a1571e0be9a6c0800000000000000
+      internalID: -4131512737382422527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_10
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 379
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0011a69e4c612e460800000000000000
+      internalID: 7269397783514845440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_11
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 36
+        width: 455
+        height: 266
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a35bed3176c599400800000000000000
+      internalID: 331397645373191482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_12
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 261
+        width: 135
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68133e413f1548010800000000000000
+      internalID: 1190166306001990022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_13
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 299
+        width: 22
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28d853a582bb9f530800000000000000
+      internalID: 3889345535197678978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_14
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 296
+        width: 27
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b40b5498a90b4fb70800000000000000
+      internalID: 8931958138757034059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_15
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 299
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4dfaefa12fbd2a5f0800000000000000
+      internalID: -746792755308613676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_16
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 299
+        width: 26
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90d482b06f3665670800000000000000
+      internalID: 8527112852872908041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_17
+      rect:
+        serializedVersion: 2
+        x: 525
+        y: 299
+        width: 18
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b278d6828eb648d40800000000000000
+      internalID: 5585708082701109035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_18
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 299
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 460ac052c3716a960800000000000000
+      internalID: 7612797767203463268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_19
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 299
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 770ecd1a1de0bd6b0800000000000000
+      internalID: -5270602645380472713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_20
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 281
+        width: 23
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a12399069ff656e0800000000000000
+      internalID: -1849009577118195293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_21
+      rect:
+        serializedVersion: 2
+        x: 503
+        y: 278
+        width: 31
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a819713bf663a260800000000000000
+      internalID: 7107637865973618857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_22
+      rect:
+        serializedVersion: 2
+        x: 533
+        y: 281
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47d6db13582f094d0800000000000000
+      internalID: -3129735087143424652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_23
+      rect:
+        serializedVersion: 2
+        x: 554
+        y: 281
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46bb2dd163270ed30800000000000000
+      internalID: 4458689207850941284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_24
+      rect:
+        serializedVersion: 2
+        x: 494
+        y: 260
+        width: 56
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c5b80d9d4de6f990800000000000000
+      internalID: -7352428424032897597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_25
+      rect:
+        serializedVersion: 2
+        x: 554
+        y: 263
+        width: 19
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59efd0017b79cb410800000000000000
+      internalID: 1494235988884323989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_26
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 246
+        width: 43
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d56495dd23e98f270800000000000000
+      internalID: 8284545455847196253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_27
+      rect:
+        serializedVersion: 2
+        x: 495
+        y: 167
+        width: 41
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fcada94a724096c0800000000000000
+      internalID: -4138734964563923728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_28
+      rect:
+        serializedVersion: 2
+        x: 539
+        y: 167
+        width: 35
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29d341449a5cc8290800000000000000
+      internalID: -7886711516650259054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_29
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 145
+        width: 52
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f306570c70eb94d30800000000000000
+      internalID: 4416269850116448319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_30
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 149
+        width: 28
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3ae1ecc65a92a2d0800000000000000
+      internalID: -3268880681922336193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_31
+      rect:
+        serializedVersion: 2
+        x: 477
+        y: 131
+        width: 25
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a103b76447dc83a0800000000000000
+      internalID: -6661713059990273625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_32
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 129
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31d007cb6720251d0800000000000000
+      internalID: -3363623262701482733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_33
+      rect:
+        serializedVersion: 2
+        x: 510
+        y: 131
+        width: 50
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c84bc0d5546f0870800000000000000
+      internalID: 8651243728939993280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 822_widget_hover_34
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 110
+        width: 51
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 713c8ad81737864c0800000000000000
+      internalID: -4294055313152621801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      822_widget_hover_0: -7905831853259734046
+      822_widget_hover_1: -3268545824473120141
+      822_widget_hover_10: 7269397783514845440
+      822_widget_hover_11: 331397645373191482
+      822_widget_hover_12: 1190166306001990022
+      822_widget_hover_13: 3889345535197678978
+      822_widget_hover_14: 8931958138757034059
+      822_widget_hover_15: -746792755308613676
+      822_widget_hover_16: 8527112852872908041
+      822_widget_hover_17: 5585708082701109035
+      822_widget_hover_18: 7612797767203463268
+      822_widget_hover_19: -5270602645380472713
+      822_widget_hover_2: 2342452464648085171
+      822_widget_hover_20: -1849009577118195293
+      822_widget_hover_21: 7107637865973618857
+      822_widget_hover_22: -3129735087143424652
+      822_widget_hover_23: 4458689207850941284
+      822_widget_hover_24: -7352428424032897597
+      822_widget_hover_25: 1494235988884323989
+      822_widget_hover_26: 8284545455847196253
+      822_widget_hover_27: -4138734964563923728
+      822_widget_hover_28: -7886711516650259054
+      822_widget_hover_29: 4416269850116448319
+      822_widget_hover_3: 903559821620198795
+      822_widget_hover_30: -3268880681922336193
+      822_widget_hover_31: -6661713059990273625
+      822_widget_hover_32: -3363623262701482733
+      822_widget_hover_33: 8651243728939993280
+      822_widget_hover_34: -4294055313152621801
+      822_widget_hover_4: 1342466188258233465
+      822_widget_hover_5: 5219537294761191378
+      822_widget_hover_6: -8900779959053489165
+      822_widget_hover_7: -661848835468201566
+      822_widget_hover_8: -6866104488353770536
+      822_widget_hover_9: -4131512737382422527
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

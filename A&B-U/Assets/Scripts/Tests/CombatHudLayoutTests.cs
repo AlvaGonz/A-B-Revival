@@ -33,7 +33,10 @@ namespace ABRevival.Tests
             "hud-bars",
             "hud-health-bar",
             "hud-hull-fill",
-            "hud-shield-fill",
+            "hud-fuel-bar",
+            "hud-fuel-fill",
+            "hud-reserved-bar",
+            "hud-reserved-fill",
             "hud-hull-value",
             "hud-pilot-backing",
             "hud-pilot-portrait",
@@ -75,8 +78,8 @@ namespace ABRevival.Tests
             foreach (string selector in new[]
                      {
                          ".hud-money-panel", ".hud-radar", ".hud-ai-count", ".hud-telemetry",
-                         ".hud-bars", ".hud-pilot-tile", ".hud-minimap", ".hud-captain-tile",
-                         ".hud-reticle"
+                         ".hud-bars", ".hud-fuel-fill", ".hud-reserved-fill",
+                         ".hud-pilot-tile", ".hud-minimap", ".hud-captain-tile", ".hud-reticle"
                      })
             {
                 StringAssert.Contains(selector, uss, "HUD selector missing: " + selector);

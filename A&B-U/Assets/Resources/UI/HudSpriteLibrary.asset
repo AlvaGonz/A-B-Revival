@@ -23,6 +23,7 @@ MonoBehaviour:
   _captainPortrait: {fileID: 21300000, guid: 5093c5b9f3b3e0ac0cf1c68ec98733ea, type: 3}
   _portraitBacking: {fileID: 21300000, guid: 0589974a818868546b5c6d01f4a74628, type: 3}
   _healthBar: {fileID: 21300000, guid: ba9668a7c3896a74db727e4036bdb8b6, type: 3}
+  _energyBar: {fileID: 21300000, guid: 0be4dfd59ebbfa04691dc346a0f25655, type: 3}
   _shieldBar: {fileID: 21300000, guid: 2a1a90f56502a214bb060fc5d8fb033f, type: 3}
   _barFrame: {fileID: 21300000, guid: fa00cf190bc3a4d468a3bd1c26cb8617, type: 3}
   _reticle: {fileID: 21300000, guid: 2160ff10d7691bf4da6d3da20208e717, type: 3}

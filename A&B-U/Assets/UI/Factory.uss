@@ -1,0 +1,549 @@
+/* Factory (frozen 2011 UIMakePlayer): 1920x1080 full-bleed assembly screen.
+   Sprite backgrounds are assigned at runtime from FactoryController serialized fields. */
+
+.factory-root {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(2, 4, 8);
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.factory-screen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 16px 22px 14px 22px;
+    flex-direction: column;
+}
+
+.factory-header {
+    height: 9%;
+    min-height: 56px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px 8px 8px;
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 168, 214, 0.55);
+}
+
+.factory-title {
+    font-size: 30px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgb(0, 226, 255);
+    -unity-text-align: middle-center;
+}
+
+.factory-body {
+    flex-grow: 1;
+    flex-direction: row;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    min-height: 0;
+}
+
+.undo-strip {
+    width: 52px;
+    margin-right: 10px;
+    flex-direction: column;
+}
+
+.undo-button {
+    flex-grow: 1;
+    min-height: 18px;
+    max-height: 38px;
+    margin-bottom: 4px;
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+    background-color: rgba(4, 22, 32, 0.72);
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-font-style: bold;
+    font-size: 18px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.undo-button:disabled {
+    opacity: 0.3;
+}
+
+.preview-column {
+    width: 36%;
+    flex-grow: 1;
+    min-width: 0;
+    margin-right: 14px;
+    flex-direction: column;
+}
+
+.preview-frame {
+    flex-grow: 1;
+    min-height: 0;
+    padding: 20px;
+    background-color: rgba(1, 3, 6, 0.92);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.preview-clip {
+    flex-grow: 1;
+    min-height: 0;
+    background-color: rgb(0, 0, 0);
+    overflow: hidden;
+}
+
+.preview-canvas {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.preview-socket {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+    border-color: rgb(0, 226, 255);
+    border-radius: 9px;
+    background-color: rgba(0, 226, 255, 0.18);
+}
+
+.preview-name {
+    height: 38px;
+    margin-top: 4px;
+    font-size: 26px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.preview-actions {
+    height: 46px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.action-button {
+    width: 92px;
+    height: 38px;
+    margin-left: 6px;
+    margin-right: 6px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.detail-column {
+    width: 21%;
+    margin-right: 14px;
+    flex-direction: column;
+}
+
+.view-controls {
+    width: 72px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.help-button {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 10px;
+}
+
+.zoom-button {
+    width: 52px;
+    height: 40px;
+    margin-top: 8px;
+    border-width: 1px;
+    border-color: rgba(0, 170, 214, 0.65);
+    border-radius: 20px;
+    background-color: rgba(4, 22, 32, 0.72);
+    -unity-font-style: bold;
+    font-size: 24px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.detail-card {
+    /* SF TransRobotics has a 1em line box; 30% clipped the six 20px detail labels. */
+    height: 36%;
+    min-height: 150px;
+    padding: 10px 14px;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.detail-spacer {
+    flex-grow: 1;
+}
+
+.detail-row {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 160, 205, 0.34);
+}
+
+.detail-key {
+    width: 52%;
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(164, 216, 240);
+}
+
+.detail-value {
+    flex-grow: 1;
+    font-size: 21px;
+    -unity-text-align: middle-right;
+    color: rgb(0, 226, 255);
+}
+
+.detail-row-wings .detail-value {
+    color: rgb(255, 214, 90);
+}
+
+.detail-row-wings .detail-value.stat-warning {
+    color: rgb(255, 214, 90);
+}
+
+.detail-row-wings .detail-value.stat-danger {
+    color: rgb(255, 96, 96);
+}
+
+.preview-hint {
+    height: 30px;
+    margin-top: 4px;
+    font-size: 16px;
+    -unity-text-align: middle-center;
+    color: rgba(186, 220, 238, 0.8);
+}
+
+.stats-column {
+    width: 23%;
+    flex-direction: column;
+}
+
+.stats-card {
+    height: 62%;
+    flex-grow: 0;
+    padding: 10px 16px;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.stat-row {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 160, 205, 0.34);
+}
+
+.stat-key {
+    width: 46%;
+    font-size: 19px;
+    -unity-font-style: bold;
+    color: rgb(164, 216, 240);
+}
+
+.stat-value {
+    flex-grow: 1;
+    font-size: 20px;
+    -unity-text-align: middle-right;
+    color: rgb(0, 226, 255);
+}
+
+.hull-label {
+    height: 26px;
+    margin-top: 6px;
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: rgb(230, 242, 250);
+}
+
+.sprite-button {
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.sprite-button:hover {
+    -unity-background-image-tint-color: rgb(190, 232, 255);
+}
+
+.sprite-button:active {
+    -unity-background-image-tint-color: rgb(120, 190, 220);
+}
+
+.back-button {
+    width: 230px;
+    height: 70px;
+    margin-top: 10px;
+    align-self: center;
+}
+
+.parts-crafts-button {
+    width: 220px;
+    height: 63px;
+    margin-top: 6px;
+    align-self: center;
+}
+
+.parts-crafts-button.tab-active {
+    -unity-background-image-tint-color: rgb(255, 232, 140);
+}
+
+.error-label {
+    height: 22px;
+    margin-top: 4px;
+    font-size: 14px;
+    color: rgb(255, 96, 96);
+    -unity-text-align: middle-center;
+}
+
+.table-area {
+    height: 41%;
+    padding: 6px 10px;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.table-tabs {
+    height: 38px;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 3px;
+}
+
+.tab-button {
+    width: 84px;
+    height: 38px;
+    margin-right: 6px;
+    opacity: 0.55;
+}
+
+.tab-button.tab-active {
+    opacity: 1;
+}
+
+.table-header {
+    height: 28px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px;
+    background-color: rgba(0, 34, 48, 0.92);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 200, 236, 0.65);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.table-header .col {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: rgb(148, 204, 230);
+}
+
+.parts-table {
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.row {
+    height: 34px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 190, 230, 0.38);
+    background-color: rgba(0, 58, 82, 0.30);
+}
+
+.row-even {
+    background-color: rgba(0, 118, 150, 0.34);
+}
+
+.row-odd {
+    background-color: rgba(0, 58, 82, 0.32);
+}
+
+.row:hover {
+    background-color: rgba(0, 170, 210, 0.40);
+}
+
+.row-selected {
+    background-color: rgba(0, 196, 236, 0.34);
+}
+
+.row .col {
+    font-size: 16px;
+    color: rgb(204, 232, 246);
+}
+
+.col-index {
+    width: 74px;
+}
+
+.col-name {
+    flex-grow: 1;
+    min-width: 140px;
+}
+
+.col-type {
+    width: 76px;
+}
+
+.col-lr {
+    width: 58px;
+}
+
+.col-hp {
+    width: 82px;
+    -unity-text-align: middle-right;
+}
+
+.col-steering {
+    width: 92px;
+    -unity-text-align: middle-right;
+}
+
+.col-engine {
+    width: 92px;
+    -unity-text-align: middle-right;
+}
+
+.col-mass {
+    width: 82px;
+    -unity-text-align: middle-right;
+}
+
+.col-fire {
+    width: 100px;
+    -unity-text-align: middle-right;
+}
+
+.col-parts {
+    width: 82px;
+    -unity-text-align: middle-right;
+}
+
+.col-value {
+    width: 96px;
+    -unity-text-align: middle-right;
+}
+
+.col-actions {
+    width: 200px;
+}
+
+.row-action {
+    width: 88px;
+    height: 24px;
+    border-width: 1px;
+    border-color: rgba(0, 170, 214, 0.75);
+    background-color: rgba(4, 22, 32, 0.72);
+    -unity-font-style: bold;
+    font-size: 14px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.row-action:hover {
+    border-color: rgb(120, 232, 255);
+    color: rgb(210, 248, 255);
+}
+
+.table-footer {
+    height: 44px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-button {
+    width: 60px;
+    height: 34px;
+    margin-left: 6px;
+    margin-right: 6px;
+    border-width: 1px;
+    border-color: rgba(0, 170, 214, 0.65);
+    background-color: rgba(4, 22, 32, 0.72);
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-font-style: bold;
+    font-size: 18px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.page-label {
+    width: 130px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(224, 240, 250);
+}
+
+.factory-help {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(2, 4, 8, 0.92);
+}
+
+.help-panel {
+    width: 820px;
+    height: 340px;
+    padding: 34px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(2, 8, 13, 0.96);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.help-title {
+    height: 64px;
+    font-size: 40px;
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    color: rgb(0, 226, 255);
+    -unity-text-align: middle-center;
+}
+
+.help-body {
+    flex-grow: 1;
+    font-size: 20px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+    color: rgb(186, 220, 238);
+}
+
+.text-button {
+    min-width: 150px;
+    height: 44px;
+    margin-top: 12px;
+    border-width: 1px;
+    border-color: rgba(0, 170, 214, 0.65);
+    background-color: rgba(4, 22, 32, 0.72);
+    -unity-font-style: bold;
+    font-size: 20px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}

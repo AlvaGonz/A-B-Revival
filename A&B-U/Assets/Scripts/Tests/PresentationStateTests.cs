@@ -22,12 +22,13 @@ namespace ABRevival.Tests
             Assert.AreEqual(1.3f, CameraDistancePresets.ViewScale(CameraDistancePreset.Medium), 0.0001f);
             Assert.AreEqual(1.5f, CameraDistancePresets.ViewScale(CameraDistancePreset.Far), 0.0001f);
 
-            Assert.AreEqual(1280f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Short), 0.001f);
-            Assert.AreEqual(720f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Short), 0.001f);
-            Assert.AreEqual(1664f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Medium), 0.001f);
-            Assert.AreEqual(936f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Medium), 0.001f);
-            Assert.AreEqual(1920f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Far), 0.001f);
-            Assert.AreEqual(1080f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Far), 0.001f);
+            Assert.AreEqual(1920f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Short), 0.001f);
+            Assert.AreEqual(1080f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Short), 0.001f);
+            Assert.AreEqual(2496f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Medium), 0.001f);
+            Assert.AreEqual(1404f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Medium), 0.001f);
+            Assert.AreEqual(2880f, CameraDistancePresets.ViewportWidth(CameraDistancePreset.Far), 0.001f);
+            Assert.AreEqual(1620f, CameraDistancePresets.ViewportHeight(CameraDistancePreset.Far), 0.001f);
+            Assert.AreEqual(3f, CameraDistancePresets.DesignScale, 0.001f);
 
             Assert.AreEqual("[ CAM: SHORT (1.0x) ]", CameraDistancePresets.BadgeText(CameraDistancePreset.Short));
             Assert.AreEqual("[ CAM: MEDIUM (1.3x) ]", CameraDistancePresets.BadgeText(CameraDistancePreset.Medium));
@@ -53,23 +54,23 @@ namespace ABRevival.Tests
 
             ViewportPoint shortCentre = CameraDistancePresets.ScreenToViewport(
                 screenCentre, screenSize, CameraDistancePreset.Short);
-            Assert.AreEqual(640f, shortCentre.X, 0.001f);
-            Assert.AreEqual(360f, shortCentre.Y, 0.001f);
+            Assert.AreEqual(960f, shortCentre.X, 0.001f);
+            Assert.AreEqual(540f, shortCentre.Y, 0.001f);
 
             ViewportPoint farCentre = CameraDistancePresets.ScreenToViewport(
                 screenCentre, screenSize, CameraDistancePreset.Far);
-            Assert.AreEqual(960f, farCentre.X, 0.001f);
-            Assert.AreEqual(540f, farCentre.Y, 0.001f);
+            Assert.AreEqual(1440f, farCentre.X, 0.001f);
+            Assert.AreEqual(810f, farCentre.Y, 0.001f);
 
             ViewportPoint farCorner = CameraDistancePresets.ScreenToViewport(
                 new ViewportPoint(1920f, 1080f), screenSize, CameraDistancePreset.Far);
-            Assert.AreEqual(1920f, farCorner.X, 0.001f);
-            Assert.AreEqual(1080f, farCorner.Y, 0.001f);
+            Assert.AreEqual(2880f, farCorner.X, 0.001f);
+            Assert.AreEqual(1620f, farCorner.Y, 0.001f);
 
             ViewportPoint worldCorner = CameraDistancePresets.ViewportToWorldCentered(
                 farCorner, CameraDistancePreset.Far);
-            Assert.AreEqual(960f, worldCorner.X, 0.001f);
-            Assert.AreEqual(540f, worldCorner.Y, 0.001f);
+            Assert.AreEqual(1440f, worldCorner.X, 0.001f);
+            Assert.AreEqual(810f, worldCorner.Y, 0.001f);
         }
 
         [Test]
@@ -199,7 +200,7 @@ namespace ABRevival.Tests
             state.SetMissionSeconds(92.4f);
             state.SetAiCount(3);
             state.SetEnemyDistance(812.6f);
-            state.SetShieldFraction(0.25f);
+            state.SetFuelFraction(0.25f);
             state.SetPilotName("Michael");
             state.SetRadarBearing(-90f);
             state.SetReticlePosition(480f, 270f);
@@ -210,7 +211,7 @@ namespace ABRevival.Tests
             Assert.AreEqual(92.4f, snapshot.MissionSeconds, 0.0001f);
             Assert.AreEqual(3, snapshot.AiCount);
             Assert.AreEqual(812.6f, snapshot.EnemyDistance, 0.0001f);
-            Assert.AreEqual(0.25f, snapshot.ShieldFraction, 0.0001f);
+            Assert.AreEqual(0.25f, snapshot.FuelFraction, 0.0001f);
             Assert.AreEqual("Michael", snapshot.PilotName);
             Assert.AreEqual(-90f, snapshot.RadarBearingDegrees, 0.0001f);
             Assert.AreEqual(480f, snapshot.ReticleX, 0.0001f);
@@ -235,18 +236,18 @@ namespace ABRevival.Tests
             state.SetMissionSeconds(-1f);
             state.SetAiCount(-2);
             state.SetEnemyDistance(-3f);
-            state.SetShieldFraction(-1f);
+            state.SetFuelFraction(-1f);
 
             Assert.AreEqual(0, state.Money);
             Assert.AreEqual(0f, state.MissionSeconds, 0.0001f);
             Assert.AreEqual(0, state.AiCount);
             Assert.AreEqual(0f, state.EnemyDistance, 0.0001f);
-            Assert.AreEqual(0f, state.ShieldFraction, 0.0001f);
+            Assert.AreEqual(0f, state.FuelFraction, 0.0001f);
 
             Assert.AreEqual("0 G", HudTextFormatter.FormatMoney(0));
             Assert.AreEqual("00:00", HudTextFormatter.FormatMissionTime(-1f));
             Assert.Throws<ArgumentException>(() => state.SetMissionSeconds(float.NaN));
-            Assert.Throws<ArgumentException>(() => state.SetShieldFraction(float.NaN));
+            Assert.Throws<ArgumentException>(() => state.SetFuelFraction(float.NaN));
         }
 
         [Test]

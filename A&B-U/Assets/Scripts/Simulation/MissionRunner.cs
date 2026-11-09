@@ -125,7 +125,7 @@ namespace ABRevival.Core.Simulation
 
         private const float DefaultMass = 100f;
         private const float DefaultHealth = 1000f;
-        private const float DefaultEnergy = 500f;
+        private const float DefaultBoosterFuel = 500f;
         private const float DefaultThrust = 1000f;
         private const float DefaultTurnSpeed = 2f;
         private const float DefaultDrag = 0.05f;
@@ -241,6 +241,10 @@ namespace ABRevival.Core.Simulation
 
             public void SetShip(int index, in ShipEntity ship) => _simulation.SetShip(index, in ship);
             public ShipEntity GetShip(int index) => _simulation.GetShip(index);
+
+            public bool TryFindNearestHostile(int shipIndex, out ShipEntity target) =>
+                _simulation.TryFindNearestHostile(shipIndex, out target);
+
             public void Tick(float deltaTime) => _simulation.Tick(deltaTime);
         }
 
@@ -293,6 +297,42 @@ namespace ABRevival.Core.Simulation
                 var ev = _level.events[i];
                 if (string.IsNullOrEmpty(ev.after)) Activate(ev);
             }
+        }
+
+        /// <summary>
+        /// Spawns one friendly AI wingman from the Center loadout after the level's player act.
+        /// The ship joins the runner's friendly roster so it renders, fires through the AI weapon
+        /// path, takes contact damage and stops counting toward the HUD AI plate when destroyed.
+        /// Spawn-time only; returns the simulation index or -1 when the mission is not running.
+        /// </summary>
+        public int SpawnFriendlyWingman(
+            string pilot, int defIndex, float2 position, float rotation, int formationSlot)
+        {
+            if (!_started || _state != MissionState.InProgress) return -1;
+            if (_simulation.ShipCount >= _simulation.MaxShips) return -1;
+
+            var spawn = new LevelSpawn
+            {
+                kind = LevelSpawnKind.Add,
+                pilot = pilot ?? string.Empty,
+                friendly = true,
+                defIndex = defIndex,
+                x = position.x,
+                y = position.y
+            };
+
+            int before = _simulation.ShipCount;
+            SpawnCraft(spawn, null);
+            if (_simulation.ShipCount == before) return -1;
+
+            int shipIndex = _simulation.ShipCount - 1;
+            ShipEntity ship = _simulation.GetShip(shipIndex);
+            ship.rotation = rotation;
+            ship.tacticalMode = (int)CaptainTacticalMode.Escort;
+            ship.formationSlot = formationSlot;
+            ship.spawnPosition = position;
+            _simulation.SetShip(shipIndex, ship);
+            return shipIndex;
         }
 
         /// <summary>True while the mission's record of that craft has not been reported destroyed.</summary>
@@ -756,8 +796,8 @@ namespace ABRevival.Core.Simulation
                 mass = mass,
                 health = health,
                 maxHealth = health,
-                energy = DefaultEnergy,
-                maxEnergy = DefaultEnergy,
+                boosterFuel = DefaultBoosterFuel,
+                maxBoosterFuel = DefaultBoosterFuel,
                 // ShipMovementJob accelerates by thrustPower/mass, so the display speed is a force.
                 thrustPower = thrust * mass,
                 turnSpeed = turnRate,

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Repair.uss" />
+    <ui:VisualElement name="repair-root" class="repair-root">
+        <ui:VisualElement name="repair-page" class="repair-page">
+            <ui:VisualElement name="repair-background" class="repair-background" picking-mode="Ignore" />
+
+            <ui:VisualElement name="repair-header" class="repair-header">
+                <ui:VisualElement name="repair-header-plate" class="repair-header-plate" picking-mode="Ignore" />
+                <ui:Label name="repair-title" text="Repair" class="repair-title" />
+                <ui:VisualElement class="header-spacer" />
+                <ui:Label name="repair-money" text="0 G" class="repair-money" />
+                <ui:Button name="repair-help-button" class="sprite-button repair-help-button" tooltip="Repair help" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="repair-table" class="repair-table">
+                <ui:VisualElement name="repair-table-header" class="repair-table-header font-data">
+                    <ui:Label text="Index" class="repair-cell col-index" />
+                    <ui:Label text="Craft" class="repair-cell col-craft" />
+                    <ui:Label text="Name" class="repair-cell col-name" />
+                    <ui:Label text="Type" class="repair-cell col-type" />
+                    <ui:Label text="L.R." class="repair-cell col-lr" />
+                    <ui:Label text="Hp" class="repair-cell col-hp" />
+                    <ui:Label text="Steering" class="repair-cell col-steering" />
+                    <ui:Label text="Engine" class="repair-cell col-engine" />
+                    <ui:Label text="Mass" class="repair-cell col-mass" />
+                    <ui:Label text="Fire Power" class="repair-cell col-fire" />
+                    <ui:Label text="Value" class="repair-cell col-value" />
+                    <ui:Label text="Sel." class="repair-cell col-sel" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="repair-rows" class="repair-rows" />
+
+                <ui:VisualElement name="repair-table-footer" class="repair-table-footer">
+                    <ui:VisualElement class="page-controls">
+                        <ui:Button name="repair-first" text="|&lt;" class="page-button" tooltip="First page" />
+                        <ui:Button name="repair-prev" text="&lt;" class="page-button" tooltip="Previous page" />
+                        <ui:Label name="repair-page-label" text="1 / 1" class="page-label font-sans" />
+                        <ui:Button name="repair-next" text="&gt;" class="page-button" tooltip="Next page" />
+                        <ui:Button name="repair-last" text="&gt;|" class="page-button" tooltip="Last page" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="filter-controls">
+                        <ui:Button name="repair-filter-all" text="All" class="filter-button filter-active" tooltip="All damaged parts" />
+                        <ui:Button name="repair-filter-body" text="Body" class="filter-button" tooltip="Body parts" />
+                        <ui:Button name="repair-filter-wing" text="Wing" class="filter-button" tooltip="Wing parts" />
+                        <ui:Button name="repair-filter-engine" text="Eng." class="filter-button" tooltip="Engine parts" />
+                        <ui:Button name="repair-filter-gun" text="Gun" class="filter-button" tooltip="Gun parts" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="repair-craft-card" class="repair-craft-card">
+                <ui:Label text="DAMAGED CRAFT" class="repair-card-title" />
+                <ui:Label name="repair-craft-list" text="No damaged craft." class="repair-craft-list font-data" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="repair-detail" class="repair-detail">
+                <ui:Label name="repair-instruction" text="Select your damaged parts to repair in 70% price. If you do not want to repair them, you can buy them back in the shop." class="repair-instruction font-sans" />
+                <ui:VisualElement class="repair-cost-row">
+                    <ui:Label text="Cost=" class="repair-cost-key" />
+                    <ui:Label name="repair-cost" text="0 G" class="repair-cost-value" />
+                </ui:VisualElement>
+                <ui:VisualElement class="repair-cost-row">
+                    <ui:Label text="Now=" class="repair-cost-key" />
+                    <ui:Label name="repair-now" text="0 G" class="repair-cost-value" />
+                </ui:VisualElement>
+                <ui:Label name="repair-error" text="" class="repair-error font-sans" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="repair-actions" class="repair-actions">
+                <ui:Button name="repair-exit" class="sprite-button repair-button repair-exit" tooltip="Skip repairs and return to the result" />
+                <ui:VisualElement class="actions-spacer" />
+                <ui:Button name="repair-all" class="sprite-button repair-button repair-all" tooltip="Select every damaged part" />
+                <ui:VisualElement class="actions-spacer" />
+                <ui:Button name="repair-reset" class="sprite-button repair-button repair-reset" tooltip="Clear the repair selection" />
+                <ui:Button name="repair-accept" class="sprite-button repair-button repair-accept" tooltip="Accept the repair" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="repair-help" class="repair-help">
+                <ui:VisualElement name="repair-help-page" class="repair-help-page" picking-mode="Ignore" />
+                <ui:Label text="Click to close" class="repair-help-hint font-sans" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

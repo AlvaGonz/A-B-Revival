@@ -1,0 +1,249 @@
+/* Results (frozen UIWin / UIFail / UIAllWin): 1920x1080 full-bleed.
+   The space backdrop is the original full-page render without its baked text.
+   The dialog and typography keep the 2011 composition; button plates are the
+   original widgets rendered through UiSpriteSkin Image children. */
+
+.results-root {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgb(0, 0, 0);
+}
+
+.results-page {
+    position: absolute;
+    width: 1920px;
+    height: 1080px;
+}
+
+.results-background {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+/* Reference window: 385x270 of 640x480, centred in the page. */
+.results-panel {
+    position: absolute;
+    left: 480px;
+    top: 110px;
+    width: 960px;
+    height: 630px;
+    background-color: rgba(8, 10, 18, 0.96);
+    border-width: 2px;
+    border-radius: 18px;
+    border-color: rgb(78, 92, 110);
+}
+
+.results-panel-fail {
+    left: 480px;
+    top: 130px;
+    height: 500px;
+}
+
+.results-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 26px;
+    height: 70px;
+    font-size: 52px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+}
+
+.results-title-fail {
+    color: rgb(255, 238, 226);
+}
+
+.results-title-bar {
+    position: absolute;
+    left: 14%;
+    right: 14%;
+    top: 96px;
+    height: 3px;
+    background-color: rgb(0, 226, 255);
+    opacity: 0.9;
+}
+
+.results-battle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 112px;
+    height: 34px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+    color: rgb(226, 242, 250);
+}
+
+.results-cause {
+    position: absolute;
+    left: 60px;
+    right: 60px;
+    top: 152px;
+    height: 34px;
+    font-size: 19px;
+    -unity-text-align: middle-center;
+    color: rgb(132, 190, 214);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.results-body {
+    position: absolute;
+    left: 90px;
+    right: 90px;
+    top: 200px;
+    height: 150px;
+    font-size: 30px;
+    -unity-text-align: middle-center;
+    color: rgb(236, 245, 250);
+    white-space: normal;
+}
+
+.results-body-fail {
+    top: 190px;
+    height: 140px;
+    font-size: 27px;
+    color: rgb(198, 178, 154);
+}
+
+.results-money {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 360px;
+    height: 60px;
+    font-size: 40px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+}
+
+.results-parts {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 428px;
+    height: 48px;
+    font-size: 30px;
+    -unity-text-align: middle-center;
+    color: rgb(216, 236, 246);
+}
+
+.results-verdict {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 492px;
+    height: 54px;
+    font-size: 34px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.results-warning {
+    position: absolute;
+    left: 70px;
+    right: 70px;
+    top: 560px;
+    height: 50px;
+    font-size: 17px;
+    -unity-text-align: middle-center;
+    color: rgb(255, 214, 120);
+    white-space: normal;
+}
+
+.results-panel-fail .results-money {
+    top: 334px;
+    height: 50px;
+    font-size: 32px;
+}
+
+.results-panel-fail .results-parts {
+    top: 382px;
+    height: 42px;
+    font-size: 26px;
+}
+
+.results-panel-fail .results-verdict {
+    top: 426px;
+    height: 50px;
+    font-size: 30px;
+    color: rgb(232, 164, 140);
+}
+
+.results-actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 770px;
+    height: 118px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.results-repair-row {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 900px;
+    height: 118px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.sprite-button {
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.sprite-button:hover {
+    -unity-background-image-tint-color: rgb(190, 232, 255);
+}
+
+.sprite-button:active {
+    -unity-background-image-tint-color: rgb(120, 190, 220);
+}
+
+.result-button {
+    width: 300px;
+    height: 118px;
+    margin: 0 12px;
+}
+
+.result-button-link {
+    width: 300px;
+    height: 108px;
+    margin-top: 10px;
+}
+
+.result-button-repair {
+    width: 300px;
+    height: 118px;
+}
+
+.results-tip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    height: 28px;
+    font-size: 17px;
+    -unity-text-align: middle-center;
+    color: rgb(210, 226, 238);
+}

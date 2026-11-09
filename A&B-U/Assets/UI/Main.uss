@@ -1,0 +1,134 @@
+/* Main menu (frozen 2011 UI_Main): 1920x1080 full-bleed.
+   The committed 2011 page render (667x535) is the menu itself; the original
+   starfield (ui_0005) extends it to the wider 16:9/16:10 canvas. The six live
+   buttons sit exactly on the frozen page positions and carry the original
+   widget art. Original game IP: Vargames (2011). */
+
+.main-root {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(2, 4, 10);
+    overflow: hidden;
+}
+
+.main-backdrop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.main-page {
+    position: absolute;
+    width: 667px;
+    height: 535px;
+    transform-origin: center;
+}
+
+.main-art {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.menu-button {
+    position: absolute;
+    width: 153.7px;
+    height: 42.2px;
+    padding: 0;
+    margin: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.menu-button:active {
+    opacity: 0.86;
+}
+
+.play-button {
+    left: 20.15px;
+    top: 469.1px;
+}
+
+.data-button {
+    left: 176.55px;
+    top: 469.1px;
+}
+
+.options-button {
+    left: 335.75px;
+    top: 470.1px;
+}
+
+.credits-button {
+    left: 492.15px;
+    top: 470.1px;
+}
+
+.link-button {
+    left: 492.15px;
+    top: 51.2px;
+}
+
+.player-button {
+    left: 492.15px;
+    top: 103.85px;
+}
+
+.main-deferred {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.74);
+}
+
+.deferred-panel {
+    width: 760px;
+    min-height: 300px;
+    padding: 40px 48px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(2, 8, 13, 0.96);
+    border-width: 1px;
+    border-color: rgba(0, 200, 236, 0.7);
+}
+
+.deferred-title {
+    height: 64px;
+    font-size: 40px;
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.deferred-body {
+    flex-grow: 1;
+    font-size: 22px;
+    -unity-text-align: middle-center;
+    color: rgb(186, 220, 238);
+    white-space: normal;
+}
+
+.deferred-back {
+    min-width: 220px;
+    height: 52px;
+    margin-top: 26px;
+    border-width: 1px;
+    border-color: rgba(0, 200, 236, 0.7);
+    background-color: rgba(4, 22, 32, 0.8);
+    font-size: 24px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}

@@ -1,0 +1,407 @@
+/* Info / Records (frozen UI_HelpGame + UI_Data): 1920x1080 full-bleed reference.
+   The two How-to-play sheets are the original full-page renders; the controls card
+   carries the revival bindings the 2011 pages did not know about.
+   Sprite backgrounds are assigned at runtime from InfoController serialized fields. */
+
+.info-root {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(2, 4, 8);
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.info-screen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 18px 26px 14px 26px;
+    flex-direction: column;
+}
+
+.info-header {
+    height: 9%;
+    min-height: 58px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px 8px 8px;
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 168, 214, 0.55);
+}
+
+.title-plate {
+    width: 230px;
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.info-title {
+    font-size: 30px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.header-tabs {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.tab-button {
+    min-width: 200px;
+    height: 48px;
+    margin: 0 10px;
+    border-width: 0;
+    padding: 0 12px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+    color: rgb(140, 196, 220);
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.tab-button:hover {
+    color: rgb(210, 248, 255);
+}
+
+.tab-active {
+    color: rgb(0, 226, 255);
+    border-bottom-width: 3px;
+    border-bottom-color: rgb(0, 226, 255);
+}
+
+.money-label {
+    width: 220px;
+    font-size: 26px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-right;
+    color: rgb(255, 214, 90);
+}
+
+.info-body {
+    flex-grow: 1;
+    flex-direction: row;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    min-height: 0;
+}
+
+.info-page {
+    flex-grow: 1;
+}
+
+.help-layout {
+    flex-direction: row;
+}
+
+.records-layout {
+    display: none;
+    flex-direction: row;
+}
+
+.help-sheet {
+    flex-grow: 1;
+    min-width: 0;
+    margin-right: 16px;
+    padding: 10px;
+    flex-direction: column;
+    background-color: rgba(2, 8, 13, 0.92);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.help-art {
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.help-nav {
+    height: 56px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-arrow {
+    width: 70px;
+    height: 40px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-width: 1px;
+    border-color: rgba(0, 170, 214, 0.65);
+    background-color: rgba(4, 22, 32, 0.72);
+    -unity-font-style: bold;
+    font-size: 22px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.nav-arrow:disabled {
+    opacity: 0.35;
+}
+
+.help-page-label {
+    width: 130px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(224, 240, 250);
+}
+
+.controls-card {
+    width: 34%;
+    min-width: 0;
+    padding: 14px 18px;
+    flex-direction: column;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.controls-title {
+    height: 34px;
+    margin-bottom: 4px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgb(0, 226, 255);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 200, 236, 0.65);
+}
+
+.control-row {
+    flex-grow: 1;
+    min-width: 0;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 160, 205, 0.34);
+}
+
+.control-key {
+    width: 28%;
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgb(164, 216, 240);
+    white-space: normal;
+}
+
+.control-copy {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    font-size: 18px;
+    color: rgb(204, 232, 246);
+    white-space: normal;
+}
+
+.records-column {
+    width: 38%;
+    min-width: 0;
+    margin-right: 16px;
+    flex-direction: column;
+}
+
+.records-title-plate {
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+}
+
+.records-title {
+    font-size: 28px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+    color: rgb(0, 226, 255);
+}
+
+.records-summary {
+    flex-grow: 1;
+    min-height: 0;
+    padding: 8px 18px;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.record-row {
+    flex-grow: 1;
+    min-width: 0;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 160, 205, 0.34);
+}
+
+.record-key {
+    width: 44%;
+    font-size: 21px;
+    -unity-font-style: bold;
+    color: rgb(164, 216, 240);
+}
+
+.record-value {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    font-size: 21px;
+    -unity-text-align: middle-right;
+    color: rgb(0, 226, 255);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.records-note {
+    height: 44px;
+    font-size: 17px;
+    -unity-text-align: middle-center;
+    color: rgb(186, 220, 238);
+    white-space: normal;
+}
+
+.parts-panel {
+    flex-grow: 1;
+    min-width: 0;
+    padding: 10px 12px;
+    flex-direction: column;
+    background-color: rgba(2, 8, 13, 0.94);
+    border-width: 1px;
+    border-color: rgba(0, 132, 168, 0.55);
+}
+
+.parts-title-row {
+    height: 36px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.parts-title {
+    flex-grow: 1;
+    font-size: 20px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgb(0, 226, 255);
+}
+
+.parts-count {
+    width: 140px;
+    font-size: 17px;
+    -unity-text-align: middle-right;
+    color: rgb(186, 220, 238);
+}
+
+.parts-header {
+    height: 34px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    background-color: rgba(0, 34, 48, 0.92);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 200, 236, 0.65);
+}
+
+.part-cell {
+    font-size: 17px;
+    -unity-font-style: bold;
+    color: rgb(148, 204, 230);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.col-part-id {
+    width: 90px;
+}
+
+.col-part-name {
+    flex-grow: 1;
+    min-width: 160px;
+}
+
+.col-part-type {
+    width: 100px;
+}
+
+.col-part-qty {
+    width: 80px;
+    -unity-text-align: middle-right;
+}
+
+.parts-list {
+    flex-grow: 1;
+}
+
+.part-row {
+    height: 30px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 190, 230, 0.38);
+}
+
+.part-row-even {
+    background-color: rgba(0, 118, 150, 0.28);
+}
+
+.part-row-odd {
+    background-color: rgba(0, 58, 82, 0.30);
+}
+
+.part-row .part-cell {
+    font-size: 17px;
+    -unity-font-style: normal;
+    color: rgb(204, 232, 246);
+}
+
+.parts-empty {
+    height: 48px;
+    font-size: 18px;
+    -unity-text-align: middle-center;
+    color: rgb(186, 220, 238);
+}
+
+.info-footer {
+    height: 9%;
+    min-height: 58px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-top-width: 2px;
+    border-top-color: rgba(0, 168, 214, 0.55);
+}
+
+.sprite-button {
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-and-crop;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.sprite-button:hover {
+    -unity-background-image-tint-color: rgb(190, 232, 255);
+}
+
+.sprite-button:active {
+    -unity-background-image-tint-color: rgb(120, 190, 220);
+}
+
+.back-button {
+    width: 300px;
+    height: 56px;
+}

@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using ABRevival.Core.Camera;
 using ABRevival.Core.Data;
+using ABRevival.Core.Simulation;
 
 namespace ABRevival.Core.Persistence
 {
@@ -16,7 +17,8 @@ namespace ABRevival.Core.Persistence
     [DataContract]
     public sealed class PlayerSaveData
     {
-        public const int CurrentVersion = 1;
+        /// <summary>v2 adds the six Options fields plus the battle control mode.</summary>
+        public const int CurrentVersion = 2;
 
         [DataMember(Order = 0)] public int version = CurrentVersion;
         [DataMember(Order = 1)] public ShopSaveData shop = new ShopSaveData();
@@ -27,6 +29,69 @@ namespace ABRevival.Core.Persistence
 
         /// <summary>ADR 0005 camera distance preset restored at boot and saved whenever C cycles it.</summary>
         [DataMember(Order = 4)] public CameraDistancePreset cameraPreset;
+
+        /// <summary>Center (UIChooseFlyAI) selected Player craft, an index into <see cref="blueprints"/>.</summary>
+        [DataMember(Order = 5)] public int playerBlueprintIndex;
+
+        /// <summary>Center companion slots 0..4. Empty slots keep <c>craftIndex = -1</c>.</summary>
+        [DataMember(Order = 6)] public List<CompanionSaveData> companions = new List<CompanionSaveData>();
+
+        /// <summary>Battle control scheme (ticket #179); also the Options setting wired in #181.</summary>
+        [DataMember(Order = 7)] public PlayerControlMode controlMode = PlayerControlMode.Keyboard;
+
+        /// <summary>Options display cycle: 0 = 640x480, 1 = 1280x720, 2 = 1920x1080, 3 = fullscreen.</summary>
+        [DataMember(Order = 8)] public int displayMode = 2;
+
+        /// <summary>Frozen CONFIG[0] (Bloom); persisted for the 2011 options set.</summary>
+        [DataMember(Order = 9)] public bool bloomEnabled = true;
+
+        /// <summary>Frozen CONFIG[1] (Candy!); persisted for the 2011 options set.</summary>
+        [DataMember(Order = 10)] public bool candyEnabled;
+
+        /// <summary>Frozen CONFIG[5] (Background); persisted for the 2011 options set.</summary>
+        [DataMember(Order = 11)] public bool backgroundEnabled = true;
+
+        /// <summary>Frozen CONFIG[3] (Sound) drives the SFX bus.</summary>
+        [DataMember(Order = 12)] public bool soundEnabled = true;
+
+        /// <summary>Frozen CONFIG[4] (Music) drives the music bus.</summary>
+        [DataMember(Order = 13)] public bool musicEnabled = true;
+
+        /// <summary>
+        /// DataContractJsonSerializer bypasses the constructor and field initialisers, so a
+        /// version-1 payload that predates these members would otherwise load 640x480, silent
+        /// and without bloom/background. Members present in the JSON still overwrite these.
+        /// </summary>
+        [OnDeserializing]
+        private void InitializeDefaults(StreamingContext context)
+        {
+            shop = new ShopSaveData();
+            blueprints = new List<BlueprintSaveData>();
+            companions = new List<CompanionSaveData>();
+            controlMode = PlayerControlMode.Keyboard;
+            displayMode = 2;
+            bloomEnabled = true;
+            candyEnabled = false;
+            backgroundEnabled = true;
+            soundEnabled = true;
+            musicEnabled = true;
+        }
+    }
+
+    /// <summary>One AI companion slot from Center, mirroring the frozen COMPANIONS record.</summary>
+    [DataContract]
+    public struct CompanionSaveData
+    {
+        [DataMember(Order = 0)] public int craftIndex;
+        [DataMember(Order = 1)] public int role;
+        [DataMember(Order = 2)] public int leader;
+
+        public static CompanionSaveData Empty => new CompanionSaveData
+        {
+            craftIndex = -1,
+            role = 1,
+            leader = 0
+        };
     }
 
     [DataContract]
@@ -42,6 +107,9 @@ namespace ABRevival.Core.Persistence
     {
         [DataMember(Order = 0)] public int partId;
         [DataMember(Order = 1)] public int quantity;
+
+        /// <summary>False while the row still shows the frozen NEW badge (old saves load false).</summary>
+        [DataMember(Order = 2)] public bool seen;
     }
 
     [DataContract]
@@ -138,7 +206,7 @@ namespace ABRevival.Core.Persistence
                     throw new InvalidDataException("Save payload could not be deserialized.");
                 }
 
-                if (save.version != PlayerSaveData.CurrentVersion)
+                if (save.version < 1 || save.version > PlayerSaveData.CurrentVersion)
                 {
                     throw new InvalidDataException($"Unsupported save version {save.version}.");
                 }
@@ -147,8 +215,18 @@ namespace ABRevival.Core.Persistence
                 save.shop.stock ??= new List<ShopStockSave>();
                 save.shop.ownedParts ??= new List<int>();
                 save.blueprints ??= new List<BlueprintSaveData>();
+                save.companions ??= new List<CompanionSaveData>();
                 if ((int)save.cameraPreset < 0 || (int)save.cameraPreset >= CameraDistancePresets.Count)
                     save.cameraPreset = CameraDistancePreset.Short;
+                if ((int)save.controlMode < 0 || (int)save.controlMode > (int)PlayerControlMode.Mouse)
+                    save.controlMode = PlayerControlMode.Keyboard;
+                if (save.displayMode < 0 || save.displayMode > 3)
+                    save.displayMode = 2;
+
+                // v1 predates the Options fields; [OnDeserializing] already restored their
+                // intended defaults, so the migration only stamps the current version.
+                if (save.version < PlayerSaveData.CurrentVersion)
+                    save.version = PlayerSaveData.CurrentVersion;
                 return save;
             }
         }

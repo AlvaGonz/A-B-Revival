@@ -1,7 +1,7 @@
 # 0019. Combat Framing and In-Game Mount Art Density
 
 **Date:** 2026-11-08
-**Status:** Accepted
+**Status:** Accepted; decision 1 superseded by ADR 0021 (3x design viewport)
 **Builds on:**
 - `docs/adr/0005-configurable-combat-camera-distance.md` (Short / Medium / Far)
 - `docs/adr/0013-unified-60fps-1080p-stage3d-baseline.md` (2x atlas rasterisation)

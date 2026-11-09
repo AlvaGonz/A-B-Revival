@@ -352,6 +352,107 @@ namespace ABRevival.Tests.PlayMode
                 $"AI fire path allocated {allocatedBytes} bytes over 60 ticks. Zero-alloc contract violated.");
         }
 
+        [Test]
+        public void GunMount_RotatesFull360_AndFiresFromItsRotatedMuzzle()
+        {
+            using var simulation = new ScheduledCombatSimulation();
+            simulation.Init(maxShips: 1, maxProjectiles: 8);
+            simulation.PlayerIndex = 0;
+            simulation.ShipCount = 1;
+            simulation.SetShip(0, new ShipEntity
+            {
+                position = float2.zero,
+                rotation = 0f,
+                mass = 100f,
+                health = 1000f,
+                maxHealth = 1000f,
+                factionId = 0
+            });
+
+            var weapons = new WeaponSystem(simulation, simulation) { PlayerShipIndex = 0 };
+            Span<WeaponMount> mounts = stackalloc WeaponMount[1];
+            mounts[0] = new WeaponMount
+            {
+                spec = ReferenceGun(),
+                localOffset = float2.zero,
+                localMuzzle = new float2(0f, 20f),
+                partIndex = 0
+            };
+            weapons.RegisterCraft(0, mounts);
+
+            // Aim right: the muzzle offset rotates a quarter turn to starboard.
+            weapons.TickAim(0, true, true, new float2(100f, 0f), requireRange: false);
+            Assert.IsTrue(weapons.TryGetPartAim(0, 0, out float right));
+            Assert.AreEqual(-math.PI * 0.5f, right, 0.001f);
+
+            for (int tick = 0; tick < 12 && simulation.ProjectileCount == 0; tick++)
+                weapons.TickAim(0, true, true, new float2(100f, 0f), requireRange: false);
+
+            Assert.Greater(simulation.ProjectileCount, 0, "The turret must fire at its target.");
+            Assert.AreEqual(20f, simulation.GetProjectile(0).position.x, 0.01f);
+            Assert.AreEqual(0f, simulation.GetProjectile(0).position.y, 0.01f);
+
+            // Aim left and back: full 360 degrees, not a clamped half circle.
+            weapons.TickAim(0, false, false, new float2(-100f, 0f), requireRange: false);
+            Assert.IsTrue(weapons.TryGetPartAim(0, 0, out float left));
+            Assert.AreEqual(math.PI * 0.5f, left, 0.001f);
+
+            weapons.TickAim(0, false, false, new float2(0f, -100f), requireRange: false);
+            Assert.IsTrue(weapons.TryGetPartAim(0, 0, out float back));
+            Assert.AreEqual(math.PI, math.abs(back), 0.001f);
+        }
+
+        [Test]
+        public void MouseAutoTarget_SelectsClosestHostileInsideHighestRangeWeapon()
+        {
+            using var simulation = new ScheduledCombatSimulation();
+            simulation.Init(maxShips: 4, maxProjectiles: 8);
+            simulation.ShipCount = 4;
+
+            simulation.SetShip(0, new ShipEntity { position = float2.zero, factionId = 0, health = 1000f, maxHealth = 1000f });
+            simulation.SetShip(1, new ShipEntity { position = new float2(0f, 400f), factionId = 1, health = 1000f, maxHealth = 1000f });
+            simulation.SetShip(2, new ShipEntity { position = new float2(120f, 0f), factionId = 1, health = 1000f, maxHealth = 1000f });
+            simulation.SetShip(3, new ShipEntity { position = new float2(3000f, 0f), factionId = 1, health = 1000f, maxHealth = 1000f });
+
+            var weapons = new WeaponSystem(simulation, simulation);
+            Span<WeaponMount> mounts = stackalloc WeaponMount[2];
+            mounts[0] = new WeaponMount { spec = ReferenceGun(), localOffset = float2.zero };
+            FireModeSpec longRange = ReferenceGun();
+            longRange.lifetime *= 10f;
+            mounts[1] = new WeaponMount { spec = longRange, localOffset = float2.zero };
+            weapons.RegisterCraft(0, mounts);
+
+            Assert.IsTrue(weapons.TryFindAutoTarget(0, out ShipEntity target));
+            Assert.AreEqual(120f, target.position.x, 0.001f,
+                "The closest hostile inside the highest-range weapon must be selected.");
+            Assert.AreEqual(0f, target.position.y, 0.001f);
+
+            Assert.Greater(weapons.MaxEffectiveRange(0), 1000f,
+                "The highest-range mounted weapon sets the auto-target envelope.");
+        }
+
+        [Test]
+        public void MouseAutoTarget_SkipsDestroyedShips()
+        {
+            using var simulation = new ScheduledCombatSimulation();
+            simulation.Init(maxShips: 4, maxProjectiles: 8);
+            simulation.ShipCount = 4;
+
+            simulation.SetShip(0, new ShipEntity { position = float2.zero, factionId = 0, health = 1000f, maxHealth = 1000f });
+            simulation.SetShip(1, new ShipEntity { position = new float2(0f, 400f), factionId = 1, health = 1000f, maxHealth = 1000f });
+            simulation.SetShip(2, new ShipEntity { position = new float2(120f, 0f), factionId = 1, health = 0f, maxHealth = 1000f });
+            simulation.SetShip(3, new ShipEntity { position = new float2(3000f, 0f), factionId = 1, health = 1000f, maxHealth = 1000f });
+
+            var weapons = new WeaponSystem(simulation, simulation);
+            Span<WeaponMount> mounts = stackalloc WeaponMount[1];
+            mounts[0] = new WeaponMount { spec = ReferenceGun(), localOffset = float2.zero };
+            weapons.RegisterCraft(0, mounts);
+
+            Assert.IsTrue(weapons.TryFindAutoTarget(0, out ShipEntity target));
+            Assert.AreEqual(400f, target.position.y, 0.001f,
+                "A destroyed ship must not capture the auto-target just because it is closest.");
+        }
+
         private static void StepWeapons(
             WeaponSystem weapons,
             ScheduledCombatSimulation simulation,

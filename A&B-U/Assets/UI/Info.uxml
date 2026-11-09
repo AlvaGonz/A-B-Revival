@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Info.uss" />
+    <ui:VisualElement name="info-root" class="info-root">
+        <ui:VisualElement name="info-screen" class="info-screen">
+            <ui:VisualElement name="info-header" class="info-header">
+                <ui:VisualElement name="info-title-plate" class="title-plate">
+                    <ui:Label name="info-title" text="Info" class="info-title" />
+                </ui:VisualElement>
+                <ui:VisualElement class="header-tabs">
+                    <ui:Button name="help-tab" text="HOW TO PLAY" class="tab-button tab-active" tooltip="Controls reference" />
+                    <ui:Button name="records-tab" text="DATA" class="tab-button" tooltip="Campaign records" />
+                </ui:VisualElement>
+                <ui:Label name="money-label" text="0 G" class="money-label" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="info-body" class="info-body">
+                <ui:VisualElement name="help-page" class="info-page help-layout">
+                    <ui:VisualElement name="help-sheet" class="help-sheet">
+                        <ui:VisualElement name="help-art" class="help-art" />
+                        <ui:VisualElement class="help-nav">
+                            <ui:Button name="help-prev" text="&lt;" class="nav-arrow" tooltip="Previous page" />
+                            <ui:Label name="help-page-label" text="1 / 2" class="help-page-label font-sans" />
+                            <ui:Button name="help-next" text="&gt;" class="nav-arrow" tooltip="Next page" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement name="controls-card" class="controls-card">
+                        <ui:Label text="CONTROLS" class="controls-title" />
+                        <ui:VisualElement class="control-row">
+                            <ui:Label text="Mouse" class="control-key font-data" />
+                            <ui:Label name="control-mouse" text="Cursor distance sets throttle; left click fires; turrets auto-target in range." class="control-copy font-data" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="control-row">
+                            <ui:Label text="Keyboard" class="control-key font-data" />
+                            <ui:Label name="control-keyboard" text="A / D turn, W throttle; the mouse aims the turrets; left click fires." class="control-copy font-data" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="control-row">
+                            <ui:Label text="Switch" class="control-key font-data" />
+                            <ui:Label name="control-switch" text="Q switches Mouse / Keyboard control in battle." class="control-copy font-data" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="control-row">
+                            <ui:Label text="Turret aim" class="control-key font-data" />
+                            <ui:Label name="control-turret" text="Gun mounts rotate independently of the hull toward the cursor or target." class="control-copy font-data" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="control-row">
+                            <ui:Label text="Boost / fuel" class="control-key font-data" />
+                            <ui:Label name="control-boost" text="Space burns Super Jet booster fuel; it restores from fuel pickups only, never over time." class="control-copy font-data" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="control-row">
+                            <ui:Label text="Camera" class="control-key font-data" />
+                            <ui:Label name="control-camera" text="C cycles Short / Medium / Far camera distance." class="control-copy font-data" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="control-row">
+                            <ui:Label text="Tactical" class="control-key font-data" />
+                            <ui:Label name="control-tactical" text="E cycles the Captain: Anchor, Escort, Evade, Seek, Support, Shield." class="control-copy font-data" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="control-row">
+                            <ui:Label text="Autofire" class="control-key font-data" />
+                            <ui:Label name="control-autofire" text="X toggles continuous fire." class="control-copy font-data" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="records-page" class="info-page records-layout">
+                    <ui:VisualElement class="records-column">
+                        <ui:VisualElement name="records-title-plate" class="records-title-plate">
+                            <ui:Label name="records-title" text="Data" class="records-title" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="records-summary" class="records-summary font-data">
+                            <ui:VisualElement class="record-row">
+                                <ui:Label text="Story" class="record-key" />
+                                <ui:Label name="records-story" text="BATTLE-1" class="record-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="record-row">
+                                <ui:Label text="Money" class="record-key" />
+                                <ui:Label name="records-money" text="0 G" class="record-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="record-row">
+                                <ui:Label text="Player" class="record-key" />
+                                <ui:Label name="records-player" text="-" class="record-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="record-row">
+                                <ui:Label text="Fleet" class="record-key" />
+                                <ui:Label name="records-fleet" text="0" class="record-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="record-row">
+                                <ui:Label text="AI wingmen" class="record-key" />
+                                <ui:Label name="records-companions" text="0 / 5" class="record-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="record-row">
+                                <ui:Label text="Owned parts" class="record-key" />
+                                <ui:Label name="records-parts-total" text="0" class="record-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="record-row">
+                                <ui:Label text="Camera" class="record-key" />
+                                <ui:Label name="records-camera" text="Short (1.0x)" class="record-value" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Label name="records-note" text="Read-only records. Nothing here changes your save." class="records-note font-sans" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement name="parts-panel" class="parts-panel">
+                        <ui:VisualElement class="parts-title-row">
+                            <ui:Label text="OWNED PARTS" class="parts-title" />
+                            <ui:Label name="parts-count" text="0 types" class="parts-count font-sans" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="parts-header" class="parts-header font-data">
+                            <ui:Label text="Index" class="part-cell col-part-id" />
+                            <ui:Label text="Name" class="part-cell col-part-name" />
+                            <ui:Label text="Type" class="part-cell col-part-type" />
+                            <ui:Label text="Qty" class="part-cell col-part-qty" />
+                        </ui:VisualElement>
+                        <ui:ScrollView name="parts-list" class="parts-list" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="info-footer" class="info-footer">
+                <ui:Button name="back-button" class="sprite-button back-button" tooltip="Back to Center" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

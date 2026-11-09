@@ -238,6 +238,47 @@ namespace ABRevival.Tests
         }
 
         [Test]
+        public void CraftComposition_PlayerBlueprint_PrefersFrozenExplicitOffsets()
+        {
+            PartMountTable table = ParseCommitted();
+            CraftCatalog catalog = ParseCatalog();
+            CraftStatRecord hostile = catalog.Find(0);
+
+            Span<CraftPartPlacement> frozen = stackalloc CraftPartPlacement[32];
+            int frozenCount = CraftComposition.Build(hostile, table, frozen);
+            Assert.AreEqual(6, frozenCount);
+
+            Span<MountedPartData> parts = stackalloc MountedPartData[32];
+            for (int i = 0; i < frozenCount; i++)
+            {
+                CraftPartPlacement placement = frozen[i];
+                parts[i] = new MountedPartData
+                {
+                    partId = placement.partId,
+                    category = placement.category,
+                    localOffset = placement.localOffset,
+                    localRotation = placement.localRotation,
+                    mirrored = placement.mirrored
+                };
+            }
+
+            Span<CraftPartPlacement> player = stackalloc CraftPartPlacement[32];
+            int playerCount = CraftComposition.BuildPlayer(parts.Slice(0, frozenCount), table, player);
+            Assert.AreEqual(frozenCount, playerCount);
+
+            var expected = new List<(int partId, float x, float y, bool mirrored)>();
+            for (int i = 0; i < frozenCount; i++)
+                expected.Add((frozen[i].partId, frozen[i].localOffset.x, frozen[i].localOffset.y, frozen[i].mirrored));
+
+            var actual = new List<(int partId, float x, float y, bool mirrored)>();
+            for (int i = 0; i < playerCount; i++)
+                actual.Add((player[i].partId, player[i].localOffset.x, player[i].localOffset.y, player[i].mirrored));
+
+            CollectionAssert.AreEquivalent(expected, actual,
+                "BuildPlayer must keep the frozen defFly offsets and mirroring used by the mission.");
+        }
+
+        [Test]
         public void FireFormula_MatchesTheFrozenDisplayValues()
         {
             PartMountTable table = ParseCommitted();

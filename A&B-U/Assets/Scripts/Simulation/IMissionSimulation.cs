@@ -13,6 +13,9 @@ namespace ABRevival.Core.Simulation
 
         void SetShip(int index, in ShipEntity ship);
         ShipEntity GetShip(int index);
+
+        /// <summary>Nearest living hostile for one craft, using the shared TacticalAIJob rule.</summary>
+        bool TryFindNearestHostile(int shipIndex, out ShipEntity target);
         void Tick(float deltaTime);
     }
 }

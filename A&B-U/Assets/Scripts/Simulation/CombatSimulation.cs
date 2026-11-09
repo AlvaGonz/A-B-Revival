@@ -105,6 +105,38 @@ namespace ABRevival.Core.Simulation
             return _ships[index];
         }
 
+        /// <summary>
+        /// Nearest living hostile for one craft, using the same faction/health rule as
+        /// <see cref="TacticalAIJob"/>. Used by the Tier 1 weapon seam.
+        /// </summary>
+        public bool TryFindNearestHostile(int shipIndex, out ShipEntity target)
+        {
+            ThrowIfDisposed();
+            ThrowIfNotInitialized();
+
+            target = default;
+            if (shipIndex < 0 || shipIndex >= _shipCount) return false;
+
+            ShipEntity ship = _ships[shipIndex];
+            float nearestSq = float.MaxValue;
+            bool found = false;
+            for (int i = 0; i < _shipCount; i++)
+            {
+                ShipEntity candidate = _ships[i];
+                if (candidate.health <= 0f) continue;
+                if (candidate.factionId == ship.factionId) continue;
+
+                float distanceSq = math.lengthsq(candidate.position - ship.position);
+                if (distanceSq >= nearestSq) continue;
+
+                nearestSq = distanceSq;
+                target = candidate;
+                found = true;
+            }
+
+            return found;
+        }
+
         public void SetInput(int index, in ShipInput input)
         {
             ThrowIfDisposed();

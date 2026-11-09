@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Options.uss" />
+    <ui:VisualElement name="options-root" class="options-root">
+        <ui:VisualElement name="options-page" class="options-page">
+            <ui:VisualElement name="options-art" class="options-art" picking-mode="Ignore" />
+
+            <ui:Button name="bloom-row" class="option-row bloom-row" tooltip="Bloom">
+                <ui:Label name="bloom-label" text="Bloom" class="option-row-label font-sans" picking-mode="Ignore" />
+                <ui:Label name="bloom-state" text="On" class="option-row-state font-sans" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="candy-row" class="option-row candy-row" tooltip="Candy!">
+                <ui:Label name="candy-label" text="Candy!" class="option-row-label font-sans" picking-mode="Ignore" />
+                <ui:Label name="candy-state" text="Off" class="option-row-state font-sans" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="background-row" class="option-row background-row" tooltip="Background">
+                <ui:Label name="background-label" text="Background" class="option-row-label font-sans" picking-mode="Ignore" />
+                <ui:Label name="background-state" text="On" class="option-row-state font-sans" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="resolution-row" class="option-row resolution-row" tooltip="Resolution">
+                <ui:Label name="resolution-label" text="Resolution" class="option-row-label font-sans" picking-mode="Ignore" />
+                <ui:Label name="resolution-state" text="1920×1080" class="option-row-state font-sans" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="sound-row" class="option-row sound-row" tooltip="Sound">
+                <ui:Label name="sound-label" text="Sound" class="option-row-label font-sans" picking-mode="Ignore" />
+                <ui:Label name="sound-state" text="On" class="option-row-state font-sans" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="music-row" class="option-row music-row" tooltip="Music">
+                <ui:Label name="music-label" text="Music" class="option-row-label font-sans" picking-mode="Ignore" />
+                <ui:Label name="music-state" text="On" class="option-row-state font-sans" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="control-row" class="option-row control-row" tooltip="Controls / keybinds">
+                <ui:Label name="control-label" text="Controls" class="option-row-label font-sans" picking-mode="Ignore" />
+                <ui:Label name="control-state" text="Keyboard" class="option-row-state font-sans" picking-mode="Ignore" />
+            </ui:Button>
+
+            <ui:Label name="control-hint" text="Q switches controls in battle" class="control-hint font-sans" />
+
+            <ui:Button name="ok-button" class="page-button ok-button" tooltip="OK" />
+            <ui:Button name="cancel-button" class="page-button cancel-button" tooltip="Cancel" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

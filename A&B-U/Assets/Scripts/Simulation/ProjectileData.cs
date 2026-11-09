@@ -20,6 +20,11 @@ namespace ABRevival.Core.Simulation
         /// Stored as int for Burst blittable compatibility.
         /// </summary>
         public int projectileType;
+        /// <summary>
+        /// Presentation-only faction palette row (<c>ProjectileRole</c>); set by the weapon
+        /// system at spawn and never read by the simulation or targeting.
+        /// </summary>
+        public int paletteRole;
         public bool isAlive;
     }
 }

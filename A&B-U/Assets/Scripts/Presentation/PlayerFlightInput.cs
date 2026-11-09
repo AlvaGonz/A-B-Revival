@@ -9,7 +9,8 @@ namespace ABRevival.Presentation
     /// Desktop keyboard/mouse action map for direct flight. Bindings are built in code
     /// (no imported asset) so they are deterministic in tests, and every read touches
     /// preallocated Input System state only: no managed allocation per frame.
-    /// C cycles the ADR 0005 camera distance, E requests the Captain tactical mode.
+    /// Q switches the battle control mode, C cycles the ADR 0005 camera distance,
+    /// Space is the afterburner and E requests the Captain tactical mode.
     /// Firing is read by <see cref="MouseCombatFireInput"/> via the combat seam.
     /// Original game IP: Vargames (2011).
     /// </summary>
@@ -20,12 +21,16 @@ namespace ABRevival.Presentation
         public const string SteeringAction = "Steering";
         public const string TacticalModeAction = "TacticalMode";
         public const string CameraDistanceAction = "CameraDistance";
+        public const string ControlModeAction = "ControlMode";
+        public const string BoostAction = "Boost";
 
         private readonly InputActionMap _map;
         private readonly InputAction _thrust;
         private readonly InputAction _steering;
         private readonly InputAction _tacticalMode;
         private readonly InputAction _cameraDistance;
+        private readonly InputAction _controlMode;
+        private readonly InputAction _boost;
 
         public PlayerFlightInput()
         {
@@ -45,11 +50,15 @@ namespace ABRevival.Presentation
 
             _tacticalMode = _map.AddAction(TacticalModeAction, InputActionType.Button, "<Keyboard>/e");
             _cameraDistance = _map.AddAction(CameraDistanceAction, InputActionType.Button, "<Keyboard>/c");
+            _controlMode = _map.AddAction(ControlModeAction, InputActionType.Button, "<Keyboard>/q");
+            _boost = _map.AddAction(BoostAction, InputActionType.Button, "<Keyboard>/space");
         }
 
         public bool TacticalModePressedThisFrame() => _tacticalMode.WasPressedThisFrame();
 
         public bool CameraDistancePressedThisFrame() => _cameraDistance.WasPressedThisFrame();
+
+        public bool ControlModePressedThisFrame() => _controlMode.WasPressedThisFrame();
 
         /// <summary>Reads the fixed-tick flight command. Allocation-free.</summary>
         public ShipInput ReadShipInput()
@@ -57,7 +66,8 @@ namespace ABRevival.Presentation
             return new ShipInput
             {
                 throttle = Mathf.Clamp01(_thrust.ReadValue<float>()),
-                steering = Mathf.Clamp(_steering.ReadValue<float>(), -1f, 1f)
+                steering = Mathf.Clamp(_steering.ReadValue<float>(), -1f, 1f),
+                boost = _boost.ReadValue<float>() > 0.5f
             };
         }
 

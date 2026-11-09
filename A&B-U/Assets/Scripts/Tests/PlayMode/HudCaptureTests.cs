@@ -29,8 +29,7 @@ namespace ABRevival.Tests.PlayMode
         [UnityTest]
         public IEnumerator CombatHud_WritesANonBlackPngOutsideTheProject()
         {
-            yield return SceneManager.LoadSceneAsync("Boot", LoadSceneMode.Single);
-            yield return null;
+            yield return PlayModeBoot.LoadCenter();
 
             GameFlowController flow = UnityEngine.Object.FindAnyObjectByType<GameFlowController>();
             Assert.IsNotNull(flow, "Boot scene must host the game flow.");

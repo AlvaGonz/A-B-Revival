@@ -79,7 +79,30 @@ scripts\export-ui-sprites.bat
 - **Contact sheet**: `docs\assets\ui-sprites-contact-sheet.png`
 - **Tool**: Unity 6.6.8f1 batchmode (`ABRevival.Editor.UiSpriteExportPipeline.ExportBatch`)
 
-### 10. `package_android_apk.bat`
+### 10. `export_all_assets.py`
+One command for the whole extraction pipeline described in ticket #183:
+```cmd
+python scripts\export_all_assets.py
+```
+- **Input**: `game\a&b_space_mod.swf` (preferred) or `game\a&b_space.swf`
+- **Output**: every standalone renderable in `docs\research\asset-manifest.json` (742 symbols):
+  parts, mounts, bullets, pickups, backgrounds, UI screens, help pages, widgets,
+  locks and the cursor under `A&B-U\Assets\Art\`.
+- **Data**: 8 original fonts under `A&B-U\Assets\Art\Fonts`, 3 unnamed UI sounds
+  under `A&B-U\Assets\Resources\Audio\Embedded`, and the 421-tag string table at
+  `docs\assets\text\string-table.json`.
+- **Manifest**: `docs\assets\extraction-manifest.json` (counts, pivots, button states,
+  nine-slice borders, ambiguities).
+- **Report**: `docs\assets\extraction-report.md`.
+- **References**: 32 full-page renders under `docs\assets\reference\`.
+- **Contact sheets**: seven PNGs under `docs\assets\contact-sheets\`.
+- **Unity**: applies PPU 1, per-symbol pivots, nine-slice borders and builds the
+  category atlases via `ABRevival.Editor.FullAssetExtractionImporter.ImportBatch`.
+- **Tools**: JPEXS FFDec CLI, Unity 6.6.8f1 batchmode and Pillow (`pip install pillow`).
+- **Dry run**: `python scripts\export_all_assets.py --skip-unity` runs only FFDec and
+  rewrites the manifest/report without touching Unity import settings.
+
+### 11. `package_android_apk.bat`
 Generates a self-signed developer certificate and packages the modified SWF into an installable Android APK (`dist\AssemblyAndBattle.apk`) via ADT:
 ```cmd
 scripts\package_android_apk.bat

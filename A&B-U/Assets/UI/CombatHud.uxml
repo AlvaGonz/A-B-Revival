@@ -28,8 +28,11 @@
             <ui:VisualElement name="hud-health-bar" class="hud-bar">
                 <ui:Image name="hud-hull-fill" class="hud-bar-fill hud-health-fill" />
             </ui:VisualElement>
-            <ui:VisualElement name="hud-shield-bar" class="hud-bar">
-                <ui:Image name="hud-shield-fill" class="hud-bar-fill hud-shield-fill" />
+            <ui:VisualElement name="hud-fuel-bar" class="hud-bar">
+                <ui:Image name="hud-fuel-fill" class="hud-bar-fill hud-fuel-fill" />
+            </ui:VisualElement>
+            <ui:VisualElement name="hud-reserved-bar" class="hud-bar">
+                <ui:Image name="hud-reserved-fill" class="hud-bar-fill hud-reserved-fill" />
             </ui:VisualElement>
             <ui:Label name="hud-hull-value" text="1000 / 1000" class="hud-hull-value" picking-mode="Ignore" />
         </ui:VisualElement>
@@ -37,7 +40,7 @@
             <ui:Image name="hud-pilot-backing" class="hud-portrait-backing" />
             <ui:Image name="hud-pilot-portrait" class="hud-pilot-portrait" scale-mode="ScaleAndCrop" />
             <ui:Image name="hud-pilot-health-pip" class="hud-portrait-pip" />
-            <ui:Label name="hud-pilot-name" text="" class="hud-pilot-name" />
+            <ui:Label name="hud-pilot-name" text="" class="hud-pilot-name font-grade" />
         </ui:VisualElement>
 
         <!-- bottom-right: minimap with the Captain portrait beside it -->

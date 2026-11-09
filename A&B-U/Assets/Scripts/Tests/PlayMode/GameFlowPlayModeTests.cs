@@ -10,13 +10,14 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UIElements;
 
 namespace ABRevival.Tests.PlayMode
 {
     /// <summary>
     /// Story-0 loop smoke: boot scene loads the save, launches the reference mission through
     /// dialogue and cinematics, ticks combat at 60 Hz, forces the mission's own win objective,
-    /// advances STORY, autosaves and returns to the hangar.
+    /// advances STORY, autosaves and returns to the center.
     /// </summary>
     [TestFixture]
     public class GameFlowPlayModeTests
@@ -53,13 +54,13 @@ namespace ABRevival.Tests.PlayMode
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
             Assert.IsNotNull(flow);
-            yield return WaitForState(flow, GameFlowState.Hangar);
+            yield return WaitForState(flow, GameFlowState.Center);
 
             Assert.AreEqual(3, flow.StoryIndex, "Boot must restore the stored STORY index.");
-            var hangar = Object.FindAnyObjectByType<HangarController>();
-            Assert.IsNotNull(hangar, "Boot scene must host the hangar.");
-            Assert.AreEqual(777, hangar.Money, "Boot must restore the stored shop money.");
-            Assert.IsTrue(hangar.IsUnlocked(71),
+            var center = Object.FindAnyObjectByType<CenterController>();
+            Assert.IsNotNull(center, "Boot scene must host the center.");
+            Assert.AreEqual(777, center.Money, "Boot must restore the stored shop money.");
+            Assert.IsTrue(center.IsUnlocked(71),
                 "Loading a save must reconcile missing catalog rows (part 71 had no stock row).");
 
             var cameraRig = Object.FindAnyObjectByType<CombatCameraRig>();
@@ -79,12 +80,50 @@ namespace ABRevival.Tests.PlayMode
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
             Assert.IsNotNull(flow);
-            yield return WaitForState(flow, GameFlowState.Hangar);
+            yield return WaitForState(flow, GameFlowState.Center);
 
             Assert.IsTrue(File.Exists(SavePath + ".corrupt"),
                 "An unreadable save must be moved aside, not silently overwritten.");
             Assert.IsFalse(File.Exists(SavePath), "A fresh campaign must not have written over the quarantined save.");
             Assert.AreEqual(0, flow.StoryIndex);
+        }
+
+        [UnityTest]
+        public IEnumerator FuelPickup_RefillsTheTankAndTheHudBar()
+        {
+            if (File.Exists(SavePath)) File.Delete(SavePath);
+
+            SceneManager.LoadScene("Boot");
+            yield return null;
+
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            Assert.IsNotNull(flow);
+            yield return WaitForState(flow, GameFlowState.Center);
+
+            flow.LaunchMission();
+            yield return WaitForState(flow, GameFlowState.Briefing);
+            flow.SkipBriefing();
+            yield return WaitForState(flow, GameFlowState.Mission);
+
+            int playerIndex = flow.Runner.PlayerShipIndex;
+            Assert.GreaterOrEqual(playerIndex, 0);
+
+            ShipEntity ship = flow.Simulation.GetShip(playerIndex);
+            ship.boosterFuel = 100f;
+            flow.Simulation.SetShip(playerIndex, ship);
+
+            var hud = Object.FindAnyObjectByType<CombatHudBehaviour>();
+            Assert.IsNotNull(hud);
+            hud.State.SetFuelFraction(100f / 500f);
+            float fuelBefore = hud.State.FuelFraction;
+
+            Assert.IsTrue(flow.CollectFuelPickup(), "The frozen fuel pickup must refill the player tank.");
+            Assert.Greater(hud.State.FuelFraction, fuelBefore, "The fuel pickup must update the HUD bar.");
+            Assert.AreEqual(350f / 500f, hud.State.FuelFraction, 0.001f);
+
+            Assert.IsTrue(flow.CollectFuelPickup(10000f), "A large pickup must clamp at capacity.");
+            Assert.AreEqual(1f, hud.State.FuelFraction, 0.001f);
+            Assert.IsFalse(flow.CollectFuelPickup(), "A full tank must not report a pickup.");
         }
 
         [UnityTest]
@@ -97,7 +136,7 @@ namespace ABRevival.Tests.PlayMode
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
             Assert.IsNotNull(flow);
-            yield return WaitForState(flow, GameFlowState.Hangar);
+            yield return WaitForState(flow, GameFlowState.Center);
 
             flow.LaunchMission();
             yield return WaitForState(flow, GameFlowState.Briefing);
@@ -109,9 +148,9 @@ namespace ABRevival.Tests.PlayMode
             flow.Runner.NotifyCraftDestroyed(playerIndex);
 
             bool sawResult = false;
-            for (int i = 0; i < WaitFrames && flow.State != GameFlowState.Hangar; i++)
+            for (int i = 0; i < WaitFrames && flow.State != GameFlowState.Center; i++)
             {
-                if (flow.State == GameFlowState.Result)
+                if (flow.State == GameFlowState.Fail)
                 {
                     sawResult = true;
                     flow.SkipResult();
@@ -120,8 +159,8 @@ namespace ABRevival.Tests.PlayMode
                 yield return null;
             }
 
-            Assert.IsTrue(sawResult, "A loss must be observable in the Result state before returning.");
-            Assert.AreEqual(GameFlowState.Hangar, flow.State);
+            Assert.IsTrue(sawResult, "A loss must be observable in the Fail state before returning.");
+            Assert.AreEqual(GameFlowState.Center, flow.State);
             Assert.IsTrue(flow.LastResult.HasValue);
             Assert.AreEqual(MissionState.Lose, flow.LastResult.Value.state);
             Assert.AreEqual(0, flow.StoryIndex, "A loss must not advance STORY.");
@@ -139,9 +178,9 @@ namespace ABRevival.Tests.PlayMode
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
             Assert.IsNotNull(flow, "Boot scene must contain a GameFlowController.");
 
-            yield return WaitForState(flow, GameFlowState.Hangar);
+            yield return WaitForState(flow, GameFlowState.Center);
             Assert.AreEqual(0, flow.StoryIndex, "A new campaign starts at STORY 0.");
-            Assert.IsNull(flow.Runner, "No mission runs in the hangar.");
+            Assert.IsNull(flow.Runner, "No mission runs in the center.");
 
             flow.LaunchMission();
             yield return WaitForState(flow, GameFlowState.Briefing);
@@ -177,12 +216,13 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual(GameFlowState.Result, flow.State);
             Assert.IsTrue(flow.LastResult.HasValue);
             Assert.AreEqual(MissionState.Win, flow.LastResult.Value.state);
-            Assert.AreEqual(1, flow.StoryIndex, "A win must advance STORY from 0 to 1.");
+            Assert.AreEqual(0, flow.StoryIndex,
+                "UIWin keeps STORY at the current battle until Next (toNext/nextGame).");
 
             Assert.IsFalse(flow.ForceWin(), "A consumed mission result must not be reusable.");
 
             int guard = 0;
-            while (flow.State != GameFlowState.Hangar && guard < WaitFrames)
+            while (flow.State != GameFlowState.Center && guard < WaitFrames)
             {
                 if (flow.State == GameFlowState.Result)
                 {
@@ -194,9 +234,9 @@ namespace ABRevival.Tests.PlayMode
                 yield return null;
             }
 
-            Assert.AreEqual(GameFlowState.Hangar, flow.State, "The flow must return to the hangar after the result.");
+            Assert.AreEqual(GameFlowState.Center, flow.State, "The flow must return to the center after the result.");
             Assert.IsNull(flow.Runner, "Mission state is disposed on return.");
-            Assert.AreEqual(1, flow.StoryIndex, "STORY stays advanced in the hangar.");
+            Assert.AreEqual(1, flow.StoryIndex, "Next advances STORY before returning to Center.");
 
             Assert.IsTrue(File.Exists(SavePath), "A win must autosave the player payload.");
             PlayerSaveData saved = PlayerSaveCodec.LoadFromFile(SavePath);
@@ -223,7 +263,7 @@ namespace ABRevival.Tests.PlayMode
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
             Assert.IsNotNull(flow);
-            yield return WaitForState(flow, GameFlowState.Hangar);
+            yield return WaitForState(flow, GameFlowState.Center);
 
             flow.LaunchMission();
             yield return WaitForState(flow, GameFlowState.Briefing);
@@ -268,7 +308,7 @@ namespace ABRevival.Tests.PlayMode
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
             Assert.IsNotNull(flow);
-            yield return WaitForState(flow, GameFlowState.Hangar);
+            yield return WaitForState(flow, GameFlowState.Center);
 
             flow.LaunchMission();
             yield return WaitForState(flow, GameFlowState.Briefing);
@@ -313,7 +353,7 @@ namespace ABRevival.Tests.PlayMode
             }
 
             Assert.IsTrue(sawDamage, "Hostile projectiles must damage the player hull through the contact solver.");
-            Assert.AreEqual(GameFlowState.Result, flow.State, "Destroying the player must end the mission.");
+            Assert.AreEqual(GameFlowState.Fail, flow.State, "Destroying the player must end the mission.");
             Assert.IsTrue(flow.LastResult.HasValue);
             Assert.AreEqual(MissionState.Lose, flow.LastResult.Value.state);
             Assert.AreEqual(MissionEndCause.PlayerDestroyed, flow.LastResult.Value.cause,
@@ -338,6 +378,16 @@ namespace ABRevival.Tests.PlayMode
             for (int i = 0; i < WaitFrames; i++)
             {
                 if (flow.State == expected) yield break;
+
+                // The frozen boot order is UIMain -> PLAY -> Center (#181).
+                if (expected == GameFlowState.Center && flow.State == GameFlowState.MainMenu)
+                {
+                    MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
+                    UIDocument document = menu != null ? menu.GetComponent<UIDocument>() : null;
+                    Button play = document?.rootVisualElement?.Q<Button>("play-button");
+                    if (play != null) PlayModeBoot.Click(play);
+                }
+
                 yield return null;
             }
 

@@ -3,9 +3,10 @@ using System;
 namespace ABRevival.Core.Camera
 {
     /// <summary>
-    /// Combat camera distance tiers from ADR 0005, rebased onto ADR 0019's
-    /// 1280x720 combat viewport (one Unity unit equals one stage pixel). Mount art is
-    /// rasterised at 2x, so this viewport reproduces the frozen 640x480 framing at 1080p.
+    /// Combat camera distance tiers from ADR 0005, rebased onto the ticket #179 single
+    /// 3x design scale: 640x480 frozen stage -> 1920x1080 design pixels. One Unity unit
+    /// stays one frozen stage pixel (ADR 0017); the 2x mount art is displayed at 1.5x
+    /// so world art and HUD art share the same on-screen 3x density at 1080p.
     /// </summary>
     public enum CameraDistancePreset
     {
@@ -16,13 +17,20 @@ namespace ABRevival.Core.Camera
 
     /// <summary>
     /// Pure mapping between the combat viewport and the scaled battlefield. The HUD is
-    /// screen-space UI Toolkit and never reads these values; only the world viewport and
-    /// the mouse-aim mapping scale with the distance preset.
+    /// screen-space UI Toolkit and uses the same 1920x1080 design canvas; only the world
+    /// viewport and the mouse-aim mapping scale with the distance preset.
     /// </summary>
     public static class CameraDistancePresets
     {
-        public const float DesignWidth = 1280f;
-        public const float DesignHeight = 720f;
+        /// <summary>Frozen 640x360 16:9 safe area multiplied by the ticket #179 design scale.</summary>
+        public const float DesignScale = 3f;
+
+        public const float DesignWidth = 640f * DesignScale;
+        public const float DesignHeight = 360f * DesignScale;
+
+        /// <summary>Draw scale for the 2x mount atlas so world art is 3x, matching the HUD.</summary>
+        public const float MountArtScale = DesignScale / 2f;
+
         public const int Count = 3;
 
         private static readonly float[] ViewScales = { 1.0f, 1.3f, 1.5f };

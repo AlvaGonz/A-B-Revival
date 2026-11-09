@@ -1,0 +1,8035 @@
+{
+  "schema": 1,
+  "generatedBy": "python scripts/export_all_assets.py",
+  "source": {
+    "uiLibrary": "src/assets/binaryData/9_all.AllData_ui.bin",
+    "dataLibrary": "src/assets/binaryData/4_all.AllData_data.bin",
+    "dialogue": "src/assets/binaryData/5_all.AllData_talk.bin",
+    "dialogueImporter": "A&B-U/Assets/Scripts/Story/StoryDirector.cs + TalkScriptParser"
+  },
+  "counts": {
+    "tags": 421,
+    "uiTags": 390,
+    "dataTags": 31,
+    "uiNonEmpty": 388,
+    "dataNonEmpty": 31,
+    "uiUniqueNonEmpty": 219,
+    "dataUniqueNonEmpty": 29,
+    "inventoryUiUniqueNonEmpty": 219,
+    "placeholderTags": 4,
+    "dialogueLines": 388,
+    "dialogueSpeakers": 13
+  },
+  "uniqueUiStrings": [
+    {
+      "text": "8",
+      "tagKeys": [
+        "ui:3"
+      ]
+    },
+    {
+      "text": "You won!",
+      "tagKeys": [
+        "ui:8"
+      ]
+    },
+    {
+      "text": "NEXT",
+      "tagKeys": [
+        "ui:11",
+        "ui:12",
+        "ui:282"
+      ]
+    },
+    {
+      "text": "REPAIR",
+      "tagKeys": [
+        "ui:14",
+        "ui:15"
+      ]
+    },
+    {
+      "text": "VARGAMES",
+      "tagKeys": [
+        "ui:19"
+      ]
+    },
+    {
+      "text": "BATTLE-10",
+      "tagKeys": [
+        "ui:21"
+      ]
+    },
+    {
+      "text": "Money: +0G",
+      "tagKeys": [
+        "ui:22",
+        "ui:287"
+      ]
+    },
+    {
+      "text": "You lost",
+      "tagKeys": [
+        "ui:23",
+        "ui:288"
+      ]
+    },
+    {
+      "text": "Part × 10",
+      "tagKeys": [
+        "ui:24",
+        "ui:289"
+      ]
+    },
+    {
+      "text": "Perfect",
+      "tagKeys": [
+        "ui:25",
+        "ui:290"
+      ]
+    },
+    {
+      "text": "RESTART",
+      "tagKeys": [
+        "ui:26",
+        "ui:27"
+      ]
+    },
+    {
+      "text": "Tip12: asdsadjsladjasd.",
+      "tagKeys": [
+        "ui:29",
+        "ui:292",
+        "ui:518",
+        "ui:616"
+      ]
+    },
+    {
+      "text": "SKIP",
+      "tagKeys": [
+        "ui:64",
+        "ui:740",
+        "ui:742"
+      ]
+    },
+    {
+      "text": "ROBOT-S1",
+      "tagKeys": [
+        "ui:69"
+      ]
+    },
+    {
+      "text": "?",
+      "tagKeys": [
+        "ui:71"
+      ]
+    },
+    {
+      "text": "index",
+      "tagKeys": [
+        "ui:82",
+        "ui:95",
+        "ui:326",
+        "ui:336",
+        "ui:386",
+        "ui:397",
+        "ui:538",
+        "ui:549"
+      ]
+    },
+    {
+      "text": "type",
+      "tagKeys": [
+        "ui:83",
+        "ui:96",
+        "ui:327",
+        "ui:337"
+      ]
+    },
+    {
+      "text": "hp",
+      "tagKeys": [
+        "ui:84",
+        "ui:97",
+        "ui:328",
+        "ui:338"
+      ]
+    },
+    {
+      "text": "turnf",
+      "tagKeys": [
+        "ui:85",
+        "ui:98"
+      ]
+    },
+    {
+      "text": "powfly",
+      "tagKeys": [
+        "ui:86",
+        "ui:99",
+        "ui:330",
+        "ui:340"
+      ]
+    },
+    {
+      "text": "name",
+      "tagKeys": [
+        "ui:87",
+        "ui:100",
+        "ui:331",
+        "ui:341",
+        "ui:387",
+        "ui:398",
+        "ui:539",
+        "ui:550"
+      ]
+    },
+    {
+      "text": "lr",
+      "tagKeys": [
+        "ui:88",
+        "ui:101",
+        "ui:332",
+        "ui:342"
+      ]
+    },
+    {
+      "text": "mass",
+      "tagKeys": [
+        "ui:89",
+        "ui:102",
+        "ui:333",
+        "ui:343"
+      ]
+    },
+    {
+      "text": "firepow",
+      "tagKeys": [
+        "ui:90",
+        "ui:103",
+        "ui:334",
+        "ui:344"
+      ]
+    },
+    {
+      "text": "value",
+      "tagKeys": [
+        "ui:91",
+        "ui:104"
+      ]
+    },
+    {
+      "text": "sel",
+      "tagKeys": [
+        "ui:92",
+        "ui:105"
+      ]
+    },
+    {
+      "text": "999/999",
+      "tagKeys": [
+        "ui:108",
+        "ui:208"
+      ]
+    },
+    {
+      "text": "All",
+      "tagKeys": [
+        "ui:121",
+        "ui:123"
+      ]
+    },
+    {
+      "text": "Gun",
+      "tagKeys": [
+        "ui:125",
+        "ui:126"
+      ]
+    },
+    {
+      "text": "Eng.",
+      "tagKeys": [
+        "ui:128",
+        "ui:129",
+        "ui:184"
+      ]
+    },
+    {
+      "text": "Wing",
+      "tagKeys": [
+        "ui:131",
+        "ui:132"
+      ]
+    },
+    {
+      "text": "Body",
+      "tagKeys": [
+        "ui:134",
+        "ui:135"
+      ]
+    },
+    {
+      "text": "Index",
+      "tagKeys": [
+        "ui:138",
+        "ui:405",
+        "ui:556"
+      ]
+    },
+    {
+      "text": "Name",
+      "tagKeys": [
+        "ui:141",
+        "ui:177",
+        "ui:407",
+        "ui:411",
+        "ui:558"
+      ]
+    },
+    {
+      "text": "Type",
+      "tagKeys": [
+        "ui:143",
+        "ui:175"
+      ]
+    },
+    {
+      "text": "L.R.",
+      "tagKeys": [
+        "ui:145"
+      ]
+    },
+    {
+      "text": "Hp",
+      "tagKeys": [
+        "ui:147",
+        "ui:188",
+        "ui:376"
+      ]
+    },
+    {
+      "text": "Steering",
+      "tagKeys": [
+        "ui:149",
+        "ui:379"
+      ]
+    },
+    {
+      "text": "Engine",
+      "tagKeys": [
+        "ui:151"
+      ]
+    },
+    {
+      "text": "Mass",
+      "tagKeys": [
+        "ui:153",
+        "ui:190",
+        "ui:347"
+      ]
+    },
+    {
+      "text": "Fire Power",
+      "tagKeys": [
+        "ui:155",
+        "ui:349"
+      ]
+    },
+    {
+      "text": "Value",
+      "tagKeys": [
+        "ui:157",
+        "ui:176",
+        "ui:413"
+      ]
+    },
+    {
+      "text": "Sel.",
+      "tagKeys": [
+        "ui:159"
+      ]
+    },
+    {
+      "text": "NEW",
+      "tagKeys": [
+        "ui:161",
+        "ui:358",
+        "ui:360"
+      ]
+    },
+    {
+      "text": "RESET",
+      "tagKeys": [
+        "ui:165",
+        "ui:166"
+      ]
+    },
+    {
+      "text": "ACCEPT",
+      "tagKeys": [
+        "ui:168",
+        "ui:169"
+      ]
+    },
+    {
+      "text": "CENTER",
+      "tagKeys": [
+        "ui:171",
+        "ui:172"
+      ]
+    },
+    {
+      "text": "Str.",
+      "tagKeys": [
+        "ui:178"
+      ]
+    },
+    {
+      "text": "-",
+      "tagKeys": [
+        "ui:179",
+        "ui:180",
+        "ui:181",
+        "ui:182",
+        "ui:185",
+        "ui:187",
+        "ui:189",
+        "ui:191",
+        "ui:371",
+        "ui:374",
+        "ui:377",
+        "ui:380",
+        "ui:383",
+        "ui:415",
+        "ui:416",
+        "ui:417",
+        "ui:418",
+        "ui:419",
+        "ui:420",
+        "ui:421",
+        "ui:422",
+        "ui:471"
+      ]
+    },
+    {
+      "text": "Fire",
+      "tagKeys": [
+        "ui:186"
+      ]
+    },
+    {
+      "text": "Michael",
+      "tagKeys": [
+        "ui:195"
+      ]
+    },
+    {
+      "text": "0 G",
+      "tagKeys": [
+        "ui:196",
+        "ui:198",
+        "ui:212",
+        "ui:217"
+      ]
+    },
+    {
+      "text": "Cost=",
+      "tagKeys": [
+        "ui:197",
+        "ui:219"
+      ]
+    },
+    {
+      "text": "Now=",
+      "tagKeys": [
+        "ui:199",
+        "ui:218"
+      ]
+    },
+    {
+      "text": "Repair",
+      "tagKeys": [
+        "ui:211",
+        "ui:749"
+      ]
+    },
+    {
+      "text": "EXIT",
+      "tagKeys": [
+        "ui:213",
+        "ui:214"
+      ]
+    },
+    {
+      "text": "Select your damaged parts to repair in 75% price. If you do not \nwant to repair them, you can buy them back in the shop.",
+      "tagKeys": [
+        "ui:221"
+      ]
+    },
+    {
+      "text": "SELECT ALL",
+      "tagKeys": [
+        "ui:222",
+        "ui:224"
+      ]
+    },
+    {
+      "text": "Really?",
+      "tagKeys": [
+        "ui:228"
+      ]
+    },
+    {
+      "text": "input",
+      "tagKeys": [
+        "ui:229"
+      ]
+    },
+    {
+      "text": "barabara\nfsdaf\nasdfsdf",
+      "tagKeys": [
+        "ui:230"
+      ]
+    },
+    {
+      "text": "YES",
+      "tagKeys": [
+        "ui:231",
+        "ui:232"
+      ]
+    },
+    {
+      "text": "NO",
+      "tagKeys": [
+        "ui:234",
+        "ui:235"
+      ]
+    },
+    {
+      "text": "Name:",
+      "tagKeys": [
+        "ui:237"
+      ]
+    },
+    {
+      "text": "OPTIONS",
+      "tagKeys": [
+        "ui:240",
+        "ui:241"
+      ]
+    },
+    {
+      "text": "INFO",
+      "tagKeys": [
+        "ui:243",
+        "ui:244"
+      ]
+    },
+    {
+      "text": "RESUME",
+      "tagKeys": [
+        "ui:247",
+        "ui:248"
+      ]
+    },
+    {
+      "text": "Paused",
+      "tagKeys": [
+        "ui:250"
+      ]
+    },
+    {
+      "text": "Bloom",
+      "tagKeys": [
+        "ui:254",
+        "ui:256"
+      ]
+    },
+    {
+      "text": "Candy!",
+      "tagKeys": [
+        "ui:258",
+        "ui:259"
+      ]
+    },
+    {
+      "text": "640×480",
+      "tagKeys": [
+        "ui:261",
+        "ui:262"
+      ]
+    },
+    {
+      "text": "Sound",
+      "tagKeys": [
+        "ui:264",
+        "ui:265"
+      ]
+    },
+    {
+      "text": "Music",
+      "tagKeys": [
+        "ui:267",
+        "ui:268"
+      ]
+    },
+    {
+      "text": "CANECL",
+      "tagKeys": [
+        "ui:270"
+      ]
+    },
+    {
+      "text": "CANCEL",
+      "tagKeys": [
+        "ui:271",
+        "ui:272"
+      ]
+    },
+    {
+      "text": "OK",
+      "tagKeys": [
+        "ui:274",
+        "ui:275"
+      ]
+    },
+    {
+      "text": "Options",
+      "tagKeys": [
+        "ui:277"
+      ]
+    },
+    {
+      "text": "Background",
+      "tagKeys": [
+        "ui:278",
+        "ui:279"
+      ]
+    },
+    {
+      "text": "Nice battle!",
+      "tagKeys": [
+        "ui:286"
+      ]
+    },
+    {
+      "text": "Time: 0:00",
+      "tagKeys": [
+        "ui:291"
+      ]
+    },
+    {
+      "text": "TITLE",
+      "tagKeys": [
+        "ui:295",
+        "ui:307"
+      ]
+    },
+    {
+      "text": "1.sdfsdf\n2.4214124\n3.414214\n5.123132123\n5.1241424",
+      "tagKeys": [
+        "ui:296",
+        "ui:308"
+      ]
+    },
+    {
+      "text": "BACK",
+      "tagKeys": [
+        "ui:297",
+        "ui:298"
+      ]
+    },
+    {
+      "text": "MAP \n--- RECORDSEPARATOR ---\nLOADING...",
+      "tagKeys": [
+        "ui:304"
+      ]
+    },
+    {
+      "text": "MAP \n--- RECORDSEPARATOR ---\nLOADED",
+      "tagKeys": [
+        "ui:305"
+      ]
+    },
+    {
+      "text": "BACK TO CENTER",
+      "tagKeys": [
+        "ui:322",
+        "ui:323"
+      ]
+    },
+    {
+      "text": "turnfly",
+      "tagKeys": [
+        "ui:329",
+        "ui:339"
+      ]
+    },
+    {
+      "text": "99/99",
+      "tagKeys": [
+        "ui:346",
+        "ui:400",
+        "ui:555"
+      ]
+    },
+    {
+      "text": "ADD",
+      "tagKeys": [
+        "ui:353",
+        "ui:355"
+      ]
+    },
+    {
+      "text": "MERGE",
+      "tagKeys": [
+        "ui:362",
+        "ui:363"
+      ]
+    },
+    {
+      "text": "PARTS\n--- RECORDSEPARATOR ---\n/CRAFTS",
+      "tagKeys": [
+        "ui:366"
+      ]
+    },
+    {
+      "text": "Speed",
+      "tagKeys": [
+        "ui:370"
+      ]
+    },
+    {
+      "text": "Fire Pow.",
+      "tagKeys": [
+        "ui:373"
+      ]
+    },
+    {
+      "text": "Parts",
+      "tagKeys": [
+        "ui:382"
+      ]
+    },
+    {
+      "text": "EDIT",
+      "tagKeys": [
+        "ui:389",
+        "ui:391"
+      ]
+    },
+    {
+      "text": "BREAK",
+      "tagKeys": [
+        "ui:393",
+        "ui:394"
+      ]
+    },
+    {
+      "text": "PARTS/\n--- RECORDSEPARATOR ---\nCRAFTS",
+      "tagKeys": [
+        "ui:403"
+      ]
+    },
+    {
+      "text": "Class",
+      "tagKeys": [
+        "ui:412"
+      ]
+    },
+    {
+      "text": "Fire pow.",
+      "tagKeys": [
+        "ui:414"
+      ]
+    },
+    {
+      "text": "Inuse",
+      "tagKeys": [
+        "ui:423"
+      ]
+    },
+    {
+      "text": "new/edit",
+      "tagKeys": [
+        "ui:426"
+      ]
+    },
+    {
+      "text": "W",
+      "tagKeys": [
+        "ui:428",
+        "ui:429",
+        "ui:430",
+        "ui:431",
+        "ui:432",
+        "ui:433",
+        "ui:434",
+        "ui:435",
+        "ui:436",
+        "ui:437",
+        "ui:438",
+        "ui:439",
+        "ui:803"
+      ]
+    },
+    {
+      "text": "START GAME",
+      "tagKeys": [
+        "ui:445",
+        "ui:446"
+      ]
+    },
+    {
+      "text": "DATA",
+      "tagKeys": [
+        "ui:448",
+        "ui:449"
+      ]
+    },
+    {
+      "text": "CREDITS",
+      "tagKeys": [
+        "ui:451",
+        "ui:452"
+      ]
+    },
+    {
+      "text": "BUILD 111208",
+      "tagKeys": [
+        "ui:454",
+        "ui:455"
+      ]
+    },
+    {
+      "text": "MUSIC PLAYER",
+      "tagKeys": [
+        "ui:456",
+        "ui:457"
+      ]
+    },
+    {
+      "text": "If the game \n--- RECORDSEPARATOR ---\nruns slowly, \n--- RECORDSEPARATOR ---\ntry to turn off \n--- RECORDSEPARATOR ---\nsome of them  \n--- RECORDSEPARATOR ---\nto improve the \n--- RECORDSEPARATOR ---\nperformance",
+      "tagKeys": [
+        "ui:461"
+      ]
+    },
+    {
+      "text": "Gfx mode1",
+      "tagKeys": [
+        "ui:462"
+      ]
+    },
+    {
+      "text": "Gfx mode2",
+      "tagKeys": [
+        "ui:463"
+      ]
+    },
+    {
+      "text": "Resolution",
+      "tagKeys": [
+        "ui:464"
+      ]
+    },
+    {
+      "text": "Show BG",
+      "tagKeys": [
+        "ui:465"
+      ]
+    },
+    {
+      "text": "-:--",
+      "tagKeys": [
+        "ui:475"
+      ]
+    },
+    {
+      "text": "Wang",
+      "tagKeys": [
+        "ui:479"
+      ]
+    },
+    {
+      "text": "AI * 10",
+      "tagKeys": [
+        "ui:494"
+      ]
+    },
+    {
+      "text": "Q",
+      "tagKeys": [
+        "ui:497",
+        "ui:798"
+      ]
+    },
+    {
+      "text": "1234 G",
+      "tagKeys": [
+        "ui:500"
+      ]
+    },
+    {
+      "text": "II",
+      "tagKeys": [
+        "ui:502",
+        "ui:504"
+      ]
+    },
+    {
+      "text": "Stand by",
+      "tagKeys": [
+        "ui:506"
+      ]
+    },
+    {
+      "text": "Story in progress",
+      "tagKeys": [
+        "ui:507"
+      ]
+    },
+    {
+      "text": "It's not your turn",
+      "tagKeys": [
+        "ui:508"
+      ]
+    },
+    {
+      "text": "Battle failed",
+      "tagKeys": [
+        "ui:513"
+      ]
+    },
+    {
+      "text": "Hum, seems everything has gone.\n--- RECORDSEPARATOR ---\nYes? No? ... Has it?\n--- RECORDSEPARATOR ---\nWhy not try again?",
+      "tagKeys": [
+        "ui:514"
+      ]
+    },
+    {
+      "text": "RETRY",
+      "tagKeys": [
+        "ui:515",
+        "ui:516"
+      ]
+    },
+    {
+      "text": "Reset Data",
+      "tagKeys": [
+        "ui:521",
+        "ui:522",
+        "ui:523"
+      ]
+    },
+    {
+      "text": "Save Local",
+      "tagKeys": [
+        "ui:525",
+        "ui:526",
+        "ui:527"
+      ]
+    },
+    {
+      "text": "Load Local",
+      "tagKeys": [
+        "ui:529",
+        "ui:530",
+        "ui:531"
+      ]
+    },
+    {
+      "text": "Data",
+      "tagKeys": [
+        "ui:533"
+      ]
+    },
+    {
+      "text": "player",
+      "tagKeys": [
+        "ui:540",
+        "ui:551"
+      ]
+    },
+    {
+      "text": "ai",
+      "tagKeys": [
+        "ui:541",
+        "ui:552"
+      ]
+    },
+    {
+      "text": "ADD AI",
+      "tagKeys": [
+        "ui:543"
+      ]
+    },
+    {
+      "text": "ADD  AI",
+      "tagKeys": [
+        "ui:545"
+      ]
+    },
+    {
+      "text": "Player",
+      "tagKeys": [
+        "ui:560"
+      ]
+    },
+    {
+      "text": "AI",
+      "tagKeys": [
+        "ui:562"
+      ]
+    },
+    {
+      "text": "C",
+      "tagKeys": [
+        "ui:566"
+      ]
+    },
+    {
+      "text": "A",
+      "tagKeys": [
+        "ui:567",
+        "ui:804"
+      ]
+    },
+    {
+      "text": "O",
+      "tagKeys": [
+        "ui:568"
+      ]
+    },
+    {
+      "text": "N",
+      "tagKeys": [
+        "ui:569"
+      ]
+    },
+    {
+      "text": "I",
+      "tagKeys": [
+        "ui:570"
+      ]
+    },
+    {
+      "text": "Reset",
+      "tagKeys": [
+        "ui:572",
+        "ui:574"
+      ]
+    },
+    {
+      "text": "Best",
+      "tagKeys": [
+        "ui:576",
+        "ui:577"
+      ]
+    },
+    {
+      "text": "READY",
+      "tagKeys": [
+        "ui:583",
+        "ui:584"
+      ]
+    },
+    {
+      "text": "FACTORY",
+      "tagKeys": [
+        "ui:586",
+        "ui:587"
+      ]
+    },
+    {
+      "text": "SHOP",
+      "tagKeys": [
+        "ui:589",
+        "ui:590"
+      ]
+    },
+    {
+      "text": "Center",
+      "tagKeys": [
+        "ui:592",
+        "ui:757",
+        "ui:851",
+        "ui:855",
+        "ui:860"
+      ]
+    },
+    {
+      "text": "Pick crafts here and ready to fight!",
+      "tagKeys": [
+        "ui:594"
+      ]
+    },
+    {
+      "text": "35",
+      "tagKeys": [
+        "ui:596"
+      ]
+    },
+    {
+      "text": "BATTLE-999",
+      "tagKeys": [
+        "ui:597"
+      ]
+    },
+    {
+      "text": "Michael's",
+      "tagKeys": [
+        "ui:607"
+      ]
+    },
+    {
+      "text": "Story Mode Completed!",
+      "tagKeys": [
+        "ui:610"
+      ]
+    },
+    {
+      "text": "Enjoy the ending music.\n--- RECORDSEPARATOR ---\nDon't leave, It's only the beginning!",
+      "tagKeys": [
+        "ui:611"
+      ]
+    },
+    {
+      "text": "ENDING",
+      "tagKeys": [
+        "ui:612",
+        "ui:613"
+      ]
+    },
+    {
+      "text": "And where is this place?...",
+      "tagKeys": [
+        "ui:628"
+      ]
+    },
+    {
+      "text": "Now JUMPING...",
+      "tagKeys": [
+        "ui:636"
+      ]
+    },
+    {
+      "text": "OK, ready to JUMP...",
+      "tagKeys": [
+        "ui:651"
+      ]
+    },
+    {
+      "text": "JUMP!!!",
+      "tagKeys": [
+        "ui:656"
+      ]
+    },
+    {
+      "text": "Captain: X Army is coming for us!",
+      "tagKeys": [
+        "ui:668"
+      ]
+    },
+    {
+      "text": "Suddenly, the alarm breaks out!",
+      "tagKeys": [
+        "ui:672"
+      ]
+    },
+    {
+      "text": "...Leisurely.",
+      "tagKeys": [
+        "ui:684"
+      ]
+    },
+    {
+      "text": "...Is drinking...",
+      "tagKeys": [
+        "ui:703"
+      ]
+    },
+    {
+      "text": "There's a mothership. And Michael, The main character of the story...",
+      "tagKeys": [
+        "ui:707"
+      ]
+    },
+    {
+      "text": "Far far away from your screen...",
+      "tagKeys": [
+        "ui:711"
+      ]
+    },
+    {
+      "text": "Select parts you \n--- RECORDSEPARATOR ---\nwanna buy.",
+      "tagKeys": [
+        "ui:719"
+      ]
+    },
+    {
+      "text": "Select parts \n--- RECORDSEPARATOR ---\nyou wanna sell.",
+      "tagKeys": [
+        "ui:720"
+      ]
+    },
+    {
+      "text": "Try to use filters and \n--- RECORDSEPARATOR ---\nsort functions to find \n--- RECORDSEPARATOR ---\nparts more easily.",
+      "tagKeys": [
+        "ui:722"
+      ]
+    },
+    {
+      "text": "After the trade, \n--- RECORDSEPARATOR ---\nyou will lose or \n--- RECORDSEPARATOR ---\nget that amount of \n--- RECORDSEPARATOR ---\nmoney.",
+      "tagKeys": [
+        "ui:730"
+      ]
+    },
+    {
+      "text": "Money you have.",
+      "tagKeys": [
+        "ui:731"
+      ]
+    },
+    {
+      "text": "Cancel the deal. Unselect all.",
+      "tagKeys": [
+        "ui:732"
+      ]
+    },
+    {
+      "text": "Accept the deal, \n--- RECORDSEPARATOR ---\nexchange goods \n--- RECORDSEPARATOR ---\nand money.",
+      "tagKeys": [
+        "ui:733"
+      ]
+    },
+    {
+      "text": "Shop",
+      "tagKeys": [
+        "ui:738"
+      ]
+    },
+    {
+      "text": "Select parts you \n--- RECORDSEPARATOR ---\nwanna repair.",
+      "tagKeys": [
+        "ui:746"
+      ]
+    },
+    {
+      "text": "After the trade, \n--- RECORDSEPARATOR ---\nyou will lose that \n--- RECORDSEPARATOR ---\namount of money.",
+      "tagKeys": [
+        "ui:747"
+      ]
+    },
+    {
+      "text": "Some new parts have \n--- RECORDSEPARATOR ---\nbeen unlocked in the SHOP.\n--- RECORDSEPARATOR ---\nWhy don't you go there \n--- RECORDSEPARATOR ---\nand buy a few?",
+      "tagKeys": [
+        "ui:752"
+      ]
+    },
+    {
+      "text": "Super Jet Power",
+      "tagKeys": [
+        "ui:760"
+      ]
+    },
+    {
+      "text": "Space Bar",
+      "tagKeys": [
+        "ui:762"
+      ]
+    },
+    {
+      "text": "Hit Space bar to use \n--- RECORDSEPARATOR ---\nSuper Jet power if \n--- RECORDSEPARATOR ---\nyou have engines on \n--- RECORDSEPARATOR ---\nthe craft.",
+      "tagKeys": [
+        "ui:765"
+      ]
+    },
+    {
+      "text": "And also, make sure \n--- RECORDSEPARATOR ---\nthe energy has \n--- RECORDSEPARATOR ---\nrestored, before \n--- RECORDSEPARATOR ---\nuseing.",
+      "tagKeys": [
+        "ui:766"
+      ]
+    },
+    {
+      "text": "Something Important!",
+      "tagKeys": [
+        "ui:773"
+      ]
+    },
+    {
+      "text": "Remember to \n--- RECORDSEPARATOR ---\nfollow the \n--- RECORDSEPARATOR ---\nCyan Arrow\n--- RECORDSEPARATOR ---\n!",
+      "tagKeys": [
+        "ui:774"
+      ]
+    },
+    {
+      "text": "Your Hp bar",
+      "tagKeys": [
+        "ui:782"
+      ]
+    },
+    {
+      "text": "Red recovers Hp\n--- RECORDSEPARATOR ---\nFor you and also \n--- RECORDSEPARATOR ---\nfor your partners",
+      "tagKeys": [
+        "ui:783"
+      ]
+    },
+    {
+      "text": "Golden ones \n--- RECORDSEPARATOR ---\nfor Money",
+      "tagKeys": [
+        "ui:784"
+      ]
+    },
+    {
+      "text": "Your partners. \n--- RECORDSEPARATOR ---\nKeep them alive \n--- RECORDSEPARATOR ---\nor you will lose \n--- RECORDSEPARATOR ---\nthe battle.",
+      "tagKeys": [
+        "ui:785"
+      ]
+    },
+    {
+      "text": "How to play",
+      "tagKeys": [
+        "ui:793",
+        "ui:823"
+      ]
+    },
+    {
+      "text": "Mouse Mode            Keyboard Mode",
+      "tagKeys": [
+        "ui:796"
+      ]
+    },
+    {
+      "text": "Q to change modes",
+      "tagKeys": [
+        "ui:801"
+      ]
+    },
+    {
+      "text": "D",
+      "tagKeys": [
+        "ui:805"
+      ]
+    },
+    {
+      "text": "The craft\n--- RECORDSEPARATOR ---\n follows \n--- RECORDSEPARATOR ---\nthe cursor.\n--- RECORDSEPARATOR ---\nAnd it auto\n--- RECORDSEPARATOR ---\naims.",
+      "tagKeys": [
+        "ui:807"
+      ]
+    },
+    {
+      "text": "Control \n--- RECORDSEPARATOR ---\nthe engine \n--- RECORDSEPARATOR ---\npower \n--- RECORDSEPARATOR ---\nby moving \n--- RECORDSEPARATOR ---\nthe cursor \n--- RECORDSEPARATOR ---\naway or close  \n--- RECORDSEPARATOR ---\nto the craft.",
+      "tagKeys": [
+        "ui:808"
+      ]
+    },
+    {
+      "text": "\"A\",\"D\" to \n--- RECORDSEPARATOR ---\nturn left and \n--- RECORDSEPARATOR ---\nright.\n--- RECORDSEPARATOR ---\n\"W\" to \n--- RECORDSEPARATOR ---\naccelerate.\n--- RECORDSEPARATOR ---\nGuns aim the \n--- RECORDSEPARATOR ---\ncursor.",
+      "tagKeys": [
+        "ui:809"
+      ]
+    },
+    {
+      "text": "Hold Left Mouse Button to fire",
+      "tagKeys": [
+        "ui:810"
+      ]
+    },
+    {
+      "text": "If you don't \n--- RECORDSEPARATOR ---\nknow where to \n--- RECORDSEPARATOR ---\ngo, just follow \n--- RECORDSEPARATOR ---\nthe \n--- RECORDSEPARATOR ---\nCyan Arrow\n--- RECORDSEPARATOR ---\n!",
+      "tagKeys": [
+        "ui:820"
+      ]
+    },
+    {
+      "text": "Kill some enemies \n--- RECORDSEPARATOR ---\nand collect some \n--- RECORDSEPARATOR ---\nitems",
+      "tagKeys": [
+        "ui:821"
+      ]
+    },
+    {
+      "text": "Everything is same as to \n--- RECORDSEPARATOR ---\nbuild a new craft.\n--- RECORDSEPARATOR ---\nWhen everything's done, \n--- RECORDSEPARATOR ---\nyou should merge it with a \n--- RECORDSEPARATOR ---\nnew name.\n--- RECORDSEPARATOR ---\nYou can't use NEW function \n--- RECORDSEPARATOR ---\nhere.",
+      "tagKeys": [
+        "ui:826"
+      ]
+    },
+    {
+      "text": "How to edit a craft",
+      "tagKeys": [
+        "ui:828",
+        "ui:904"
+      ]
+    },
+    {
+      "text": "Click to select a \n--- RECORDSEPARATOR ---\ncraft you like.",
+      "tagKeys": [
+        "ui:831"
+      ]
+    },
+    {
+      "text": "Unselect all AIs.",
+      "tagKeys": [
+        "ui:832"
+      ]
+    },
+    {
+      "text": "Select best crafts \n--- RECORDSEPARATOR ---\nyou have for AI.",
+      "tagKeys": [
+        "ui:833"
+      ]
+    },
+    {
+      "text": "Click to \n--- RECORDSEPARATOR ---\ndisable/enable \n--- RECORDSEPARATOR ---\nan AI.",
+      "tagKeys": [
+        "ui:834"
+      ]
+    },
+    {
+      "text": "Click to add that \n--- RECORDSEPARATOR ---\ncraft to AI table.",
+      "tagKeys": [
+        "ui:835"
+      ]
+    },
+    {
+      "text": "Information for \n--- RECORDSEPARATOR ---\nthe battle.",
+      "tagKeys": [
+        "ui:846"
+      ]
+    },
+    {
+      "text": "Ready to fight.",
+      "tagKeys": [
+        "ui:847"
+      ]
+    },
+    {
+      "text": "Place to buy and \n--- RECORDSEPARATOR ---\nsell parts.",
+      "tagKeys": [
+        "ui:848"
+      ]
+    },
+    {
+      "text": "Place to build and \n--- RECORDSEPARATOR ---\nedit crafts.",
+      "tagKeys": [
+        "ui:849"
+      ]
+    },
+    {
+      "text": "First of all, you need \n--- RECORDSEPARATOR ---\nto build a craft in the \n--- RECORDSEPARATOR ---\nFACTORY, since you \n--- RECORDSEPARATOR ---\ndon't have one.",
+      "tagKeys": [
+        "ui:858"
+      ]
+    },
+    {
+      "text": "1. You need a Body first.\n--- RECORDSEPARATOR ---\nTry to use the filter that \n--- RECORDSEPARATOR ---\naims to Bodys.\n--- RECORDSEPARATOR ---\nThen select one below by \n--- RECORDSEPARATOR ---\na click.",
+      "tagKeys": [
+        "ui:863"
+      ]
+    },
+    {
+      "text": "2. Then Wings, Engines \n--- RECORDSEPARATOR ---\nand Guns.\n--- RECORDSEPARATOR ---\nSame as the Body, use \n--- RECORDSEPARATOR ---\nfilters, click one in the \n--- RECORDSEPARATOR ---\nlist.",
+      "tagKeys": [
+        "ui:869"
+      ]
+    },
+    {
+      "text": "Red spots means where you can \n--- RECORDSEPARATOR ---\ninsert other parts in.",
+      "tagKeys": [
+        "ui:870"
+      ]
+    },
+    {
+      "text": "3. Drag parts on the craft to \n--- RECORDSEPARATOR ---\nfind a better place you like.\n--- RECORDSEPARATOR ---\nAnd if you drag it far away \n--- RECORDSEPARATOR ---\nfrom the craft, it will return to \n--- RECORDSEPARATOR ---\nthe list.\n--- RECORDSEPARATOR ---\nIf you want it back to the \n--- RECORDSEPARATOR ---\ncraft, you can find it in the list \n--- RECORDSEPARATOR ---\nbelow and also in the Undo list!",
+      "tagKeys": [
+        "ui:877"
+      ]
+    },
+    {
+      "text": "4. Everything's done, then click ADD to name \n--- RECORDSEPARATOR ---\nthe craft and add it to your craft list.\n--- RECORDSEPARATOR ---\nCongratulations! You've built a craft.",
+      "tagKeys": [
+        "ui:878"
+      ]
+    },
+    {
+      "text": "BETTER \n--- RECORDSEPARATOR ---\nPLACE",
+      "tagKeys": [
+        "ui:879"
+      ]
+    },
+    {
+      "text": "REMOVE",
+      "tagKeys": [
+        "ui:880"
+      ]
+    },
+    {
+      "text": "Click to sort by these \n--- RECORDSEPARATOR ---\nproperties, to help you to find \n--- RECORDSEPARATOR ---\nparts easily.",
+      "tagKeys": [
+        "ui:889"
+      ]
+    },
+    {
+      "text": "If you have a lot of parts, here \n--- RECORDSEPARATOR ---\nyou can turn pages to find them.",
+      "tagKeys": [
+        "ui:891"
+      ]
+    },
+    {
+      "text": "If you wanna \n--- RECORDSEPARATOR ---\nchange the Body\n--- RECORDSEPARATOR ---\n Click NEW.",
+      "tagKeys": [
+        "ui:892"
+      ]
+    },
+    {
+      "text": "If you wanna edit or \n--- RECORDSEPARATOR ---\nbreak a craft to parts.\n--- RECORDSEPARATOR ---\nClick to CRAFTS' page \n--- RECORDSEPARATOR ---\nto find one.",
+      "tagKeys": [
+        "ui:893"
+      ]
+    },
+    {
+      "text": "How to build a craft",
+      "tagKeys": [
+        "ui:898"
+      ]
+    },
+    {
+      "text": "Click to return to PARTS' \n--- RECORDSEPARATOR ---\npage and ready to make a \n--- RECORDSEPARATOR ---\nnew craft.",
+      "tagKeys": [
+        "ui:901"
+      ]
+    },
+    {
+      "text": "Click EDIT to edit a craft.\n--- RECORDSEPARATOR ---\nClick BREAK to break a craft \n--- RECORDSEPARATOR ---\nto parts, \n--- RECORDSEPARATOR ---\nthen you can use them in \n--- RECORDSEPARATOR ---\nother crafts or just sell \n--- RECORDSEPARATOR ---\nthem.",
+      "tagKeys": [
+        "ui:902"
+      ]
+    }
+  ],
+  "tags": {
+    "ui:3": {
+      "library": "ui",
+      "symbolId": 3,
+      "kind": "dynamic",
+      "text": "8",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Ready",
+      "parents": [
+        "MissionMark"
+      ]
+    },
+    "ui:8": {
+      "library": "ui",
+      "symbolId": 8,
+      "kind": "static",
+      "text": "You won!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win"
+      ]
+    },
+    "ui:11": {
+      "library": "ui",
+      "symbolId": 11,
+      "kind": "static",
+      "text": "NEXT",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win",
+        "UI_ModeX"
+      ]
+    },
+    "ui:12": {
+      "library": "ui",
+      "symbolId": 12,
+      "kind": "static",
+      "text": "NEXT",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win",
+        "UI_ModeX"
+      ]
+    },
+    "ui:14": {
+      "library": "ui",
+      "symbolId": 14,
+      "kind": "static",
+      "text": "REPAIR",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win",
+        "UI_ModeX",
+        "UI_AllWin"
+      ]
+    },
+    "ui:15": {
+      "library": "ui",
+      "symbolId": 15,
+      "kind": "static",
+      "text": "REPAIR",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win",
+        "UI_ModeX",
+        "UI_AllWin"
+      ]
+    },
+    "ui:19": {
+      "library": "ui",
+      "symbolId": 19,
+      "kind": "static",
+      "text": "VARGAMES",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win",
+        "UI_ModeX",
+        "UI_Main",
+        "UI_Fail",
+        "UI_AllWin"
+      ]
+    },
+    "ui:21": {
+      "library": "ui",
+      "symbolId": 21,
+      "kind": "dynamic",
+      "text": "BATTLE-10",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win"
+      ]
+    },
+    "ui:22": {
+      "library": "ui",
+      "symbolId": 22,
+      "kind": "dynamic",
+      "text": "Money: +0G",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win"
+      ]
+    },
+    "ui:23": {
+      "library": "ui",
+      "symbolId": 23,
+      "kind": "dynamic",
+      "text": "You lost",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win"
+      ]
+    },
+    "ui:24": {
+      "library": "ui",
+      "symbolId": 24,
+      "kind": "dynamic",
+      "text": "Part × 10",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win"
+      ]
+    },
+    "ui:25": {
+      "library": "ui",
+      "symbolId": 25,
+      "kind": "dynamic",
+      "text": "Perfect",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win"
+      ]
+    },
+    "ui:26": {
+      "library": "ui",
+      "symbolId": 26,
+      "kind": "static",
+      "text": "RESTART",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win",
+        "UI_Pause",
+        "UI_AllWin"
+      ]
+    },
+    "ui:27": {
+      "library": "ui",
+      "symbolId": 27,
+      "kind": "static",
+      "text": "RESTART",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win",
+        "UI_Pause",
+        "UI_AllWin"
+      ]
+    },
+    "ui:29": {
+      "library": "ui",
+      "symbolId": 29,
+      "kind": "dynamic",
+      "text": "Tip12: asdsadjsladjasd.",
+      "empty": false,
+      "placeholder": true,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Win"
+      ]
+    },
+    "ui:57": {
+      "library": "ui",
+      "symbolId": 57,
+      "kind": "dynamic",
+      "text": "",
+      "empty": true,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_TalkX",
+        "UI_Talk"
+      ]
+    },
+    "ui:58": {
+      "library": "ui",
+      "symbolId": 58,
+      "kind": "dynamic",
+      "text": "",
+      "empty": true,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_TalkX",
+        "UI_Talk"
+      ]
+    },
+    "ui:64": {
+      "library": "ui",
+      "symbolId": 64,
+      "kind": "static",
+      "text": "SKIP",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_TalkX",
+        "UI_Talk",
+        "UI_Game"
+      ]
+    },
+    "ui:69": {
+      "library": "ui",
+      "symbolId": 69,
+      "kind": "static",
+      "text": "ROBOT-S1",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop"
+      ]
+    },
+    "ui:71": {
+      "library": "ui",
+      "symbolId": 71,
+      "kind": "static",
+      "text": "?",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_Options",
+        "UI_MakePlayer",
+        "UI_Game",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:82": {
+      "library": "ui",
+      "symbolId": 82,
+      "kind": "dynamic",
+      "text": "index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:83": {
+      "library": "ui",
+      "symbolId": 83,
+      "kind": "dynamic",
+      "text": "type",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:84": {
+      "library": "ui",
+      "symbolId": 84,
+      "kind": "dynamic",
+      "text": "hp",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:85": {
+      "library": "ui",
+      "symbolId": 85,
+      "kind": "dynamic",
+      "text": "turnf",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:86": {
+      "library": "ui",
+      "symbolId": 86,
+      "kind": "dynamic",
+      "text": "powfly",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:87": {
+      "library": "ui",
+      "symbolId": 87,
+      "kind": "dynamic",
+      "text": "name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:88": {
+      "library": "ui",
+      "symbolId": 88,
+      "kind": "dynamic",
+      "text": "lr",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:89": {
+      "library": "ui",
+      "symbolId": 89,
+      "kind": "dynamic",
+      "text": "mass",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:90": {
+      "library": "ui",
+      "symbolId": 90,
+      "kind": "dynamic",
+      "text": "firepow",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:91": {
+      "library": "ui",
+      "symbolId": 91,
+      "kind": "dynamic",
+      "text": "value",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:92": {
+      "library": "ui",
+      "symbolId": 92,
+      "kind": "dynamic",
+      "text": "sel",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:95": {
+      "library": "ui",
+      "symbolId": 95,
+      "kind": "dynamic",
+      "text": "index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:96": {
+      "library": "ui",
+      "symbolId": 96,
+      "kind": "dynamic",
+      "text": "type",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:97": {
+      "library": "ui",
+      "symbolId": 97,
+      "kind": "dynamic",
+      "text": "hp",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:98": {
+      "library": "ui",
+      "symbolId": 98,
+      "kind": "dynamic",
+      "text": "turnf",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:99": {
+      "library": "ui",
+      "symbolId": 99,
+      "kind": "dynamic",
+      "text": "powfly",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:100": {
+      "library": "ui",
+      "symbolId": 100,
+      "kind": "dynamic",
+      "text": "name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:101": {
+      "library": "ui",
+      "symbolId": 101,
+      "kind": "dynamic",
+      "text": "lr",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:102": {
+      "library": "ui",
+      "symbolId": 102,
+      "kind": "dynamic",
+      "text": "mass",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:103": {
+      "library": "ui",
+      "symbolId": 103,
+      "kind": "dynamic",
+      "text": "firepow",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:104": {
+      "library": "ui",
+      "symbolId": 104,
+      "kind": "dynamic",
+      "text": "value",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:105": {
+      "library": "ui",
+      "symbolId": 105,
+      "kind": "dynamic",
+      "text": "sel",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:108": {
+      "library": "ui",
+      "symbolId": 108,
+      "kind": "dynamic",
+      "text": "999/999",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop"
+      ]
+    },
+    "ui:121": {
+      "library": "ui",
+      "symbolId": 121,
+      "kind": "static",
+      "text": "All",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:123": {
+      "library": "ui",
+      "symbolId": 123,
+      "kind": "static",
+      "text": "All",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:125": {
+      "library": "ui",
+      "symbolId": 125,
+      "kind": "static",
+      "text": "Gun",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:126": {
+      "library": "ui",
+      "symbolId": 126,
+      "kind": "static",
+      "text": "Gun",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:128": {
+      "library": "ui",
+      "symbolId": 128,
+      "kind": "static",
+      "text": "Eng.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:129": {
+      "library": "ui",
+      "symbolId": 129,
+      "kind": "static",
+      "text": "Eng.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:131": {
+      "library": "ui",
+      "symbolId": 131,
+      "kind": "static",
+      "text": "Wing",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:132": {
+      "library": "ui",
+      "symbolId": 132,
+      "kind": "static",
+      "text": "Wing",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:134": {
+      "library": "ui",
+      "symbolId": 134,
+      "kind": "static",
+      "text": "Body",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:135": {
+      "library": "ui",
+      "symbolId": 135,
+      "kind": "static",
+      "text": "Body",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:138": {
+      "library": "ui",
+      "symbolId": 138,
+      "kind": "dynamic",
+      "text": "Index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:141": {
+      "library": "ui",
+      "symbolId": 141,
+      "kind": "dynamic",
+      "text": "Name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:143": {
+      "library": "ui",
+      "symbolId": 143,
+      "kind": "dynamic",
+      "text": "Type",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:145": {
+      "library": "ui",
+      "symbolId": 145,
+      "kind": "dynamic",
+      "text": "L.R.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:147": {
+      "library": "ui",
+      "symbolId": 147,
+      "kind": "dynamic",
+      "text": "Hp",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:149": {
+      "library": "ui",
+      "symbolId": 149,
+      "kind": "dynamic",
+      "text": "Steering",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:151": {
+      "library": "ui",
+      "symbolId": 151,
+      "kind": "dynamic",
+      "text": "Engine",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:153": {
+      "library": "ui",
+      "symbolId": 153,
+      "kind": "dynamic",
+      "text": "Mass",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:155": {
+      "library": "ui",
+      "symbolId": 155,
+      "kind": "dynamic",
+      "text": "Fire Power",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:157": {
+      "library": "ui",
+      "symbolId": 157,
+      "kind": "dynamic",
+      "text": "Value",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:159": {
+      "library": "ui",
+      "symbolId": 159,
+      "kind": "dynamic",
+      "text": "Sel.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:161": {
+      "library": "ui",
+      "symbolId": 161,
+      "kind": "static",
+      "text": "NEW",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:165": {
+      "library": "ui",
+      "symbolId": 165,
+      "kind": "static",
+      "text": "RESET",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:166": {
+      "library": "ui",
+      "symbolId": 166,
+      "kind": "static",
+      "text": "RESET",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:168": {
+      "library": "ui",
+      "symbolId": 168,
+      "kind": "static",
+      "text": "ACCEPT",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:169": {
+      "library": "ui",
+      "symbolId": 169,
+      "kind": "static",
+      "text": "ACCEPT",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair"
+      ]
+    },
+    "ui:171": {
+      "library": "ui",
+      "symbolId": 171,
+      "kind": "static",
+      "text": "CENTER",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop"
+      ]
+    },
+    "ui:172": {
+      "library": "ui",
+      "symbolId": 172,
+      "kind": "static",
+      "text": "CENTER",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop"
+      ]
+    },
+    "ui:175": {
+      "library": "ui",
+      "symbolId": 175,
+      "kind": "static",
+      "text": "Type",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:176": {
+      "library": "ui",
+      "symbolId": 176,
+      "kind": "static",
+      "text": "Value",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:177": {
+      "library": "ui",
+      "symbolId": 177,
+      "kind": "static",
+      "text": "Name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:178": {
+      "library": "ui",
+      "symbolId": 178,
+      "kind": "static",
+      "text": "Str.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:179": {
+      "library": "ui",
+      "symbolId": 179,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:180": {
+      "library": "ui",
+      "symbolId": 180,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:181": {
+      "library": "ui",
+      "symbolId": 181,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:182": {
+      "library": "ui",
+      "symbolId": 182,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:184": {
+      "library": "ui",
+      "symbolId": 184,
+      "kind": "static",
+      "text": "Eng.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:185": {
+      "library": "ui",
+      "symbolId": 185,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:186": {
+      "library": "ui",
+      "symbolId": 186,
+      "kind": "static",
+      "text": "Fire",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:187": {
+      "library": "ui",
+      "symbolId": 187,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:188": {
+      "library": "ui",
+      "symbolId": 188,
+      "kind": "static",
+      "text": "Hp",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:189": {
+      "library": "ui",
+      "symbolId": 189,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:190": {
+      "library": "ui",
+      "symbolId": 190,
+      "kind": "static",
+      "text": "Mass",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:191": {
+      "library": "ui",
+      "symbolId": 191,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop",
+        "UI_Repair",
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:195": {
+      "library": "ui",
+      "symbolId": 195,
+      "kind": "static",
+      "text": "Michael",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop"
+      ]
+    },
+    "ui:196": {
+      "library": "ui",
+      "symbolId": 196,
+      "kind": "dynamic",
+      "text": "0 G",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop"
+      ]
+    },
+    "ui:197": {
+      "library": "ui",
+      "symbolId": 197,
+      "kind": "static",
+      "text": "Cost=",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop"
+      ]
+    },
+    "ui:198": {
+      "library": "ui",
+      "symbolId": 198,
+      "kind": "dynamic",
+      "text": "0 G",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop"
+      ]
+    },
+    "ui:199": {
+      "library": "ui",
+      "symbolId": 199,
+      "kind": "static",
+      "text": "Now=",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Shop",
+      "parents": [
+        "UI_Shop"
+      ]
+    },
+    "ui:208": {
+      "library": "ui",
+      "symbolId": 208,
+      "kind": "dynamic",
+      "text": "999/999",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:211": {
+      "library": "ui",
+      "symbolId": 211,
+      "kind": "static",
+      "text": "Repair",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:212": {
+      "library": "ui",
+      "symbolId": 212,
+      "kind": "dynamic",
+      "text": "0 G",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:213": {
+      "library": "ui",
+      "symbolId": 213,
+      "kind": "static",
+      "text": "EXIT",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:214": {
+      "library": "ui",
+      "symbolId": 214,
+      "kind": "static",
+      "text": "EXIT",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:217": {
+      "library": "ui",
+      "symbolId": 217,
+      "kind": "dynamic",
+      "text": "0 G",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:218": {
+      "library": "ui",
+      "symbolId": 218,
+      "kind": "static",
+      "text": "Now=",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:219": {
+      "library": "ui",
+      "symbolId": 219,
+      "kind": "static",
+      "text": "Cost=",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:221": {
+      "library": "ui",
+      "symbolId": 221,
+      "kind": "dynamic",
+      "text": "Select your damaged parts to repair in 75% price. If you do not \nwant to repair them, you can buy them back in the shop.\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:222": {
+      "library": "ui",
+      "symbolId": 222,
+      "kind": "static",
+      "text": "SELECT ALL",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:224": {
+      "library": "ui",
+      "symbolId": 224,
+      "kind": "static",
+      "text": "SELECT ALL",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Repair"
+      ]
+    },
+    "ui:228": {
+      "library": "ui",
+      "symbolId": 228,
+      "kind": "dynamic",
+      "text": "Really?",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "System",
+      "parents": [
+        "UI_Really"
+      ]
+    },
+    "ui:229": {
+      "library": "ui",
+      "symbolId": 229,
+      "kind": "dynamic",
+      "text": "input",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "System",
+      "parents": [
+        "UI_Really"
+      ]
+    },
+    "ui:230": {
+      "library": "ui",
+      "symbolId": 230,
+      "kind": "dynamic",
+      "text": "barabara\nfsdaf\nasdfsdf",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "System",
+      "parents": [
+        "UI_Really"
+      ]
+    },
+    "ui:231": {
+      "library": "ui",
+      "symbolId": 231,
+      "kind": "static",
+      "text": "YES",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "System",
+      "parents": [
+        "UI_Really"
+      ]
+    },
+    "ui:232": {
+      "library": "ui",
+      "symbolId": 232,
+      "kind": "static",
+      "text": "YES",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "System",
+      "parents": [
+        "UI_Really"
+      ]
+    },
+    "ui:234": {
+      "library": "ui",
+      "symbolId": 234,
+      "kind": "static",
+      "text": "NO",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "System",
+      "parents": [
+        "UI_Really"
+      ]
+    },
+    "ui:235": {
+      "library": "ui",
+      "symbolId": 235,
+      "kind": "static",
+      "text": "NO",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "System",
+      "parents": [
+        "UI_Really"
+      ]
+    },
+    "ui:237": {
+      "library": "ui",
+      "symbolId": 237,
+      "kind": "dynamic",
+      "text": "Name:",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "System",
+      "parents": [
+        "UI_Really"
+      ]
+    },
+    "ui:240": {
+      "library": "ui",
+      "symbolId": 240,
+      "kind": "static",
+      "text": "OPTIONS",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Pause",
+        "UI_Main"
+      ]
+    },
+    "ui:241": {
+      "library": "ui",
+      "symbolId": 241,
+      "kind": "static",
+      "text": "OPTIONS",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Pause",
+        "UI_Main"
+      ]
+    },
+    "ui:243": {
+      "library": "ui",
+      "symbolId": 243,
+      "kind": "static",
+      "text": "INFO",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Pause",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:244": {
+      "library": "ui",
+      "symbolId": 244,
+      "kind": "static",
+      "text": "INFO",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Pause",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:247": {
+      "library": "ui",
+      "symbolId": 247,
+      "kind": "static",
+      "text": "RESUME",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Pause"
+      ]
+    },
+    "ui:248": {
+      "library": "ui",
+      "symbolId": 248,
+      "kind": "static",
+      "text": "RESUME",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Pause"
+      ]
+    },
+    "ui:250": {
+      "library": "ui",
+      "symbolId": 250,
+      "kind": "static",
+      "text": "Paused",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Pause"
+      ]
+    },
+    "ui:254": {
+      "library": "ui",
+      "symbolId": 254,
+      "kind": "dynamic",
+      "text": "Bloom\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:256": {
+      "library": "ui",
+      "symbolId": 256,
+      "kind": "dynamic",
+      "text": "Bloom\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:258": {
+      "library": "ui",
+      "symbolId": 258,
+      "kind": "dynamic",
+      "text": "Candy!\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:259": {
+      "library": "ui",
+      "symbolId": 259,
+      "kind": "dynamic",
+      "text": "Candy!\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:261": {
+      "library": "ui",
+      "symbolId": 261,
+      "kind": "dynamic",
+      "text": "640×480\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:262": {
+      "library": "ui",
+      "symbolId": 262,
+      "kind": "dynamic",
+      "text": "640×480\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:264": {
+      "library": "ui",
+      "symbolId": 264,
+      "kind": "dynamic",
+      "text": "Sound\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:265": {
+      "library": "ui",
+      "symbolId": 265,
+      "kind": "dynamic",
+      "text": "Sound\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:267": {
+      "library": "ui",
+      "symbolId": 267,
+      "kind": "dynamic",
+      "text": "Music\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:268": {
+      "library": "ui",
+      "symbolId": 268,
+      "kind": "dynamic",
+      "text": "Music\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:270": {
+      "library": "ui",
+      "symbolId": 270,
+      "kind": "static",
+      "text": "CANECL",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:271": {
+      "library": "ui",
+      "symbolId": 271,
+      "kind": "static",
+      "text": "CANCEL",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:272": {
+      "library": "ui",
+      "symbolId": 272,
+      "kind": "static",
+      "text": "CANCEL",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:274": {
+      "library": "ui",
+      "symbolId": 274,
+      "kind": "static",
+      "text": "OK",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options",
+        "UI_MapBuilding"
+      ]
+    },
+    "ui:275": {
+      "library": "ui",
+      "symbolId": 275,
+      "kind": "static",
+      "text": "OK",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options",
+        "UI_MapBuilding"
+      ]
+    },
+    "ui:277": {
+      "library": "ui",
+      "symbolId": 277,
+      "kind": "static",
+      "text": "Options",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:278": {
+      "library": "ui",
+      "symbolId": 278,
+      "kind": "dynamic",
+      "text": "Background\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:279": {
+      "library": "ui",
+      "symbolId": 279,
+      "kind": "dynamic",
+      "text": "Background\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Options",
+      "parents": [
+        "UI_Options"
+      ]
+    },
+    "ui:282": {
+      "library": "ui",
+      "symbolId": 282,
+      "kind": "static",
+      "text": "NEXT",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Ready",
+      "parents": [
+        "UI_Movie"
+      ]
+    },
+    "ui:286": {
+      "library": "ui",
+      "symbolId": 286,
+      "kind": "static",
+      "text": "Nice battle!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_ModeX"
+      ]
+    },
+    "ui:287": {
+      "library": "ui",
+      "symbolId": 287,
+      "kind": "dynamic",
+      "text": "Money: +0G",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_ModeX"
+      ]
+    },
+    "ui:288": {
+      "library": "ui",
+      "symbolId": 288,
+      "kind": "static",
+      "text": "You lost",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_ModeX"
+      ]
+    },
+    "ui:289": {
+      "library": "ui",
+      "symbolId": 289,
+      "kind": "dynamic",
+      "text": "Part × 10",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_ModeX"
+      ]
+    },
+    "ui:290": {
+      "library": "ui",
+      "symbolId": 290,
+      "kind": "dynamic",
+      "text": "Perfect",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_ModeX"
+      ]
+    },
+    "ui:291": {
+      "library": "ui",
+      "symbolId": 291,
+      "kind": "dynamic",
+      "text": "Time: 0:00",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_ModeX"
+      ]
+    },
+    "ui:292": {
+      "library": "ui",
+      "symbolId": 292,
+      "kind": "dynamic",
+      "text": "Tip12: asdsadjsladjasd.",
+      "empty": false,
+      "placeholder": true,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_ModeX"
+      ]
+    },
+    "ui:295": {
+      "library": "ui",
+      "symbolId": 295,
+      "kind": "dynamic",
+      "text": "TITLE",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Ready",
+      "parents": [
+        "UI_Mission"
+      ]
+    },
+    "ui:296": {
+      "library": "ui",
+      "symbolId": 296,
+      "kind": "dynamic",
+      "text": "1.sdfsdf\n2.4214124\n3.414214\n5.123132123\n5.1241424",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Ready",
+      "parents": [
+        "UI_Mission"
+      ]
+    },
+    "ui:297": {
+      "library": "ui",
+      "symbolId": 297,
+      "kind": "static",
+      "text": "BACK",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Ready",
+      "parents": [
+        "UI_Mission",
+        "UI_Fail",
+        "UI_Data",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:298": {
+      "library": "ui",
+      "symbolId": 298,
+      "kind": "static",
+      "text": "BACK",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Ready",
+      "parents": [
+        "UI_Mission",
+        "UI_Fail",
+        "UI_Data",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:304": {
+      "library": "ui",
+      "symbolId": 304,
+      "kind": "static",
+      "text": "MAP \n--- RECORDSEPARATOR ---\nLOADING...",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Ready",
+      "parents": [
+        "UI_MapBuilding"
+      ]
+    },
+    "ui:305": {
+      "library": "ui",
+      "symbolId": 305,
+      "kind": "static",
+      "text": "MAP \n--- RECORDSEPARATOR ---\nLOADED",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Ready",
+      "parents": [
+        "UI_MapBuilding"
+      ]
+    },
+    "ui:307": {
+      "library": "ui",
+      "symbolId": 307,
+      "kind": "dynamic",
+      "text": "TITLE",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Ready",
+      "parents": [
+        "UI_MapBuilding"
+      ]
+    },
+    "ui:308": {
+      "library": "ui",
+      "symbolId": 308,
+      "kind": "dynamic",
+      "text": "1.sdfsdf\n2.4214124\n3.414214\n5.123132123\n5.1241424",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Ready",
+      "parents": [
+        "UI_MapBuilding"
+      ]
+    },
+    "ui:322": {
+      "library": "ui",
+      "symbolId": 322,
+      "kind": "static",
+      "text": "BACK TO CENTER",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:323": {
+      "library": "ui",
+      "symbolId": 323,
+      "kind": "static",
+      "text": "BACK TO CENTER",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:326": {
+      "library": "ui",
+      "symbolId": 326,
+      "kind": "dynamic",
+      "text": "index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:327": {
+      "library": "ui",
+      "symbolId": 327,
+      "kind": "dynamic",
+      "text": "type",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:328": {
+      "library": "ui",
+      "symbolId": 328,
+      "kind": "dynamic",
+      "text": "hp",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:329": {
+      "library": "ui",
+      "symbolId": 329,
+      "kind": "dynamic",
+      "text": "turnfly",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:330": {
+      "library": "ui",
+      "symbolId": 330,
+      "kind": "dynamic",
+      "text": "powfly",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:331": {
+      "library": "ui",
+      "symbolId": 331,
+      "kind": "dynamic",
+      "text": "name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:332": {
+      "library": "ui",
+      "symbolId": 332,
+      "kind": "dynamic",
+      "text": "lr",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:333": {
+      "library": "ui",
+      "symbolId": 333,
+      "kind": "dynamic",
+      "text": "mass",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:334": {
+      "library": "ui",
+      "symbolId": 334,
+      "kind": "dynamic",
+      "text": "firepow",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:336": {
+      "library": "ui",
+      "symbolId": 336,
+      "kind": "dynamic",
+      "text": "index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:337": {
+      "library": "ui",
+      "symbolId": 337,
+      "kind": "dynamic",
+      "text": "type",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:338": {
+      "library": "ui",
+      "symbolId": 338,
+      "kind": "dynamic",
+      "text": "hp",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:339": {
+      "library": "ui",
+      "symbolId": 339,
+      "kind": "dynamic",
+      "text": "turnfly",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:340": {
+      "library": "ui",
+      "symbolId": 340,
+      "kind": "dynamic",
+      "text": "powfly",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:341": {
+      "library": "ui",
+      "symbolId": 341,
+      "kind": "dynamic",
+      "text": "name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:342": {
+      "library": "ui",
+      "symbolId": 342,
+      "kind": "dynamic",
+      "text": "lr",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:343": {
+      "library": "ui",
+      "symbolId": 343,
+      "kind": "dynamic",
+      "text": "mass",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:344": {
+      "library": "ui",
+      "symbolId": 344,
+      "kind": "dynamic",
+      "text": "firepow",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:346": {
+      "library": "ui",
+      "symbolId": 346,
+      "kind": "dynamic",
+      "text": "99/99",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:347": {
+      "library": "ui",
+      "symbolId": 347,
+      "kind": "dynamic",
+      "text": "Mass",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:349": {
+      "library": "ui",
+      "symbolId": 349,
+      "kind": "dynamic",
+      "text": "Fire Power",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:353": {
+      "library": "ui",
+      "symbolId": 353,
+      "kind": "static",
+      "text": "ADD",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:355": {
+      "library": "ui",
+      "symbolId": 355,
+      "kind": "static",
+      "text": "ADD",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:358": {
+      "library": "ui",
+      "symbolId": 358,
+      "kind": "static",
+      "text": "NEW",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:360": {
+      "library": "ui",
+      "symbolId": 360,
+      "kind": "static",
+      "text": "NEW",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:362": {
+      "library": "ui",
+      "symbolId": 362,
+      "kind": "static",
+      "text": "MERGE",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:363": {
+      "library": "ui",
+      "symbolId": 363,
+      "kind": "static",
+      "text": "MERGE",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:366": {
+      "library": "ui",
+      "symbolId": 366,
+      "kind": "static",
+      "text": "PARTS\n--- RECORDSEPARATOR ---\n/CRAFTS",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:370": {
+      "library": "ui",
+      "symbolId": 370,
+      "kind": "static",
+      "text": "Speed",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:371": {
+      "library": "ui",
+      "symbolId": 371,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:373": {
+      "library": "ui",
+      "symbolId": 373,
+      "kind": "static",
+      "text": "Fire Pow.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:374": {
+      "library": "ui",
+      "symbolId": 374,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:376": {
+      "library": "ui",
+      "symbolId": 376,
+      "kind": "static",
+      "text": "Hp",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:377": {
+      "library": "ui",
+      "symbolId": 377,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:379": {
+      "library": "ui",
+      "symbolId": 379,
+      "kind": "static",
+      "text": "Steering ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:380": {
+      "library": "ui",
+      "symbolId": 380,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:382": {
+      "library": "ui",
+      "symbolId": 382,
+      "kind": "static",
+      "text": "Parts",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:383": {
+      "library": "ui",
+      "symbolId": 383,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:386": {
+      "library": "ui",
+      "symbolId": 386,
+      "kind": "dynamic",
+      "text": "index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:387": {
+      "library": "ui",
+      "symbolId": 387,
+      "kind": "dynamic",
+      "text": "name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:389": {
+      "library": "ui",
+      "symbolId": 389,
+      "kind": "static",
+      "text": "EDIT",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:391": {
+      "library": "ui",
+      "symbolId": 391,
+      "kind": "static",
+      "text": "EDIT",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:393": {
+      "library": "ui",
+      "symbolId": 393,
+      "kind": "static",
+      "text": "BREAK",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:394": {
+      "library": "ui",
+      "symbolId": 394,
+      "kind": "static",
+      "text": "BREAK",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:397": {
+      "library": "ui",
+      "symbolId": 397,
+      "kind": "dynamic",
+      "text": "index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:398": {
+      "library": "ui",
+      "symbolId": 398,
+      "kind": "dynamic",
+      "text": "name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:400": {
+      "library": "ui",
+      "symbolId": 400,
+      "kind": "dynamic",
+      "text": "99/99",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:403": {
+      "library": "ui",
+      "symbolId": 403,
+      "kind": "static",
+      "text": "PARTS/\n--- RECORDSEPARATOR ---\nCRAFTS",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:405": {
+      "library": "ui",
+      "symbolId": 405,
+      "kind": "dynamic",
+      "text": "Index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:407": {
+      "library": "ui",
+      "symbolId": 407,
+      "kind": "dynamic",
+      "text": "Name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:411": {
+      "library": "ui",
+      "symbolId": 411,
+      "kind": "static",
+      "text": "Name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:412": {
+      "library": "ui",
+      "symbolId": 412,
+      "kind": "static",
+      "text": "Class",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:413": {
+      "library": "ui",
+      "symbolId": 413,
+      "kind": "static",
+      "text": "Value",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:414": {
+      "library": "ui",
+      "symbolId": 414,
+      "kind": "static",
+      "text": "Fire pow.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:415": {
+      "library": "ui",
+      "symbolId": 415,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:416": {
+      "library": "ui",
+      "symbolId": 416,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:417": {
+      "library": "ui",
+      "symbolId": 417,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:418": {
+      "library": "ui",
+      "symbolId": 418,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:419": {
+      "library": "ui",
+      "symbolId": 419,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:420": {
+      "library": "ui",
+      "symbolId": 420,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:421": {
+      "library": "ui",
+      "symbolId": 421,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:422": {
+      "library": "ui",
+      "symbolId": 422,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:423": {
+      "library": "ui",
+      "symbolId": 423,
+      "kind": "dynamic",
+      "text": "Inuse",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer",
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:426": {
+      "library": "ui",
+      "symbolId": 426,
+      "kind": "dynamic",
+      "text": "new/edit",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:428": {
+      "library": "ui",
+      "symbolId": 428,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:429": {
+      "library": "ui",
+      "symbolId": 429,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:430": {
+      "library": "ui",
+      "symbolId": 430,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:431": {
+      "library": "ui",
+      "symbolId": 431,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:432": {
+      "library": "ui",
+      "symbolId": 432,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:433": {
+      "library": "ui",
+      "symbolId": 433,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:434": {
+      "library": "ui",
+      "symbolId": 434,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:435": {
+      "library": "ui",
+      "symbolId": 435,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:436": {
+      "library": "ui",
+      "symbolId": 436,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:437": {
+      "library": "ui",
+      "symbolId": 437,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:438": {
+      "library": "ui",
+      "symbolId": 438,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:439": {
+      "library": "ui",
+      "symbolId": 439,
+      "kind": "dynamic",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Factory",
+      "parents": [
+        "UI_MakePlayer"
+      ]
+    },
+    "ui:445": {
+      "library": "ui",
+      "symbolId": 445,
+      "kind": "static",
+      "text": "START GAME",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:446": {
+      "library": "ui",
+      "symbolId": 446,
+      "kind": "static",
+      "text": "START GAME",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:448": {
+      "library": "ui",
+      "symbolId": 448,
+      "kind": "static",
+      "text": "DATA",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:449": {
+      "library": "ui",
+      "symbolId": 449,
+      "kind": "static",
+      "text": "DATA",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:451": {
+      "library": "ui",
+      "symbolId": 451,
+      "kind": "static",
+      "text": "CREDITS",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:452": {
+      "library": "ui",
+      "symbolId": 452,
+      "kind": "static",
+      "text": "CREDITS",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:454": {
+      "library": "ui",
+      "symbolId": 454,
+      "kind": "dynamic",
+      "text": "BUILD 111208",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:455": {
+      "library": "ui",
+      "symbolId": 455,
+      "kind": "dynamic",
+      "text": "BUILD 111208",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:456": {
+      "library": "ui",
+      "symbolId": 456,
+      "kind": "static",
+      "text": "MUSIC PLAYER",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:457": {
+      "library": "ui",
+      "symbolId": 457,
+      "kind": "static",
+      "text": "MUSIC PLAYER",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Main menu",
+      "parents": [
+        "UI_Main"
+      ]
+    },
+    "ui:461": {
+      "library": "ui",
+      "symbolId": 461,
+      "kind": "static",
+      "text": "If the game \n--- RECORDSEPARATOR ---\nruns slowly, \n--- RECORDSEPARATOR ---\ntry to turn off \n--- RECORDSEPARATOR ---\nsome of them  \n--- RECORDSEPARATOR ---\nto improve the \n--- RECORDSEPARATOR ---\nperformance",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Help"
+      ]
+    },
+    "ui:462": {
+      "library": "ui",
+      "symbolId": 462,
+      "kind": "static",
+      "text": "Gfx mode1",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Help"
+      ]
+    },
+    "ui:463": {
+      "library": "ui",
+      "symbolId": 463,
+      "kind": "static",
+      "text": "Gfx mode2",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Help"
+      ]
+    },
+    "ui:464": {
+      "library": "ui",
+      "symbolId": 464,
+      "kind": "static",
+      "text": "Resolution",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Help"
+      ]
+    },
+    "ui:465": {
+      "library": "ui",
+      "symbolId": 465,
+      "kind": "static",
+      "text": "Show BG",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Help"
+      ]
+    },
+    "ui:471": {
+      "library": "ui",
+      "symbolId": 471,
+      "kind": "dynamic",
+      "text": "-",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:475": {
+      "library": "ui",
+      "symbolId": 475,
+      "kind": "dynamic",
+      "text": "-:--",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:479": {
+      "library": "ui",
+      "symbolId": 479,
+      "kind": "dynamic",
+      "text": "Wang",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        478
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:494": {
+      "library": "ui",
+      "symbolId": 494,
+      "kind": "dynamic",
+      "text": "AI * 10",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:497": {
+      "library": "ui",
+      "symbolId": 497,
+      "kind": "static",
+      "text": "Q",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:500": {
+      "library": "ui",
+      "symbolId": 500,
+      "kind": "dynamic",
+      "text": "1234 G",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:502": {
+      "library": "ui",
+      "symbolId": 502,
+      "kind": "static",
+      "text": "II",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:504": {
+      "library": "ui",
+      "symbolId": 504,
+      "kind": "static",
+      "text": "II",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:506": {
+      "library": "ui",
+      "symbolId": 506,
+      "kind": "static",
+      "text": "Stand by",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:507": {
+      "library": "ui",
+      "symbolId": 507,
+      "kind": "static",
+      "text": "Story in progress",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:508": {
+      "library": "ui",
+      "symbolId": 508,
+      "kind": "static",
+      "text": "It's not your turn",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Combat",
+      "parents": [
+        "UI_Game"
+      ]
+    },
+    "ui:513": {
+      "library": "ui",
+      "symbolId": 513,
+      "kind": "static",
+      "text": "Battle failed",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Fail"
+      ]
+    },
+    "ui:514": {
+      "library": "ui",
+      "symbolId": 514,
+      "kind": "static",
+      "text": "Hum, seems everything has gone.\n--- RECORDSEPARATOR ---\nYes? No? ... Has it?\n--- RECORDSEPARATOR ---\nWhy not try again?",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Fail"
+      ]
+    },
+    "ui:515": {
+      "library": "ui",
+      "symbolId": 515,
+      "kind": "static",
+      "text": "RETRY",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Fail"
+      ]
+    },
+    "ui:516": {
+      "library": "ui",
+      "symbolId": 516,
+      "kind": "static",
+      "text": "RETRY",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Fail"
+      ]
+    },
+    "ui:518": {
+      "library": "ui",
+      "symbolId": 518,
+      "kind": "dynamic",
+      "text": "Tip12: asdsadjsladjasd.",
+      "empty": false,
+      "placeholder": true,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_Fail"
+      ]
+    },
+    "ui:521": {
+      "library": "ui",
+      "symbolId": 521,
+      "kind": "dynamic",
+      "text": "Reset Data\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:522": {
+      "library": "ui",
+      "symbolId": 522,
+      "kind": "dynamic",
+      "text": "Reset Data\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:523": {
+      "library": "ui",
+      "symbolId": 523,
+      "kind": "dynamic",
+      "text": "Reset Data\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:525": {
+      "library": "ui",
+      "symbolId": 525,
+      "kind": "dynamic",
+      "text": "Save Local\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:526": {
+      "library": "ui",
+      "symbolId": 526,
+      "kind": "dynamic",
+      "text": "Save Local\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:527": {
+      "library": "ui",
+      "symbolId": 527,
+      "kind": "dynamic",
+      "text": "Save Local\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:529": {
+      "library": "ui",
+      "symbolId": 529,
+      "kind": "dynamic",
+      "text": "Load Local\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:530": {
+      "library": "ui",
+      "symbolId": 530,
+      "kind": "dynamic",
+      "text": "Load Local\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:531": {
+      "library": "ui",
+      "symbolId": 531,
+      "kind": "dynamic",
+      "text": "Load Local\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:533": {
+      "library": "ui",
+      "symbolId": 533,
+      "kind": "static",
+      "text": "Data",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Info",
+      "parents": [
+        "UI_Data"
+      ]
+    },
+    "ui:538": {
+      "library": "ui",
+      "symbolId": 538,
+      "kind": "dynamic",
+      "text": "index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:539": {
+      "library": "ui",
+      "symbolId": 539,
+      "kind": "dynamic",
+      "text": "name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:540": {
+      "library": "ui",
+      "symbolId": 540,
+      "kind": "dynamic",
+      "text": "player",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:541": {
+      "library": "ui",
+      "symbolId": 541,
+      "kind": "dynamic",
+      "text": "ai",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:543": {
+      "library": "ui",
+      "symbolId": 543,
+      "kind": "static",
+      "text": "ADD AI",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:545": {
+      "library": "ui",
+      "symbolId": 545,
+      "kind": "static",
+      "text": "ADD  AI",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:549": {
+      "library": "ui",
+      "symbolId": 549,
+      "kind": "dynamic",
+      "text": "index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:550": {
+      "library": "ui",
+      "symbolId": 550,
+      "kind": "dynamic",
+      "text": "name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:551": {
+      "library": "ui",
+      "symbolId": 551,
+      "kind": "dynamic",
+      "text": "player",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:552": {
+      "library": "ui",
+      "symbolId": 552,
+      "kind": "dynamic",
+      "text": "ai",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:555": {
+      "library": "ui",
+      "symbolId": 555,
+      "kind": "dynamic",
+      "text": "99/99",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:556": {
+      "library": "ui",
+      "symbolId": 556,
+      "kind": "dynamic",
+      "text": "Index",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:558": {
+      "library": "ui",
+      "symbolId": 558,
+      "kind": "dynamic",
+      "text": "Name",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:560": {
+      "library": "ui",
+      "symbolId": 560,
+      "kind": "dynamic",
+      "text": "Player",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:562": {
+      "library": "ui",
+      "symbolId": 562,
+      "kind": "dynamic",
+      "text": "AI",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:566": {
+      "library": "ui",
+      "symbolId": 566,
+      "kind": "dynamic",
+      "text": "C",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        478
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:567": {
+      "library": "ui",
+      "symbolId": 567,
+      "kind": "dynamic",
+      "text": "A",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        478
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:568": {
+      "library": "ui",
+      "symbolId": 568,
+      "kind": "dynamic",
+      "text": "O",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        478
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:569": {
+      "library": "ui",
+      "symbolId": 569,
+      "kind": "dynamic",
+      "text": "N",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        478
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:570": {
+      "library": "ui",
+      "symbolId": 570,
+      "kind": "dynamic",
+      "text": "I",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        478
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:572": {
+      "library": "ui",
+      "symbolId": 572,
+      "kind": "dynamic",
+      "text": "Reset",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:574": {
+      "library": "ui",
+      "symbolId": 574,
+      "kind": "dynamic",
+      "text": "Reset",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:576": {
+      "library": "ui",
+      "symbolId": 576,
+      "kind": "dynamic",
+      "text": "Best",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:577": {
+      "library": "ui",
+      "symbolId": 577,
+      "kind": "dynamic",
+      "text": "Best",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        81
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:583": {
+      "library": "ui",
+      "symbolId": 583,
+      "kind": "static",
+      "text": "READY",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:584": {
+      "library": "ui",
+      "symbolId": 584,
+      "kind": "static",
+      "text": "READY",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:586": {
+      "library": "ui",
+      "symbolId": 586,
+      "kind": "static",
+      "text": "FACTORY",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:587": {
+      "library": "ui",
+      "symbolId": 587,
+      "kind": "static",
+      "text": "FACTORY",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:589": {
+      "library": "ui",
+      "symbolId": 589,
+      "kind": "static",
+      "text": "SHOP",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:590": {
+      "library": "ui",
+      "symbolId": 590,
+      "kind": "static",
+      "text": "SHOP",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:592": {
+      "library": "ui",
+      "symbolId": 592,
+      "kind": "static",
+      "text": "Center",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:594": {
+      "library": "ui",
+      "symbolId": 594,
+      "kind": "dynamic",
+      "text": "Pick crafts here and ready to fight!\n",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        2
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:596": {
+      "library": "ui",
+      "symbolId": 596,
+      "kind": "dynamic",
+      "text": "35",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        595
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:597": {
+      "library": "ui",
+      "symbolId": 597,
+      "kind": "dynamic",
+      "text": "BATTLE-999",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:607": {
+      "library": "ui",
+      "symbolId": 607,
+      "kind": "static",
+      "text": "Michael's",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Center",
+      "parents": [
+        "UI_ChooseFlyAI"
+      ]
+    },
+    "ui:610": {
+      "library": "ui",
+      "symbolId": 610,
+      "kind": "static",
+      "text": "Story Mode Completed!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_AllWin"
+      ]
+    },
+    "ui:611": {
+      "library": "ui",
+      "symbolId": 611,
+      "kind": "static",
+      "text": "Enjoy the ending music.\n--- RECORDSEPARATOR ---\nDon't leave, It's only the beginning!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_AllWin"
+      ]
+    },
+    "ui:612": {
+      "library": "ui",
+      "symbolId": 612,
+      "kind": "static",
+      "text": "ENDING",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_AllWin"
+      ]
+    },
+    "ui:613": {
+      "library": "ui",
+      "symbolId": 613,
+      "kind": "static",
+      "text": "ENDING",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_AllWin"
+      ]
+    },
+    "ui:616": {
+      "library": "ui",
+      "symbolId": 616,
+      "kind": "dynamic",
+      "text": "Tip12: asdsadjsladjasd.",
+      "empty": false,
+      "placeholder": true,
+      "fontIds": [
+        7
+      ],
+      "section": "Results",
+      "parents": [
+        "UI_AllWin"
+      ]
+    },
+    "ui:628": {
+      "library": "ui",
+      "symbolId": 628,
+      "kind": "static",
+      "text": "And where is this place?...",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov9"
+      ]
+    },
+    "ui:636": {
+      "library": "ui",
+      "symbolId": 636,
+      "kind": "static",
+      "text": "Now JUMPING...",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov8"
+      ]
+    },
+    "ui:651": {
+      "library": "ui",
+      "symbolId": 651,
+      "kind": "static",
+      "text": "OK, ready to JUMP...",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov7"
+      ]
+    },
+    "ui:656": {
+      "library": "ui",
+      "symbolId": 656,
+      "kind": "static",
+      "text": "JUMP!!!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov7"
+      ]
+    },
+    "ui:668": {
+      "library": "ui",
+      "symbolId": 668,
+      "kind": "static",
+      "text": "Captain: X Army is coming for us!  ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov6"
+      ]
+    },
+    "ui:672": {
+      "library": "ui",
+      "symbolId": 672,
+      "kind": "static",
+      "text": "Suddenly, the alarm breaks out!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov5"
+      ]
+    },
+    "ui:684": {
+      "library": "ui",
+      "symbolId": 684,
+      "kind": "static",
+      "text": "...Leisurely.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov4"
+      ]
+    },
+    "ui:703": {
+      "library": "ui",
+      "symbolId": 703,
+      "kind": "static",
+      "text": "...Is drinking...",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov3"
+      ]
+    },
+    "ui:707": {
+      "library": "ui",
+      "symbolId": 707,
+      "kind": "static",
+      "text": "There's a mothership. And Michael, The main character of the story...",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov2"
+      ]
+    },
+    "ui:711": {
+      "library": "ui",
+      "symbolId": 711,
+      "kind": "static",
+      "text": "Far far away from your screen...",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        627
+      ],
+      "section": "Ready",
+      "parents": [
+        "Mov1"
+      ]
+    },
+    "ui:719": {
+      "library": "ui",
+      "symbolId": 719,
+      "kind": "static",
+      "text": "Select parts you \n--- RECORDSEPARATOR ---\nwanna buy.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop"
+      ]
+    },
+    "ui:720": {
+      "library": "ui",
+      "symbolId": 720,
+      "kind": "static",
+      "text": "Select parts \n--- RECORDSEPARATOR ---\nyou wanna sell.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop"
+      ]
+    },
+    "ui:722": {
+      "library": "ui",
+      "symbolId": 722,
+      "kind": "static",
+      "text": "Try to use filters and \n--- RECORDSEPARATOR ---\nsort functions to find \n--- RECORDSEPARATOR ---\nparts more easily.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop",
+        "UI_HelpRepair"
+      ]
+    },
+    "ui:730": {
+      "library": "ui",
+      "symbolId": 730,
+      "kind": "static",
+      "text": "After the trade, \n--- RECORDSEPARATOR ---\nyou will lose or \n--- RECORDSEPARATOR ---\nget that amount of \n--- RECORDSEPARATOR ---\nmoney.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop"
+      ]
+    },
+    "ui:731": {
+      "library": "ui",
+      "symbolId": 731,
+      "kind": "static",
+      "text": "Money you have.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop",
+        "UI_HelpRepair"
+      ]
+    },
+    "ui:732": {
+      "library": "ui",
+      "symbolId": 732,
+      "kind": "static",
+      "text": "Cancel the deal. Unselect all.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop"
+      ]
+    },
+    "ui:733": {
+      "library": "ui",
+      "symbolId": 733,
+      "kind": "static",
+      "text": "Accept the deal, \n--- RECORDSEPARATOR ---\nexchange goods \n--- RECORDSEPARATOR ---\nand money.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop",
+        "UI_HelpRepair"
+      ]
+    },
+    "ui:738": {
+      "library": "ui",
+      "symbolId": 738,
+      "kind": "dynamic",
+      "text": "Shop",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop"
+      ]
+    },
+    "ui:740": {
+      "library": "ui",
+      "symbolId": 740,
+      "kind": "static",
+      "text": "SKIP",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop",
+        "UI_HelpRepair",
+        "UI_HelpOneSec",
+        "UI_HelpGame2",
+        "UI_HelpGame",
+        "UI_HelpEdit",
+        "UI_HelpChooseCraftAI",
+        "UI_HelpChooseCraft",
+        "UI_HelpBuildOneFirst",
+        "UI_HelpBuildCraft",
+        "UI_HelpBreak"
+      ]
+    },
+    "ui:742": {
+      "library": "ui",
+      "symbolId": 742,
+      "kind": "static",
+      "text": "SKIP",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpShop",
+        "UI_HelpRepair",
+        "UI_HelpOneSec",
+        "UI_HelpGame2",
+        "UI_HelpGame",
+        "UI_HelpEdit",
+        "UI_HelpChooseCraftAI",
+        "UI_HelpChooseCraft",
+        "UI_HelpBuildOneFirst",
+        "UI_HelpBuildCraft",
+        "UI_HelpBreak"
+      ]
+    },
+    "ui:746": {
+      "library": "ui",
+      "symbolId": 746,
+      "kind": "static",
+      "text": "Select parts you \n--- RECORDSEPARATOR ---\nwanna repair.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpRepair"
+      ]
+    },
+    "ui:747": {
+      "library": "ui",
+      "symbolId": 747,
+      "kind": "static",
+      "text": "After the trade, \n--- RECORDSEPARATOR ---\nyou will lose that \n--- RECORDSEPARATOR ---\namount of money.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpRepair"
+      ]
+    },
+    "ui:749": {
+      "library": "ui",
+      "symbolId": 749,
+      "kind": "dynamic",
+      "text": "Repair",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpRepair"
+      ]
+    },
+    "ui:752": {
+      "library": "ui",
+      "symbolId": 752,
+      "kind": "static",
+      "text": "Some new parts have \n--- RECORDSEPARATOR ---\nbeen unlocked in the SHOP.\n--- RECORDSEPARATOR ---\nWhy don't you go there \n--- RECORDSEPARATOR ---\nand buy a few?",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpOneSec"
+      ]
+    },
+    "ui:757": {
+      "library": "ui",
+      "symbolId": 757,
+      "kind": "dynamic",
+      "text": "Center",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpOneSec"
+      ]
+    },
+    "ui:760": {
+      "library": "ui",
+      "symbolId": 760,
+      "kind": "static",
+      "text": "Super Jet Power",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2",
+        "UI_HelpGame"
+      ]
+    },
+    "ui:762": {
+      "library": "ui",
+      "symbolId": 762,
+      "kind": "static",
+      "text": "Space Bar",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2",
+        "UI_HelpGame"
+      ]
+    },
+    "ui:765": {
+      "library": "ui",
+      "symbolId": 765,
+      "kind": "static",
+      "text": "Hit Space bar to use \n--- RECORDSEPARATOR ---\nSuper Jet power if \n--- RECORDSEPARATOR ---\nyou have engines on \n--- RECORDSEPARATOR ---\nthe craft.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2",
+        "UI_HelpGame"
+      ]
+    },
+    "ui:766": {
+      "library": "ui",
+      "symbolId": 766,
+      "kind": "static",
+      "text": "And also, make sure \n--- RECORDSEPARATOR ---\nthe energy has \n--- RECORDSEPARATOR ---\nrestored, before \n--- RECORDSEPARATOR ---\nuseing.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2",
+        "UI_HelpGame"
+      ]
+    },
+    "ui:773": {
+      "library": "ui",
+      "symbolId": 773,
+      "kind": "static",
+      "text": "Something Important!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2",
+        "UI_HelpGame"
+      ]
+    },
+    "ui:774": {
+      "library": "ui",
+      "symbolId": 774,
+      "kind": "static",
+      "text": "Remember to \n--- RECORDSEPARATOR ---\nfollow the \n--- RECORDSEPARATOR ---\nCyan Arrow\n--- RECORDSEPARATOR ---\n!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2"
+      ]
+    },
+    "ui:782": {
+      "library": "ui",
+      "symbolId": 782,
+      "kind": "static",
+      "text": "Your Hp bar",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2",
+        "UI_HelpGame"
+      ]
+    },
+    "ui:783": {
+      "library": "ui",
+      "symbolId": 783,
+      "kind": "static",
+      "text": "Red recovers Hp\n--- RECORDSEPARATOR ---\nFor you and also \n--- RECORDSEPARATOR ---\nfor your partners",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2",
+        "UI_HelpGame"
+      ]
+    },
+    "ui:784": {
+      "library": "ui",
+      "symbolId": 784,
+      "kind": "static",
+      "text": "Golden ones \n--- RECORDSEPARATOR ---\nfor Money",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2",
+        "UI_HelpGame"
+      ]
+    },
+    "ui:785": {
+      "library": "ui",
+      "symbolId": 785,
+      "kind": "static",
+      "text": "Your partners. \n--- RECORDSEPARATOR ---\nKeep them alive \n--- RECORDSEPARATOR ---\nor you will lose \n--- RECORDSEPARATOR ---\nthe battle.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2",
+        "UI_HelpGame"
+      ]
+    },
+    "ui:793": {
+      "library": "ui",
+      "symbolId": 793,
+      "kind": "dynamic",
+      "text": "How to play",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame2"
+      ]
+    },
+    "ui:796": {
+      "library": "ui",
+      "symbolId": 796,
+      "kind": "static",
+      "text": "Mouse Mode            Keyboard Mode",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:798": {
+      "library": "ui",
+      "symbolId": 798,
+      "kind": "static",
+      "text": "Q",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:801": {
+      "library": "ui",
+      "symbolId": 801,
+      "kind": "static",
+      "text": "Q to change modes",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:803": {
+      "library": "ui",
+      "symbolId": 803,
+      "kind": "static",
+      "text": "W",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:804": {
+      "library": "ui",
+      "symbolId": 804,
+      "kind": "static",
+      "text": "A",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:805": {
+      "library": "ui",
+      "symbolId": 805,
+      "kind": "static",
+      "text": "D",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:807": {
+      "library": "ui",
+      "symbolId": 807,
+      "kind": "static",
+      "text": "The craft\n--- RECORDSEPARATOR ---\n follows \n--- RECORDSEPARATOR ---\nthe cursor.\n--- RECORDSEPARATOR ---\nAnd it auto\n--- RECORDSEPARATOR ---\naims.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:808": {
+      "library": "ui",
+      "symbolId": 808,
+      "kind": "static",
+      "text": "Control \n--- RECORDSEPARATOR ---\nthe engine \n--- RECORDSEPARATOR ---\npower \n--- RECORDSEPARATOR ---\nby moving \n--- RECORDSEPARATOR ---\nthe cursor \n--- RECORDSEPARATOR ---\naway or close  \n--- RECORDSEPARATOR ---\nto the craft.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:809": {
+      "library": "ui",
+      "symbolId": 809,
+      "kind": "static",
+      "text": "\"A\",\"D\" to \n--- RECORDSEPARATOR ---\nturn left and \n--- RECORDSEPARATOR ---\nright.\n--- RECORDSEPARATOR ---\n\"W\" to \n--- RECORDSEPARATOR ---\naccelerate.\n--- RECORDSEPARATOR ---\nGuns aim the \n--- RECORDSEPARATOR ---\ncursor.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:810": {
+      "library": "ui",
+      "symbolId": 810,
+      "kind": "static",
+      "text": "Hold Left Mouse Button to fire",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:820": {
+      "library": "ui",
+      "symbolId": 820,
+      "kind": "static",
+      "text": "If you don't \n--- RECORDSEPARATOR ---\nknow where to \n--- RECORDSEPARATOR ---\ngo, just follow \n--- RECORDSEPARATOR ---\nthe \n--- RECORDSEPARATOR ---\nCyan Arrow\n--- RECORDSEPARATOR ---\n!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:821": {
+      "library": "ui",
+      "symbolId": 821,
+      "kind": "static",
+      "text": "Kill some enemies \n--- RECORDSEPARATOR ---\nand collect some \n--- RECORDSEPARATOR ---\nitems",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:823": {
+      "library": "ui",
+      "symbolId": 823,
+      "kind": "dynamic",
+      "text": "How to play",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpGame"
+      ]
+    },
+    "ui:826": {
+      "library": "ui",
+      "symbolId": 826,
+      "kind": "static",
+      "text": "Everything is same as to \n--- RECORDSEPARATOR ---\nbuild a new craft.\n--- RECORDSEPARATOR ---\nWhen everything's done, \n--- RECORDSEPARATOR ---\nyou should merge it with a \n--- RECORDSEPARATOR ---\nnew name.\n--- RECORDSEPARATOR ---\nYou can't use NEW function \n--- RECORDSEPARATOR ---\nhere.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpEdit"
+      ]
+    },
+    "ui:828": {
+      "library": "ui",
+      "symbolId": 828,
+      "kind": "dynamic",
+      "text": "How to edit a craft",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpEdit"
+      ]
+    },
+    "ui:831": {
+      "library": "ui",
+      "symbolId": 831,
+      "kind": "static",
+      "text": "Click to select a \n--- RECORDSEPARATOR ---\ncraft you like.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI",
+        "UI_HelpChooseCraft"
+      ]
+    },
+    "ui:832": {
+      "library": "ui",
+      "symbolId": 832,
+      "kind": "static",
+      "text": "Unselect all AIs.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI"
+      ]
+    },
+    "ui:833": {
+      "library": "ui",
+      "symbolId": 833,
+      "kind": "static",
+      "text": "Select best crafts \n--- RECORDSEPARATOR ---\nyou have for AI.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI"
+      ]
+    },
+    "ui:834": {
+      "library": "ui",
+      "symbolId": 834,
+      "kind": "static",
+      "text": "Click to \n--- RECORDSEPARATOR ---\ndisable/enable \n--- RECORDSEPARATOR ---\nan AI.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI"
+      ]
+    },
+    "ui:835": {
+      "library": "ui",
+      "symbolId": 835,
+      "kind": "static",
+      "text": "Click to add that \n--- RECORDSEPARATOR ---\ncraft to AI table.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI"
+      ]
+    },
+    "ui:846": {
+      "library": "ui",
+      "symbolId": 846,
+      "kind": "static",
+      "text": "Information for \n--- RECORDSEPARATOR ---\nthe battle.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI",
+        "UI_HelpChooseCraft"
+      ]
+    },
+    "ui:847": {
+      "library": "ui",
+      "symbolId": 847,
+      "kind": "static",
+      "text": "Ready to fight.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI",
+        "UI_HelpChooseCraft"
+      ]
+    },
+    "ui:848": {
+      "library": "ui",
+      "symbolId": 848,
+      "kind": "static",
+      "text": "Place to buy and \n--- RECORDSEPARATOR ---\nsell parts.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI",
+        "UI_HelpChooseCraft"
+      ]
+    },
+    "ui:849": {
+      "library": "ui",
+      "symbolId": 849,
+      "kind": "static",
+      "text": "Place to build and \n--- RECORDSEPARATOR ---\nedit crafts.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI",
+        "UI_HelpChooseCraft"
+      ]
+    },
+    "ui:851": {
+      "library": "ui",
+      "symbolId": 851,
+      "kind": "dynamic",
+      "text": "Center",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraftAI"
+      ]
+    },
+    "ui:855": {
+      "library": "ui",
+      "symbolId": 855,
+      "kind": "dynamic",
+      "text": "Center",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpChooseCraft"
+      ]
+    },
+    "ui:858": {
+      "library": "ui",
+      "symbolId": 858,
+      "kind": "static",
+      "text": "First of all, you need \n--- RECORDSEPARATOR ---\nto build a craft in the \n--- RECORDSEPARATOR ---\nFACTORY, since you \n--- RECORDSEPARATOR ---\ndon't have one.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildOneFirst"
+      ]
+    },
+    "ui:860": {
+      "library": "ui",
+      "symbolId": 860,
+      "kind": "dynamic",
+      "text": "Center",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildOneFirst"
+      ]
+    },
+    "ui:863": {
+      "library": "ui",
+      "symbolId": 863,
+      "kind": "static",
+      "text": "1. You need a Body first.\n--- RECORDSEPARATOR ---\nTry to use the filter that \n--- RECORDSEPARATOR ---\naims to Bodys.\n--- RECORDSEPARATOR ---\nThen select one below by \n--- RECORDSEPARATOR ---\na click.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:869": {
+      "library": "ui",
+      "symbolId": 869,
+      "kind": "static",
+      "text": "2. Then Wings, Engines \n--- RECORDSEPARATOR ---\nand Guns.\n--- RECORDSEPARATOR ---\nSame as the Body, use \n--- RECORDSEPARATOR ---\nfilters, click one in the \n--- RECORDSEPARATOR ---\nlist.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:870": {
+      "library": "ui",
+      "symbolId": 870,
+      "kind": "static",
+      "text": "Red spots means where you can \n--- RECORDSEPARATOR ---\ninsert other parts in.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:877": {
+      "library": "ui",
+      "symbolId": 877,
+      "kind": "static",
+      "text": "3. Drag parts on the craft to \n--- RECORDSEPARATOR ---\nfind a better place you like.\n--- RECORDSEPARATOR ---\nAnd if you drag it far away \n--- RECORDSEPARATOR ---\nfrom the craft, it will return to \n--- RECORDSEPARATOR ---\nthe list.\n--- RECORDSEPARATOR ---\nIf you want it back to the \n--- RECORDSEPARATOR ---\ncraft, you can find it in the list \n--- RECORDSEPARATOR ---\nbelow and also in the Undo list!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:878": {
+      "library": "ui",
+      "symbolId": 878,
+      "kind": "static",
+      "text": "4. Everything's done, then click ADD to name \n--- RECORDSEPARATOR ---\nthe craft and add it to your craft list.\n--- RECORDSEPARATOR ---\nCongratulations! You've built a craft.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:879": {
+      "library": "ui",
+      "symbolId": 879,
+      "kind": "static",
+      "text": "BETTER \n--- RECORDSEPARATOR ---\nPLACE",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:880": {
+      "library": "ui",
+      "symbolId": 880,
+      "kind": "static",
+      "text": "REMOVE",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:889": {
+      "library": "ui",
+      "symbolId": 889,
+      "kind": "static",
+      "text": "Click to sort by these \n--- RECORDSEPARATOR ---\nproperties, to help you to find \n--- RECORDSEPARATOR ---\nparts easily.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:891": {
+      "library": "ui",
+      "symbolId": 891,
+      "kind": "static",
+      "text": "If you have a lot of parts, here \n--- RECORDSEPARATOR ---\nyou can turn pages to find them.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:892": {
+      "library": "ui",
+      "symbolId": 892,
+      "kind": "static",
+      "text": "If you wanna \n--- RECORDSEPARATOR ---\nchange the Body\n--- RECORDSEPARATOR ---\n Click NEW.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:893": {
+      "library": "ui",
+      "symbolId": 893,
+      "kind": "static",
+      "text": "If you wanna edit or \n--- RECORDSEPARATOR ---\nbreak a craft to parts.\n--- RECORDSEPARATOR ---\nClick to CRAFTS' page \n--- RECORDSEPARATOR ---\nto find one.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:898": {
+      "library": "ui",
+      "symbolId": 898,
+      "kind": "dynamic",
+      "text": "How to build a craft",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBuildCraft"
+      ]
+    },
+    "ui:901": {
+      "library": "ui",
+      "symbolId": 901,
+      "kind": "static",
+      "text": "Click to return to PARTS' \n--- RECORDSEPARATOR ---\npage and ready to make a \n--- RECORDSEPARATOR ---\nnew craft.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBreak"
+      ]
+    },
+    "ui:902": {
+      "library": "ui",
+      "symbolId": 902,
+      "kind": "static",
+      "text": "Click EDIT to edit a craft.\n--- RECORDSEPARATOR ---\nClick BREAK to break a craft \n--- RECORDSEPARATOR ---\nto parts, \n--- RECORDSEPARATOR ---\nthen you can use them in \n--- RECORDSEPARATOR ---\nother crafts or just sell \n--- RECORDSEPARATOR ---\nthem.",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBreak"
+      ]
+    },
+    "ui:904": {
+      "library": "ui",
+      "symbolId": 904,
+      "kind": "dynamic",
+      "text": "How to edit a craft",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        7
+      ],
+      "section": null,
+      "parents": [
+        "UI_HelpBreak"
+      ]
+    },
+    "data:702": {
+      "library": "data",
+      "symbolId": 702,
+      "kind": "static",
+      "text": "- Concept -",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord11",
+        "BG50"
+      ]
+    },
+    "data:703": {
+      "library": "data",
+      "symbolId": 703,
+      "kind": "static",
+      "text": "Finaluzi",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord11",
+        "BGWord3",
+        "BGWord2",
+        "BG50"
+      ]
+    },
+    "data:704": {
+      "library": "data",
+      "symbolId": 704,
+      "kind": "static",
+      "text": "YuZhiFeng",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord11",
+        "BG50"
+      ]
+    },
+    "data:707": {
+      "library": "data",
+      "symbolId": 707,
+      "kind": "static",
+      "text": "And, Of Course...",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord10",
+        "BG50"
+      ]
+    },
+    "data:708": {
+      "library": "data",
+      "symbolId": 708,
+      "kind": "static",
+      "text": "Thank You!",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord10",
+        "BG50"
+      ]
+    },
+    "data:712": {
+      "library": "data",
+      "symbolId": 712,
+      "kind": "static",
+      "text": "- Thanks -",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord9",
+        "BG50"
+      ]
+    },
+    "data:717": {
+      "library": "data",
+      "symbolId": 717,
+      "kind": "static",
+      "text": "- Others -",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord8",
+        "BG50"
+      ]
+    },
+    "data:720": {
+      "library": "data",
+      "symbolId": 720,
+      "kind": "static",
+      "text": "- Musics -",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:721": {
+      "library": "data",
+      "symbolId": 721,
+      "kind": "static",
+      "text": "\"Silence And Calm\"  ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:722": {
+      "library": "data",
+      "symbolId": 722,
+      "kind": "static",
+      "text": "\"Forging Skills\" ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:723": {
+      "library": "data",
+      "symbolId": 723,
+      "kind": "static",
+      "text": "\"Rocking Adrenaline\" ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:724": {
+      "library": "data",
+      "symbolId": 724,
+      "kind": "static",
+      "text": "\"Rock It One More Time\"  ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:725": {
+      "library": "data",
+      "symbolId": 725,
+      "kind": "static",
+      "text": "\"Rocking The Right Way\" ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:726": {
+      "library": "data",
+      "symbolId": 726,
+      "kind": "static",
+      "text": "\"Gritty Punkster\" ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:727": {
+      "library": "data",
+      "symbolId": 727,
+      "kind": "static",
+      "text": "\"Running From Shame\" ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:728": {
+      "library": "data",
+      "symbolId": 728,
+      "kind": "static",
+      "text": "\"Raw Rivalry\" ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:729": {
+      "library": "data",
+      "symbolId": 729,
+      "kind": "static",
+      "text": "\"Success As One\" ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:730": {
+      "library": "data",
+      "symbolId": 730,
+      "kind": "static",
+      "text": "\"Her Scent\" ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:731": {
+      "library": "data",
+      "symbolId": 731,
+      "kind": "static",
+      "text": "\"Rocking Country Man\" ",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord7",
+        "BG50"
+      ]
+    },
+    "data:734": {
+      "library": "data",
+      "symbolId": 734,
+      "kind": "static",
+      "text": "- Translations -",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord6",
+        "BG50"
+      ]
+    },
+    "data:735": {
+      "library": "data",
+      "symbolId": 735,
+      "kind": "static",
+      "text": "Finaluzi",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord6",
+        "BGWord5",
+        "BG50"
+      ]
+    },
+    "data:736": {
+      "library": "data",
+      "symbolId": 736,
+      "kind": "static",
+      "text": "YuQi",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord6",
+        "BG50"
+      ]
+    },
+    "data:739": {
+      "library": "data",
+      "symbolId": 739,
+      "kind": "static",
+      "text": "- Levels -",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord5",
+        "BG50"
+      ]
+    },
+    "data:742": {
+      "library": "data",
+      "symbolId": 742,
+      "kind": "static",
+      "text": "- Art -",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord4",
+        "BG50"
+      ]
+    },
+    "data:743": {
+      "library": "data",
+      "symbolId": 743,
+      "kind": "static",
+      "text": "YuZhiFeng",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord4",
+        "BG50"
+      ]
+    },
+    "data:746": {
+      "library": "data",
+      "symbolId": 746,
+      "kind": "static",
+      "text": "- Program -",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord3",
+        "BG50"
+      ]
+    },
+    "data:749": {
+      "library": "data",
+      "symbolId": 749,
+      "kind": "static",
+      "text": "- Story -",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord2",
+        "BG50"
+      ]
+    },
+    "data:752": {
+      "library": "data",
+      "symbolId": 752,
+      "kind": "static",
+      "text": "Assembly And Battle",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord0",
+        "BG50"
+      ]
+    },
+    "data:753": {
+      "library": "data",
+      "symbolId": 753,
+      "kind": "static",
+      "text": "The story in the space",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord0",
+        "BG50"
+      ]
+    },
+    "data:756": {
+      "library": "data",
+      "symbolId": 756,
+      "kind": "static",
+      "text": "V\n--- RECORDSEPARATOR ---\nargames Presents",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord1",
+        "BG50"
+      ]
+    },
+    "data:757": {
+      "library": "data",
+      "symbolId": 757,
+      "kind": "static",
+      "text": "2011",
+      "empty": false,
+      "placeholder": false,
+      "fontIds": [
+        701
+      ],
+      "section": null,
+      "parents": [
+        "BGWord1",
+        "BG50"
+      ]
+    }
+  }
+}

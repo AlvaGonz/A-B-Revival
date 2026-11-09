@@ -64,6 +64,11 @@ Consult [`CODING_STANDARDS.md`](CODING_STANDARDS.md) for canonical guidelines:
 - **Domain Encapsulation**: Section 1 (encapsulation on models, no string matching in UI).
 - **Verification Pipeline**: Section 3 (Tier 1 `dotnet test` fast pre-commit gate, Tier 2 headless UTF gate).
 
+### Asset fidelity (mandatory)
+Use the **original** Flash art, fonts, audio and UI assets. Never substitute fonts, redraw art, or "improve" the 2011 layout; where no art exists (procedural bullets, VFX), reimplement the behaviour with the original palette and rules. See `docs/adr/0020-original-fonts-and-asset-fidelity.md`. Before laying out any menu section, extract and commit that section's full-page reference symbol (`UI_ChooseFlyAI`, `UI_MakePlayer`, `UI_Shop`, `UI_Help`, `UI_Game`, …) under `docs/assets/reference/` and build against it.
+
+**Font allowlist (only these eight):** SF TransRobotics (symbols 7, 627, 701), Arial (81), `_sans` (2, 478), Times New Roman (595, version plate only), SF Zero Gravity (496, logo only). Quick allowlist: `docs/assets/fonts.md`; full family/usage/licensing table: `docs/assets/reference/README.md#original-font-mapping-adr-0020`. No system or open-substitute font is permitted.
+
 ## Engineering Workflow Lifecycle
 This repository strictly follows the visual workflow defined in `assets/matt-pocock-workflow.png`:
 

@@ -179,6 +179,7 @@ namespace ABRevival.Core.Simulation
             for (int i = 0; i < count; i++)
             {
                 var candidate = ships[i];
+                if (candidate.health <= 0f) continue;
                 if (candidate.factionId == factionId) continue;
 
                 float distSq = math.distancesq(from, candidate.position);
