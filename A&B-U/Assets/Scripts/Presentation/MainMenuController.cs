@@ -272,5 +272,32 @@ namespace ABRevival.Presentation
             if (_linkButton != null) _linkButton.style.opacity = opacity;
             if (_playerButton != null) _playerButton.style.opacity = opacity;
         }
+
+        /// <summary>
+        /// Applies Inspector tuning immediately while playing, so the Game view updates
+        /// without restarting the scene. Scene view never renders runtime UI Toolkit.
+        /// </summary>
+        private void OnValidate()
+        {
+            if (!Application.isPlaying || _document == null) return;
+            VisualElement root = _document.rootVisualElement;
+            if (root == null) return;
+
+            _lastRootSize = Vector2.zero;
+            FitPage(root.resolvedStyle.width, root.resolvedStyle.height);
+            ApplyTopControlVisibility();
+        }
+
+        [ContextMenu("Reapply Main Menu Layout")]
+        private void ReapplyLayout()
+        {
+            if (_document == null) _document = GetComponent<UIDocument>();
+            if (_document == null || _document.rootVisualElement == null) return;
+
+            _lastRootSize = Vector2.zero;
+            FitPage(_document.rootVisualElement.resolvedStyle.width,
+                _document.rootVisualElement.resolvedStyle.height);
+            ApplyTopControlVisibility();
+        }
     }
 }
