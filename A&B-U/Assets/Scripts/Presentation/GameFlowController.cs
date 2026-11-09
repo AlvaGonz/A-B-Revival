@@ -138,6 +138,7 @@ namespace ABRevival.Presentation
             {
                 _flight.TacticalModeRequested += OnTacticalModeRequested;
                 _flight.CameraDistanceChanged += OnCameraDistanceChanged;
+                _flight.ControlModeChanged += OnControlModeChanged;
             }
         }
 
@@ -163,6 +164,7 @@ namespace ABRevival.Presentation
             {
                 _flight.TacticalModeRequested -= OnTacticalModeRequested;
                 _flight.CameraDistanceChanged -= OnCameraDistanceChanged;
+                _flight.ControlModeChanged -= OnControlModeChanged;
             }
 
             DisposeMission();
@@ -240,6 +242,7 @@ namespace ABRevival.Presentation
             _story = new StoryDirector(_save, Autosave);
             _hud?.State.SetCameraDistance(_save.cameraPreset);
             _cameraRig?.ApplyPreset(_save.cameraPreset);
+            _flight?.SetControlMode(_save.controlMode);
         }
 
         private void Autosave(PlayerSaveData payload)
@@ -609,6 +612,7 @@ namespace ABRevival.Presentation
             SetupCombat();
 
             _flight?.BeginMission(_simulation, _runner.PlayerShipIndex, _hud, _cameraRig);
+            _spriteView?.SetWeapons(_weapons);
             _spriteView?.BeginMission(
                 _simulation,
                 _solver,
@@ -787,7 +791,7 @@ namespace ABRevival.Presentation
                 if ((uint)placement.partIndex >= (uint)mountedCount) continue;
 
                 MountedPartData part = mounted[placement.partIndex];
-                part.localOffset = placement.localOffset;
+                part.localOffset = placement.localOffset * CameraDistancePresets.MountArtScale;
                 part.localRotation = placement.localRotation;
                 part.mirrored = placement.mirrored;
                 count = AddMountedPart(parts, count, in part);
@@ -824,7 +828,7 @@ namespace ABRevival.Presentation
                         maxHealth = math.max(1f, source.health),
                         mass = source.mass,
                         thrust = source.thrust,
-                        localOffset = placement.localOffset,
+                        localOffset = placement.localOffset * CameraDistancePresets.MountArtScale,
                         localRotation = placement.localRotation,
                         mirrored = placement.mirrored
                     },
@@ -920,14 +924,17 @@ namespace ABRevival.Presentation
 
                 for (int muzzleIndex = 0; muzzleIndex < muzzleCount && mountCount < mounts.Length; muzzleIndex++)
                 {
-                    float2 local = muzzles[muzzleIndex];
+                    float2 local = muzzles[muzzleIndex] * CameraDistancePresets.MountArtScale;
                     if (part.mirrored) local.x = -local.x;
 
                     mounts[mountCount++] = new WeaponMount
                     {
                         spec = spec,
-                        localOffset = part.localOffset + local,
-                        localRotation = part.localRotation
+                        localOffset = part.localOffset,
+                        localMuzzle = local,
+                        localRotation = part.localRotation,
+                        aimRotation = 0f,
+                        partIndex = i
                     };
                 }
             }
@@ -974,14 +981,17 @@ namespace ABRevival.Presentation
 
                 for (int muzzleIndex = 0; muzzleIndex < muzzleCount && mountCount < mounts.Length; muzzleIndex++)
                 {
-                    float2 local = muzzles[muzzleIndex];
+                    float2 local = muzzles[muzzleIndex] * CameraDistancePresets.MountArtScale;
                     if (placement.mirrored) local.x = -local.x;
 
                     mounts[mountCount++] = new WeaponMount
                     {
                         spec = spec,
-                        localOffset = placement.localOffset + local,
-                        localRotation = placement.localRotation
+                        localOffset = placement.localOffset * CameraDistancePresets.MountArtScale,
+                        localMuzzle = local,
+                        localRotation = placement.localRotation,
+                        aimRotation = 0f,
+                        partIndex = mount.partIndex
                     };
                 }
             }
@@ -1055,7 +1065,7 @@ namespace ABRevival.Presentation
         {
             _flight?.Tick(FixedStepSeconds);
             // Fire before the simulation step so new projectiles are integrated and swept this tick.
-            _weapons?.Tick(_combatInput);
+            TickPlayerWeapons();
             TickAiWeapons();
             _runner.Tick();
             RegisterSpawnedShips();
@@ -1076,6 +1086,32 @@ namespace ABRevival.Presentation
                 if (hits[i].hullDestroyed) _combatAudio.Explosion(1f);
                 else if (hits[i].partDetached) _combatAudio.ComponentLost();
             }
+        }
+
+        /// <summary>
+        /// Player fire ports aim independently of the hull: keyboard mode tracks the mouse,
+        /// mouse mode auto-targets the closest hostile inside the highest-range mounted weapon.
+        /// No managed allocation.
+        /// </summary>
+        private void TickPlayerWeapons()
+        {
+            if (_weapons == null || _combatInput == null) return;
+
+            int playerIndex = _runner != null ? _runner.PlayerShipIndex : _weapons.PlayerShipIndex;
+            if (playerIndex < 0 || _flight == null)
+            {
+                _weapons.Tick(_combatInput);
+                return;
+            }
+
+            bool mouseMode = _flight.ControlMode == PlayerControlMode.Mouse;
+            bool requireRange = mouseMode;
+            float2 aimPoint = _flight.CurrentAimPoint;
+            if (mouseMode && _weapons.TryFindAutoTarget(playerIndex, out ShipEntity target))
+                aimPoint = target.position;
+
+            _weapons.TickAim(
+                playerIndex, _combatInput.FireHeld, _combatInput.Autofire, aimPoint, requireRange);
         }
 
         /// <summary>
@@ -1184,6 +1220,12 @@ namespace ABRevival.Presentation
             Autosave(_save);
         }
 
+        private void OnControlModeChanged(PlayerControlMode mode)
+        {
+            _save.controlMode = mode;
+            Autosave(_save);
+        }
+
         /// <summary>
         /// Deterministic verification hook: flies the player east like the Tier-1 replay and
         /// fast-forwards until the mission's own win objective fires. Never fabricates a result.
@@ -1245,7 +1287,7 @@ namespace ABRevival.Presentation
                 }
 
                 ShipEntity ship = _simulation.GetShip(playerIndex);
-                state.SetShieldFraction(PlayerShieldFraction());
+                state.SetFuelFraction(ship.BoosterFraction);
                 state.SetRadarBearing(math.degrees(-ship.rotation));
                 CountLivingHostiles(playerIndex, ship.position, out int hostiles, out float nearest);
                 state.SetAiCount(hostiles);
@@ -1279,7 +1321,7 @@ namespace ABRevival.Presentation
             state.SetMissionSeconds(0f);
             state.SetAiCount(0);
             state.SetEnemyDistance(0f);
-            state.SetShieldFraction(1f);
+            state.SetFuelFraction(1f);
             state.SetCaptainHealth(1f, 1f);
             state.SetRadarBearing(0f);
         }
@@ -1318,25 +1360,25 @@ namespace ABRevival.Presentation
         }
 
         /// <summary>
-        /// Shield bar: remaining integrity of the player's non-chassis parts. Full when the
-        /// craft carries no modular parts or the contact layer is unavailable.
+        /// Frozen <c>fuel</c> pickup path: refills the player booster tank and reports it.
+        /// The item entity layer is not modelled yet, so the level/item system calls this seam.
         /// </summary>
-        private float PlayerShieldFraction()
+        public bool CollectFuelPickup(float amount = ShipEntity.FuelPickupAmount)
         {
-            if (_solver == null || _playerHull < 0 || _playerHull >= _solver.HullCount) return 1f;
+            if (_simulation == null || _runner == null) return false;
 
-            int partCount = _solver.GetHullPartCount(_playerHull);
-            float remaining = 0f;
-            float total = 0f;
-            for (int i = 0; i < partCount; i++)
-            {
-                MountedPartData part = _solver.GetPart(_playerHull, i);
-                if (part.category == PartCategory.Body) continue;
-                remaining += math.max(0f, part.health);
-                total += part.maxHealth;
-            }
+            int playerIndex = _runner.PlayerShipIndex;
+            if (playerIndex < 0 || playerIndex >= _simulation.ShipCount) return false;
 
-            return total > 0f ? math.clamp(remaining / total, 0f, 1f) : 1f;
+            ShipEntity ship = _simulation.GetShip(playerIndex);
+            float before = ship.boosterFuel;
+            ship.RefuelBooster(amount);
+            if (ship.boosterFuel == before) return false;
+
+            _simulation.SetShip(playerIndex, ship);
+            _hud?.State.SetFuelFraction(ship.BoosterFraction);
+            _combatAudio?.PickupCollected(PickupKind.Fuel);
+            return true;
         }
 
         private static float Fraction(float current, float max)

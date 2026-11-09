@@ -57,13 +57,16 @@ namespace ABRevival.Tests
             var payload = new PlayerSaveData
             {
                 shop = shop.CreateSave(),
-                cameraPreset = ABRevival.Core.Camera.CameraDistancePreset.Far
+                cameraPreset = ABRevival.Core.Camera.CameraDistancePreset.Far,
+                controlMode = ABRevival.Core.Simulation.PlayerControlMode.Mouse
             };
             payload.blueprints.Add(blueprint);
 
             PlayerSaveData loaded = PlayerSaveCodec.FromJson(PlayerSaveCodec.ToJson(payload));
             Assert.AreEqual(ABRevival.Core.Camera.CameraDistancePreset.Far, loaded.cameraPreset,
                 "The ADR 0005 camera preset must round-trip through the single save payload.");
+            Assert.AreEqual(ABRevival.Core.Simulation.PlayerControlMode.Mouse, loaded.controlMode,
+                "The #181 Options control mode must round-trip through the single save payload.");
             ShopState restored = ShopState.FromSave(catalog, loaded.shop);
 
             Assert.AreEqual(260, restored.Money);
@@ -170,10 +173,16 @@ namespace ABRevival.Tests
         [Test]
         public void Save_InvalidCameraPreset_FallsBackToShort()
         {
-            var payload = new PlayerSaveData { cameraPreset = (ABRevival.Core.Camera.CameraDistancePreset)99 };
+            var payload = new PlayerSaveData
+            {
+                cameraPreset = (ABRevival.Core.Camera.CameraDistancePreset)99,
+                controlMode = (ABRevival.Core.Simulation.PlayerControlMode)99
+            };
             PlayerSaveData loaded = PlayerSaveCodec.FromJson(PlayerSaveCodec.ToJson(payload));
 
             Assert.AreEqual(ABRevival.Core.Camera.CameraDistancePreset.Short, loaded.cameraPreset);
+            Assert.AreEqual(ABRevival.Core.Simulation.PlayerControlMode.Keyboard, loaded.controlMode,
+                "Keyboard must be the default battle control mode.");
         }
 
         [Test]

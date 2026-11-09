@@ -491,6 +491,9 @@ namespace ABRevival.Presentation.Audio
                 case PickupKind.Part:
                     PlayTrigger(AudioTrigger.CombatPickupPart);
                     break;
+                case PickupKind.Fuel:
+                    PlayTrigger(AudioTrigger.CombatPickupFuel);
+                    break;
             }
         }
 

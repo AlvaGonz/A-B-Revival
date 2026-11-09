@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using ABRevival.Core.Camera;
 using ABRevival.Core.Data;
 using ABRevival.Core.Rendering;
 using ABRevival.Core.Simulation;
@@ -26,7 +27,7 @@ namespace ABRevival.Tests.PlayMode
     public class MissionScreenshotPlayModeTests
     {
         private const int Size = 512;
-        private const float CameraSize = 256f;
+        private static readonly float CameraSize = 256f * CameraDistancePresets.MountArtScale;
         private const string GoldenRelativePath = "Tests/Golden/mission_captain_defIndex76.png";
 
         [UnityTest]
@@ -70,7 +71,7 @@ namespace ABRevival.Tests.PlayMode
                             category = placements[i].category,
                             health = 1000f,
                             maxHealth = 1000f,
-                            localOffset = placements[i].localOffset,
+                            localOffset = placements[i].localOffset * CameraDistancePresets.MountArtScale,
                             localRotation = placements[i].localRotation,
                             mirrored = placements[i].mirrored
                         },
@@ -297,8 +298,8 @@ namespace ABRevival.Tests.PlayMode
                 mass = 100f,
                 health = 1000f,
                 maxHealth = 1000f,
-                energy = 500f,
-                maxEnergy = 500f,
+                boosterFuel = 500f,
+                maxBoosterFuel = 500f,
                 thrustPower = 1000f,
                 turnSpeed = 2f,
                 drag = 0.05f,

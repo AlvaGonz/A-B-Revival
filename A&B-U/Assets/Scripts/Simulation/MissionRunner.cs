@@ -125,7 +125,7 @@ namespace ABRevival.Core.Simulation
 
         private const float DefaultMass = 100f;
         private const float DefaultHealth = 1000f;
-        private const float DefaultEnergy = 500f;
+        private const float DefaultBoosterFuel = 500f;
         private const float DefaultThrust = 1000f;
         private const float DefaultTurnSpeed = 2f;
         private const float DefaultDrag = 0.05f;
@@ -756,8 +756,8 @@ namespace ABRevival.Core.Simulation
                 mass = mass,
                 health = health,
                 maxHealth = health,
-                energy = DefaultEnergy,
-                maxEnergy = DefaultEnergy,
+                boosterFuel = DefaultBoosterFuel,
+                maxBoosterFuel = DefaultBoosterFuel,
                 // ShipMovementJob accelerates by thrustPower/mass, so the display speed is a force.
                 thrustPower = thrust * mass,
                 turnSpeed = turnRate,

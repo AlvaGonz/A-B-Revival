@@ -90,7 +90,8 @@ namespace ABRevival.Core.Audio
         CombatPickupHealth = 23,
         CombatPickupMoney = 24,
         CombatPickupPart = 25,
-        MissionTalkAdvance = 26
+        MissionTalkAdvance = 26,
+        CombatPickupFuel = 27
     }
 
     public readonly struct SoundDefinition
@@ -130,7 +131,7 @@ namespace ABRevival.Core.Audio
     {
         public const int EffectCount = 22;
         public const int MusicCount = 11;
-        public const int TriggerCount = 27;
+        public const int TriggerCount = 28;
 
         public static readonly SoundDefinition[] Effects =
         {
@@ -201,7 +202,8 @@ namespace ABRevival.Core.Audio
             new AudioTriggerDefinition(SoundEffect.S_Repair, AudioBus.Sfx, 1.4f),
             new AudioTriggerDefinition(SoundEffect.S_Money, AudioBus.Sfx, 0.5f),
             new AudioTriggerDefinition(SoundEffect.S_Weapon, AudioBus.Sfx, 1f),
-            new AudioTriggerDefinition(SoundEffect.S_Word, AudioBus.Ui, 1f)
+            new AudioTriggerDefinition(SoundEffect.S_Word, AudioBus.Ui, 1f),
+            new AudioTriggerDefinition(SoundEffect.S_Fuel, AudioBus.Sfx, 1f)
         };
 
         public static SoundDefinition GetEffect(SoundEffect effect)

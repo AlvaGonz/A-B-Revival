@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using ABRevival.Core.Camera;
 using ABRevival.Core.Data;
+using ABRevival.Core.Simulation;
 
 namespace ABRevival.Core.Persistence
 {
@@ -33,6 +34,9 @@ namespace ABRevival.Core.Persistence
 
         /// <summary>Center companion slots 0..4. Empty slots keep <c>craftIndex = -1</c>.</summary>
         [DataMember(Order = 6)] public List<CompanionSaveData> companions = new List<CompanionSaveData>();
+
+        /// <summary>Battle control scheme (ticket #179); also the Options setting wired in #181.</summary>
+        [DataMember(Order = 7)] public PlayerControlMode controlMode = PlayerControlMode.Keyboard;
     }
 
     /// <summary>One AI companion slot from Center, mirroring the frozen COMPANIONS record.</summary>
@@ -175,6 +179,8 @@ namespace ABRevival.Core.Persistence
                 save.companions ??= new List<CompanionSaveData>();
                 if ((int)save.cameraPreset < 0 || (int)save.cameraPreset >= CameraDistancePresets.Count)
                     save.cameraPreset = CameraDistancePreset.Short;
+                if ((int)save.controlMode < 0 || (int)save.controlMode > (int)PlayerControlMode.Mouse)
+                    save.controlMode = PlayerControlMode.Keyboard;
                 return save;
             }
         }

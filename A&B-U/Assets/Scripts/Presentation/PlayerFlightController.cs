@@ -1,15 +1,19 @@
 using System;
 using ABRevival.Core.Camera;
 using ABRevival.Core.Simulation;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace ABRevival.Presentation
 {
     /// <summary>
     /// Manual player flight for the Mission state. Reads the desktop keyboard/mouse
     /// action map and writes <see cref="ShipInput"/> before every fixed simulation step.
-    /// C cycles the ADR 0005 camera distance and E requests the Captain's tactical mode;
-    /// firing is owned by <see cref="ICombatFireInput"/> and consumed by <see cref="WeaponSystem"/>.
+    /// Q switches keyboard/mouse control mode, C cycles the ADR 0005 camera distance,
+    /// Space is the afterburner and E requests the Captain's tactical mode. The mouse
+    /// world target is published for independent turret aim; firing is owned by
+    /// <see cref="ICombatFireInput"/> and consumed by <see cref="WeaponSystem"/>.
     /// A deterministic override remains for the headless win hook; normal play never uses it.
     /// Original game IP: Vargames (2011).
     /// </summary>
@@ -24,6 +28,10 @@ namespace ABRevival.Presentation
         private bool _missionActive;
         private bool _deterministic;
         private ShipInput _deterministicInput;
+        private PlayerControlMode _controlMode = PlayerControlMode.Keyboard;
+        private Vector2 _pointerScreen;
+        private Vector2 _screenSize = new Vector2(CameraDistancePresets.DesignWidth, CameraDistancePresets.DesignHeight);
+        private bool _hasPointer;
 
         /// <summary>Raised when E is pressed during a mission; the game flow owns the cycle.</summary>
         public event Action TacticalModeRequested;
@@ -31,8 +39,16 @@ namespace ABRevival.Presentation
         /// <summary>Raised after C changes the camera preset so the flow can autosave it.</summary>
         public event Action<CameraDistancePreset> CameraDistanceChanged;
 
+        /// <summary>Raised after Q (or Options, #181) changes the battle control scheme.</summary>
+        public event Action<PlayerControlMode> ControlModeChanged;
+
         /// <summary>Command written to the simulation on the last fixed tick.</summary>
         public ShipInput CurrentInput { get; private set; }
+
+        /// <summary>Mouse target in world pixels used by the player's turrets.</summary>
+        public float2 CurrentAimPoint { get; private set; }
+
+        public PlayerControlMode ControlMode => _controlMode;
 
         public bool HasMission => _missionActive;
 
@@ -59,6 +75,7 @@ namespace ABRevival.Presentation
 
         private void Update()
         {
+            UpdatePointer();
             PollActions();
         }
 
@@ -75,6 +92,41 @@ namespace ABRevival.Presentation
 
             if (_input.CameraDistancePressedThisFrame())
                 CycleCameraDistance();
+
+            if (_input.ControlModePressedThisFrame())
+                SetControlMode(_controlMode == PlayerControlMode.Keyboard
+                    ? PlayerControlMode.Mouse
+                    : PlayerControlMode.Keyboard);
+        }
+
+        /// <summary>Sets the battle control scheme; the game flow persists it (#181 Options).</summary>
+        public void SetControlMode(PlayerControlMode mode)
+        {
+            if (mode != PlayerControlMode.Keyboard && mode != PlayerControlMode.Mouse)
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, "Unknown player control mode.");
+            if (_controlMode == mode) return;
+
+            _controlMode = mode;
+            ControlModeChanged?.Invoke(mode);
+        }
+
+        /// <summary>Test and scripted-input hook: caches the pointer without a physical mouse.</summary>
+        public void SetPointer(Vector2 screenPosition, Vector2 screenSize)
+        {
+            if (screenSize.x <= 0f || screenSize.y <= 0f) return;
+            _pointerScreen = screenPosition;
+            _screenSize = screenSize;
+            _hasPointer = true;
+        }
+
+        private void UpdatePointer()
+        {
+            Mouse mouse = Mouse.current;
+            if (mouse == null) return;
+
+            _pointerScreen = mouse.position.ReadValue();
+            _screenSize = new Vector2(Screen.width, Screen.height);
+            _hasPointer = true;
         }
 
         /// <summary>Starts manual control for the current mission. Enables the action map.</summary>
@@ -129,13 +181,49 @@ namespace ABRevival.Presentation
         /// <summary>Writes the player ship's input for one fixed simulation step. Allocation-free.</summary>
         public void Tick(float deltaTime)
         {
-            if (!_missionActive || _simulation == null || _shipIndex < 0) return;
+            if (!_missionActive || _simulation == null || _shipIndex < 0 || _shipIndex >= _simulation.ShipCount)
+                return;
 
-            ShipInput input = _deterministic || _input == null ? _deterministicInput : _input.ReadShipInput();
+            ShipEntity ship = _simulation.GetShip(_shipIndex);
+            CurrentAimPoint = ResolveAimPoint(in ship);
+
+            ShipInput input;
+            if (_deterministic || _input == null)
+            {
+                input = _deterministicInput;
+            }
+            else if (_controlMode == PlayerControlMode.Mouse)
+            {
+                input = FlightControlMath.FromCursor(in ship, CurrentAimPoint, _input.ReadShipInput().boost);
+            }
+            else
+            {
+                input = _input.ReadShipInput();
+            }
+
             CurrentInput = input;
+            _simulation.SetInput(_shipIndex, in input);
+        }
 
-            if (_shipIndex < _simulation.ShipCount)
-                _simulation.SetInput(_shipIndex, in input);
+        private float2 ResolveAimPoint(in ShipEntity ship)
+        {
+            if (_cameraRig != null && _hasPointer)
+            {
+                Vector2 world = _cameraRig.ScreenToWorld(_pointerScreen, _screenSize);
+                return new float2(world.x, world.y);
+            }
+
+            if (_hasPointer && _screenSize.x > 0f && _screenSize.y > 0f)
+            {
+                ViewportPoint centred = CameraDistancePresets.ScreenToWorldCentered(
+                    new ViewportPoint(_pointerScreen.x, _pointerScreen.y),
+                    new ViewportPoint(_screenSize.x, _screenSize.y),
+                    CameraDistancePreset.Short);
+                return ship.position + new float2(centred.X, centred.Y);
+            }
+
+            // No pointer (headless or a missing mouse): aim straight ahead.
+            return ship.position + (ShipEntity.Forward(ship.rotation) * 1000f);
         }
 
         private void CycleCameraDistance()

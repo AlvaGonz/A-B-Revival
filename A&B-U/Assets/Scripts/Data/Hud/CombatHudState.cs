@@ -9,9 +9,9 @@ namespace ABRevival.Core.Hud
     /// Pure combat HUD state established by ADR 0004: hull health, cumulative
     /// battle-damage telemetry, Captain tactical mode code, and the ephemeral
     /// camera-distance badge. The frozen HUD readouts added in ticket #168 (money,
-    /// mission timer, AI count, target distance, shield, pilot name, radar
-    /// bearing, reticle) live here too. No Unity API is used so the Tier 1 gate can
-    /// exercise every transition.
+    /// mission timer, AI count, target distance, pilot name, radar bearing, reticle)
+    /// and the ticket #179 Fuel bar live here too. The third bar is deliberately inert.
+    /// No Unity API is used so the Tier 1 gate can exercise every transition.
     /// </summary>
     public sealed class CombatHudState
     {
@@ -33,7 +33,7 @@ namespace ABRevival.Core.Hud
         private float _missionSeconds;
         private int _aiCount;
         private float _enemyDistance;
-        private float _shieldFraction = 1f;
+        private float _fuelFraction = 1f;
         private string _pilotName = string.Empty;
         private float _radarBearingDegrees;
         private float _reticleX = CameraDistancePresets.DesignWidth * 0.5f;
@@ -60,7 +60,9 @@ namespace ABRevival.Core.Hud
         public float MissionSeconds => _missionSeconds;
         public int AiCount => _aiCount;
         public float EnemyDistance => _enemyDistance;
-        public float ShieldFraction => _shieldFraction;
+
+        /// <summary>Booster tank fill shown on the bar directly below hull health (ticket #179).</summary>
+        public float FuelFraction => _fuelFraction;
         public string PilotName => _pilotName;
         public float RadarBearingDegrees => _radarBearingDegrees;
         public float ReticleX => _reticleX;
@@ -87,10 +89,10 @@ namespace ABRevival.Core.Hud
             _hullCurrent = current < 0f ? 0f : current > max ? max : current;
         }
 
-        /// <summary>Shield/boost bar fill, already normalized by the caller.</summary>
-        public void SetShieldFraction(float fraction)
+        /// <summary>Booster Fuel bar fill, already normalized by the caller.</summary>
+        public void SetFuelFraction(float fraction)
         {
-            _shieldFraction = ClampFraction(fraction, nameof(fraction));
+            _fuelFraction = ClampFraction(fraction, nameof(fraction));
         }
 
         public void SetCaptainHealth(float current, float max)
@@ -259,7 +261,7 @@ namespace ABRevival.Core.Hud
                 _missionSeconds,
                 _aiCount,
                 _enemyDistance,
-                _shieldFraction,
+                _fuelFraction,
                 _pilotName,
                 _radarBearingDegrees,
                 _reticleX,
@@ -308,7 +310,7 @@ namespace ABRevival.Core.Hud
         public readonly float MissionSeconds;
         public readonly int AiCount;
         public readonly float EnemyDistance;
-        public readonly float ShieldFraction;
+        public readonly float FuelFraction;
         public readonly string PilotName;
         public readonly float RadarBearingDegrees;
         public readonly float ReticleX;
@@ -331,7 +333,7 @@ namespace ABRevival.Core.Hud
             float missionSeconds,
             int aiCount,
             float enemyDistance,
-            float shieldFraction,
+            float fuelFraction,
             string pilotName,
             float radarBearingDegrees,
             float reticleX,
@@ -356,7 +358,7 @@ namespace ABRevival.Core.Hud
             MissionSeconds = missionSeconds;
             AiCount = aiCount;
             EnemyDistance = enemyDistance;
-            ShieldFraction = shieldFraction;
+            FuelFraction = fuelFraction;
             PilotName = pilotName;
             RadarBearingDegrees = radarBearingDegrees;
             ReticleX = reticleX;

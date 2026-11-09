@@ -33,7 +33,10 @@ namespace ABRevival.Presentation
         public const string BarsElement = "hud-bars";
         public const string HullValueElement = "hud-hull-value";
         public const string HullFillElement = "hud-hull-fill";
-        public const string ShieldFillElement = "hud-shield-fill";
+        public const string FuelFillElement = "hud-fuel-fill";
+
+        /// <summary>Third bar: visible and reserved, deliberately never bound to data.</summary>
+        public const string ReservedFillElement = "hud-reserved-fill";
         public const string PilotPortraitElement = "hud-pilot-portrait";
         public const string PilotBackingElement = "hud-pilot-backing";
         public const string PilotHealthPipElement = "hud-pilot-health-pip";
@@ -61,7 +64,7 @@ namespace ABRevival.Presentation
         private readonly Label _modeBadgeText;
         private readonly Label _cameraBadgeText;
         private readonly VisualElement _hullFill;
-        private readonly VisualElement _shieldFill;
+        private readonly VisualElement _fuelFill;
         private readonly VisualElement _captainTile;
         private readonly VisualElement _captainHealth;
         private readonly VisualElement _cameraBadge;
@@ -85,7 +88,7 @@ namespace ABRevival.Presentation
         private int _lastMissionSecond = -1;
         private int _lastAiCount = int.MinValue;
         private int _lastDistance = int.MinValue;
-        private float _lastShield = -1f;
+        private float _lastFuel = -1f;
         private string _lastPilotName;
         private float _lastRadarBearing = float.NaN;
         private bool _hasReticle;
@@ -109,7 +112,7 @@ namespace ABRevival.Presentation
             _modeBadgeText = Require<Label>(root, ModeBadgeTextElement);
             _cameraBadgeText = Require<Label>(root, CameraBadgeTextElement);
             _hullFill = Require<VisualElement>(root, HullFillElement);
-            _shieldFill = Require<VisualElement>(root, ShieldFillElement);
+            _fuelFill = Require<VisualElement>(root, FuelFillElement);
             _captainTile = Require<VisualElement>(root, CaptainTileElement);
             _captainHealth = Require<VisualElement>(root, CaptainHealthElement);
             _cameraBadge = Require<VisualElement>(root, CameraBadgeElement);
@@ -192,10 +195,10 @@ namespace ABRevival.Presentation
                 _distance.text = HudTextFormatter.FormatDistance(distance);
             }
 
-            if (snapshot.ShieldFraction != _lastShield)
+            if (snapshot.FuelFraction != _lastFuel)
             {
-                _lastShield = snapshot.ShieldFraction;
-                _shieldFill.style.width = Length.Percent(snapshot.ShieldFraction * 100f);
+                _lastFuel = snapshot.FuelFraction;
+                _fuelFill.style.width = Length.Percent(snapshot.FuelFraction * 100f);
             }
 
             if (!string.Equals(snapshot.PilotName, _lastPilotName, StringComparison.Ordinal))
@@ -261,7 +264,8 @@ namespace ABRevival.Presentation
             Assign(root, CaptainPortraitElement, sprites.CaptainPortrait);
             Assign(root, CaptainBackingElement, sprites.PortraitBacking);
             Assign(root, HullFillElement, sprites.HealthBar);
-            Assign(root, ShieldFillElement, sprites.ShieldBar);
+            Assign(root, FuelFillElement, sprites.EnergyBar);
+            Assign(root, ReservedFillElement, sprites.ShieldBar);
             Assign(root, ReticleElement, sprites.Reticle);
             Assign(root, ModeBadgeElement, sprites.ModeBadge);
             Assign(root, CameraBadgeElement, sprites.CameraBadge);

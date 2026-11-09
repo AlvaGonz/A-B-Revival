@@ -25,6 +25,7 @@ namespace ABRevival.Core.Hud
         [SerializeField] private Sprite _captainPortrait;
         [SerializeField] private Sprite _portraitBacking;
         [SerializeField] private Sprite _healthBar;
+        [SerializeField] private Sprite _energyBar;
         [SerializeField] private Sprite _shieldBar;
         [SerializeField] private Sprite _barFrame;
         [SerializeField] private Sprite _reticle;
@@ -44,6 +45,11 @@ namespace ABRevival.Core.Hud
         public Sprite CaptainPortrait => _captainPortrait;
         public Sprite PortraitBacking => _portraitBacking;
         public Sprite HealthBar => _healthBar;
+
+        /// <summary>Blue Fuel fill (frozen <c>pow</c> bar art).</summary>
+        public Sprite EnergyBar => _energyBar;
+
+        /// <summary>Green reserved third bar fill (frozen <c>powb</c> art); never driven.</summary>
         public Sprite ShieldBar => _shieldBar;
         public Sprite BarFrame => _barFrame;
         public Sprite Reticle => _reticle;

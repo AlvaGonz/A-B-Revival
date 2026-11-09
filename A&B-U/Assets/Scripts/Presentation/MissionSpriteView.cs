@@ -50,6 +50,7 @@ namespace ABRevival.Presentation
         private BulletSpriteTable _bulletTable;
         private ScheduledCombatSimulation _simulation;
         private ProjectileContactSolver _solver;
+        private WeaponSystem _weapons;
         private int[] _shipToHull;
         private SpriteInstance _instance;
         private bool _active;
@@ -173,6 +174,12 @@ namespace ABRevival.Presentation
             UpdateViewSize();
         }
 
+        /// <summary>Injects the weapon system so gun sprites rotate with their independent turret aim.</summary>
+        public void SetWeapons(WeaponSystem weapons)
+        {
+            _weapons = weapons;
+        }
+
         /// <summary>
         /// Rebuilds every instance from the current simulation state and uploads the dirty
         /// range. Allocation-free; the native staging buffers are owned by the renderer.
@@ -241,7 +248,7 @@ namespace ABRevival.Presentation
                     health = ship.health,
                     maxHealth = ship.maxHealth
                 };
-                AddPart(in ship, in fallback);
+                AddPart(shipIndex, 0, in ship, in fallback);
                 return;
             }
 
@@ -255,14 +262,14 @@ namespace ABRevival.Presentation
                     if (!_solver.IsPartMounted(hull, partIndex)) continue;
                     MountedPartData part = _solver.GetPart(hull, partIndex);
                     if (CraftComposition.Layer(part.category) != layer) continue;
-                    AddPart(in ship, in part);
+                    AddPart(shipIndex, partIndex, in ship, in part);
                     if (EffectsEnabled && part.category == PartCategory.Engine)
                         SpawnEngineTrail(hull, partIndex, in ship, in part, deltaTime);
                 }
             }
         }
 
-        private void AddPart(in ShipEntity ship, in MountedPartData part)
+        private void AddPart(int shipIndex, int partIndex, in ShipEntity ship, in MountedPartData part)
         {
             SpriteUvRect rect = _uvTable.PartOrDefault(part.partId);
 
@@ -271,16 +278,24 @@ namespace ABRevival.Presentation
             float x = ship.position.x + (cos * part.localOffset.x) - (sin * part.localOffset.y);
             float y = ship.position.y + (sin * part.localOffset.x) + (cos * part.localOffset.y);
 
+            float rotation = ship.rotation + part.localRotation;
+            if (part.category == PartCategory.Gun && _weapons != null &&
+                _weapons.TryGetPartAim(shipIndex, partIndex, out float aim))
+            {
+                rotation = aim;
+            }
+
             float maxHealth = part.maxHealth > 0f ? part.maxHealth : 1f;
             float damage = 1f - math.saturate(part.health / maxHealth);
+            float artScale = CameraDistancePresets.MountArtScale;
 
             _instance = new SpriteInstance
             {
                 X = x,
                 Y = y,
-                Width = part.mirrored ? -rect.Width : rect.Width,
-                Height = rect.Height,
-                RotationRadians = ship.rotation + part.localRotation,
+                Width = part.mirrored ? -rect.Width * artScale : rect.Width * artScale,
+                Height = rect.Height * artScale,
+                RotationRadians = rotation,
                 UvX = rect.UvX,
                 UvY = rect.UvY,
                 UvWidth = rect.UvWidth,
@@ -308,7 +323,7 @@ namespace ABRevival.Presentation
 
                 if (EffectsEnabled && speed > 1f)
                 {
-                    float trailLength = math.min(26f, 10f + (speed * 0.01f));
+                    float trailLength = math.min(39f, (10f + (speed * 0.01f)) * CameraDistancePresets.MountArtScale);
                     float forwardX = -math.sin(heading);
                     float forwardY = math.cos(heading);
                     SpriteUvRect trail = _uvTable.White;
@@ -316,7 +331,7 @@ namespace ABRevival.Presentation
                     {
                         X = projectile.position.x - (forwardX * trailLength * 0.5f),
                         Y = projectile.position.y - (forwardY * trailLength * 0.5f),
-                        Width = 3f,
+                        Width = 4.5f,
                         Height = trailLength,
                         RotationRadians = heading,
                         UvX = trail.UvX,
@@ -341,9 +356,12 @@ namespace ABRevival.Presentation
                 else
                 {
                     rect = _uvTable.White;
-                    width = 8f;
-                    height = 8f;
+                    width = 12f;
+                    height = 12f;
                 }
+
+                width *= CameraDistancePresets.MountArtScale;
+                height *= CameraDistancePresets.MountArtScale;
 
                 _instance = new SpriteInstance
                 {
@@ -488,7 +506,7 @@ namespace ABRevival.Presentation
                 ship.position.x + (cos * part.localOffset.x) - (sin * part.localOffset.y),
                 ship.position.y + (sin * part.localOffset.x) + (cos * part.localOffset.y));
 
-            float2 exhaustLocal = _mountTable.ExhaustLocal(part.partId);
+            float2 exhaustLocal = _mountTable.ExhaustLocal(part.partId) * CameraDistancePresets.MountArtScale;
             float2 exhaust = origin + new float2(
                 (cos * exhaustLocal.x) - (sin * exhaustLocal.y),
                 (sin * exhaustLocal.x) + (cos * exhaustLocal.y));

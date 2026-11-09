@@ -20,6 +20,14 @@ namespace ABRevival.Presentation
         public float ViewportWidth => CameraDistancePresets.ViewportWidth(_preset);
         public float ViewportHeight => CameraDistancePresets.ViewportHeight(_preset);
 
+        /// <summary>Visible world width at the camera's real aspect; matches ScreenToWorld.</summary>
+        public float WorldViewportWidth =>
+            _camera != null ? _camera.orthographicSize * 2f * _camera.aspect : ViewportWidth;
+
+        /// <summary>Visible world height at the camera's real aspect; matches ScreenToWorld.</summary>
+        public float WorldViewportHeight =>
+            _camera != null ? _camera.orthographicSize * 2f : ViewportHeight;
+
         private void Awake()
         {
             if (_camera == null)
@@ -62,6 +70,47 @@ namespace ABRevival.Presentation
             Transform cameraTransform = _camera.transform;
             Vector3 position = cameraTransform.position;
             cameraTransform.position = new Vector3(worldPosition.x, worldPosition.y, position.z);
+        }
+
+        /// <summary>
+        /// Display pixels -> world pixels around the focused craft, using the camera's real
+        /// orthographic size and aspect so the turret target matches the visible world at
+        /// every resolution. Falls back to the preset mapping when no camera is assigned.
+        /// </summary>
+        public Vector2 ScreenToWorld(Vector2 screen, Vector2 screenSize)
+        {
+            if (screenSize.x <= 0f || screenSize.y <= 0f)
+                return Vector2.zero;
+
+            if (_camera != null)
+            {
+                float height = _camera.orthographicSize * 2f;
+                float width = height * _camera.aspect;
+                Vector3 position = _camera.transform.position;
+                return new Vector2(
+                    position.x + ((screen.x / screenSize.x) - 0.5f) * width,
+                    position.y + ((screen.y / screenSize.y) - 0.5f) * height);
+            }
+
+            ViewportPoint centred = CameraDistancePresets.ScreenToWorldCentered(
+                new ViewportPoint(screen.x, screen.y),
+                new ViewportPoint(screenSize.x, screenSize.y),
+                _preset);
+            return new Vector2(centred.X, centred.Y);
+        }
+
+        /// <summary>
+        /// Display pixels -> viewport pixels using the visible camera aspect. Used by the HUD
+        /// reticle so it stays on the turret target at 16:10 as well as 16:9.
+        /// </summary>
+        public Vector2 ScreenToWorldViewport(Vector2 screen, Vector2 screenSize)
+        {
+            if (screenSize.x <= 0f || screenSize.y <= 0f)
+                return Vector2.zero;
+
+            return new Vector2(
+                screen.x / screenSize.x * WorldViewportWidth,
+                screen.y / screenSize.y * WorldViewportHeight);
         }
 
         /// <summary>Display pixels -> scaled design-space viewport pixels.</summary>

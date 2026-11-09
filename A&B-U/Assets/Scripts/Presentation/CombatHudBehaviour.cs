@@ -74,11 +74,15 @@ namespace ABRevival.Presentation
                 return;
 
             CameraDistancePreset preset = _cameraRig != null ? _cameraRig.Preset : State.CameraPreset;
-            float viewportWidth = CameraDistancePresets.ViewportWidth(preset);
-            float viewportHeight = CameraDistancePresets.ViewportHeight(preset);
+            float viewportWidth = _cameraRig != null
+                ? _cameraRig.WorldViewportWidth
+                : CameraDistancePresets.ViewportWidth(preset);
+            float viewportHeight = _cameraRig != null
+                ? _cameraRig.WorldViewportHeight
+                : CameraDistancePresets.ViewportHeight(preset);
 
             Vector2 viewport = _cameraRig != null
-                ? _cameraRig.ScreenToViewport(screenPosition, screenSize)
+                ? _cameraRig.ScreenToWorldViewport(screenPosition, screenSize)
                 : new Vector2(
                     screenPosition.x / screenSize.x * viewportWidth,
                     screenPosition.y / screenSize.y * viewportHeight);

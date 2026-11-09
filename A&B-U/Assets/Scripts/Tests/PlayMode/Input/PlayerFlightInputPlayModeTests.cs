@@ -49,6 +49,8 @@ namespace ABRevival.Tests.PlayMode
                 mass = 100f,
                 health = 1000f,
                 maxHealth = 1000f,
+                boosterFuel = 500f,
+                maxBoosterFuel = 500f,
                 thrustPower = 1000f,
                 turnSpeed = 2f,
                 drag = 0.05f,
@@ -151,6 +153,96 @@ namespace ABRevival.Tests.PlayMode
             _player.PollActions();
             Assert.AreEqual(CameraDistancePreset.Far, _cameraRig.Preset);
             Release(_keyboard.cKey);
+        }
+
+        [Test]
+        public void ControlMode_DefaultsToKeyboard_AndQSwitchesBothWays()
+        {
+            Assert.AreEqual(PlayerControlMode.Keyboard, _player.ControlMode, "Keyboard is the default mode.");
+
+            Press(_keyboard.qKey);
+            _player.PollActions();
+            Release(_keyboard.qKey);
+            Assert.AreEqual(PlayerControlMode.Mouse, _player.ControlMode, "Q must switch to mouse mode.");
+
+            Press(_keyboard.qKey);
+            _player.PollActions();
+            Release(_keyboard.qKey);
+            Assert.AreEqual(PlayerControlMode.Keyboard, _player.ControlMode, "Q must switch back to keyboard mode.");
+        }
+
+        [Test]
+        public void KeyboardMode_HullDoesNotAutoTurnToPointer()
+        {
+            _player.SetPointer(new Vector2(1920f, 540f), new Vector2(1920f, 1080f));
+
+            Press(_keyboard.wKey);
+            for (int i = 0; i < 20; i++)
+            {
+                _player.Tick(Step);
+                _simulation.Tick(Step);
+            }
+            Release(_keyboard.wKey);
+
+            Assert.AreEqual(0f, _simulation.GetShip(0).rotation, 1e-6f,
+                "Keyboard mode must not turn the hull toward the mouse.");
+            Assert.Greater(_player.CurrentAimPoint.x, 0f, "The mouse target must still be published for the turrets.");
+        }
+
+        [Test]
+        public void MouseMode_CursorDistanceSetsThrottle()
+        {
+            _player.SetControlMode(PlayerControlMode.Mouse);
+            _player.SetPointer(new Vector2(1920f, 540f), new Vector2(1920f, 1080f));
+
+            _player.Tick(Step);
+            Assert.Greater(_player.CurrentInput.throttle, 0.99f, "A far cursor must command full throttle.");
+
+            _player.SetPointer(new Vector2(960f, 540f), new Vector2(1920f, 1080f));
+            _player.Tick(Step);
+            Assert.AreEqual(0f, _player.CurrentInput.throttle, 1e-6f, "A centred cursor holds the craft still.");
+        }
+
+        [Test]
+        public void MouseMode_TurnsTheHullTowardTheCursor()
+        {
+            _player.SetControlMode(PlayerControlMode.Mouse);
+            _player.SetPointer(new Vector2(1920f, 540f), new Vector2(1920f, 1080f));
+
+            for (int i = 0; i < 10; i++)
+            {
+                _player.Tick(Step);
+                _simulation.Tick(Step);
+            }
+
+            Assert.Less(_player.CurrentInput.steering, 0f, "A starboard cursor commands a clockwise turn.");
+            Assert.Less(_simulation.GetShip(0).rotation, 0f, "Mouse mode must turn the hull toward the cursor.");
+        }
+
+        [Test]
+        public void SpaceBoost_DrainsBoosterFuel_AndStopsAtEmpty()
+        {
+            Press(_keyboard.wKey);
+            Press(_keyboard.spaceKey);
+            for (int i = 0; i < 30; i++)
+            {
+                _player.Tick(Step);
+                _simulation.Tick(Step);
+            }
+
+            ShipEntity boosted = _simulation.GetShip(0);
+            Assert.IsTrue(_player.CurrentInput.boost);
+            Assert.Less(boosted.boosterFuel, 500f, "Space must consume booster fuel.");
+
+            for (int i = 0; i < 400; i++)
+            {
+                _player.Tick(Step);
+                _simulation.Tick(Step);
+            }
+
+            Release(_keyboard.spaceKey);
+            Release(_keyboard.wKey);
+            Assert.AreEqual(0f, _simulation.GetShip(0).boosterFuel, 0.01f, "The tank must empty.");
         }
 
         [Test]
