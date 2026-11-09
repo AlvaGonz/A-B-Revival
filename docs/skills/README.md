@@ -7,13 +7,14 @@ Project-local skill acquisition for OpenCode and Antigravity. Nothing is install
 - Canonical tree: `.agents/skills/` (flat, `ab-` prefix, committed).
 - Both harnesses read it natively; see `.agents/skills/README.md`. OpenCode ranks user-level skills above `.agents/skills/`, so the `ab-` prefix also prevents shadowing. Antigravity's scope ordering is undocumented.
 - OpenCode agents: `.opencode/agents/ab-*.md`. Antigravity agents: `.agents/agents/ab-*.md`. Agent files are per harness because their frontmatter differs.
+- Verified 2026-11-09 against each vendor's docs: OpenCode uses `description`/`mode`/`permissions` (no `name`); Antigravity uses `name`/`description`/`tools`/`subagent`/`mainAgent`.
 - No skill, agent or config goes to a user-level directory.
 
 ## Adoption rules
 
 - Imported skills are **additions**. The repository workflow (wayfinder -> to-spec -> to-tickets -> TDD -> review) always prevails.
 - Each skill is vendored at a pinned commit; never track a moving branch.
-- No credential, account, subscription or key is committed. Generation skills run only with owner approval.
+- No credential, account, subscription or key is committed. Generation skills run only with owner approval; see `docs/skills/image-generation-policy.md`.
 - Original art and fonts remain the baseline (ADR 0020); improvements need explicit owner approval in the issue/PR.
 - Bundled scripts are reviewed before copying. Prefer Markdown-only skills.
 
@@ -59,4 +60,4 @@ The pre-commit hook runs it whenever `.agents/skills/` or the lockfile is staged
 
 ## Current state
 
-No skill is vendored yet. Implementation tickets: #192 (core Unity), #195 (game UI translation), #193 (image assets), #194 (agents).
+Vendored: 5 core Unity skills, 8 translated game-UI workflow skills and `ab-create-game-assets`. Agents: 3, in both harness formats. The lockfile is the source of truth for what is installed; `docs/skills/ATTRIBUTION.md` mirrors it for humans. Implementation tickets: #191-#195.
