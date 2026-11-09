@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using ABRevival.Core.Data;
 using ABRevival.Core.Persistence;
+using ABRevival.Core.Simulation;
 using ABRevival.Presentation;
 using NUnit.Framework;
 using UnityEngine;
@@ -14,10 +15,10 @@ using UnityEngine.UIElements;
 namespace ABRevival.Tests.PlayMode
 {
     /// <summary>
-    /// Boot-scene verification for the Ready/Briefing handoff (#178): validated Player/AI
-    /// loadout, frozen missionWords, talkBefore + opening cinematic launch, Back cancel,
-    /// full-bleed layout at three sizes and a 1920x1080 review capture.
-    /// Original game IP: Vargames (2011).
+    /// Boot-scene verification for the Ready/Briefing handoff (#178): the frozen
+    /// UI_MapBuilding page composition, validated Player/AI loadout, talkBefore + opening
+    /// cinematic launch, Back cancel, wingman deployment, full-bleed layout at three sizes
+    /// and a 1920x1080 review capture. Original game IP: Vargames (2011).
     /// </summary>
     [TestFixture]
     public class ReadyPlayModeTests
@@ -46,7 +47,7 @@ namespace ABRevival.Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Ready_ShowsBriefingAndLaunchesWithSelectedCraftAndCompanions()
+        public IEnumerator Ready_ShowsFrozenBriefingAndLaunchesWithSelectedCraftAndCompanions()
         {
             yield return LoadBoot();
 
@@ -74,17 +75,11 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual("BATTLE-1", root.Q<Label>("ready-title").text);
             AssertFont(root, "ready-title", "font_0007_SF_TransRobotics");
             AssertFont(root, "briefing-words", "font_0007_SF_TransRobotics");
-            AssertFont(root, "loadout-player", "font_0081_Arial");
             AssertFont(root, "loadout-status", "font_0002_sans");
             StringAssert.Contains("Wang is fighting", root.Q<Label>("briefing-words").text,
                 "The map page must print the frozen missionWords[STORY] summary.");
-            Assert.AreEqual(center.CraftName(player) + "  [" + center.StatsFor(player).cls + "]",
-                root.Q<Label>("loadout-player").text);
-            StringAssert.Contains(center.CraftName(2), ready.CompanionLabel(0));
-            StringAssert.Contains(center.CraftName(3), ready.CompanionLabel(1));
-            Assert.AreEqual("-", root.Q<Label>("companion-2").text);
-            Assert.AreEqual("-", root.Q<Label>("companion-3").text);
-            Assert.AreEqual("-", root.Q<Label>("companion-4").text);
+            StringAssert.Contains("PLAYER " + center.CraftName(player), root.Q<Label>("loadout-status").text);
+            StringAssert.Contains("AI 2/5", root.Q<Label>("loadout-status").text);
             Assert.IsTrue(ready.CanLaunch);
             Assert.IsTrue(root.Q<Button>("launch-button").enabledSelf);
 
@@ -155,6 +150,89 @@ namespace ABRevival.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Ready_SpawnsTwoWingmenThatRenderAndFire()
+        {
+            yield return LoadBoot();
+
+            CenterController center = Object.FindAnyObjectByType<CenterController>();
+            Assert.IsTrue(center.AssignCompanion(2));
+            Assert.IsTrue(center.AssignCompanion(3));
+            yield return null;
+            yield return OpenReady();
+
+            GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
+            ClicksLaunchAndSkipsBriefing(flow, ActiveRoot(Object.FindAnyObjectByType<ReadyController>()));
+            yield return WaitForState(flow, GameFlowState.Mission);
+
+            Assert.AreEqual(2, flow.WingmanShipIndices.Count, "Two valid companions must spawn two wingmen.");
+            int first = flow.WingmanShipIndices[0];
+            int second = flow.WingmanShipIndices[1];
+            Assert.AreEqual(0, flow.Simulation.GetShip(first).factionId, "Wingmen must be friendly.");
+            Assert.AreEqual(0, flow.Simulation.GetShip(second).factionId);
+            Assert.IsTrue(flow.Runner.IsCraftAlive(first));
+            Assert.IsTrue(flow.Runner.IsCraftAlive(second));
+
+            MissionSpriteView view = Object.FindAnyObjectByType<MissionSpriteView>();
+            Assert.IsNotNull(view);
+            Assert.IsTrue(view.IsActive, "The mission sprite view must be running.");
+            Assert.Greater(view.InstanceCount, 0, "Wingmen must reach the existing sprite render path.");
+
+            int firstHull = flow.HullForShip(first);
+            int secondHull = flow.HullForShip(second);
+            Assert.GreaterOrEqual(firstHull, 0, "Each wingman needs a contact hull for rendering and damage.");
+            Assert.GreaterOrEqual(secondHull, 0);
+            Assert.Greater(flow.ContactSolver.GetHullPartCount(firstHull), 0);
+            Assert.Greater(flow.ContactSolver.GetHullPartCount(secondHull), 0);
+
+            CombatHudBehaviour hud = Object.FindAnyObjectByType<CombatHudBehaviour>();
+            Assert.IsNotNull(hud);
+            Assert.AreEqual(2, hud.State.AiCount, "AI x N must count friendly wingmen, not hostiles.");
+
+            int hostile = FindHostile(flow);
+            Assert.GreaterOrEqual(hostile, 0, "Story 0 must spawn a hostile to fire at.");
+            ShipEntity hostileShip = flow.Simulation.GetShip(hostile);
+            ShipEntity wingman = flow.Simulation.GetShip(first);
+            hostileShip.position = wingman.position + new Unity.Mathematics.float2(0f, 120f);
+            hostileShip.velocity = Unity.Mathematics.float2.zero;
+            hostileShip.thrustPower = 0f;
+            hostileShip.tacticalMode = (int)CaptainTacticalMode.Anchor;
+            hostileShip.spawnPosition = hostileShip.position;
+            flow.Simulation.SetShip(hostile, hostileShip);
+
+            var fireInput = flow.GetComponent<MouseCombatFireInput>();
+            if (fireInput != null) fireInput.SetAutofire(false);
+            int shotsBefore = flow.ShotsFiredBy(first) + flow.ShotsFiredBy(second);
+            for (int i = 0; i < 90 && flow.State == GameFlowState.Mission; i++)
+                flow.Tick(GameFlowController.FixedStepSeconds * 2f);
+            int shotsAfter = flow.ShotsFiredBy(first) + flow.ShotsFiredBy(second);
+            Assert.Greater(shotsAfter, shotsBefore, "Wingman weapons must fire through the AI weapon path.");
+
+            // A hostile shot at a wingman must reduce its registered hull health.
+            ShipEntity damagedWingman = flow.Simulation.GetShip(first);
+            float healthBefore = flow.ContactSolver.GetHullHealth(firstHull);
+            int projectileIndex = flow.Simulation.ProjectileCount;
+            flow.Simulation.SetProjectile(projectileIndex, new ProjectileData
+            {
+                position = damagedWingman.position - new Unity.Mathematics.float2(5f, 0f),
+                velocity = new Unity.Mathematics.float2(600f, 0f),
+                lifetime = 1f,
+                damage = 25f,
+                factionId = 1,
+                projectileType = 1,
+                isAlive = true
+            });
+            flow.Simulation.ProjectileCount = projectileIndex + 1;
+            flow.Tick(GameFlowController.FixedStepSeconds);
+            float healthAfter = flow.ContactSolver.GetHullHealth(firstHull);
+            Assert.Less(healthAfter, healthBefore, "Wingman hulls must take contact damage.");
+
+            flow.Runner.NotifyCraftDestroyed(first);
+            flow.Tick(GameFlowController.FixedStepSeconds);
+            Assert.AreEqual(1, hud.State.AiCount,
+                "AI x N must drop to the surviving friendly wingman count when one is destroyed.");
+        }
+
+        [UnityTest]
         public IEnumerator Ready_FillsTheRootAt1080p720pAnd16By10()
         {
             yield return LoadBoot();
@@ -165,9 +243,11 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(document);
             PanelSettings settings = document.panelSettings;
             RenderTexture previous = settings.targetTexture;
+            PanelScaleMode previousScaleMode = settings.scaleMode;
 
             try
             {
+                settings.scaleMode = PanelScaleMode.ConstantPixelSize;
                 foreach (Vector2Int size in new[]
                          {
                              new Vector2Int(1920, 1080),
@@ -183,53 +263,60 @@ namespace ABRevival.Tests.PlayMode
 
                     VisualElement root = document.rootVisualElement;
                     VisualElement readyRoot = root.Q("ready-root");
-                    VisualElement screen = root.Q("ready-screen");
-                    VisualElement window = root.Q("ready-window");
-                    VisualElement header = root.Q("ready-header");
-                    VisualElement footer = root.Q("ready-footer");
-                    VisualElement loadout = root.Q("loadout-panel");
-                    VisualElement briefing = root.Q("briefing-panel");
+                    VisualElement page = root.Q("ready-page");
+                    VisualElement fill = root.Q("ready-window-fill");
+                    VisualElement titlePlate = root.Q("ready-title-plate");
                     VisualElement words = root.Q("briefing-words");
+                    VisualElement status = root.Q("loadout-status");
                     Button back = root.Q<Button>("back-button");
                     Button launch = root.Q<Button>("launch-button");
                     Assert.IsNotNull(readyRoot, "Ready root is missing.");
-                    Assert.IsNotNull(screen, "Ready screen is missing.");
-                    Assert.IsNotNull(window, "Ready window is missing.");
-                    Assert.IsNotNull(header, "Ready header is missing.");
-                    Assert.IsNotNull(footer, "Ready footer is missing.");
-                    Assert.IsNotNull(loadout, "Loadout panel is missing.");
-                    Assert.IsNotNull(briefing, "Briefing panel is missing.");
+                    Assert.IsNotNull(page, "Ready page is missing.");
+                    Assert.IsNotNull(fill, "Ready window fill is missing.");
+                    Assert.IsNotNull(titlePlate, "Ready title plate is missing.");
                     Assert.IsNotNull(words, "Briefing words are missing.");
+                    Assert.IsNotNull(status, "Loadout status is missing.");
                     Assert.IsNotNull(back, "Ready BACK is missing.");
                     Assert.IsNotNull(launch, "Ready launch button is missing.");
 
                     Rect surface = readyRoot.worldBound;
-                    Debug.Log("[Ready Layout] " + size + " surface=" + surface + " window=" + window.worldBound +
-                              " loadout=" + loadout.worldBound + " briefing=" + briefing.worldBound +
-                              " back=" + back.worldBound + " launch=" + launch.worldBound);
+                    Rect pageBounds = page.worldBound;
+                    Debug.Log("[Ready Layout] " + size + " surface=" + surface + " page=" + pageBounds +
+                              " fill=" + fill.layout + " launch=" + launch.layout);
                     Assert.Greater(surface.width, 0f, "The root must have layout width at " + size);
                     Assert.Greater(surface.height, 0f, "The root must have layout height at " + size);
-                    Assert.AreEqual(surface.width, screen.worldBound.width, 1f,
-                        "ready-screen must fill the root width at " + size);
-                    Assert.AreEqual(surface.height, screen.worldBound.height, 1f,
-                        "ready-screen must fill the root height at " + size);
-                    Assert.AreEqual(surface.width * 0.72f, window.worldBound.width, 4f,
-                        "The briefing window must keep the full-bleed proportion at " + size);
-                    Assert.AreEqual(surface.height * 0.73f, window.worldBound.height, 4f,
-                        "The briefing window must keep the full-bleed proportion at " + size);
-                    Assert.LessOrEqual(Mathf.Abs(window.worldBound.xMin - (surface.xMin + surface.width * 0.14f)), 4f,
-                        "The window must stay centered at " + size);
-                    Assert.LessOrEqual(Mathf.Abs(header.worldBound.yMin - (window.worldBound.yMin + 14f)), 4f,
-                        "The header must anchor to the window top at " + size);
-                    Assert.LessOrEqual(Mathf.Abs(footer.worldBound.yMax - (window.worldBound.yMax - 16f)), 4f,
-                        "The footer must anchor to the window bottom at " + size);
-                    Assert.LessOrEqual(Mathf.Abs(loadout.worldBound.xMin - (window.worldBound.xMin + 22f)), 4f,
-                        "The loadout must anchor to the left at " + size);
-                    Assert.LessOrEqual(Mathf.Abs(briefing.worldBound.xMax - (window.worldBound.xMax - 22f)), 4f,
-                        "The briefing must anchor to the right at " + size);
-                    Assert.Greater(words.worldBound.height, 90f, "The briefing text must keep usable height at " + size);
-                    Assert.Greater(back.worldBound.width, 220f, "BACK must stay tappable at " + size);
-                    Assert.Greater(launch.worldBound.width, 140f, "Launch must stay tappable at " + size);
+                    Assert.AreEqual(size.x, surface.width, 1f,
+                        "The Ready root must track the output width at " + size);
+                    Assert.AreEqual(size.y, surface.height, 1f,
+                        "The Ready root must track the output height at " + size);
+                    Assert.AreEqual(851f, page.layout.width, 1f,
+                        "The page must keep its 851px composition width at " + size);
+                    Assert.AreEqual(521f, page.layout.height, 1f,
+                        "The page must keep its 521px composition height at " + size);
+                    Assert.GreaterOrEqual(pageBounds.width, surface.width - 1f,
+                        "The page must cover the root width at " + size);
+                    Assert.GreaterOrEqual(pageBounds.height, surface.height - 1f,
+                        "The page must cover the root height at " + size);
+                    Assert.LessOrEqual(pageBounds.xMin, surface.xMin + 1f,
+                        "The page must not letterbox horizontally at " + size);
+                    Assert.LessOrEqual(pageBounds.yMin, surface.yMin + 1f,
+                        "The page must not letterbox vertically at " + size);
+
+                    Assert.AreEqual(241f, fill.resolvedStyle.left, 1.5f);
+                    Assert.AreEqual(72f, fill.resolvedStyle.top, 1.5f);
+                    Assert.AreEqual(374f, fill.layout.width, 1.5f);
+                    Assert.AreEqual(263f, fill.layout.height, 1.5f);
+                    Assert.AreEqual(345f, titlePlate.resolvedStyle.left, 1.5f);
+                    Assert.AreEqual(90f, titlePlate.resolvedStyle.top, 1.5f);
+                    Assert.AreEqual(290f, words.resolvedStyle.left, 1.5f);
+                    Assert.AreEqual(140f, words.resolvedStyle.top, 1.5f);
+                    Assert.AreEqual(270f, status.resolvedStyle.left, 1.5f);
+                    Assert.AreEqual(305f, status.resolvedStyle.top, 1.5f);
+                    Assert.AreEqual(354f, launch.resolvedStyle.left, 1.5f);
+                    Assert.AreEqual(370f, launch.resolvedStyle.top, 1.5f);
+                    Assert.GreaterOrEqual(words.layout.height, 140f, "The briefing lines must keep usable height.");
+                    Assert.Greater(back.layout.width, 90f, "BACK must stay tappable at " + size);
+                    Assert.Greater(launch.layout.width, 120f, "Launch must stay tappable at " + size);
 
                     target.Release();
                     Object.Destroy(target);
@@ -237,6 +324,7 @@ namespace ABRevival.Tests.PlayMode
             }
             finally
             {
+                settings.scaleMode = previousScaleMode;
                 settings.targetTexture = previous;
             }
         }
@@ -270,9 +358,9 @@ namespace ABRevival.Tests.PlayMode
 
                 Assert.AreEqual("BATTLE-1", root.Q<Label>("ready-title").text);
                 StringAssert.Contains("Wang is fighting", root.Q<Label>("briefing-words").text);
-                AssertImageArt(root, "ready-backdrop", "ui_0312_hangar_background");
-                AssertImageArt(root, "ready-loading", "306_widget");
-                AssertImageArt(root, "ready-title-plate", "ui_0107_hangar_header");
+                StringAssert.Contains("AI 2/5", root.Q<Label>("loadout-status").text);
+                AssertImageArt(root, "ready-page-art", "UI_MapBuilding");
+                AssertImageArt(root, "ready-title-plate", "309_widget");
                 AssertImageArt(root, "launch-button", "310_widget");
                 AssertImageArt(root, "back-button", "ui_0324_hangar_button_back_to_center");
 
@@ -299,6 +387,12 @@ namespace ABRevival.Tests.PlayMode
                 target.Release();
                 Object.Destroy(target);
             }
+        }
+
+        private static void ClicksLaunchAndSkipsBriefing(GameFlowController flow, VisualElement root)
+        {
+            Click(root.Q<Button>("launch-button"));
+            flow.SkipBriefing();
         }
 
         private static IEnumerator OpenReady()
@@ -349,6 +443,17 @@ namespace ABRevival.Tests.PlayMode
             }
 
             Assert.Fail($"Flow did not reach {expected}; current state {flow.State}.");
+        }
+
+        private static int FindHostile(GameFlowController flow)
+        {
+            var spawns = flow.Runner.Spawns;
+            for (int i = 0; i < spawns.Count; i++)
+            {
+                if (!spawns[i].friendly && spawns[i].shipIndex >= 0) return spawns[i].shipIndex;
+            }
+
+            return -1;
         }
 
         private static VisualElement ActiveRoot(Component component)

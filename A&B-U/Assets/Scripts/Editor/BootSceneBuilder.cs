@@ -292,18 +292,16 @@ namespace ABRevival.Editor
         }
 
         /// <summary>
-        /// Wires the frozen UI_MapBuilding loading mark and OK button plus the shared
-        /// backdrop and title plate into Ready. The runtime never guesses an asset path;
-        /// missing art fails the scene build.
+        /// Wires the frozen UI_MapBuilding page and OK plate plus the shared title plate
+        /// into Ready. The runtime never guesses an asset path; missing art fails the scene build.
         /// </summary>
         private static void SetReadySprites(Component ready)
         {
             var serialized = new SerializedObject(ready);
-            SetSprite(serialized, "readyBackground", UiSpriteFolder, "ui_0312_hangar_background.png");
-            SetSprite(serialized, "titlePlate", UiSpriteFolder, "ui_0107_hangar_header.png");
+            SetSprite(serialized, "pageArt", UiSpriteFolder, "Screens/UI_MapBuilding.png");
+            SetSprite(serialized, "titlePlate", UiSpriteFolder, "UI_MapBuilding/309_widget_normal.png");
             SetSprite(serialized, "launchButton", UiSpriteFolder, "UI_MapBuilding/310_widget_normal.png");
             SetSprite(serialized, "backButton", UiSpriteFolder, "ui_0324_hangar_button_back_to_center.png");
-            SetSprite(serialized, "loadingMark", UiSpriteFolder, "UI_MapBuilding/306_widget_normal.png");
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 

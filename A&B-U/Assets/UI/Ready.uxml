@@ -2,62 +2,21 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="Ready.uss" />
     <ui:VisualElement name="ready-root" class="ready-root">
-        <ui:VisualElement name="ready-screen" class="ready-screen">
-            <ui:VisualElement name="ready-backdrop" class="ready-backdrop" picking-mode="Ignore" />
-            <ui:VisualElement name="ready-loading" class="ready-loading" picking-mode="Ignore" />
+        <ui:VisualElement name="ready-page" class="ready-page">
+            <ui:VisualElement name="ready-page-art" class="ready-page-art" picking-mode="Ignore" />
 
-            <ui:VisualElement name="ready-window" class="ready-window">
-                <ui:VisualElement name="ready-header" class="ready-header">
-                    <ui:VisualElement name="ready-title-plate" class="ready-title-plate">
-                        <ui:Label name="ready-title" text="BATTLE-1" class="ready-title" />
-                    </ui:VisualElement>
-                    <ui:Label name="ready-subtitle" text="MISSION BRIEFING" class="ready-subtitle" />
-                </ui:VisualElement>
+            <!-- Covers the page render's placeholder TITLE/word lines and carries the
+                 live briefing. The original window frame stays visible around it. -->
+            <ui:VisualElement name="ready-window-fill" class="ready-window-fill" picking-mode="Ignore" />
 
-                <ui:VisualElement name="ready-body" class="ready-body">
-                    <ui:VisualElement name="loadout-panel" class="loadout-panel">
-                        <ui:Label text="LOADOUT" class="loadout-heading" />
-                        <ui:VisualElement class="loadout-row loadout-player-row">
-                            <ui:Label text="Player" class="loadout-key font-data" />
-                            <ui:Label name="loadout-player" text="-" class="loadout-value font-data" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="loadout-rule" />
-                        <ui:Label text="AI WINGMEN" class="loadout-section font-sans" />
-                        <ui:VisualElement class="loadout-row">
-                            <ui:Label text="1" class="loadout-slot font-sans" />
-                            <ui:Label name="companion-0" text="-" class="loadout-value font-data" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="loadout-row">
-                            <ui:Label text="2" class="loadout-slot font-sans" />
-                            <ui:Label name="companion-1" text="-" class="loadout-value font-data" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="loadout-row">
-                            <ui:Label text="3" class="loadout-slot font-sans" />
-                            <ui:Label name="companion-2" text="-" class="loadout-value font-data" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="loadout-row">
-                            <ui:Label text="4" class="loadout-slot font-sans" />
-                            <ui:Label name="companion-3" text="-" class="loadout-value font-data" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="loadout-row">
-                            <ui:Label text="5" class="loadout-slot font-sans" />
-                            <ui:Label name="companion-4" text="-" class="loadout-value font-data" />
-                        </ui:VisualElement>
-                        <ui:Label name="loadout-status" text="Ready to launch." class="loadout-status font-sans" />
-                    </ui:VisualElement>
-
-                    <ui:VisualElement name="briefing-panel" class="briefing-panel">
-                        <ui:Label text="OBJECTIVES" class="briefing-heading" />
-                        <ui:Label name="briefing-words" text="-" class="briefing-words" />
-                        <ui:Label name="briefing-subtext" text="Dialogue and the opening cinematic play before combat. Click to advance; the movie skips on click." class="briefing-subtext font-sans" />
-                    </ui:VisualElement>
-                </ui:VisualElement>
-
-                <ui:VisualElement name="ready-footer" class="ready-footer">
-                    <ui:Button name="back-button" class="sprite-button back-button" tooltip="Back to Center without launching" />
-                    <ui:Button name="launch-button" class="sprite-button launch-button" tooltip="Launch mission" />
-                </ui:VisualElement>
+            <ui:VisualElement name="ready-title-plate" class="ready-title-plate">
+                <ui:Label name="ready-title" text="BATTLE-1" class="ready-title" />
             </ui:VisualElement>
+            <ui:Label name="briefing-words" text="-" class="briefing-words" />
+            <ui:Label name="loadout-status" text="-" class="loadout-status font-sans" />
+
+            <ui:Button name="launch-button" class="sprite-button launch-button" tooltip="Launch mission" />
+            <ui:Button name="back-button" class="sprite-button back-button" tooltip="Back to Center without launching" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

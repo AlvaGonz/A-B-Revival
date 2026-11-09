@@ -27,12 +27,15 @@ The Info/Records references were used for #177. `UI_HelpGame.png` and `UI_HelpGa
 also ship under `A&B-U/Assets/Art/Sprites/UI/Help/`; `UI_Data.png` and `UI_Mission.png`
 under `A&B-U/Assets/Art/Sprites/UI/Screens/`. Both copies are byte-identical exports.
 
-`UI_MapBuilding.png` is the actual Ready/Briefing handoff used by #178: the frozen
-`UIMapBuild` page prints `MISSIONS.missionWords[STORY]` behind the OK button and then
-starts the level. `UI_Mission.png` is the pause-menu objective sheet (`UIPause`), not the
-ready handoff; it stays committed for the pause/objectives surface. The source copy lives
-at `A&B-U/Assets/Art/Sprites/UI/Screens/UI_MapBuilding.png` and the widget exports
-(`306` loader mark, `310` OK button) at `A&B-U/Assets/Art/Sprites/UI/UI_MapBuilding/`.
+`UI_MapBuilding.png` is the actual Ready/Briefing handoff used by #178 and is now the
+runtime page art: the 851x521 render supplies the metal panel, window frame, MAP LOADING
+badge and OK position, while the live window covers its placeholder title/word lines with
+`MISSIONS.missionWords[STORY]` and the validated loadout. `UI_Mission.png` is the pause-menu
+objective sheet (`UIPause`), not the ready handoff; it stays committed for the
+pause/objectives surface. The source copy lives at
+`A&B-U/Assets/Art/Sprites/UI/Screens/UI_MapBuilding.png` and the widget exports
+(`306` loader mark, `309` title plate, `310` OK button) at
+`A&B-U/Assets/Art/Sprites/UI/UI_MapBuilding/`.
 
 Regenerate the asset-side copy with `scripts\export-ui-sprites.bat`
 (`ABRevival.Editor.UiSpriteExportPipeline.ExportBatch`), which also mirrors page

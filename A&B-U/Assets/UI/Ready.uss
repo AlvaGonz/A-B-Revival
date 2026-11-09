@@ -1,16 +1,24 @@
-/* Ready / Briefing (frozen UI_MapBuilding handoff): 1920x1080 full-bleed.
-   The original 306 loader mark and 310 OK plate frame a centered briefing window
-   that carries the frozen missionWords summary and the validated Center loadout.
-   Sprite backgrounds are assigned at runtime through UiSpriteSkin Image children. */
+/* Ready / Briefing: the frozen UI_MapBuilding page at 1920x1080 full-bleed.
+   The page render is the composition base. Live elements sit in page-local pixels
+   (851x521) and the whole page is scaled to cover the screen, so the metal panel,
+   window frame and MAP LOADING badge keep their 2011 positions at every resolution.
+   Sprite art is assigned at runtime through UiSpriteSkin Image children. */
 
 .ready-root {
     flex-grow: 1;
     width: 100%;
     height: 100%;
-    background-color: rgb(6, 9, 12);
+    overflow: hidden;
+    background-color: rgb(0, 0, 0);
 }
 
-.ready-screen {
+.ready-page {
+    position: absolute;
+    width: 851px;
+    height: 521px;
+}
+
+.ready-page-art {
     position: absolute;
     left: 0;
     right: 0;
@@ -18,203 +26,66 @@
     bottom: 0;
 }
 
-.ready-backdrop {
+.ready-window-fill {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-}
-
-.ready-loading {
-    position: absolute;
-    right: 4%;
-    bottom: 3%;
-    width: 320px;
-    height: 48px;
-}
-
-.ready-window {
-    position: absolute;
-    left: 14%;
-    right: 14%;
-    top: 9%;
-    bottom: 18%;
-    padding: 14px 22px 16px 22px;
-    flex-direction: column;
-    background-color: rgb(3, 7, 11);
-    border-width: 2px;
-    border-color: rgba(0, 190, 230, 0.75);
-}
-
-.ready-header {
-    height: 86px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    left: 241px;
+    top: 72px;
+    width: 374px;
+    height: 263px;
+    background-color: rgb(0, 0, 0);
 }
 
 .ready-title-plate {
-    width: 540px;
-    height: 64px;
+    position: absolute;
+    left: 345px;
+    top: 90px;
+    width: 150px;
+    height: 42px;
     justify-content: center;
     align-items: center;
 }
 
 .ready-title {
-    font-size: 34px;
+    font-size: 24px;
     -unity-font-style: bold;
-    letter-spacing: 4px;
+    letter-spacing: 2px;
     -unity-text-align: middle-center;
-    color: rgb(0, 226, 255);
-}
-
-.ready-subtitle {
-    height: 22px;
-    font-size: 16px;
-    letter-spacing: 3px;
-    -unity-text-align: middle-center;
-    color: rgb(150, 204, 226);
-}
-
-.ready-body {
-    flex-grow: 1;
-    min-height: 0;
-    flex-direction: row;
-    padding-top: 8px;
-    padding-bottom: 8px;
-}
-
-.loadout-panel {
-    width: 34%;
-    min-width: 0;
-    margin-right: 16px;
-    padding: 12px 16px;
-    flex-direction: column;
-    background-color: rgba(2, 12, 18, 0.72);
-    border-width: 1px;
-    border-color: rgba(0, 140, 180, 0.45);
-}
-
-.loadout-heading {
-    height: 38px;
-    font-size: 22px;
-    -unity-font-style: bold;
-    letter-spacing: 2px;
-    color: rgb(0, 226, 255);
-    border-bottom-width: 2px;
-    border-bottom-color: rgba(0, 200, 236, 0.65);
-}
-
-.loadout-row {
-    height: 32px;
-    flex-direction: row;
-    align-items: center;
-    border-bottom-width: 1px;
-    border-bottom-color: rgba(0, 160, 205, 0.34);
-}
-
-.loadout-player-row {
-    height: 38px;
-}
-
-.loadout-key {
-    width: 30%;
-    font-size: 19px;
-    -unity-font-style: bold;
-    color: rgb(164, 216, 240);
-}
-
-.loadout-slot {
-    width: 30px;
-    font-size: 17px;
-    color: rgb(120, 176, 202);
-}
-
-.loadout-value {
-    flex-grow: 1;
-    flex-shrink: 1;
-    min-width: 0;
-    font-size: 19px;
-    color: rgb(204, 232, 246);
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.loadout-empty {
-    color: rgb(120, 150, 164);
-}
-
-.loadout-rule {
-    height: 10px;
-}
-
-.loadout-section {
-    height: 26px;
-    font-size: 16px;
-    -unity-font-style: bold;
-    letter-spacing: 2px;
-    color: rgb(150, 204, 226);
-}
-
-.loadout-status {
-    flex-grow: 1;
-    min-height: 34px;
-    font-size: 17px;
-    -unity-text-align: lower-left;
-    white-space: normal;
-    color: rgb(255, 214, 90);
-}
-
-.briefing-panel {
-    flex-grow: 1;
-    min-width: 0;
-    padding: 12px 20px;
-    flex-direction: column;
-    background-color: rgba(2, 12, 18, 0.72);
-    border-width: 1px;
-    border-color: rgba(0, 140, 180, 0.45);
-}
-
-.briefing-heading {
-    height: 38px;
-    font-size: 22px;
-    -unity-font-style: bold;
-    letter-spacing: 2px;
-    color: rgb(0, 226, 255);
-    border-bottom-width: 2px;
-    border-bottom-color: rgba(0, 200, 236, 0.65);
+    color: rgb(238, 250, 255);
+    margin: 0;
+    padding: 0;
 }
 
 .briefing-words {
-    flex-grow: 1;
-    min-height: 0;
-    padding-top: 18px;
-    font-size: 30px;
-    -unity-text-align: upper-center;
+    position: absolute;
+    left: 290px;
+    top: 140px;
+    width: 270px;
+    height: 150px;
+    font-size: 24px;
+    -unity-text-align: middle-center;
     white-space: normal;
-    color: rgb(232, 246, 252);
+    color: rgb(238, 246, 250);
+    margin: 0;
+    padding: 0;
 }
 
-.briefing-subtext {
-    height: 54px;
-    font-size: 17px;
-    -unity-text-align: lower-center;
-    white-space: normal;
-    color: rgb(186, 220, 238);
-}
-
-.ready-footer {
-    height: 92px;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 10px;
-    border-top-width: 2px;
-    border-top-color: rgba(0, 168, 214, 0.45);
+.loadout-status {
+    position: absolute;
+    left: 270px;
+    top: 305px;
+    width: 300px;
+    height: 16px;
+    font-size: 11px;
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: rgb(130, 208, 224);
+    margin: 0;
+    padding: 0;
 }
 
 .sprite-button {
+    position: absolute;
     border-width: 0;
     padding: 0;
     margin: 0;
@@ -234,12 +105,17 @@
     opacity: 0.4;
 }
 
-.back-button {
-    width: 300px;
-    height: 62px;
+.launch-button {
+    left: 354px;
+    top: 370px;
+    width: 139px;
+    height: 63px;
 }
 
-.launch-button {
-    width: 190px;
-    height: 86px;
+/* The frozen page has no Back; the revival back plate sits in the top-left slack. */
+.back-button {
+    left: 110px;
+    top: 30px;
+    width: 120px;
+    height: 38px;
 }

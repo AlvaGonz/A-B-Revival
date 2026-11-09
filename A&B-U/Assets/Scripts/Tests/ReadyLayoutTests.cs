@@ -6,8 +6,9 @@ using NUnit.Framework;
 namespace ABRevival.Tests
 {
     /// <summary>
-    /// Tier 1 structural guard for the 1920x1080 full-bleed Ready/Briefing document and the
-    /// committed 2011 UIMapBuild page reference (ADR 0020). Original IP: Vargames (2011).
+    /// Tier 1 structural guard for the frozen UI_MapBuilding Ready/Briefing page: the
+    /// 851x521 composition, the page-local window/title/OK positions and the committed
+    /// 2011 reference. Original IP: Vargames (2011).
     /// </summary>
     [TestFixture]
     public class ReadyLayoutTests
@@ -21,27 +22,15 @@ namespace ABRevival.Tests
         private static readonly string[] RequiredElements =
         {
             "ready-root",
-            "ready-screen",
-            "ready-backdrop",
-            "ready-loading",
-            "ready-window",
+            "ready-page",
+            "ready-page-art",
+            "ready-window-fill",
             "ready-title-plate",
             "ready-title",
-            "ready-body",
-            "loadout-panel",
-            "loadout-player",
-            "companion-0",
-            "companion-1",
-            "companion-2",
-            "companion-3",
-            "companion-4",
-            "loadout-status",
-            "briefing-panel",
             "briefing-words",
-            "briefing-subtext",
-            "ready-footer",
-            "back-button",
-            "launch-button"
+            "loadout-status",
+            "launch-button",
+            "back-button"
         };
 
         [Test]
@@ -58,19 +47,23 @@ namespace ABRevival.Tests
         }
 
         [Test]
-        public void Uss_FillsTheRootAndHasNoRetiredFixedRoot()
+        public void Uss_ComposesThe851x521PageAtFullBleed()
         {
             string uss = File.ReadAllText(Path.Combine(FindRepoRoot(), UssFile));
 
             StringAssert.Contains(".ready-root", uss);
             StringAssert.Contains("width: 100%;", uss);
             StringAssert.Contains("height: 100%;", uss);
-            StringAssert.Contains(".ready-screen", uss);
-            StringAssert.Contains("position: absolute;", uss);
-            StringAssert.Contains(".ready-window", uss);
-            StringAssert.Contains(".loadout-panel", uss);
+            StringAssert.Contains("overflow: hidden;", uss);
+            StringAssert.Contains(".ready-page", uss);
+            StringAssert.Contains("width: 851px;", uss);
+            StringAssert.Contains("height: 521px;", uss);
+            StringAssert.Contains(".ready-window-fill", uss);
+            StringAssert.Contains("width: 374px;", uss);
             StringAssert.Contains(".briefing-words", uss);
             StringAssert.Contains(".launch-button", uss);
+            StringAssert.Contains("left: 354px;", uss);
+            StringAssert.Contains("top: 370px;", uss);
 
             StringAssert.DoesNotContain("1280", uss, "The retired 1280x960 hangar root must not survive.");
             StringAssert.DoesNotContain("960px", uss, "The retired 1280x960 hangar root must not survive.");
@@ -87,6 +80,8 @@ namespace ABRevival.Tests
             StringAssert.Contains("keepBackground: false", controller);
             StringAssert.Contains("MissionLoadout.Capture", controller);
             StringAssert.Contains("CanLaunch", controller);
+            StringAssert.Contains("PageWidth = 851f", controller);
+            StringAssert.Contains("PageHeight = 521f", controller);
 
             StringAssert.Contains("_ready.LaunchRequested += OnReadyLaunch", flow);
             StringAssert.Contains("_center.ReadyRequested += OnReadyRequested", flow);

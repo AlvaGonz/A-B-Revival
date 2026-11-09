@@ -295,6 +295,42 @@ namespace ABRevival.Core.Simulation
             }
         }
 
+        /// <summary>
+        /// Spawns one friendly AI wingman from the Center loadout after the level's player act.
+        /// The ship joins the runner's friendly roster so it renders, fires through the AI weapon
+        /// path, takes contact damage and stops counting toward the HUD AI plate when destroyed.
+        /// Spawn-time only; returns the simulation index or -1 when the mission is not running.
+        /// </summary>
+        public int SpawnFriendlyWingman(
+            string pilot, int defIndex, float2 position, float rotation, int formationSlot)
+        {
+            if (!_started || _state != MissionState.InProgress) return -1;
+            if (_simulation.ShipCount >= _simulation.MaxShips) return -1;
+
+            var spawn = new LevelSpawn
+            {
+                kind = LevelSpawnKind.Add,
+                pilot = pilot ?? string.Empty,
+                friendly = true,
+                defIndex = defIndex,
+                x = position.x,
+                y = position.y
+            };
+
+            int before = _simulation.ShipCount;
+            SpawnCraft(spawn, null);
+            if (_simulation.ShipCount == before) return -1;
+
+            int shipIndex = _simulation.ShipCount - 1;
+            ShipEntity ship = _simulation.GetShip(shipIndex);
+            ship.rotation = rotation;
+            ship.tacticalMode = (int)CaptainTacticalMode.Escort;
+            ship.formationSlot = formationSlot;
+            ship.spawnPosition = position;
+            _simulation.SetShip(shipIndex, ship);
+            return shipIndex;
+        }
+
         /// <summary>True while the mission's record of that craft has not been reported destroyed.</summary>
         public bool IsCraftAlive(int shipIndex)
         {

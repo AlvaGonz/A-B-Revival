@@ -7,8 +7,10 @@ using UnityEngine.UIElements;
 namespace ABRevival.Presentation
 {
     /// <summary>
-    /// Scene entry point for the Ready / Briefing handoff (the frozen UIMapBuild page):
-    /// validates the Center loadout, prints the campaign objective summary, and hands the
+    /// Scene entry point for the Ready / Briefing handoff: the frozen UI_MapBuilding page at
+    /// full-bleed 1920x1080. The original page render supplies the metal panel, window frame,
+    /// OK plate and MAP LOADING badge; the live window replaces its placeholder title and
+    /// word lines with the campaign briefing and a compact loadout pre-check. Launch hands the
     /// selected Player craft plus AI companions to <see cref="GameFlowController"/> before
     /// talkBefore and the opening cinematic start. Back cancels to Center without launching.
     /// It never writes the save; <see cref="GameFlowController"/> owns the payload.
@@ -17,27 +19,27 @@ namespace ABRevival.Presentation
     [RequireComponent(typeof(UIDocument))]
     public sealed class ReadyController : MonoBehaviour
     {
-        private const int CompanionSlotCount = CompanionRoster.SlotCount;
+        private const float PageWidth = 851f;
+        private const float PageHeight = 521f;
 
         [Header("Ready sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite readyBackground;
+        [SerializeField] private Sprite pageArt;
         [SerializeField] private Sprite titlePlate;
         [SerializeField] private Sprite launchButton;
         [SerializeField] private Sprite backButton;
-        [SerializeField] private Sprite loadingMark;
 
         private UIDocument _document;
         private PlayerSaveData _payload = new PlayerSaveData();
         private CenterController _center;
-        private readonly Label[] _companionLabels = new Label[CompanionSlotCount];
 
+        private VisualElement _page;
         private Label _title;
-        private Label _playerLabel;
-        private Label _statusLabel;
         private Label _briefingWords;
+        private Label _status;
         private Button _launch;
 
         private bool _initialized;
+        private Vector2 _lastRootSize;
 
         /// <summary>Raised when Back cancels the handoff and returns to Center.</summary>
         public event Action Closed;
@@ -48,13 +50,6 @@ namespace ABRevival.Presentation
         public bool CanLaunch { get; private set; }
 
         public MissionLoadout Loadout { get; private set; } = new MissionLoadout(-1, null);
-
-        public string CompanionLabel(int slot)
-        {
-            return slot >= 0 && slot < CompanionSlotCount && _companionLabels[slot] != null
-                ? _companionLabels[slot].text
-                : string.Empty;
-        }
 
         private void Awake()
         {
@@ -79,6 +74,7 @@ namespace ABRevival.Presentation
                 VisualElement root = _document.rootVisualElement;
                 ApplySkin(root);
                 Bind(root);
+                root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
                 _initialized = true;
             }
 
@@ -98,15 +94,12 @@ namespace ABRevival.Presentation
 
         private void Bind(VisualElement root)
         {
+            _page = root.Q("ready-page");
             _title = root.Q<Label>("ready-title");
-            _playerLabel = root.Q<Label>("loadout-player");
-            _statusLabel = root.Q<Label>("loadout-status");
             _briefingWords = root.Q<Label>("briefing-words");
+            _status = root.Q<Label>("loadout-status");
             _launch = root.Q<Button>("launch-button");
             Button back = root.Q<Button>("back-button");
-
-            for (int slot = 0; slot < CompanionSlotCount; slot++)
-                _companionLabels[slot] = root.Q<Label>("companion-" + slot);
 
             if (_launch != null) _launch.clicked += OnLaunchClicked;
             if (back != null) back.clicked += () => Closed?.Invoke();
@@ -114,11 +107,10 @@ namespace ABRevival.Presentation
 
         private void ApplySkin(VisualElement root)
         {
-            SetSprite(root, "ready-backdrop", readyBackground, ScaleMode.ScaleAndCrop);
+            SetSprite(root, "ready-page-art", pageArt, ScaleMode.ScaleToFit);
             SetSprite(root, "ready-title-plate", titlePlate, ScaleMode.ScaleAndCrop);
             SetSprite(root, "launch-button", launchButton, ScaleMode.ScaleToFit);
             SetSprite(root, "back-button", backButton, ScaleMode.ScaleToFit);
-            SetSprite(root, "ready-loading", loadingMark, ScaleMode.ScaleToFit);
         }
 
         private static void SetSprite(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
@@ -126,6 +118,30 @@ namespace ABRevival.Presentation
             VisualElement element = root.Q(name);
             if (element != null && sprite != null)
                 UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
+        }
+
+        /// <summary>
+        /// Scales the 851x521 page to cover the root. Children keep page-local pixel
+        /// coordinates, so the window, OK plate and MAP LOADING badge stay on their
+        /// frozen positions at 16:9 and 16:10.
+        /// </summary>
+        private void OnRootGeometryChanged(GeometryChangedEvent evt)
+        {
+            FitPage(evt.newRect.width, evt.newRect.height);
+        }
+
+        private void FitPage(float width, float height)
+        {
+            if (_page == null || width <= 1f || height <= 1f) return;
+            if (Mathf.Approximately(width, _lastRootSize.x) && Mathf.Approximately(height, _lastRootSize.y)) return;
+            _lastRootSize = new Vector2(width, height);
+
+            float scale = Mathf.Max(width / PageWidth, height / PageHeight);
+            _page.style.left = (width - PageWidth) * 0.5f;
+            _page.style.top = (height - PageHeight) * 0.5f;
+            _page.style.transformOrigin = new StyleTransformOrigin(
+                new TransformOrigin(Length.Percent(50f), Length.Percent(50f), 0f));
+            _page.style.scale = new StyleScale(new Scale(new Vector3(scale, scale, 1f)));
         }
 
         private void Refresh()
@@ -137,44 +153,32 @@ namespace ABRevival.Presentation
 
             if (_title != null) _title.text = "BATTLE-" + (storyIndex + 1);
             if (_briefingWords != null) _briefingWords.text = MissionBriefing.Words(storyIndex);
-
-            if (_playerLabel != null)
-            {
-                _playerLabel.text = Loadout.PlayerCraftIndex >= 0
-                    ? CraftLabel(Loadout.PlayerCraftIndex)
-                    : "NO CRAFT";
-            }
-
-            for (int slot = 0; slot < CompanionSlotCount; slot++)
-                RefreshCompanion(slot);
-
-            if (_statusLabel != null)
-            {
-                _statusLabel.text = CanLaunch
-                    ? "All slots valid. Launch when ready."
-                    : "Assign a valid player craft in Center first.";
-            }
-
+            if (_status != null) _status.text = StatusLine();
             if (_launch != null) _launch.SetEnabled(CanLaunch);
         }
 
-        private void RefreshCompanion(int slot)
+        private string StatusLine()
         {
-            Label label = _companionLabels[slot];
-            if (label == null) return;
+            if (!CanLaunch || Loadout.PlayerCraftIndex < 0) return "NO VALID PLAYER CRAFT";
 
-            int craft = _payload.companions != null && slot < _payload.companions.Count
-                ? _payload.companions[slot].craftIndex
-                : -1;
-            bool assigned = craft >= 0 && craft != Loadout.PlayerCraftIndex;
-            label.text = assigned ? CraftLabel(craft) : "-";
-            label.EnableInClassList("loadout-empty", !assigned);
+            int assigned = 0;
+            if (_payload.companions != null)
+            {
+                for (int i = 0; i < _payload.companions.Count; i++)
+                {
+                    int craft = _payload.companions[i].craftIndex;
+                    if (craft >= 0 && craft != Loadout.PlayerCraftIndex) assigned++;
+                }
+            }
+
+            return "PLAYER " + CraftLabel(Loadout.PlayerCraftIndex) +
+                   "   AI " + Mathf.Min(assigned, CompanionRoster.SlotCount) + "/" + CompanionRoster.SlotCount;
         }
 
         private string CraftLabel(int index)
         {
             if (_center != null && index >= 0 && index < _center.FleetCount)
-                return _center.CraftName(index) + "  [" + _center.StatsFor(index).cls + "]";
+                return _center.CraftName(index) + " [" + _center.StatsFor(index).cls + "]";
 
             if (_payload.blueprints != null && index >= 0 && index < _payload.blueprints.Count)
             {

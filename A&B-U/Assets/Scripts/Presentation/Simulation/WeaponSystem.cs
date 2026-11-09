@@ -49,12 +49,14 @@ namespace ABRevival.Presentation
         private readonly IMissionSimulation _simulation;
         private readonly IProjectileSpawner _projectiles;
         private readonly CraftWeapons[] _crafts;
+        private readonly int[] _shotsByCraft;
 
         public WeaponSystem(IMissionSimulation simulation, IProjectileSpawner projectiles)
         {
             _simulation = simulation ?? throw new ArgumentNullException(nameof(simulation));
             _projectiles = projectiles ?? throw new ArgumentNullException(nameof(projectiles));
             _crafts = new CraftWeapons[simulation.MaxShips];
+            _shotsByCraft = new int[simulation.MaxShips];
         }
 
         /// <summary>Craft driven by <see cref="ICombatFireInput"/>; -1 disables input firing.</summary>
@@ -62,6 +64,12 @@ namespace ABRevival.Presentation
 
         /// <summary>Projectiles spawned since construction. Telemetry for tests.</summary>
         public int ShotsFired { get; private set; }
+
+        /// <summary>Projectiles spawned by one craft. Telemetry for tests.</summary>
+        public int ShotsFiredBy(int shipIndex)
+        {
+            return shipIndex >= 0 && shipIndex < _shotsByCraft.Length ? _shotsByCraft[shipIndex] : 0;
+        }
 
         /// <summary>Copies a craft's ports into weapon state. Safe to call once per craft; not a hot path.</summary>
         public void RegisterCraft(int shipIndex, ReadOnlySpan<WeaponMount> mounts)
@@ -238,6 +246,7 @@ namespace ABRevival.Presentation
             }
 
             ShotsFired += spawned;
+            _shotsByCraft[shipIndex] += spawned;
             return spawned;
         }
 

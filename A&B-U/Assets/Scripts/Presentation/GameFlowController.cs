@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using ABRevival.Core.Camera;
 using ABRevival.Core.Data;
@@ -95,6 +96,8 @@ namespace ABRevival.Presentation
         private bool _briefingTalkActive;
         private bool _resultTalkPending;
         private bool _cinematicSkipBound;
+        private readonly List<int> _wingmanShipIndices = new List<int>();
+        private readonly Dictionary<int, int> _wingmanBlueprints = new Dictionary<int, int>();
 
         public GameFlowState State { get; private set; } = GameFlowState.Boot;
         public int StoryIndex => _save != null ? _save.storyIndex : 0;
@@ -110,6 +113,23 @@ namespace ABRevival.Presentation
 
         /// <summary>Projectiles fired by the player craft this mission (real setup path telemetry).</summary>
         public int ShotsFired => _weapons != null ? _weapons.ShotsFired : 0;
+
+        /// <summary>Simulation indices of the AI wingmen spawned from the Ready loadout, in slot order.</summary>
+        public IReadOnlyList<int> WingmanShipIndices => _wingmanShipIndices;
+
+        /// <summary>Hull index registered for a simulation ship, or -1 while it has no contact hull.</summary>
+        public int HullForShip(int shipIndex)
+        {
+            return _shipToHull != null && shipIndex >= 0 && shipIndex < _shipToHull.Length
+                ? _shipToHull[shipIndex]
+                : -1;
+        }
+
+        /// <summary>Projectiles fired by one craft, for wingman weapon telemetry.</summary>
+        public int ShotsFiredBy(int shipIndex)
+        {
+            return _weapons != null ? _weapons.ShotsFiredBy(shipIndex) : 0;
+        }
 
         private void Awake()
         {
@@ -665,6 +685,7 @@ namespace ABRevival.Presentation
             _runner.SpawnSkipped += OnSpawnSkipped;
             _runner.Start();
             _simulation.PlayerIndex = _runner.PlayerShipIndex;
+            SpawnWingmen();
 
             TryCreateContactSolver();
             SetupCombat();
@@ -717,6 +738,75 @@ namespace ABRevival.Presentation
         }
 
         /// <summary>
+        /// Deploys the Ready screen's AI companions as friendly escort wingmen around the player.
+        /// Each wingman keeps its Center blueprint; the hull defIndex only seeds movement stats.
+        /// </summary>
+        private void SpawnWingmen()
+        {
+            _wingmanShipIndices.Clear();
+            _wingmanBlueprints.Clear();
+
+            if (_activeLoadout == null || _runner == null || _simulation == null) return;
+            if (_save.blueprints == null || _save.blueprints.Count == 0) return;
+
+            int playerIndex = _runner.PlayerShipIndex;
+            if (playerIndex < 0 || playerIndex >= _simulation.ShipCount) return;
+
+            ShipEntity player = _simulation.GetShip(playerIndex);
+            float2 forward = ShipEntity.Forward(player.rotation);
+            float2 right = new float2(forward.y, -forward.x);
+            IReadOnlyList<int> companions = _activeLoadout.CompanionCraftIndices;
+
+            for (int slot = 0; slot < companions.Count; slot++)
+            {
+                int blueprintIndex = companions[slot];
+                if (blueprintIndex < 0 || blueprintIndex >= _save.blueprints.Count) continue;
+
+                BlueprintSaveData blueprint = _save.blueprints[blueprintIndex];
+                if (blueprint == null) continue;
+
+                string pilot = string.IsNullOrEmpty(blueprint.craftName)
+                    ? "Wingman " + (slot + 1)
+                    : blueprint.craftName;
+                float2 position = player.position
+                                  - (forward * 80f)
+                                  + (right * (60f * (slot + 1)));
+                int defIndex = ResolveBlueprintDefIndex(blueprint);
+                int shipIndex = _runner.SpawnFriendlyWingman(
+                    pilot, defIndex, position, player.rotation, slot + 1);
+                if (shipIndex < 0) continue;
+
+                _wingmanShipIndices.Add(shipIndex);
+                _wingmanBlueprints[shipIndex] = blueprintIndex;
+            }
+        }
+
+        /// <summary>Finds the frozen craft record whose chassis matches the blueprint body.</summary>
+        private int ResolveBlueprintDefIndex(BlueprintSaveData blueprint)
+        {
+            if (_craftCatalog?.Records == null || blueprint?.mountedParts == null) return -1;
+
+            int hullPartId = -1;
+            for (int i = 0; i < blueprint.mountedParts.Count; i++)
+            {
+                MountedPartSaveData part = blueprint.mountedParts[i];
+                if (part.category != PartCategory.Body) continue;
+                hullPartId = part.partId;
+                break;
+            }
+
+            if (hullPartId < 0) return -1;
+
+            CraftStatRecord[] records = _craftCatalog.Records;
+            for (int i = 0; i < records.Length; i++)
+            {
+                if (records[i].hullPartId == hullPartId) return records[i].defIndex;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
         /// Registers every spawned hull with the contact solver and turns the player's assembled
         /// guns into fire ports. Setup only; the per-tick path below allocates nothing.
         /// </summary>
@@ -753,6 +843,8 @@ namespace ABRevival.Presentation
         {
             ShipEntity ship = _simulation.GetShip(shipIndex);
             bool isPlayer = shipIndex == _runner.PlayerShipIndex;
+            int wingmanBlueprint = -1;
+            bool isWingman = !isPlayer && _wingmanBlueprints.TryGetValue(shipIndex, out wingmanBlueprint);
             _runner.TryGetCraftStats(shipIndex, out CraftStatRecord craft);
 
             Span<HullPartDefinition> parts = stackalloc HullPartDefinition[_contactPartsPerHull];
@@ -760,9 +852,10 @@ namespace ABRevival.Presentation
             int partCount;
             int placementCount = 0;
 
-            if (isPlayer)
+            if (isPlayer || isWingman)
             {
-                partCount = BuildPlayerParts(parts, ship);
+                int blueprintIndex = isPlayer ? PlayerBlueprintIndex() : wingmanBlueprint;
+                partCount = BuildBlueprintParts(parts, ship, blueprintIndex);
             }
             else
             {
@@ -786,9 +879,13 @@ namespace ABRevival.Presentation
 
             if (isPlayer)
             {
-                RegisterPlayerWeapons(shipIndex, parts.Slice(0, partCount));
+                RegisterBlueprintWeapons(shipIndex, parts.Slice(0, partCount));
                 _playerHull = hull;
                 _playerHullMax = _solver.GetHullHealth(hull);
+            }
+            else if (isWingman)
+            {
+                RegisterBlueprintWeapons(shipIndex, parts.Slice(0, partCount));
             }
             else
             {
@@ -796,18 +893,24 @@ namespace ABRevival.Presentation
             }
         }
 
-        /// <summary>
-        /// Composes the player's assembled blueprint through the shared Center/mission resolver:
-        /// socket offsets, mirroring, and engine/hull/wing/gun layer order.
-        /// </summary>
-        private int BuildPlayerParts(Span<HullPartDefinition> parts, in ShipEntity ship)
+        private int PlayerBlueprintIndex()
         {
-            if (_save.blueprints == null || _save.blueprints.Count == 0) return 0;
-
-            int playerBlueprint = _activeLoadout != null && _activeLoadout.PlayerCraftIndex >= 0
+            if (_save.blueprints == null || _save.blueprints.Count == 0) return -1;
+            return _activeLoadout != null && _activeLoadout.PlayerCraftIndex >= 0
                 ? _activeLoadout.PlayerCraftIndex
                 : Math.Clamp(_save.playerBlueprintIndex, 0, _save.blueprints.Count - 1);
-            BlueprintSaveData blueprint = _save.blueprints[playerBlueprint];
+        }
+
+        /// <summary>
+        /// Composes one assembled blueprint through the shared Center/mission resolver:
+        /// socket offsets, mirroring, and engine/hull/wing/gun layer order.
+        /// </summary>
+        private int BuildBlueprintParts(Span<HullPartDefinition> parts, in ShipEntity ship, int blueprintIndex)
+        {
+            if (_save.blueprints == null || blueprintIndex < 0 || blueprintIndex >= _save.blueprints.Count)
+                return 0;
+
+            BlueprintSaveData blueprint = _save.blueprints[blueprintIndex];
             if (blueprint?.mountedParts == null) return 0;
 
             Span<MountedPartData> mounted = stackalloc MountedPartData[_contactPartsPerHull];
@@ -955,7 +1058,7 @@ namespace ABRevival.Presentation
         }
 
         /// <summary>Maps each assembled gun part to a fire port at its socket offset.</summary>
-        private void RegisterPlayerWeapons(int shipIndex, ReadOnlySpan<HullPartDefinition> parts)
+        private void RegisterBlueprintWeapons(int shipIndex, ReadOnlySpan<HullPartDefinition> parts)
         {
             if (_center == null) return;
 
@@ -1330,7 +1433,7 @@ namespace ABRevival.Presentation
             CombatHudState state = _hud.State;
             state.SetMoney(_save != null ? _save.shop.money : 0);
             state.SetMissionSeconds(_runner.CurrentTick * _runner.TickSeconds);
-            state.SetAiCount(0);
+            state.SetAiCount(CountLivingWingmen());
             state.SetEnemyDistance(0f);
 
             int playerIndex = _runner.PlayerShipIndex;
@@ -1349,8 +1452,7 @@ namespace ABRevival.Presentation
                 ShipEntity ship = _simulation.GetShip(playerIndex);
                 state.SetFuelFraction(ship.BoosterFraction);
                 state.SetRadarBearing(math.degrees(-ship.rotation));
-                CountLivingHostiles(playerIndex, ship.position, out int hostiles, out float nearest);
-                state.SetAiCount(hostiles);
+                CountLivingHostiles(playerIndex, ship.position, out _, out float nearest);
                 state.SetEnemyDistance(nearest);
             }
 
@@ -1398,6 +1500,20 @@ namespace ABRevival.Presentation
             }
 
             return string.Empty;
+        }
+
+        /// <summary>Living AI wingmen from the Ready loadout, matching the frozen AI x N plate.</summary>
+        private int CountLivingWingmen()
+        {
+            if (_runner == null) return 0;
+
+            int count = 0;
+            for (int i = 0; i < _wingmanShipIndices.Count; i++)
+            {
+                if (_runner.IsCraftAlive(_wingmanShipIndices[i])) count++;
+            }
+
+            return count;
         }
 
         /// <summary>Living hostile count and the distance to the nearest one, in world pixels.</summary>
@@ -1472,6 +1588,8 @@ namespace ABRevival.Presentation
             _registeredShipCount = 0;
             _playerHull = -1;
             _playerHullMax = 1f;
+            _wingmanShipIndices.Clear();
+            _wingmanBlueprints.Clear();
 
             if (_solver != null)
             {

@@ -171,7 +171,7 @@ namespace ABRevival.Core.Hud
             _missionSeconds = seconds < 0f ? 0f : seconds;
         }
 
-        /// <summary>Living hostile count shown on the AI x N plate.</summary>
+        /// <summary>Living friendly AI wingman count shown on the AI x N plate (frozen UIGame pfa1 count).</summary>
         public void SetAiCount(int count)
         {
             _aiCount = count < 0 ? 0 : count;
