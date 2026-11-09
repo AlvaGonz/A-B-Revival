@@ -441,9 +441,7 @@ namespace ABRevival.Tests.PlayMode
         private static void AssertMainMenuLayers(VisualElement root)
         {
             AssertSprite(root.Q("main-backdrop"), "ui_0005");
-            AssertSprite(root.Q("main-title-plate"), "UI_Main_TitlePlate");
-            AssertSprite(root.Q("main-title"), "UI_Main_TitleMain");
-            AssertSprite(root.Q("main-title-subtitle"), "UI_Main_TitleSubtitle");
+            AssertSprite(root.Q("main-title"), "UI_Main_TitleComposite");
             AssertSprite(root.Q("main-ship"), "UI_Main_Ship");
             Assert.IsNull(root.Q("main-page"), "The baked UI_Main page wrapper is retired.");
             Assert.IsNull(root.Q("main-art"), "The baked UI_Main_Hero crop is retired.");
@@ -456,11 +454,9 @@ namespace ABRevival.Tests.PlayMode
         {
             VisualElement surface = root.Q("main-root");
             VisualElement title = root.Q("main-title");
-            VisualElement subtitle = root.Q("main-title-subtitle");
             VisualElement ship = root.Q("main-ship");
             Assert.IsNotNull(surface, "Main root is missing at " + label);
             Assert.IsNotNull(title, "Main title is missing at " + label);
-            Assert.IsNotNull(subtitle, "Main subtitle is missing at " + label);
             Assert.IsNotNull(ship, "Main ship is missing at " + label);
 
             Assert.Greater(ship.worldBound.width, 0f, "Ship width must be positive at " + label);
@@ -474,8 +470,8 @@ namespace ABRevival.Tests.PlayMode
             foreach (string button in new[] { "play-button", "data-button", "options-button", "credits-button" })
                 bottomControlsTop = Mathf.Min(bottomControlsTop, root.Q(button).worldBound.yMin);
 
-            float bandHeight = bottomControlsTop - subtitle.worldBound.yMax;
-            float gapTop = ship.worldBound.yMin - subtitle.worldBound.yMax;
+            float bandHeight = bottomControlsTop - title.worldBound.yMax;
+            float gapTop = ship.worldBound.yMin - title.worldBound.yMax;
             float gapBottom = bottomControlsTop - ship.worldBound.yMax;
             Assert.AreEqual(gapTop, gapBottom, bandHeight * 0.01f,
                 "Ship top and bottom gaps must match within 1% of the band at " + label);
@@ -485,6 +481,20 @@ namespace ABRevival.Tests.PlayMode
             foreach (string topButton in new[] { "link-button", "player-button" })
                 Assert.IsFalse(shipBounds.Overlaps(root.Q(topButton).worldBound),
                     "The ship must not overlap " + topButton + " at " + label);
+
+            Rect reference = root.Q("play-button").worldBound;
+            foreach (string button in new[]
+                     {
+                         "play-button", "data-button", "options-button",
+                         "credits-button", "link-button", "player-button"
+                     })
+            {
+                Rect rect = root.Q(button).worldBound;
+                Assert.AreEqual(reference.width, rect.width, 1f,
+                    button + " must use the shared button width at " + label);
+                Assert.AreEqual(reference.height, rect.height, 1f,
+                    button + " must use the shared button height at " + label);
+            }
         }
 
         private static void AssertSprite(VisualElement element, string spriteName)

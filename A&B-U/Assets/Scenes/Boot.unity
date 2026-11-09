@@ -3615,14 +3615,10 @@ MonoBehaviour:
   buttonScale: 1
   bottomMargin: 20
   anchorBottomRow: 1
-  titlePlatePosition: {x: 0, y: 0}
-  titlePlateSize: {x: 460, y: 92}
-  titleMainPosition: {x: 8, y: -2}
-  titleMainSize: {x: 418, y: 63}
-  titleSubtitlePosition: {x: 16, y: 45}
-  titleSubtitleSize: {x: 402, y: 21}
-  shipScale: 1
-  buttonSize: {x: 153.7, y: 42.2}
+  titlePosition: {x: 0, y: 0}
+  titleSize: {x: 460, y: 92}
+  shipScale: 1.4
+  buttonSize: {x: 161, y: 45}
   backdropOffset: {x: 0, y: 0}
   backdropSize: {x: 0, y: 0}
   playButtonPosition: {x: 20.15, y: 469.1}
@@ -3632,9 +3628,7 @@ MonoBehaviour:
   linkButtonPosition: {x: 500, y: 6}
   playerButtonPosition: {x: 500, y: 46}
   backdrop: {fileID: 21300000, guid: 8b809bff4b9d1514ca4017981e53737c, type: 3}
-  titlePlateArt: {fileID: 21300000, guid: d860aa0907ab4612b814dd27517519a7, type: 3}
-  titleArt: {fileID: 21300000, guid: bfb1bc4186e94b4188ac2b1e985f33e1, type: 3}
-  titleSubtitleArt: {fileID: 21300000, guid: 7e33ed8b0540454e9d901dc79b659eb1, type: 3}
+  titleArt: {fileID: 21300000, guid: 1d621215c8d5403c82fcdc07d54d2c02, type: 3}
   shipArt: {fileID: 21300000, guid: 091aa3c533f7116874136a9a56468412, type: 3}
   playNormal: {fileID: 21300000, guid: 250d077b6ccf31b4ba490548f5465b4b, type: 3}
   playHover: {fileID: 21300000, guid: acd31acc48efcde48b7d7feb1a3ec596, type: 3}
