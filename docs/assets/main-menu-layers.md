@@ -20,7 +20,7 @@ background and the ship; the plate is vector; the lettering comes from sprite 44
 | Layer | Source | Committed PNG | Native size | Pivot | Alpha |
 |---|---|---|---:|---|---|
 | Background | bitmap **5** | `A&B-U/Assets/Art/Sprites/UI/ui_0005.png` (already committed) | 640×480 | (0.021028, 0.923337) | opaque |
-| Title (full) | plate (shape 442) + letters | `A&B-U/Assets/Art/Sprites/UI/Screens/Title/UI_Main_TitleFull.png` | 460×108 | (0, 1) top-left | 0–255, transparent outside the plate |
+| Title (full) | new 2K title source (black panel + plate + letters) | `A&B-U/Assets/Art/Sprites/UI/Screens/Title/UI_Main_TitleFull.png` | 1935×416 (page 460×99) | (0, 1) top-left | 0–255, transparent outside the panel |
 | Ship | bitmap **441** | `A&B-U/Assets/Art/Sprites/UI/Screens/UI_Main_Ship.png` | 427×344 | (0.5, 0.5) centre | 0–255, 75,400 fully transparent px |
 
 ### Background: no new file
@@ -36,9 +36,7 @@ sha256(ui_0005.png)     = 8FD2CC34B81032A518DE120BC14C16149028FE06B37E72D82CBD60
 
 ### Title components (#210)
 
-The title is extracted both as a ready-to-render full image and as separate components for
-editing. All are 460×108 canvases except the two letter crops; offsets are page pixels inside
-the full canvas.
+The runtime full title is the new 2K source with the black panel, cropped from the black-background `Title.jpg` (outer black keyed out; the enclosed panel stays opaque). The plate/letters rows below are the previous grey-design components; new transparent component exports are pending.
 
 | Component | File | Size | Offset | GUID |
 |---|---|---|---:|---|
@@ -46,7 +44,7 @@ the full canvas.
 | Letters only | `Screens/Title/UI_Main_TitleLetters.png` | 460×108 | 0, 0 | `3aad2517b8a74ea1a4c31e6ffcc2992e` |
 | Main title only | `Screens/Title/UI_Main_TitleMain.png` | 418×63 | 8, 0 | `54c3109ef3f248cfbb2717338f5fa171` |
 | Subtitle only | `Screens/Title/UI_Main_TitleSubtitle.png` | 402×21 | 16, 47 | `994b151d84604c0db0480b2b9971a554` |
-| Full (runtime) | `Screens/Title/UI_Main_TitleFull.png` | 460×108 | 0, 0 | `548dea93128743d5978f373d56082727` |
+| Full (runtime) | `Screens/Title/UI_Main_TitleFull.png` | 1935×416 | 0, 0 | `548dea93128743d5978f373d56082727` |
 
 - **Plate:** full shape 442 vector render in its original grey, no colour tint; includes the top bar
   and side decoration.
@@ -88,7 +86,7 @@ Neither is in `UiScreensAtlas.spriteatlasv2`; the menu renders them through `UiS
 
 `MainMenuController` exposes page-pixel layout for every visible menu object:
 
-- `titlePosition` / `titleSize` (default 0,0 / 460×108) — one composite image
+- `titlePosition` / `titleSize` (default 0,0 / 460×99) — one composite image
 - `shipScale` — multiplier on the auto-fitted ship scale; the ship position remains automatic,
   centred in the band between the title and the bottom control row
 - `buttonSize` and six per-button positions (`playButtonPosition`, … `playerButtonPosition`)

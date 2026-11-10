@@ -351,8 +351,8 @@ namespace ABRevival.Editor
             SetSprite(serialized, "optionsHover", UiSpriteFolder, "Widgets/242_widget_hover.png");
             SetSprite(serialized, "creditsNormal", UiSpriteFolder, "UI_Main/453_widget_normal.png");
             SetSprite(serialized, "creditsHover", UiSpriteFolder, "UI_Main/453_widget_hover.png");
-            SetSprite(serialized, "linkNormal", UiSpriteFolder, "Widgets/20_widget_normal.png");
-            SetSprite(serialized, "linkHover", UiSpriteFolder, "Widgets/20_widget_normal.png");
+            SetSprite(serialized, "linkNormal", UiSpriteFolder, "UI_Main/20_widget_normal_160.png");
+            SetSprite(serialized, "linkHover", UiSpriteFolder, "UI_Main/20_widget_normal_160.png");
             SetSprite(serialized, "playerNormal", UiSpriteFolder, "UI_Main/458_widget_normal.png");
             SetSprite(serialized, "playerHover", UiSpriteFolder, "UI_Main/458_widget_hover.png");
             serialized.ApplyModifiedPropertiesWithoutUndo();

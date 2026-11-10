@@ -3616,7 +3616,7 @@ MonoBehaviour:
   bottomMargin: 20
   anchorBottomRow: 1
   titlePosition: {x: 0, y: 0}
-  titleSize: {x: 460, y: 108}
+  titleSize: {x: 460, y: 99}
   shipScale: 1.4
   buttonSize: {x: 161, y: 45}
   backdropOffset: {x: 0, y: 0}
@@ -3638,8 +3638,8 @@ MonoBehaviour:
   optionsHover: {fileID: 21300000, guid: 5c4651c0d6000bd45beaf2c1f3fc679e, type: 3}
   creditsNormal: {fileID: 21300000, guid: f901689de8d3ec4449479ba3a4b95c5e, type: 3}
   creditsHover: {fileID: 21300000, guid: aeb269f02785b38478f807db070560dc, type: 3}
-  linkNormal: {fileID: 21300000, guid: 87452d9d37cdeb04483a2bb24cd8370a, type: 3}
-  linkHover: {fileID: 21300000, guid: 87452d9d37cdeb04483a2bb24cd8370a, type: 3}
+  linkNormal: {fileID: 21300000, guid: 9c03d614ed5742bf87696f9c773c2d76, type: 3}
+  linkHover: {fileID: 21300000, guid: 9c03d614ed5742bf87696f9c773c2d76, type: 3}
   playerNormal: {fileID: 21300000, guid: 539c8e63d50b46b48b52a4f8acbffd65, type: 3}
   playerHover: {fileID: 21300000, guid: 63de4be62fdfad0488346815d3cb99c4, type: 3}
 --- !u!114 &1901584820
