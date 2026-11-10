@@ -24,22 +24,7 @@ namespace ABRevival.Presentation
 
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
 
-        [Header("Factory sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite factoryBackground;
-        [SerializeField] private Sprite factoryHeader;
-        [SerializeField] private Sprite previewFrame;
-        [SerializeField] private Sprite buttonPlate;
-        [SerializeField] private Sprite buttonMerge;
-        [SerializeField] private Sprite buttonNew;
-        [SerializeField] private Sprite buttonAdd;
-        [SerializeField] private Sprite buttonBackToCenter;
-        [SerializeField] private Sprite buttonPartsCrafts;
-        [SerializeField] private Sprite helpButton;
-        [SerializeField] private Sprite categoryAll;
-        [SerializeField] private Sprite categoryBody;
-        [SerializeField] private Sprite categoryWing;
-        [SerializeField] private Sprite categoryEngine;
-        [SerializeField] private Sprite categoryGun;
+        [Header("Factory mount art (dynamic 2x assembly preview)")]
         [SerializeField] private MountArtEntry[] mountArt = Array.Empty<MountArtEntry>();
 
         private ScreenPanel _screen;
@@ -139,7 +124,6 @@ namespace ABRevival.Presentation
                 _mountTable = PartCatalogBootstrap.LoadMountTable("Factory");
                 _mountArtLookup = new MountArtLookup(_mountTable, mountArt);
 
-                ApplySkin(root);
                 Bind(root);
 
                 _presenter = new AssemblyPresenter(
@@ -277,7 +261,7 @@ namespace ABRevival.Presentation
         /// <summary>Returns to Center; GameFlowController captures and reloads the dashboard.</summary>
         public void BackToCenter() => Closed?.Invoke();
 
-        // ---------------- Binding / skin ----------------
+        // ---------------- Binding ----------------
 
         private void Bind(VisualElement root)
         {
@@ -327,43 +311,6 @@ namespace ABRevival.Presentation
                 Button button = root.Q<Button>(tabs[i]);
                 if (button != null) button.clicked += () => ShowCrafts(false);
             }
-        }
-
-        private void ApplySkin(VisualElement root)
-        {
-            SetPanelBackground(root, "factory-root", factoryBackground);
-            SetPanelBackground(root, "factory-header", factoryHeader);
-            SetPanelBackground(root, "preview-frame", previewFrame);
-
-            SetSpriteBackground(root, "help-button", helpButton, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "merge-button", buttonMerge != null ? buttonMerge : buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "new-button", buttonNew != null ? buttonNew : buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "add-button", buttonAdd != null ? buttonAdd : buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "back-to-center-button", buttonBackToCenter != null ? buttonBackToCenter : buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "parts-crafts-button", buttonPartsCrafts != null ? buttonPartsCrafts : buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "help-close", buttonPlate, ScaleMode.ScaleAndCrop);
-
-            SetSpriteBackground(root, "tab-all", categoryAll, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "tab-body", categoryBody, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "tab-wing", categoryWing, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "tab-engine", categoryEngine, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "tab-gun", categoryGun, ScaleMode.ScaleAndCrop);
-        }
-
-        private static void SetPanelBackground(VisualElement root, string name, Sprite sprite)
-        {
-            if (sprite == null) return;
-            VisualElement element = root.Q(name);
-            if (element != null)
-                UiSpriteSkin.Apply(element, sprite, ScaleMode.StretchToFill, keepBackground: false);
-        }
-
-        private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
-        {
-            if (sprite == null) return;
-            VisualElement element = root.Q(name);
-            if (element != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }
 
         private void ToggleHelp()

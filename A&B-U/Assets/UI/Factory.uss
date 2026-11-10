@@ -1,5 +1,6 @@
 /* Factory (frozen 2011 UIMakePlayer): 1920x1080 full-bleed assembly screen.
-   Sprite backgrounds are assigned at runtime from FactoryController serialized fields. */
+   Frozen art is authored in Factory.uxml as app:SpriteElement (ADR 0025); only the
+   assembly preview, tables and state stay in FactoryController. */
 
 .factory-root {
     flex-grow: 1;
@@ -7,6 +8,20 @@
     height: 100%;
     background-color: rgb(2, 4, 8);
     -unity-background-scale-mode: stretch-to-fill;
+}
+
+.button-art,
+.art-layer,
+.sprite-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.sprite-text {
+    -unity-text-align: middle-center;
 }
 
 .factory-screen {
