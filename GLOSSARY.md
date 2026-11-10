@@ -99,6 +99,14 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Runtime Audio Service (`AudioService`)**: Unity presentation service that preloads the extracted bank, owns the Music/SFX/UI voice pools, and reproduces the original music fade, duck and silence-floor behaviour.
 - **Audio Mixer (`ABRevivalAudioMixer`)**: Minimal Unity mixer with Music, SFX, and UI groups, created by `AudioAssetFactory` and addressed by `AudioService`.
 
+## Unity Presentation Structure (ADR 0025)
+- **Scene vs Section**: `Boot.unity` is the only built Unity scene. The game's menu and flow screens are **sections**, not scenes; do not create one Unity scene per screen.
+- **Section**: A prefab under the `Screens` root that groups one screen's `UIDocument`, controller and the objects its Boot root owned before #215. The 11 sections are MainMenu, Options, Center, Factory, Shop, Info, Ready, Results, Repair, Talk and Combat.
+- **Screen**: The UI page authored in UXML/USS and bound by a section controller. A screen is not a Unity scene.
+- **ScreenCatalog**: ScriptableObject holding direct references to the 11 section prefabs; Boot instantiates all of them at startup.
+- **SpriteElement**: Custom `VisualElement` with a serialized `Sprite` UXML attribute that renders an `Image` child. It keeps atlased art intact and visible in UI Builder.
+- **USS-first layout**: Static layout lives in USS/UXML. C# keeps only the responsive rules that cannot be expressed in USS: ship centring, safe area and page scale.
+
 ## Tooling & IP Vocabulary
 - **Vargames**: Original independent game development studio and sole copyright holder of *Assembly and Battle: The Story in the Space* (2011).
 - **JPEXS (FFDec)**: Open-source Flash decompiler and ActionScript bytecode editor used for unpacking, editing, and repacking `.swf` binaries.
