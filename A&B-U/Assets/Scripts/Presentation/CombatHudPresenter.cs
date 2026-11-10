@@ -12,6 +12,9 @@ namespace ABRevival.Presentation
     /// (ticket #168): money plate and pause/help, radar with distance and mission timer,
     /// AI x N, telemetry, pilot portrait with health and shield bars and name, minimap with
     /// the Captain portrait, mouse reticle, and the tactical/camera badges.
+    /// Frozen plates are authored in <c>CombatHud.uxml</c> as <see cref="SpriteElement"/>
+    /// (ADR 0025); only the reticle and the value-driven bar fills take their sprite from the
+    /// library here, and the other assignments are a fallback for image-only roots.
     /// Elements and sprites are cached once; unchanged values are not rewritten, so the
     /// steady-state per-frame path allocates nothing.
     /// Original game IP: Vargames (2011).
@@ -250,6 +253,8 @@ namespace ABRevival.Presentation
 
         private static void ApplySprites(VisualElement root, HudSpriteLibrary sprites)
         {
+            // The document owns the frozen plates; these assignments only fill image-only roots
+            // and the dynamic reticle and bar fills (ADR 0025).
             Assign(root, MoneyPanelElement, sprites.MoneyPanel);
             Assign(root, PauseButtonElement, sprites.PauseButton);
             Assign(root, HelpButtonElement, sprites.HelpButton);
@@ -275,16 +280,27 @@ namespace ABRevival.Presentation
 
         private static void ApplyBackground(VisualElement root, string name, Sprite sprite)
         {
-            VisualElement element = root.Q(name);
-            if (element != null) element.style.backgroundImage = new StyleBackground(sprite);
+            VisualElement host = root.Q(name);
+            // A SpriteElement child means the document authored the plate; the atlased
+            // background-image path would double it and samples the wrong rect.
+            if (host == null || host is SpriteElement || host.Q<SpriteElement>() != null) return;
+            host.style.backgroundImage = new StyleBackground(sprite);
         }
 
         private static void Assign(VisualElement root, string name, Sprite sprite)
         {
-            var image = root.Q<Image>(name);
-            if (image == null)
-                throw new InvalidOperationException($"HUD image '{name}' is missing from the root.");
-            image.sprite = sprite;
+            VisualElement host = root.Q(name);
+            if (host == null)
+                throw new InvalidOperationException($"HUD element '{name}' is missing from the root.");
+            if (host is SpriteElement) return; // document owns the static plate
+            if (host is Image image)
+            {
+                image.sprite = sprite;
+                return;
+            }
+            if (host.Q<SpriteElement>() == null)
+                throw new InvalidOperationException(
+                    $"HUD element '{name}' has no Image or SpriteElement.");
         }
 
         private static T Require<T>(VisualElement root, string name) where T : VisualElement

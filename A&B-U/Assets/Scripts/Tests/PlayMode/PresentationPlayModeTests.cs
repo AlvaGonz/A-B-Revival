@@ -321,6 +321,8 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(hud.Sprites, "The HUD must load Resources/UI/HudSpriteLibrary.");
             Assert.IsNotNull(root.Q<Image>(CombatHudPresenter.ReticleElement).sprite,
                 "The HUD images must receive the original sprites.");
+            foreach (SpriteElement plate in root.Query<SpriteElement>().Build())
+                Assert.IsNotNull(plate.sprite, "HUD plate '" + plate.name + "' lost its sprite.");
         }
 
         [Test]

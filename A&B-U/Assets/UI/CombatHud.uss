@@ -1,7 +1,17 @@
 /* Combat HUD (frozen 2011 layout, ADR 0004/0005).
  * Authored at the ticket #179 single 3x design scale: 640x480 frozen stage coordinates
  * multiplied by 3, on the 1920x1080 design canvas. Positions follow UI_Game symbol 510.
- * The world uses the same 3x scale (CameraDistancePresets.DesignScale). */
+ * The world uses the same 3x scale (CameraDistancePresets.DesignScale).
+ * Frozen plates are authored in CombatHud.uxml as app:SpriteElement (ADR 0025). */
+
+/* UXML art layers fill their host without joining its layout (Info pattern). */
+.art-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
 
 .hud-root {
     position: absolute;
