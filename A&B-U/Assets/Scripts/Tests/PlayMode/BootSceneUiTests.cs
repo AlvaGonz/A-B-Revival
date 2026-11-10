@@ -17,7 +17,7 @@ namespace ABRevival.Tests.PlayMode
         [UnityTest]
         public IEnumerator BootScene_HasEventSystemWithInputActions()
         {
-            yield return SceneManager.LoadSceneAsync("Boot", LoadSceneMode.Single);
+            yield return PlayModeBoot.LoadBoot();
 
             EventSystem eventSystem = Object.FindFirstObjectByType<EventSystem>();
             Assert.IsNotNull(eventSystem, "Boot scene needs an EventSystem for UI Toolkit clicks.");

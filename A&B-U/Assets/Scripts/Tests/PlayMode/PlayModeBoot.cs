@@ -17,9 +17,27 @@ namespace ABRevival.Tests.PlayMode
     {
         public const int WaitFrames = 600;
 
+        /// <summary>
+        /// Loads one clean Boot scene. The PlayMode runner may already have a Boot scene
+        /// loaded; unloading it first prevents duplicate GameFlow/ScreenHost instances that
+        /// make FindAnyObjectByType return an object from the stale scene.
+        /// </summary>
+        public static IEnumerator LoadBoot()
+        {
+            Scene existing = SceneManager.GetSceneByName("Boot");
+            if (existing.isLoaded && SceneManager.sceneCount > 1)
+            {
+                AsyncOperation unload = SceneManager.UnloadSceneAsync(existing);
+                if (unload != null) yield return unload;
+            }
+
+            AsyncOperation load = SceneManager.LoadSceneAsync("Boot", LoadSceneMode.Single);
+            if (load != null) yield return load;
+        }
+
         public static IEnumerator LoadMainMenu()
         {
-            SceneManager.LoadScene("Boot");
+            yield return LoadBoot();
             yield return null;
             yield return WaitForMainMenu();
         }

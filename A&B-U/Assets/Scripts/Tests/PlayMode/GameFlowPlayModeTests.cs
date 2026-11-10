@@ -49,7 +49,7 @@ namespace ABRevival.Tests.PlayMode
             seeded.shop.ownedParts.Add(71);
             PlayerSaveCodec.SaveToFile(SavePath, seeded);
 
-            SceneManager.LoadScene("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
@@ -75,7 +75,7 @@ namespace ABRevival.Tests.PlayMode
             File.WriteAllText(SavePath, "{ not valid json");
             LogAssert.Expect(LogType.Error, new Regex("Save was corrupt.*"));
 
-            SceneManager.LoadScene("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
@@ -93,7 +93,7 @@ namespace ABRevival.Tests.PlayMode
         {
             if (File.Exists(SavePath)) File.Delete(SavePath);
 
-            SceneManager.LoadScene("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
@@ -131,7 +131,7 @@ namespace ABRevival.Tests.PlayMode
         {
             if (File.Exists(SavePath)) File.Delete(SavePath);
 
-            SceneManager.LoadScene("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
@@ -172,7 +172,7 @@ namespace ABRevival.Tests.PlayMode
         {
             if (File.Exists(SavePath)) File.Delete(SavePath);
 
-            SceneManager.LoadScene("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
@@ -258,7 +258,7 @@ namespace ABRevival.Tests.PlayMode
         {
             if (File.Exists(SavePath)) File.Delete(SavePath);
 
-            SceneManager.LoadScene("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
@@ -303,7 +303,7 @@ namespace ABRevival.Tests.PlayMode
         {
             if (File.Exists(SavePath)) File.Delete(SavePath);
 
-            SceneManager.LoadScene("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
 
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();

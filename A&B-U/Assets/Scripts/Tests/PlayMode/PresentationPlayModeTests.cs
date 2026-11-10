@@ -284,7 +284,7 @@ namespace ABRevival.Tests.PlayMode
         [UnityTest]
         public IEnumerator BootScene_HudDocumentBindsTheFrozenLayout()
         {
-            yield return SceneManager.LoadSceneAsync("Boot", LoadSceneMode.Single);
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
             yield return null;
 

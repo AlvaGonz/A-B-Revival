@@ -17,7 +17,7 @@ namespace ABRevival.Tests.PlayMode
         [UnityTest]
         public IEnumerator Boot_InstantiatesTheElevenSectionPrefabsFromTheCatalog()
         {
-            yield return SceneManager.LoadSceneAsync("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
 
             ScreenHost host = Object.FindAnyObjectByType<ScreenHost>();

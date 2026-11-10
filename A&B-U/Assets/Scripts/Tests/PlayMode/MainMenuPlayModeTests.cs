@@ -140,7 +140,7 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsFalse(saved.soundEnabled, "OK must persist the Sound row.");
             Assert.AreEqual(PlayerControlMode.Mouse, saved.controlMode, "OK must persist the control mode.");
 
-            SceneManager.LoadScene("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
             yield return PlayModeBoot.WaitForMainMenu();
             GameFlowController reloaded = Object.FindAnyObjectByType<GameFlowController>();
