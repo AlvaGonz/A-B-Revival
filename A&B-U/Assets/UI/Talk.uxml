@@ -2,7 +2,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
     <Style src="Talk.uss" />
     <ui:VisualElement name="talk-root" class="talk-root">
-        <app:SpriteElement name="talk-frame" class="art-layer" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/Screens/UI_Talk.png" />
+        <app:SpriteElement name="talk-frame" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/Screens/UI_Talk.png" />
         <ui:VisualElement name="talk-click-area" class="talk-click-area" />
         <ui:VisualElement name="talk-panel" class="talk-panel" picking-mode="Ignore">
             <ui:Image name="talk-portrait" class="talk-portrait" picking-mode="Ignore" />

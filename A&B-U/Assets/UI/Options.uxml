@@ -3,7 +3,7 @@
     <Style src="Options.uss" />
     <ui:VisualElement name="options-root" class="options-root">
         <ui:VisualElement name="options-page" class="options-page">
-            <app:SpriteElement name="options-art" class="options-art" picking-mode="Ignore" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/Screens/UI_Options.png" />
+            <app:SpriteElement name="options-art" class="options-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/Screens/UI_Options.png" />
 
             <ui:Button name="bloom-row" class="option-row bloom-row" tooltip="Bloom">
                 <ui:Label name="bloom-label" text="Bloom" class="option-row-label font-sans" picking-mode="Ignore" />
@@ -37,10 +37,10 @@
             <ui:Label name="control-hint" text="Q switches controls in battle" class="control-hint font-sans" />
 
             <ui:Button name="ok-button" class="page-button ok-button" tooltip="OK">
-                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/UI_Options/276_widget_normal.png" />
+                <app:SpriteElement name="button-art" class="button-art" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/UI_Options/276_widget_normal.png" />
             </ui:Button>
             <ui:Button name="cancel-button" class="page-button cancel-button" tooltip="Cancel">
-                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/UI_Options/273_widget_normal.png" />
+                <app:SpriteElement name="button-art" class="button-art" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/UI_Options/273_widget_normal.png" />
             </ui:Button>
         </ui:VisualElement>
     </ui:VisualElement>

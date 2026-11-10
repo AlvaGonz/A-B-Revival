@@ -4,7 +4,7 @@
     <ui:VisualElement name="results-root" class="results-root">
         <ui:VisualElement name="results-page" class="results-page">
             <!-- Default is the UIWin backdrop; ResultsController swaps the fail render. -->
-            <app:SpriteElement name="results-background" class="results-background" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0005.png" />
+            <app:SpriteElement name="results-background" class="results-background" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0005.png" />
 
             <ui:VisualElement name="results-panel" class="results-panel">
                 <ui:Label name="results-title" text="You won!" class="results-title" />
@@ -21,14 +21,14 @@
             <ui:VisualElement name="results-actions" class="results-actions">
                 <ui:Button name="results-left" class="sprite-button result-button" tooltip="Retry this battle" />
                 <ui:Button name="results-link" class="sprite-button result-button result-button-link" tooltip="Vargames">
-                    <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_Win/20_widget_normal.png?fileID=5820349858836483694&amp;guid=4f210bf754913e444b2c745702be5ca4&amp;type=3#20_widget_normal_0" />
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_Win/20_widget_normal.png?fileID=5820349858836483694&amp;guid=4f210bf754913e444b2c745702be5ca4&amp;type=3#20_widget_normal_0" />
                 </ui:Button>
                 <ui:Button name="results-right" class="sprite-button result-button" tooltip="Continue" />
             </ui:VisualElement>
 
             <ui:VisualElement name="results-repair-row" class="results-repair-row">
                 <ui:Button name="results-repair" class="sprite-button result-button result-button-repair" tooltip="Repair damaged parts">
-                    <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_Win/16_widget_normal.png?fileID=3441165518328395720&amp;guid=3a6945cf5ed560a4883032b13be214e3&amp;type=3#16_widget_normal_0" />
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_Win/16_widget_normal.png?fileID=3441165518328395720&amp;guid=3a6945cf5ed560a4883032b13be214e3&amp;type=3#16_widget_normal_0" />
                 </ui:Button>
             </ui:VisualElement>
 

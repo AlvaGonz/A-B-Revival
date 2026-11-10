@@ -43,7 +43,6 @@ namespace ABRevival.Presentation
 
         public SpriteElement()
         {
-            pickingMode = PickingMode.Ignore;
             // Art layers are overlays; never let the sprite drive the parent's content size.
             style.position = Position.Absolute;
             _image.style.position = Position.Absolute;

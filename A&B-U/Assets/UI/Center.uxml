@@ -2,10 +2,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
     <Style src="Center.uss" />
     <ui:VisualElement name="center-root" class="center-root">
-        <app:SpriteElement name="center-background" class="art-layer" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0312_hangar_background.png" />
+        <app:SpriteElement name="center-background" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0312_hangar_background.png" />
         <ui:VisualElement name="center-screen" class="center-screen">
             <ui:VisualElement name="center-header" class="center-header">
-                <app:SpriteElement name="center-header-art" class="art-layer" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                <app:SpriteElement name="center-header-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                 <ui:VisualElement class="header-left">
                     <ui:VisualElement name="center-title-plate" class="title-plate">
                         <ui:Label name="center-title" text="Center" class="center-title" />
@@ -15,7 +15,7 @@
                 <ui:VisualElement class="header-right">
                     <ui:Label name="money-label" text="0 G" class="money-label" />
                     <ui:Button name="help-button" class="sprite-button help-button" tooltip="Help">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0073_hud_button_help.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0073_hud_button_help.png" />
                     </ui:Button>
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -23,7 +23,7 @@
             <ui:VisualElement class="center-body">
                 <ui:VisualElement class="preview-column">
                     <ui:VisualElement name="preview-frame" class="preview-frame">
-                        <app:SpriteElement name="preview-frame-art" class="art-layer" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0315_hangar_frame.png" />
+                        <app:SpriteElement name="preview-frame-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0315_hangar_frame.png" />
                         <ui:VisualElement name="preview-clip" class="preview-clip">
                             <ui:VisualElement name="preview-canvas" class="preview-canvas" />
                         </ui:VisualElement>
@@ -70,34 +70,34 @@
 
                     <ui:VisualElement name="companion-slots" class="companion-slots">
                         <ui:Button name="grade-0" text="B" class="grade-button font-grade" tooltip="Companion 1">
-                            <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
                             <ui:Label name="sprite-text" text="-" class="sprite-text" picking-mode="Ignore" />
                         </ui:Button>
                         <ui:Button name="grade-1" text="B" class="grade-button font-grade" tooltip="Companion 2">
-                            <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
                             <ui:Label name="sprite-text" text="-" class="sprite-text" picking-mode="Ignore" />
                         </ui:Button>
                         <ui:Button name="grade-2" text="B" class="grade-button font-grade" tooltip="Companion 3">
-                            <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
                             <ui:Label name="sprite-text" text="-" class="sprite-text" picking-mode="Ignore" />
                         </ui:Button>
                         <ui:Button name="grade-3" text="C" class="grade-button font-grade" tooltip="Companion 4">
-                            <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
                             <ui:Label name="sprite-text" text="-" class="sprite-text" picking-mode="Ignore" />
                         </ui:Button>
                         <ui:Button name="grade-4" text="B" class="grade-button font-grade" tooltip="Companion 5">
-                            <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
                             <ui:Label name="sprite-text" text="-" class="sprite-text" picking-mode="Ignore" />
                         </ui:Button>
                     </ui:VisualElement>
 
                     <ui:VisualElement class="companion-actions font-data">
                         <ui:Button name="reset-button" text="Reset" class="text-button">
-                            <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                             <ui:Label name="sprite-text" text="Reset" class="sprite-text" picking-mode="Ignore" />
                         </ui:Button>
                         <ui:Button name="best-button" text="Best" class="text-button">
-                            <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                             <ui:Label name="sprite-text" text="Best" class="sprite-text" picking-mode="Ignore" />
                         </ui:Button>
                     </ui:VisualElement>
@@ -107,29 +107,29 @@
 
                 <ui:VisualElement class="actions-column">
                     <ui:Button name="info-button" text="INFO" class="sprite-button nav-button" tooltip="Info">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                         <ui:Label name="sprite-text" text="INFO" class="sprite-text" picking-mode="Ignore" />
                     </ui:Button>
                     <ui:Button name="ready-button" text="" class="sprite-button nav-button nav-ready" tooltip="Ready">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0585_hangar_button_launch.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0585_hangar_button_launch.png" />
                     </ui:Button>
                     <ui:Button name="shop-button" text="SHOP" class="sprite-button nav-button" tooltip="Shop">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                         <ui:Label name="sprite-text" text="SHOP" class="sprite-text" picking-mode="Ignore" />
                     </ui:Button>
                     <ui:Button name="factory-button" text="FACTORY" class="sprite-button nav-button" tooltip="Factory">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                         <ui:Label name="sprite-text" text="FACTORY" class="sprite-text" picking-mode="Ignore" />
                     </ui:Button>
                     <ui:Button name="back-button" text="BACK" class="sprite-button nav-button" tooltip="Back">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                         <ui:Label name="sprite-text" text="BACK" class="sprite-text" picking-mode="Ignore" />
                     </ui:Button>
                 </ui:VisualElement>
             </ui:VisualElement>
 
             <ui:VisualElement name="craft-table" class="craft-table">
-                <app:SpriteElement name="craft-table-art" class="art-layer" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
+                <app:SpriteElement name="craft-table-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
                 <ui:VisualElement name="table-header" class="table-header font-data">
                     <ui:Label text="Index" class="cell col-index" />
                     <ui:Label text="Name" class="cell col-name" />
@@ -139,20 +139,20 @@
                 <ui:ScrollView name="craft-list" class="craft-list" />
                 <ui:VisualElement class="table-footer">
                     <ui:Button name="first-button" text="|&lt;" class="sprite-button page-button" tooltip="First page">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                         <ui:Label name="sprite-text" text="|&lt;" class="sprite-text" picking-mode="Ignore" />
                     </ui:Button>
                     <ui:Button name="prev-button" text="&lt;" class="sprite-button page-button" tooltip="Previous page">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                         <ui:Label name="sprite-text" text="&lt;" class="sprite-text" picking-mode="Ignore" />
                     </ui:Button>
                     <ui:Label name="page-label" text="1 / 1" class="page-label font-sans" />
                     <ui:Button name="next-button" text="&gt;" class="sprite-button page-button" tooltip="Next page">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                         <ui:Label name="sprite-text" text="&gt;" class="sprite-text" picking-mode="Ignore" />
                     </ui:Button>
                     <ui:Button name="last-button" text="&gt;|" class="sprite-button page-button" tooltip="Last page">
-                        <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                         <ui:Label name="sprite-text" text="&gt;|" class="sprite-text" picking-mode="Ignore" />
                     </ui:Button>
                 </ui:VisualElement>
@@ -160,13 +160,13 @@
         </ui:VisualElement>
 
         <ui:VisualElement name="center-placeholder" class="center-placeholder">
-            <app:SpriteElement name="placeholder-background-art" class="art-layer" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
+            <app:SpriteElement name="placeholder-background-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
             <ui:VisualElement name="placeholder-panel" class="placeholder-panel">
-                <app:SpriteElement name="placeholder-panel-art" class="art-layer" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
+                <app:SpriteElement name="placeholder-panel-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
                 <ui:Label name="placeholder-title" text="INFO" class="placeholder-title" />
                 <ui:Label name="placeholder-body" text="This section is delivered by its own ticket." class="placeholder-body" />
                 <ui:Button name="placeholder-back" text="BACK" class="text-button placeholder-back">
-                    <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                     <ui:Label name="sprite-text" text="BACK" class="sprite-text" picking-mode="Ignore" />
                 </ui:Button>
             </ui:VisualElement>

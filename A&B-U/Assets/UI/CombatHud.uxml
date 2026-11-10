@@ -5,28 +5,28 @@
     <ui:VisualElement name="hud-root" class="hud-root" picking-mode="Ignore">
         <!-- top-left: money readout, pause and help (both are visual parity only until pause exists as a flow state).
              Frozen plates are authored here; values stay in CombatHudPresenter (ADR 0025). -->
-        <app:SpriteElement name="hud-money-panel" class="hud-money-panel" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0477_hud_money_panel.png">
+        <app:SpriteElement name="hud-money-panel" class="hud-money-panel" sprite="project://database/Assets/Art/Sprites/UI/ui_0477_hud_money_panel.png">
             <ui:Label name="hud-money" text="0 G" class="hud-money-text" picking-mode="Ignore" />
         </app:SpriteElement>
-        <app:SpriteElement name="hud-pause-button" class="hud-icon-button hud-pause" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0505_hud_button_pause.png" />
-        <app:SpriteElement name="hud-help-button" class="hud-icon-button hud-help" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0073_hud_button_help.png" />
+        <app:SpriteElement name="hud-pause-button" class="hud-icon-button hud-pause" sprite="project://database/Assets/Art/Sprites/UI/ui_0505_hud_button_pause.png" />
+        <app:SpriteElement name="hud-help-button" class="hud-icon-button hud-help" sprite="project://database/Assets/Art/Sprites/UI/ui_0073_hud_button_help.png" />
 
         <!-- top-right: circular radar, distance, mission timer, AI count -->
-        <app:SpriteElement name="hud-radar" class="hud-radar" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0470_hud_radar_ring.png">
-            <app:SpriteElement name="hud-radar-arrow" class="hud-radar-arrow" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0474_hud_radar_arrow.png" />
+        <app:SpriteElement name="hud-radar" class="hud-radar" sprite="project://database/Assets/Art/Sprites/UI/ui_0470_hud_radar_ring.png">
+            <app:SpriteElement name="hud-radar-arrow" class="hud-radar-arrow" sprite="project://database/Assets/Art/Sprites/UI/ui_0474_hud_radar_arrow.png" />
             <ui:Label name="hud-radar-distance" text="0" class="hud-radar-readout" picking-mode="Ignore" />
             <ui:Label name="hud-mission-timer" text="00:00" class="hud-radar-timer" picking-mode="Ignore" />
         </app:SpriteElement>
-        <app:SpriteElement name="hud-ai-count" class="hud-ai-count" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0493_hud_mode_badge.png">
+        <app:SpriteElement name="hud-ai-count" class="hud-ai-count" sprite="project://database/Assets/Art/Sprites/UI/ui_0493_hud_mode_badge.png">
             <ui:Label name="hud-ai-count-value" text="AI x 0" class="hud-badge-text" picking-mode="Ignore" />
         </app:SpriteElement>
 
         <!-- bottom-left: battle-damage telemetry above the pilot bars -->
-        <app:SpriteElement name="hud-telemetry" class="hud-telemetry" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0481_hud_damage_telemetry_row.png">
+        <app:SpriteElement name="hud-telemetry" class="hud-telemetry" sprite="project://database/Assets/Art/Sprites/UI/ui_0481_hud_damage_telemetry_row.png">
             <ui:Label name="hud-lost-parts" text="" class="hud-telemetry-text" picking-mode="Ignore" />
         </app:SpriteElement>
         <ui:VisualElement name="hud-bars" class="hud-bars" picking-mode="Ignore">
-            <app:SpriteElement name="hud-bars-art" class="art-layer" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0480_hud_bar_frame.png" />
+            <app:SpriteElement name="hud-bars-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0480_hud_bar_frame.png" />
             <ui:VisualElement name="hud-health-bar" class="hud-bar">
                 <ui:Image name="hud-hull-fill" class="hud-bar-fill hud-health-fill" />
             </ui:VisualElement>
@@ -39,20 +39,20 @@
             <ui:Label name="hud-hull-value" text="1000 / 1000" class="hud-hull-value" picking-mode="Ignore" />
         </ui:VisualElement>
         <ui:VisualElement name="hud-pilot-tile" class="hud-pilot-tile" picking-mode="Ignore">
-            <app:SpriteElement name="hud-pilot-backing" class="hud-portrait-backing" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
+            <app:SpriteElement name="hud-pilot-backing" class="hud-portrait-backing" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
             <ui:VisualElement name="hud-pilot-portrait" class="hud-pilot-portrait">
-                <app:SpriteElement name="hud-pilot-portrait-art" class="art-layer" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Talk/Portraits/Michael.png" />
+                <app:SpriteElement name="hud-pilot-portrait-art" class="art-layer" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Talk/Portraits/Michael.png" />
             </ui:VisualElement>
-            <app:SpriteElement name="hud-pilot-health-pip" class="hud-portrait-pip" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0491_hud_portrait_health_pip.png" />
+            <app:SpriteElement name="hud-pilot-health-pip" class="hud-portrait-pip" sprite="project://database/Assets/Art/Sprites/UI/ui_0491_hud_portrait_health_pip.png" />
             <ui:Label name="hud-pilot-name" text="" class="hud-pilot-name font-grade" />
         </ui:VisualElement>
 
         <!-- bottom-right: minimap with the Captain portrait beside it -->
-        <app:SpriteElement name="hud-minimap" class="hud-minimap" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0469_hud_minimap.png" />
+        <app:SpriteElement name="hud-minimap" class="hud-minimap" sprite="project://database/Assets/Art/Sprites/UI/ui_0469_hud_minimap.png" />
         <ui:VisualElement name="hud-captain-tile" class="hud-captain-tile" picking-mode="Ignore">
-            <app:SpriteElement name="hud-captain-backing" class="hud-portrait-backing" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
+            <app:SpriteElement name="hud-captain-backing" class="hud-portrait-backing" sprite="project://database/Assets/Art/Sprites/UI/ui_0061_hud_portrait_backing.png" />
             <ui:VisualElement name="hud-captain-portrait" class="hud-captain-portrait">
-                <app:SpriteElement name="hud-captain-portrait-art" class="art-layer" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Talk/Portraits/Captain.png" />
+                <app:SpriteElement name="hud-captain-portrait-art" class="art-layer" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Talk/Portraits/Captain.png" />
             </ui:VisualElement>
             <ui:VisualElement name="hud-captain-health-track" class="hud-captain-health-track">
                 <ui:VisualElement name="hud-captain-health" class="hud-captain-health" />
@@ -63,11 +63,11 @@
         <!-- bottom-center: tactical-mode and camera-distance badges -->
         <ui:VisualElement name="hud-badges" class="hud-badges" picking-mode="Ignore">
             <ui:VisualElement name="hud-mode-badge" class="hud-mode-badge">
-                <app:SpriteElement name="hud-mode-badge-art" class="art-layer" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0493_hud_mode_badge.png" />
+                <app:SpriteElement name="hud-mode-badge-art" class="art-layer" sprite="project://database/Assets/Art/Sprites/UI/ui_0493_hud_mode_badge.png" />
                 <ui:Label name="hud-mode-badge-text" text="TACTICAL AN" class="hud-badge-label" />
             </ui:VisualElement>
             <ui:VisualElement name="hud-camera-badge" class="hud-camera-badge">
-                <app:SpriteElement name="hud-camera-badge-art" class="art-layer" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/ui_0493_hud_camera_badge.png" />
+                <app:SpriteElement name="hud-camera-badge-art" class="art-layer" sprite="project://database/Assets/Art/Sprites/UI/ui_0493_hud_camera_badge.png" />
                 <ui:Label name="hud-camera-badge-text" text="CAM SHORT 1.0x" class="hud-badge-label" />
             </ui:VisualElement>
         </ui:VisualElement>
