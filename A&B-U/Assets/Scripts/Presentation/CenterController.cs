@@ -173,11 +173,6 @@ namespace ABRevival.Presentation
             if (_panel != null) _panel.SetVisible(false);
         }
 
-        private void Start()
-        {
-            Initialize(null);
-        }
-
         /// <summary>
         /// Builds the Center UI once and applies a player save. GameFlowController calls this at
         /// boot; calling it again with a save refreshes the fleet, companions and money.
