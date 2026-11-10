@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
     <Style src="CombatHud.uss" />
-    <ui:VisualElement name="flow-cinematic-surface" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: none; background-color: rgb(0, 0, 0);" />
     <ui:VisualElement name="hud-root" class="hud-root" picking-mode="Ignore">
         <!-- top-left: money readout, pause and help (both are visual parity only until pause exists as a flow state).
              Frozen plates are authored here; values stay in CombatHudPresenter (ADR 0025). -->
@@ -75,5 +74,6 @@
         <!-- center: mouse-aim reticle (position and art stay in CombatHudPresenter) -->
         <ui:Image name="hud-reticle" class="hud-reticle" />
     </ui:VisualElement>
-    <ui:Label name="flow-result-label" text="" style="position: absolute; left: 0; top: 420px; right: 0; font-size: 44px; color: rgb(255, 240, 180); -unity-text-align: middle-center; display: none;" />
+    <ui:VisualElement name="flow-cinematic-surface" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: none; background-color: rgb(0, 0, 0);" />
+    <ui:Label name="flow-result-label" text="" picking-mode="Ignore" style="position: absolute; left: 0; top: 420px; right: 0; font-size: 44px; color: rgb(255, 240, 180); -unity-text-align: middle-center; display: none;" />
 </ui:UXML>
