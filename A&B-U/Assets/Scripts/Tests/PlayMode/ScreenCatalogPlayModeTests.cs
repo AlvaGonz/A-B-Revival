@@ -5,6 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UIElements;
 
 namespace ABRevival.Tests.PlayMode
 {
@@ -37,6 +38,20 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(screens, "Boot must have a Screens root.");
             ScreenPanel[] panels = screens.GetComponentsInChildren<ScreenPanel>(true);
             Assert.AreEqual(11, panels.Length, "The Screens root must instantiate all 11 sections.");
+
+            var orders = new HashSet<int>();
+            var trees = new HashSet<VisualTreeAsset>();
+            foreach (ScreenPanel panel in panels)
+            {
+                PanelRenderer renderer = panel.GetComponent<PanelRenderer>();
+                Assert.IsNotNull(renderer, panel.name + " must have a PanelRenderer.");
+                Assert.IsTrue(orders.Add(panel.SortingOrder),
+                    panel.name + " reuses sortingOrder " + panel.SortingOrder + ".");
+                VisualTreeAsset tree = renderer.visualTreeAsset;
+                Assert.IsNotNull(tree, panel.name + " has no visualTreeAsset.");
+                Assert.IsTrue(trees.Add(tree),
+                    "Two sections share " + tree.name + "; check the prefab sourceAsset guid.");
+            }
         }
     }
 }
