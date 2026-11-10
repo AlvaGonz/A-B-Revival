@@ -1,5 +1,15 @@
 /* Shop (frozen 2011 UIShop): 1920x1080 full-bleed purchase screen.
-   Sprite backgrounds are assigned at runtime from ShopController serialized fields. */
+   The page, panel frames and static button art are authored in Shop.uxml as
+   app:SpriteElement (ADR 0025); live rows, stack, prices and selection stay in C#. */
+
+.art-layer,
+.button-art {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
 
 .shop-root {
     flex-grow: 1;

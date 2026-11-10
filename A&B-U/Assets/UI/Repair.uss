@@ -1,7 +1,7 @@
 /* Repair (frozen UIRepair / UIAllWin): 1920x1080 full-bleed.
    The table, damaged-craft card and cost rows follow the 2011 composition.
-   Button plates and the help page are the original widgets rendered through
-   UiSpriteSkin Image children; the background is the shared 2011 gradient. */
+   Frozen backgrounds and button plates are authored in Repair.uxml as
+   app:SpriteElement (ADR 0025); only the hover/pressed frames stay in C#. */
 
 .repair-root {
     flex-grow: 1;
@@ -18,6 +18,15 @@
 }
 
 .repair-background {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.button-art,
+.art-layer {
     position: absolute;
     left: 0;
     right: 0;

@@ -17,9 +17,28 @@ namespace ABRevival.Tests.PlayMode
     {
         public const int WaitFrames = 600;
 
+        /// <summary>
+        /// Loads one clean Boot scene. The PlayMode runner may already have a Boot scene
+        /// loaded; unloading it first prevents duplicate GameFlow/ScreenHost instances that
+        /// make FindAnyObjectByType return an object from the stale scene.
+        /// </summary>
+        public static IEnumerator LoadBoot()
+        {
+            Scene existing = SceneManager.GetSceneByName("Boot");
+            if (existing.isLoaded && SceneManager.sceneCount > 1)
+            {
+                AsyncOperation unload = SceneManager.UnloadSceneAsync(existing);
+                if (unload != null) yield return unload;
+            }
+
+            AsyncOperation load = SceneManager.LoadSceneAsync("Boot", LoadSceneMode.Single);
+            Assert.IsNotNull(load, "Boot is not in the build settings.");
+            if (load != null) yield return load;
+        }
+
         public static IEnumerator LoadMainMenu()
         {
-            SceneManager.LoadScene("Boot");
+            yield return LoadBoot();
             yield return null;
             yield return WaitForMainMenu();
         }
@@ -40,9 +59,8 @@ namespace ABRevival.Tests.PlayMode
                 MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
                 if (menu != null)
                 {
-                    var document = menu.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("main-root") != null)
+                    ScreenPanel panel = menu.GetComponent<ScreenPanel>();
+                    if (panel != null && panel.Root != null && panel.Root.Q("main-root") != null)
                     {
                         yield return null;
                         yield break;
@@ -63,9 +81,8 @@ namespace ABRevival.Tests.PlayMode
                 GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
                 if (center != null && center.FleetCount > 0 && flow != null && flow.State == GameFlowState.Center)
                 {
-                    var document = center.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("center-root") != null)
+                    ScreenPanel panel = center.GetComponent<ScreenPanel>();
+                    if (panel != null && panel.Root != null && panel.Root.Q("center-root") != null)
                     {
                         yield return null;
                         yield break;
@@ -78,11 +95,24 @@ namespace ABRevival.Tests.PlayMode
             Assert.Fail("Boot did not reach the Center screen after PLAY.");
         }
 
+        /// <summary>Waits until the controller's ScreenPanel has produced its UI root.</summary>
+        public static IEnumerator WaitForPanel(Component screen)
+        {
+            for (int i = 0; i < WaitFrames; i++)
+            {
+                ScreenPanel panel = screen != null ? screen.GetComponent<ScreenPanel>() : null;
+                if (panel != null && panel.Root != null) yield break;
+                yield return null;
+            }
+
+            Assert.Fail("The screen panel did not produce a UI root.");
+        }
+
         public static void StartGame()
         {
             MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
             Assert.IsNotNull(menu, "Boot must host the main menu.");
-            VisualElement root = menu.GetComponent<UIDocument>().rootVisualElement;
+            VisualElement root = menu.GetComponent<ScreenPanel>().Root;
             Assert.IsNotNull(root, "The main menu has no root.");
             Click(root.Q<Button>("play-button"));
         }

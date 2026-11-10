@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
     <Style src="Ready.uss" />
     <ui:VisualElement name="ready-root" class="ready-root">
         <ui:VisualElement name="ready-page" class="ready-page">
-            <ui:VisualElement name="ready-page-art" class="ready-page-art" picking-mode="Ignore" />
+            <app:SpriteElement name="ready-page-art" class="ready-page-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/Screens/UI_MapBuilding.png" />
 
             <!-- Covers the page render's placeholder TITLE/word lines and carries the
                  live briefing. The original window frame stays visible around it. -->
             <ui:VisualElement name="ready-window-fill" class="ready-window-fill" picking-mode="Ignore" />
 
-            <ui:VisualElement name="ready-title-plate" class="ready-title-plate">
+            <app:SpriteElement name="ready-title-plate" class="ready-title-plate" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/UI_MapBuilding/309_widget_normal.png">
                 <ui:Label name="ready-title" text="BATTLE-1" class="ready-title" />
-            </ui:VisualElement>
+            </app:SpriteElement>
             <ui:Label name="briefing-words" text="-" class="briefing-words" />
             <ui:Label name="loadout-status" text="-" class="loadout-status font-sans" />
 
-            <ui:Button name="launch-button" class="sprite-button launch-button" tooltip="Launch mission" />
-            <ui:Button name="back-button" class="sprite-button back-button" tooltip="Back to Center without launching" />
+            <ui:Button name="launch-button" class="sprite-button launch-button" tooltip="Launch mission">
+                <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_MapBuilding/310_widget_normal.png" />
+            </ui:Button>
+            <ui:Button name="back-button" class="sprite-button back-button" tooltip="Back to Center without launching">
+                <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0324_hangar_button_back_to_center.png" />
+            </ui:Button>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

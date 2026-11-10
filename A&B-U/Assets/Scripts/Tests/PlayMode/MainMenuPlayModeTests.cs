@@ -140,7 +140,7 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsFalse(saved.soundEnabled, "OK must persist the Sound row.");
             Assert.AreEqual(PlayerControlMode.Mouse, saved.controlMode, "OK must persist the control mode.");
 
-            SceneManager.LoadScene("Boot");
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
             yield return PlayModeBoot.WaitForMainMenu();
             GameFlowController reloaded = Object.FindAnyObjectByType<GameFlowController>();
@@ -166,10 +166,10 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(info);
             Assert.AreEqual(GameFlowState.Info, flow.State, "DATA must open the delivered Info/Records screen.");
             Assert.IsTrue(info.ShowingRecords, "DATA must open the records tab.");
-            Assert.AreEqual(DisplayStyle.Flex, info.GetComponent<UIDocument>().rootVisualElement
+            Assert.AreEqual(DisplayStyle.Flex, info.GetComponent<ScreenPanel>().Root
                 .Q("records-page").resolvedStyle.display);
 
-            PlayModeBoot.Click(info.GetComponent<UIDocument>().rootVisualElement.Q<Button>("back-button"));
+            PlayModeBoot.Click(info.GetComponent<ScreenPanel>().Root.Q<Button>("back-button"));
             for (int i = 0; i < 6; i++) yield return null;
             Assert.AreEqual(GameFlowState.MainMenu, flow.State, "Info BACK must return to the main menu when opened from it.");
             Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
@@ -200,9 +200,9 @@ namespace ABRevival.Tests.PlayMode
             yield return PlayModeBoot.LoadMainMenu();
 
             MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
-            var document = menu.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            PanelSettings settings = document.panelSettings;
+            ScreenPanel panel = menu.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
 
             try
@@ -220,7 +220,7 @@ namespace ABRevival.Tests.PlayMode
 
                     for (int i = 0; i < 8; i++) yield return null;
 
-                    VisualElement root = document.rootVisualElement;
+                    VisualElement root = panel.Root;
                     VisualElement screen = root.Q("main-root");
                     VisualElement backdrop = root.Q("main-backdrop");
                     VisualElement title = root.Q("main-title");
@@ -322,9 +322,9 @@ namespace ABRevival.Tests.PlayMode
             yield return PlayModeBoot.LoadMainMenu();
 
             MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
-            var document = menu.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            PanelSettings settings = document.panelSettings;
+            ScreenPanel panel = menu.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             string folder = Path.Combine(Path.GetTempPath(), "opencode");
             Directory.CreateDirectory(folder);
@@ -346,7 +346,7 @@ namespace ABRevival.Tests.PlayMode
                     settings.targetTexture = target;
                     for (int i = 0; i < 12; i++) yield return null;
 
-                    VisualElement root = document.rootVisualElement;
+                    VisualElement root = panel.Root;
                     AssertMainMenuLayers(root);
                     AssertMainMenuGeometry(root, size.ToString());
                     string mainPath = Path.Combine(folder, "main-menu-" + size.x + "x" + size.y + ".png");
@@ -363,7 +363,7 @@ namespace ABRevival.Tests.PlayMode
                 settings.targetTexture = target;
                 for (int i = 0; i < 12; i++) yield return null;
 
-                VisualElement menuRoot = document.rootVisualElement;
+                VisualElement menuRoot = panel.Root;
                 PlayModeBoot.Click(menuRoot.Q<Button>("options-button"));
                 for (int i = 0; i < 12; i++) yield return null;
                 OptionsController options = Object.FindAnyObjectByType<OptionsController>();
@@ -425,8 +425,10 @@ namespace ABRevival.Tests.PlayMode
 
         private static VisualElement ActiveRoot(Component component)
         {
-            var document = component != null ? component.GetComponent<UIDocument>() : null;
-            return document != null ? document.rootVisualElement : null;
+            if (component == null) return null;
+
+            ScreenPanel panel = component.GetComponent<ScreenPanel>();
+            return panel != null ? panel.Root : null;
         }
 
         private static void AssertMainMenuLayers(VisualElement root)
@@ -473,7 +475,8 @@ namespace ABRevival.Tests.PlayMode
                 shipBounds.width = Mathf.Max(0f, shipBounds.width - 0.01f);
                 foreach (string topButton in new[] { "link-button", "player-button" })
                     Assert.IsFalse(shipBounds.Overlaps(root.Q(topButton).worldBound),
-                        "The ship must not overlap " + topButton + " at " + label);
+                        "The ship must not overlap " + topButton + " at " + label +
+                        $" (ship {shipBounds}, button {root.Q(topButton).worldBound})");
             }
 
             Rect reference = root.Q("play-button").worldBound;
@@ -489,7 +492,8 @@ namespace ABRevival.Tests.PlayMode
                 Assert.AreEqual(reference.width, rect.width, widthTolerance,
                     button + " must use the shared button width at " + label);
                 Assert.AreEqual(reference.height, rect.height, heightTolerance,
-                    button + " must use the shared button height at " + label);
+                    button + " must use the shared button height at " + label +
+                    $" (reference {reference.width}x{reference.height}, actual {rect.width}x{rect.height})");
             }
         }
 

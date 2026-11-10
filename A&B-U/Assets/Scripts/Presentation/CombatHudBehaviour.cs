@@ -16,7 +16,7 @@ namespace ABRevival.Presentation
     [DisallowMultipleComponent]
     public sealed class CombatHudBehaviour : MonoBehaviour
     {
-        [SerializeField] private UIDocument _document;
+        [SerializeField] private ScreenPanel _screen;
         [SerializeField] private CombatCameraRig _cameraRig;
         [SerializeField] private HudSpriteLibrary _sprites;
 
@@ -25,6 +25,9 @@ namespace ABRevival.Presentation
         public CombatHudState State { get; } = new CombatHudState();
         public CameraDistancePreset CurrentCameraPreset => State.CameraPreset;
         public HudSpriteLibrary Sprites => _sprites;
+
+        /// <summary>The HUD panel, resolved by GameFlow after the section prefabs instantiate.</summary>
+        public ScreenPanel Panel => _screen;
 
         private void OnDisable()
         {
@@ -35,7 +38,8 @@ namespace ABRevival.Presentation
         {
             State.Tick(Time.deltaTime);
 
-            if (_document == null || _document.rootVisualElement == null) return;
+            VisualElement root = _screen != null ? _screen.Root : null;
+            if (root == null) return;
 
             if (_presenter == null)
             {
@@ -44,10 +48,10 @@ namespace ABRevival.Presentation
                 if (_sprites == null)
                     Debug.LogWarning("[CombatHud] No HUD sprite library at Resources/UI; rendering without art.");
 
-                _presenter = new CombatHudPresenter(_document.rootVisualElement, _sprites);
+                _presenter = new CombatHudPresenter(root, _sprites);
             }
 
-            UpdatePointer(_document.rootVisualElement);
+            UpdatePointer(root);
             _presenter.Render(State.Snapshot());
         }
 

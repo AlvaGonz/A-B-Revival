@@ -18,7 +18,7 @@ namespace ABRevival.Presentation
     /// The screen mutates only the shared save slice; it never captures Center's fleet.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class RepairController : MonoBehaviour
     {
         private const float PageWidth = 1920f;
@@ -27,26 +27,18 @@ namespace ABRevival.Presentation
 
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
 
-        [Header("Repair sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite repairBackground;        [SerializeField] private Sprite repairHeader;
-        [SerializeField] private Sprite helpButton;
-        [SerializeField] private Sprite exitButton;
+        [Header("Repair hover/pressed sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite exitButtonHover;
         [SerializeField] private Sprite exitButtonPressed;
-        [SerializeField] private Sprite resetButton;
         [SerializeField] private Sprite resetButtonHover;
         [SerializeField] private Sprite resetButtonPressed;
-        [SerializeField] private Sprite acceptButton;
         [SerializeField] private Sprite acceptButtonHover;
         [SerializeField] private Sprite acceptButtonPressed;
-        [SerializeField] private Sprite selectAllButton;
         [SerializeField] private Sprite selectAllButtonHover;
         [SerializeField] private Sprite selectAllButtonPressed;
-        [SerializeField] private Sprite helpPage;
 
-        private UIDocument _document;
+        private ScreenPanel _screen;
         private VisualElement _page;
-        private VisualElement _background;
         private VisualElement _rows;
         private VisualElement _helpOverlay;
         private Label _money;
@@ -123,26 +115,31 @@ namespace ABRevival.Presentation
         private void Awake()
         {
             // GameFlowController owns visibility and opens the screen from the result.
-            var document = GetComponent<UIDocument>();
-            if (document != null && document.rootVisualElement != null)
-                document.rootVisualElement.style.display = DisplayStyle.None;
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
         }
 
         /// <summary>Binds the screen once and reloads the live damaged-part ledger.</summary>
         public void Initialize(PlayerSaveData save, RepairState repair)
         {
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
+            {
+                Debug.LogError("[Repair] ScreenPanel with a PanelRenderer is required.");
+                return;
+            }
+
+            _screen.WhenReady(root => Open(save, repair, root));
+        }
+
+        private void Open(PlayerSaveData save, RepairState repair, VisualElement root)
+        {
             if (!_initialized)
             {
-                _document = GetComponent<UIDocument>();
-                if (_document == null || _document.rootVisualElement == null)
-                {
-                    Debug.LogError("[Repair] UIDocument with a source UXML is required.");
-                    return;
-                }
-
-                VisualElement root = _document.rootVisualElement;
                 Bind(root);
                 root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
+                if (root.resolvedStyle.width > 1f && root.resolvedStyle.height > 1f)
+                    FitPage(root.resolvedStyle.width, root.resolvedStyle.height);
                 _initialized = true;
             }
 
@@ -157,15 +154,13 @@ namespace ABRevival.Presentation
         /// <summary>Shows or hides the whole Repair overlay.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
         }
 
         private void Bind(VisualElement root)
         {
             _page = root.Q("repair-page");
-            _background = root.Q("repair-background");
             _rows = root.Q("repair-rows");
             _helpOverlay = root.Q("repair-help");
             _money = root.Q<Label>("repair-money");
@@ -207,29 +202,30 @@ namespace ABRevival.Presentation
             if (_filterEngine != null) _filterEngine.clicked += () => SetFilter(PartCategory.Engine);
             if (_filterGun != null) _filterGun.clicked += () => SetFilter(PartCategory.Gun);
 
-            if (help != null) UiSpriteSkin.ApplyStates(help, helpButton, helpButton, helpButton);
-            ApplyStates(exit, exitButton, exitButtonHover, exitButtonPressed);            ApplyStates(reset, resetButton, resetButtonHover, resetButtonPressed);
-            ApplyStates(_accept, acceptButton, acceptButtonHover, acceptButtonPressed);
-            ApplyStates(selectAll, selectAllButton, selectAllButtonHover, selectAllButtonPressed);
+            // Static normal plates live in Repair.uxml; only hover/pressed frames stay here.
+            BindStates(exit, exitButtonHover, exitButtonPressed);
+            BindStates(reset, resetButtonHover, resetButtonPressed);
+            BindStates(_accept, acceptButtonHover, acceptButtonPressed);
+            BindStates(selectAll, selectAllButtonHover, selectAllButtonPressed);
 
             if (_helpOverlay != null)
                 _helpOverlay.RegisterCallback<ClickEvent>(_ => HideHelp());
-
-            SetSprite("repair-background", repairBackground, ScaleMode.ScaleAndCrop);
-            SetSprite("repair-header-plate", repairHeader, ScaleMode.ScaleAndCrop);
-            SetSprite("repair-help-page", helpPage, ScaleMode.ScaleToFit);
         }
 
-        private void ApplyStates(Button button, Sprite normal, Sprite hover, Sprite pressed)
+        /// <summary>Swaps the UXML-authored plate for the frozen hover/pressed frames.</summary>
+        private static void BindStates(Button button, Sprite hover, Sprite pressed)
         {
-            if (button != null && normal != null) UiSpriteSkin.ApplyStates(button, normal, hover, pressed);
-        }
+            if (button == null) return;
+            SpriteElement art = button.Q<SpriteElement>("button-art");
+            if (art == null || art.sprite == null) return;
 
-        private void SetSprite(string elementName, Sprite sprite, ScaleMode scaleMode)
-        {
-            VisualElement element = _document.rootVisualElement.Q(elementName);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
+            Sprite normal = art.sprite;
+            Sprite hoverFrame = hover != null ? hover : normal;
+            Sprite pressedFrame = pressed != null ? pressed : normal;
+            button.RegisterCallback<PointerEnterEvent>(_ => art.sprite = hoverFrame);
+            button.RegisterCallback<PointerLeaveEvent>(_ => art.sprite = normal);
+            button.RegisterCallback<PointerDownEvent>(_ => art.sprite = pressedFrame);
+            button.RegisterCallback<PointerUpEvent>(_ => art.sprite = hoverFrame);
         }
 
         // ---------------- Table ----------------

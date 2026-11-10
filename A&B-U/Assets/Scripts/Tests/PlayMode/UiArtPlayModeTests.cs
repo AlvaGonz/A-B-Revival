@@ -24,7 +24,7 @@ namespace ABRevival.Tests.PlayMode
         {
             yield return LoadBoot();
             CenterController center = Object.FindAnyObjectByType<CenterController>();
-            VisualElement root = center.GetComponent<UIDocument>().rootVisualElement;
+            VisualElement root = center.GetComponent<ScreenPanel>().Root;
 
             AssertArt(root, "help-button", "ui_0073_hud_button_help");
             AssertArt(root, "ready-button", "ui_0585_hangar_button_launch");
@@ -42,12 +42,12 @@ namespace ABRevival.Tests.PlayMode
         {
             yield return LoadBoot();
             CenterController center = Object.FindAnyObjectByType<CenterController>();
-            Click(center.GetComponent<UIDocument>().rootVisualElement.Q<Button>("factory-button"));
+            Click(center.GetComponent<ScreenPanel>().Root.Q<Button>("factory-button"));
             for (int i = 0; i < 10; i++) yield return null;
 
             FactoryController factory = Object.FindAnyObjectByType<FactoryController>();
             Assert.IsNotNull(factory, "Boot did not open Factory.");
-            VisualElement root = factory.GetComponent<UIDocument>().rootVisualElement;
+            VisualElement root = factory.GetComponent<ScreenPanel>().Root;
 
             AssertArt(root, "merge-button", "ui_0364_hangar_button_merge");
             AssertArt(root, "new-button", "ui_0361_hangar_button_new");
@@ -66,12 +66,12 @@ namespace ABRevival.Tests.PlayMode
         {
             yield return LoadBoot();
             CenterController center = Object.FindAnyObjectByType<CenterController>();
-            Click(center.GetComponent<UIDocument>().rootVisualElement.Q<Button>("info-button"));
+            Click(center.GetComponent<ScreenPanel>().Root.Q<Button>("info-button"));
             for (int i = 0; i < 10; i++) yield return null;
 
             InfoController info = Object.FindAnyObjectByType<InfoController>();
             Assert.IsNotNull(info, "Boot did not open Info.");
-            VisualElement root = info.GetComponent<UIDocument>().rootVisualElement;
+            VisualElement root = info.GetComponent<ScreenPanel>().Root;
 
             AssertImageArt(root, "info-title-plate", "ui_0107_hangar_header");
             AssertImageArt(root, "help-tab", "ui_0107_hangar_header", "HOW TO PLAY");
@@ -89,12 +89,12 @@ namespace ABRevival.Tests.PlayMode
         {
             yield return LoadBoot();
             CenterController center = Object.FindAnyObjectByType<CenterController>();
-            Click(center.GetComponent<UIDocument>().rootVisualElement.Q<Button>("shop-button"));
+            Click(center.GetComponent<ScreenPanel>().Root.Q<Button>("shop-button"));
             for (int i = 0; i < 10; i++) yield return null;
 
             ShopController shop = Object.FindAnyObjectByType<ShopController>();
             Assert.IsNotNull(shop, "Boot did not open Shop.");
-            VisualElement root = shop.GetComponent<UIDocument>().rootVisualElement;
+            VisualElement root = shop.GetComponent<ScreenPanel>().Root;
 
             AssertArt(root, "accept-button", "ui_0170_hangar_button_accept");
             AssertArt(root, "reset-button", "ui_0167_hangar_button_reset");

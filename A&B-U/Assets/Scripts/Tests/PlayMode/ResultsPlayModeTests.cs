@@ -290,12 +290,12 @@ namespace ABRevival.Tests.PlayMode
             GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
             ResultsController results = Object.FindAnyObjectByType<ResultsController>();
             RepairController repair = Object.FindAnyObjectByType<RepairController>();
-            var resultsDocument = results.GetComponent<UIDocument>();
-            var repairDocument = repair.GetComponent<UIDocument>();
-            Assert.IsNotNull(resultsDocument);
-            Assert.IsNotNull(repairDocument);
+            var resultsPanel = results.GetComponent<ScreenPanel>();
+            var repairPanel = repair.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(resultsPanel);
+            Assert.IsNotNull(repairPanel);
 
-            PanelSettings settings = resultsDocument.panelSettings;
+            PanelSettings settings = resultsPanel.PanelSettings;
             PanelScaleMode previousScaleMode = settings.scaleMode;
             RenderTexture previous = settings.targetTexture;
 
@@ -325,7 +325,7 @@ namespace ABRevival.Tests.PlayMode
                     results.Initialize(WinSummary(damaged: 2));
                     yield return WaitFrames(8);
 
-                    VisualElement root = resultsDocument.rootVisualElement;
+                    VisualElement root = resultsPanel.Root;
                     VisualElement page = root.Q("results-page");
                     VisualElement panel = root.Q("results-panel");
                     VisualElement actions = root.Q("results-actions");
@@ -335,7 +335,7 @@ namespace ABRevival.Tests.PlayMode
                     Assert.IsNotNull(actions);
                     Assert.IsNotNull(repairRow);
 
-                    Rect surface = resultsDocument.rootVisualElement.Q("results-root").worldBound;
+                    Rect surface = resultsPanel.Root.Q("results-root").worldBound;
                     Rect pageBounds = page.worldBound;
                     Debug.Log("[Results Layout] " + size + " surface=" + surface + " page=" + pageBounds +
                               " panel=" + panel.worldBound);
@@ -356,7 +356,7 @@ namespace ABRevival.Tests.PlayMode
                     repair.Initialize(save, state);
                     yield return WaitFrames(8);
 
-                    VisualElement repairRoot = repairDocument.rootVisualElement;
+                    VisualElement repairRoot = repairPanel.Root;
                     VisualElement repairPage = repairRoot.Q("repair-page");
                     VisualElement table = repairRoot.Q("repair-table");
                     VisualElement header = repairRoot.Q("repair-header");
@@ -412,8 +412,8 @@ namespace ABRevival.Tests.PlayMode
 
             ResultsController results = Object.FindAnyObjectByType<ResultsController>();
             RepairController repair = Object.FindAnyObjectByType<RepairController>();
-            var document = results.GetComponent<UIDocument>();
-            PanelSettings settings = document.panelSettings;
+            var panel = results.GetComponent<ScreenPanel>();
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             var target = new RenderTexture(1920, 1080, 0, RenderTextureFormat.ARGB32);
             target.Create();
@@ -445,7 +445,7 @@ namespace ABRevival.Tests.PlayMode
                 results.SetVisible(false);
                 repair.Initialize(save, state);
                 yield return WaitFrames(12);
-                VisualElement repairRoot = repair.GetComponent<UIDocument>().rootVisualElement;
+                VisualElement repairRoot = repair.GetComponent<ScreenPanel>().Root;
                 Assert.IsNotNull(repairRoot.Q("repair-row-0"));
                 Image exitArt = repairRoot.Q<Button>("repair-exit").Q<Image>("sprite-art");
                 Assert.IsNotNull(exitArt, "Repair EXIT must render through an Image child.");
@@ -463,9 +463,9 @@ namespace ABRevival.Tests.PlayMode
 
                 results.Initialize(WinSummary(damaged: 0, storyIndex: StoryDirector.MaxStoryIndex));
                 yield return WaitFrames(12);
-                Assert.AreEqual("Story Mode Completed!", results.GetComponent<UIDocument>()
-                    .rootVisualElement.Q<Label>("results-title").text);
-                Image endingArt = results.GetComponent<UIDocument>().rootVisualElement
+                Assert.AreEqual("Story Mode Completed!", results.GetComponent<ScreenPanel>()
+                    .Root.Q<Label>("results-title").text);
+                Image endingArt = results.GetComponent<ScreenPanel>().Root
                     .Q<Button>("results-left").Q<Image>("sprite-art");
                 Assert.IsNotNull(endingArt);
                 StringAssert.Contains("614_widget", endingArt.sprite.name);
@@ -582,8 +582,7 @@ namespace ABRevival.Tests.PlayMode
 
         private static VisualElement ActiveRoot(Component component)
         {
-            var document = component != null ? component.GetComponent<UIDocument>() : null;
-            return document != null ? document.rootVisualElement : null;
+            return component != null ? component.GetComponent<ScreenPanel>()?.Root : null;
         }
 
         private static void AssertResultArt(ResultsController results, string spriteName)

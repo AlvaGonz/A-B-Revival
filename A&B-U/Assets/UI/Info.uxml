@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
     <Style src="Info.uss" />
     <ui:VisualElement name="info-root" class="info-root">
+        <app:SpriteElement name="info-background" class="art-layer" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0312_hangar_background.png" />
         <ui:VisualElement name="info-screen" class="info-screen">
             <ui:VisualElement name="info-header" class="info-header">
                 <ui:VisualElement name="info-title-plate" class="title-plate">
+                    <app:SpriteElement name="info-title-art" class="art-layer" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                     <ui:Label name="info-title" text="Info" class="info-title" />
                 </ui:VisualElement>
                 <ui:VisualElement class="header-tabs">
-                    <ui:Button name="help-tab" text="HOW TO PLAY" class="tab-button tab-active" tooltip="Controls reference" />
-                    <ui:Button name="records-tab" text="DATA" class="tab-button" tooltip="Campaign records" />
+                    <ui:Button name="help-tab" class="tab-button tab-active" tooltip="Controls reference">
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <ui:Label name="sprite-text" text="HOW TO PLAY" class="sprite-text" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="records-tab" class="tab-button" tooltip="Campaign records">
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
+                        <ui:Label name="sprite-text" text="DATA" class="sprite-text" picking-mode="Ignore" />
+                    </ui:Button>
                 </ui:VisualElement>
                 <ui:Label name="money-label" text="0 G" class="money-label" />
             </ui:VisualElement>
@@ -17,7 +25,9 @@
             <ui:VisualElement name="info-body" class="info-body">
                 <ui:VisualElement name="help-page" class="info-page help-layout">
                     <ui:VisualElement name="help-sheet" class="help-sheet">
-                        <ui:VisualElement name="help-art" class="help-art" />
+                        <ui:VisualElement name="help-art" class="help-art">
+                            <app:SpriteElement name="help-page-art" class="art-layer" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/Help/UI_HelpGame.png" />
+                        </ui:VisualElement>
                         <ui:VisualElement class="help-nav">
                             <ui:Button name="help-prev" text="&lt;" class="nav-arrow" tooltip="Previous page" />
                             <ui:Label name="help-page-label" text="1 / 2" class="help-page-label font-sans" />
@@ -65,6 +75,7 @@
                 <ui:VisualElement name="records-page" class="info-page records-layout">
                     <ui:VisualElement class="records-column">
                         <ui:VisualElement name="records-title-plate" class="records-title-plate">
+                            <app:SpriteElement name="records-title-art" class="art-layer" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                             <ui:Label name="records-title" text="Data" class="records-title" />
                         </ui:VisualElement>
                         <ui:VisualElement name="records-summary" class="records-summary font-data">
@@ -117,7 +128,9 @@
             </ui:VisualElement>
 
             <ui:VisualElement name="info-footer" class="info-footer">
-                <ui:Button name="back-button" class="sprite-button back-button" tooltip="Back to Center" />
+                <ui:Button name="back-button" class="sprite-button back-button" tooltip="Back to Center">
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0324_hangar_button_back_to_center.png" />
+                </ui:Button>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

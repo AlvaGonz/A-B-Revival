@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
     <Style src="Repair.uss" />
     <ui:VisualElement name="repair-root" class="repair-root">
         <ui:VisualElement name="repair-page" class="repair-page">
-            <ui:VisualElement name="repair-background" class="repair-background" picking-mode="Ignore" />
+            <app:SpriteElement name="repair-background" class="repair-background" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0312_hangar_background.png" />
 
             <ui:VisualElement name="repair-header" class="repair-header">
-                <ui:VisualElement name="repair-header-plate" class="repair-header-plate" picking-mode="Ignore" />
+                <app:SpriteElement name="repair-header-plate" class="repair-header-plate" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                 <ui:Label name="repair-title" text="Repair" class="repair-title" />
                 <ui:VisualElement class="header-spacer" />
                 <ui:Label name="repair-money" text="0 G" class="repair-money" />
-                <ui:Button name="repair-help-button" class="sprite-button repair-help-button" tooltip="Repair help" />
+                <ui:Button name="repair-help-button" class="sprite-button repair-help-button" tooltip="Repair help">
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_Repair/73_widget_normal.png?fileID=827090518024639666&amp;guid=adad904472f10bb42b93b855e77b789a&amp;type=3#73_widget_normal_0" />
+                </ui:Button>
             </ui:VisualElement>
 
             <ui:VisualElement name="repair-table" class="repair-table">
@@ -68,16 +70,26 @@
             </ui:VisualElement>
 
             <ui:VisualElement name="repair-actions" class="repair-actions">
-                <ui:Button name="repair-exit" class="sprite-button repair-button repair-exit" tooltip="Skip repairs and return to the result" />
+                <ui:Button name="repair-exit" class="sprite-button repair-button repair-exit" tooltip="Skip repairs and return to the result">
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_Repair/215_widget_normal.png" />
+                </ui:Button>
                 <ui:VisualElement class="actions-spacer" />
-                <ui:Button name="repair-all" class="sprite-button repair-button repair-all" tooltip="Select every damaged part" />
+                <ui:Button name="repair-all" class="sprite-button repair-button repair-all" tooltip="Select every damaged part">
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_Repair/225_widget_normal.png" />
+                </ui:Button>
                 <ui:VisualElement class="actions-spacer" />
-                <ui:Button name="repair-reset" class="sprite-button repair-button repair-reset" tooltip="Clear the repair selection" />
-                <ui:Button name="repair-accept" class="sprite-button repair-button repair-accept" tooltip="Accept the repair" />
+                <ui:Button name="repair-reset" class="sprite-button repair-button repair-reset" tooltip="Clear the repair selection">
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_Repair/167_widget_normal.png?fileID=2386515960353159984&amp;guid=a151a9d1ef479784c9c79733b610b917&amp;type=3#167_widget_normal_0" />
+                </ui:Button>
+                <ui:Button name="repair-accept" class="sprite-button repair-button repair-accept" tooltip="Accept the repair">
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/UI_Repair/216_widget_normal.png" />
+                </ui:Button>
             </ui:VisualElement>
 
             <ui:VisualElement name="repair-help" class="repair-help">
-                <ui:VisualElement name="repair-help-page" class="repair-help-page" picking-mode="Ignore" />
+                <ui:VisualElement name="repair-help-page" class="repair-help-page" picking-mode="Ignore">
+                    <app:SpriteElement name="repair-help-art" class="art-layer" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/Help/UI_HelpRepair.png" />
+                </ui:VisualElement>
                 <ui:Label text="Click to close" class="repair-help-hint font-sans" />
             </ui:VisualElement>
         </ui:VisualElement>

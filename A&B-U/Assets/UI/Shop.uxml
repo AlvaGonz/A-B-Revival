@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
     <Style src="Shop.uss" />
     <ui:VisualElement name="shop-root" class="shop-root">
+        <app:SpriteElement name="shop-root-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0312_hangar_background.png" />
         <ui:VisualElement name="shop-screen" class="shop-screen">
             <ui:VisualElement name="shop-header" class="shop-header">
                 <ui:VisualElement name="shop-title-plate" class="title-plate">
+                    <app:SpriteElement name="shop-title-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0107_hangar_header.png" />
                     <ui:Label name="shop-title" text="Shop" class="shop-title" />
                 </ui:VisualElement>
                 <ui:VisualElement class="header-spacer" />
                 <ui:Label name="money-label" text="0 G" class="money-label" />
-                <ui:Button name="help-button" class="sprite-button help-button" tooltip="Shop help" />
+                <ui:Button name="help-button" class="sprite-button help-button" tooltip="Shop help">
+                    <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0073_hud_button_help.png" />
+                </ui:Button>
             </ui:VisualElement>
 
             <!-- form1: shop stock (infinite modules, finite hulls). -->
             <ui:VisualElement name="buy-panel" class="shop-panel">
+                <app:SpriteElement name="buy-panel-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
                 <ui:VisualElement name="buy-header" class="table-header font-data">
                     <ui:Label text="" class="cell col-new" />
                     <ui:Label text="" class="cell col-icon" />
@@ -40,11 +45,21 @@
                         <ui:Button name="buy-last" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
                     </ui:VisualElement>
                     <ui:VisualElement name="buy-filters" class="filter-controls">
-                        <ui:Button name="buy-filter-all" class="sprite-button filter-button" tooltip="All parts" />
-                        <ui:Button name="buy-filter-body" class="sprite-button filter-button" tooltip="Body parts" />
-                        <ui:Button name="buy-filter-wing" class="sprite-button filter-button" tooltip="Wing parts" />
-                        <ui:Button name="buy-filter-engine" class="sprite-button filter-button" tooltip="Engine parts" />
-                        <ui:Button name="buy-filter-gun" class="sprite-button filter-button" tooltip="Gun parts" />
+                        <ui:Button name="buy-filter-all" class="sprite-button filter-button" tooltip="All parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0124_hangar_category_all.png" />
+                        </ui:Button>
+                        <ui:Button name="buy-filter-body" class="sprite-button filter-button" tooltip="Body parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0136_hangar_category_body.png" />
+                        </ui:Button>
+                        <ui:Button name="buy-filter-wing" class="sprite-button filter-button" tooltip="Wing parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0133_hangar_category_wing.png" />
+                        </ui:Button>
+                        <ui:Button name="buy-filter-engine" class="sprite-button filter-button" tooltip="Engine parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0130_hangar_category_engine.png" />
+                        </ui:Button>
+                        <ui:Button name="buy-filter-gun" class="sprite-button filter-button" tooltip="Gun parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0127_hangar_category_gun.png" />
+                        </ui:Button>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -54,11 +69,14 @@
                     <ui:Label name="cost-label" text="Cost= 0 G" class="trade-label" />
                     <ui:Label name="now-label" text="Now= 0 G" class="trade-label" />
                     <ui:VisualElement class="trade-spacer" />
-                    <ui:Button name="accept-button" class="sprite-button trade-button accept-button" tooltip="Accept the deal" />
+                    <ui:Button name="accept-button" class="sprite-button trade-button accept-button" tooltip="Accept the deal">
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0170_hangar_button_accept.png" />
+                    </ui:Button>
                 </ui:VisualElement>
 
                 <ui:VisualElement class="detail-column">
                     <ui:VisualElement name="buy-detail" class="detail-card font-data">
+                        <app:SpriteElement name="buy-detail-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
                         <ui:Label text="SHOP PART" class="detail-title" />
                         <ui:VisualElement class="detail-row">
                             <ui:Label text="Type" class="detail-key" />
@@ -95,6 +113,7 @@
                     </ui:VisualElement>
 
                     <ui:VisualElement name="sell-detail" class="detail-card font-data">
+                        <app:SpriteElement name="sell-detail-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
                         <ui:Label text="YOUR PART" class="detail-title" />
                         <ui:VisualElement class="detail-row">
                             <ui:Label text="Type" class="detail-key" />
@@ -133,14 +152,19 @@
 
                 <ui:VisualElement class="action-column">
                     <ui:VisualElement class="trade-spacer" />
-                    <ui:Button name="reset-button" class="sprite-button trade-button reset-button" tooltip="Cancel the deal" />
-                    <ui:Button name="center-button" class="sprite-button trade-button center-button" tooltip="Back to Center" />
+                    <ui:Button name="reset-button" class="sprite-button trade-button reset-button" tooltip="Cancel the deal">
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0167_hangar_button_reset.png" />
+                    </ui:Button>
+                    <ui:Button name="center-button" class="sprite-button trade-button center-button" tooltip="Back to Center">
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0173_hangar_button_center.png" />
+                    </ui:Button>
                     <ui:Label name="shop-error" text="" class="error-label" />
                 </ui:VisualElement>
             </ui:VisualElement>
 
             <!-- form2: player parts, sold one unit per row. -->
             <ui:VisualElement name="sell-panel" class="shop-panel">
+                <app:SpriteElement name="sell-panel-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0325_hangar_panel.png" />
                 <ui:VisualElement name="sell-title-row" class="sell-title-row">
                     <ui:Label name="player-label" text="Michael" class="player-label" />
                 </ui:VisualElement>
@@ -160,7 +184,9 @@
                 </ui:VisualElement>
                 <ui:VisualElement name="sell-rows" class="shop-rows" />
                 <ui:VisualElement name="sell-footer" class="table-footer">
-                    <ui:Button name="invert-button" class="sprite-button invert-button" tooltip="Invert the sell selection" />
+                    <ui:Button name="invert-button" class="sprite-button invert-button" tooltip="Invert the sell selection">
+                        <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0204_hangar_button_invert.png" />
+                    </ui:Button>
                     <ui:VisualElement class="page-controls">
                         <ui:Button name="sell-first" text="|&lt;" class="sprite-button page-button" tooltip="First page" />
                         <ui:Button name="sell-prev" text="&lt;" class="sprite-button page-button" tooltip="Previous page" />
@@ -169,11 +195,21 @@
                         <ui:Button name="sell-last" text="&gt;|" class="sprite-button page-button" tooltip="Last page" />
                     </ui:VisualElement>
                     <ui:VisualElement name="sell-filters" class="filter-controls">
-                        <ui:Button name="sell-filter-all" class="sprite-button filter-button" tooltip="All parts" />
-                        <ui:Button name="sell-filter-body" class="sprite-button filter-button" tooltip="Body parts" />
-                        <ui:Button name="sell-filter-wing" class="sprite-button filter-button" tooltip="Wing parts" />
-                        <ui:Button name="sell-filter-engine" class="sprite-button filter-button" tooltip="Engine parts" />
-                        <ui:Button name="sell-filter-gun" class="sprite-button filter-button" tooltip="Gun parts" />
+                        <ui:Button name="sell-filter-all" class="sprite-button filter-button" tooltip="All parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0124_hangar_category_all.png" />
+                        </ui:Button>
+                        <ui:Button name="sell-filter-body" class="sprite-button filter-button" tooltip="Body parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0136_hangar_category_body.png" />
+                        </ui:Button>
+                        <ui:Button name="sell-filter-wing" class="sprite-button filter-button" tooltip="Wing parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0133_hangar_category_wing.png" />
+                        </ui:Button>
+                        <ui:Button name="sell-filter-engine" class="sprite-button filter-button" tooltip="Engine parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0130_hangar_category_engine.png" />
+                        </ui:Button>
+                        <ui:Button name="sell-filter-gun" class="sprite-button filter-button" tooltip="Gun parts">
+                            <app:SpriteElement name="button-art" class="button-art" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/ui_0127_hangar_category_gun.png" />
+                        </ui:Button>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -181,6 +217,7 @@
 
         <ui:VisualElement name="shop-help" class="shop-help">
             <ui:VisualElement name="shop-help-page" class="shop-help-page">
+                <app:SpriteElement name="shop-help-page-art" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/ui_0744_hangar_help_shop.png" />
                 <ui:Button name="shop-help-close" class="shop-help-close" tooltip="Close help" />
             </ui:VisualElement>
         </ui:VisualElement>

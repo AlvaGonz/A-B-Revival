@@ -144,9 +144,9 @@ namespace ABRevival.Tests.PlayMode
             yield return OpenInfo();
 
             InfoController info = Object.FindAnyObjectByType<InfoController>();
-            var document = info.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            PanelSettings settings = document.panelSettings;
+            var panel = info.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
 
             try
@@ -164,7 +164,7 @@ namespace ABRevival.Tests.PlayMode
 
                     for (int i = 0; i < 8; i++) yield return null;
 
-                    VisualElement root = document.rootVisualElement;
+                    VisualElement root = panel.Root;
                     Click(root.Q<Button>("help-tab"));
                     yield return null;
                     VisualElement infoRoot = root.Q("info-root");
@@ -247,10 +247,10 @@ namespace ABRevival.Tests.PlayMode
             yield return OpenInfo();
 
             InfoController info = Object.FindAnyObjectByType<InfoController>();
-            var document = info.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            VisualElement root = document.rootVisualElement;
-            PanelSettings settings = document.panelSettings;
+            var panel = info.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            VisualElement root = panel.Root;
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             var target = new RenderTexture(1920, 1080, 0, RenderTextureFormat.ARGB32);
             target.Create();
@@ -346,8 +346,7 @@ namespace ABRevival.Tests.PlayMode
 
         private static VisualElement ActiveRoot(Component component)
         {
-            var document = component != null ? component.GetComponent<UIDocument>() : null;
-            return document != null ? document.rootVisualElement : null;
+            return component != null ? component.GetComponent<ScreenPanel>()?.Root : null;
         }
 
         private static Label Cell(VisualElement row, string className)

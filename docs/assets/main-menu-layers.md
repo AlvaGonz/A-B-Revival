@@ -1,7 +1,9 @@
 # Main-Menu Layers (`UI_Main`)
 
 Provenance and import contract for the main-menu layers split out of the frozen UI library.
-Decision: [ADR 0024](../adr/0024-main-menu-foreground-composition.md). Follow-ups: #206, #207, #210.
+Decisions: [ADR 0024](../adr/0024-main-menu-foreground-composition.md),
+[ADR 0025](../adr/0025-section-prefabs-and-ui-builder-authoring.md). Follow-ups: #206, #207, #210.
+**Last updated:** 2026-11-10.
 
 ## Source
 
@@ -50,7 +52,7 @@ The runtime full title is the new 2K source with the black panel, cropped from t
   and side decoration.
 - **Main title:** sprite 444 main lettering with a blue outer glow (12 px padding).
 - **Subtitle:** sprite 444 subtitle rebuilt as black fill with a white outline.
-- **Full:** plate + letters, the runtime sprite used by `MainMenuController` (`titleArt`).
+- **Full:** plate + letters, the runtime sprite used by `Main.uxml` (`main-title`).
 
 The raw export's unreadable black subtitle and missing glow are corrected; the original page
 and library remain the source of truth.
@@ -79,25 +81,89 @@ Settings copied from `ui_0005.png.meta`:
 | `Title/UI_Main_TitleFull.png` | `548dea93128743d5978f373d56082727` |
 | `UI_Main_Ship.png` | `091aa3c533f7116874136a9a56468412` |
 
-Neither is in `UiScreensAtlas.spriteatlasv2`; the menu renders them through `UiSpriteSkin`'s
+Neither is in `UiScreensAtlas.spriteatlasv2`; the menu renders them through `SpriteElement`'s
 `Image` child, not UI Toolkit's atlased `background-image` path.
 
-## Layout controls (#210)
+## Layout controls (#210, #216)
 
-`MainMenuController` exposes page-pixel layout for every visible menu object:
+The main menu is authored in UI Builder (ADR 0025). Static art is a `SpriteElement` in
+`Main.uxml`; it renders an `Image` child (`sprite-art`) and never uses UI Toolkit's atlased
+`background-image` path. Position and size the backdrop, title, ship and six buttons in
+`Main.uss`. Open `Main.uxml` in UI Builder to see and move the real art; save the UXML/USS
+and run Boot to see the change. Hover frames remain in `MainMenuController`.
 
-- `titlePosition` / `titleSize` (default 0,0 / 460×99) — one composite image
-- `shipScale` — multiplier on the auto-fitted ship scale; the ship position remains automatic,
-  centred in the band between the title and the bottom control row
-- `buttonSize` and six per-button positions (`playButtonPosition`, … `playerButtonPosition`)
-  — all six buttons share the same size
-- `backdropOffset` / `backdropSize` (zero size = full screen)
-- `anchorBottomRow` keeps the four bottom buttons anchored; off uses each authored Y
-- `buttonScale` / `bottomMargin` remain for size and bottom inset
+The following still live in C# because they depend on the live output:
+
+- `shipScale` — multiplier on the auto-fitted ship band; the ship stays centred between the
+  title bottom and the bottom control row
+- `anchorBottomRow` — keeps the four bottom buttons anchored; off uses the USS `top`
+- `bottomMargin` — bottom inset in page pixels
+- safe area — the title and bottom margin use the larger of the designed inset and the
+  reported safe-area inset + 8 logical px
 
 The automatic ship band uses equal top and bottom gaps; the PlayMode guard allows a mismatch
-of at most **1 % of the band height**. Safe area: the title and the bottom control margin use
-the larger of the designed inset and the reported safe-area inset + 8 logical px.
+of at most **1 % of the band height**. Page values at the 1920x1080 reference: title 460×99,
+buttons 161×45. USS stores them as width percentages plus `aspect-ratio`, so the layout keeps
+the frozen proportions at 16:9, 16:10 and 4:3.
+
+## Screens and section prefabs (ADR 0025)
+
+The UI ships as eleven section prefabs — not one scene per screen, and no code-built hierarchies.
+
+- `Boot.unity` keeps one `Screens` root with `ScreenHost`; GameFlow, Flight, Cinematics, Audio and
+  EventSystem stay as Boot roots.
+- `A&B-U/Assets/Data/Screens/ScreenCatalog.asset` lists the eleven prefabs by direct reference.
+  `ScreenHost` instantiates all of them in `Awake` at `[DefaultExecutionOrder(-100)]`, so
+  `GameFlowController` resolves the controllers in `Start`. No `Resources`, no Addressables.
+- Controllers hide with `display`, never `SetActive` or a disabled renderer, so the panel keeps
+  its visual tree while hidden.
+
+| Section | Prefab | UXML | Authoring state |
+|---|---|---|---|
+| Main menu | `MainMenu.prefab` | `Main.uxml` | Authored |
+| Options | `Options.prefab` | `Options.uxml` | Authored |
+| Ready / briefing | `Ready.prefab` | `Ready.uxml` | Authored |
+| Results | `Results.prefab` | `Results.uxml` | Authored |
+| Info / help | `Info.prefab` | `Info.uxml` | Authored |
+| Repair | `Repair.prefab` | `Repair.uxml` | Authored |
+| Shop | `Shop.prefab` | `Shop.uxml` | Authored |
+| Center (hangar) | `Center.prefab` | `Center.uxml` | Authored |
+| Factory | `Factory.prefab` | `Factory.uxml` | Authored |
+| Combat HUD | `Combat.prefab` | `CombatHud.uxml` | Authored |
+| Talk | `Talk.prefab` | `Talk.uxml` | Authored |
+
+All eleven screens are authored and committed (#216–#218): Factory `a97d19c`, Combat HUD
+`1d48ce2`, and Talk `3361bb3`, the last screen to land. Authored means the frozen art and static
+layout live in UXML/USS and are movable in UI Builder; the controller only binds by name, fits
+the page and writes live values.
+
+Live values stay in C# by design: the main-menu ship band, bottom row and safe area
+(`MainMenuController`), HUD bar fills and reticle (`CombatHudPresenter`), and the assembly/craft
+markers (`AssemblyPresenter`, `CraftPreviewPainter`).
+
+### PanelRenderer + ScreenPanel
+
+`UIDocument` and `rootVisualElement` are gone from production code. Each section prefab root
+carries `ScreenPanel`, which requires and owns a `PanelRenderer`, plus its controller.
+`PanelRenderer` exposes no root property: the root exists only inside the 3-arg reload callback
+and is reached through `ScreenPanel.Root` or `ScreenPanel.WhenReady(root => …)`. Visibility is
+`SetVisible` (a `display` toggle), ordering is `SortingOrder` (a proxy for
+`Renderer.sortingOrder`), and every section shares `HangarPanelSettings` for focus navigation.
+Never disable the `PanelRenderer` or the `ScreenPanel` — that removes the visual elements.
+
+### SpriteElement
+
+Static art is a `SpriteElement` in UXML, not a UI Toolkit `background-image`: the built-in path
+samples atlased sprites at their atlas rect and draws the wrong region. `SpriteElement` renders
+an `Image` child named `sprite-art` at absolute inset 0 with `PickingMode.Ignore` and exposes
+`sprite`, `scale-mode` and `tint` as UXML attributes; position and size stay in USS. Hover and
+state swaps remain in `UiSpriteSkin` / the controller.
+
+### BootSceneBuilder retired
+
+The one-time migration extracted the eleven roots, created the `ScreenCatalog` and saved Boot,
+then deleted `BootSceneBuilder`. Do not recreate a scene builder: the scene and the prefabs are
+the source of truth, and UI Builder edits persist.
 
 ## Revert point
 

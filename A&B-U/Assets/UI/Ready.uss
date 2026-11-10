@@ -2,7 +2,7 @@
    The page render is the composition base. Live elements sit in page-local pixels
    (851x521) and the whole page is scaled to cover the screen, so the metal panel,
    window frame and MAP LOADING badge keep their 2011 positions at every resolution.
-   Sprite art is assigned at runtime through UiSpriteSkin Image children. */
+   Frozen art is authored in Ready.uxml as app:SpriteElement (ADR 0025). */
 
 .ready-root {
     flex-grow: 1;
@@ -19,6 +19,14 @@
 }
 
 .ready-page-art {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.button-art {
     position: absolute;
     left: 0;
     right: 0;

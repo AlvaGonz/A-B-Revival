@@ -56,7 +56,7 @@ namespace ABRevival.Presentation
         [SerializeField] private MissionSpriteView _spriteView;
         [SerializeField] private PlayerFlightController _flight;
         [SerializeField] private AudioService _audio;
-        [SerializeField] private UIDocument _flowDocument;
+        [SerializeField] private ScreenPanel _flowPanel;
         [SerializeField] private VideoClip[] _briefingClips = Array.Empty<VideoClip>();
         [SerializeField] private string _saveFileName = DefaultSaveFileName;
         [SerializeField] private string _levelResourcePath = "Levels/10_all.AllData_levels";
@@ -144,8 +144,34 @@ namespace ABRevival.Presentation
             return _weapons != null ? _weapons.ShotsFiredBy(shipIndex) : 0;
         }
 
+        /// <summary>
+        /// Resolves the section controllers after <see cref="ScreenHost"/> instantiates the
+        /// catalog (execution order -100). The serialized references remain the editor fast path.
+        /// </summary>
+        private void ResolveScreens()
+        {
+            if (_mainMenu == null) _mainMenu = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            if (_options == null) _options = UnityEngine.Object.FindAnyObjectByType<OptionsController>();
+            if (_center == null) _center = UnityEngine.Object.FindAnyObjectByType<CenterController>();
+            if (_factory == null) _factory = UnityEngine.Object.FindAnyObjectByType<FactoryController>();
+            if (_shop == null) _shop = UnityEngine.Object.FindAnyObjectByType<ShopController>();
+            if (_info == null) _info = UnityEngine.Object.FindAnyObjectByType<InfoController>();
+            if (_ready == null) _ready = UnityEngine.Object.FindAnyObjectByType<ReadyController>();
+            if (_results == null) _results = UnityEngine.Object.FindAnyObjectByType<ResultsController>();
+            if (_repairScreen == null) _repairScreen = UnityEngine.Object.FindAnyObjectByType<RepairController>();
+            if (_talkScreen == null) _talkScreen = UnityEngine.Object.FindAnyObjectByType<TalkScreen>();
+            if (_hud == null) _hud = UnityEngine.Object.FindAnyObjectByType<CombatHudBehaviour>();
+            if (_cameraRig == null) _cameraRig = UnityEngine.Object.FindAnyObjectByType<CombatCameraRig>();
+            if (_spriteView == null) _spriteView = UnityEngine.Object.FindAnyObjectByType<MissionSpriteView>();
+            if (_flight == null) _flight = UnityEngine.Object.FindAnyObjectByType<PlayerFlightController>();
+            if (_audio == null) _audio = UnityEngine.Object.FindAnyObjectByType<AudioService>();
+            if (_cinematicPlayer == null) _cinematicPlayer = UnityEngine.Object.FindAnyObjectByType<CinematicPlayer>();
+            if (_flowPanel == null && _hud != null) _flowPanel = _hud.Panel;
+        }
+
         private void Awake()
         {
+            ResolveScreens();
             _savePath = Path.Combine(Application.persistentDataPath, _saveFileName);
             LoadSave();
 
@@ -1964,9 +1990,9 @@ namespace ABRevival.Presentation
 
         private void EnsureOverlayReferences()
         {
-            if (_flowDocument != null && _flowDocument.rootVisualElement != null)
+            if (_flowPanel != null && _flowPanel.Root != null)
             {
-                _cinematicSurface ??= _flowDocument.rootVisualElement.Q<VisualElement>("flow-cinematic-surface");
+                _cinematicSurface ??= _flowPanel.Root.Q<VisualElement>("flow-cinematic-surface");
 
                 // The frozen UIMovie overlay skipped on click; the revival clip has no
                 // separate control, so the whole movie surface is the skip target.
@@ -1986,8 +2012,7 @@ namespace ABRevival.Presentation
         private void SetFlowVisible(bool visible)
         {
             EnsureOverlayReferences();
-            if (_flowDocument == null || _flowDocument.rootVisualElement == null) return;
-            _flowDocument.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            _flowPanel?.SetVisible(visible);
         }
 
         private void ShowCinematicSurface(bool visible)

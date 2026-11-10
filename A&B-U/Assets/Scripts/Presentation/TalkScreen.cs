@@ -10,15 +10,15 @@ namespace ABRevival.Presentation
     /// The click sound is injected through <see cref="ITalkAudio"/>; ticket #158 supplies the
     /// sound-bank component, which is picked up automatically when present on the same object.
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class TalkScreen : MonoBehaviour
     {
-        [SerializeField] private UIDocument _document;
+        [SerializeField] private ScreenPanel _screen;
         [SerializeField] private TalkPortraitCatalog _portraits;
         [SerializeField] private TextAsset _talkData;
         [SerializeField] private int _firstLineIndex = 0;
         [SerializeField] private int _lastLineIndex = -1;
-        [SerializeField] private bool _autoStart = true;
+        [SerializeField] private bool _autoStart = false;
 
         private TalkPresenter _presenter;
         private TalkView _view;
@@ -31,7 +31,8 @@ namespace ABRevival.Presentation
 
         private void Awake()
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
             if (Audio == null) Audio = GetComponent<ITalkAudio>();
             if (Audio == null) Audio = NoOpTalkAudio.Instance;
         }
@@ -62,24 +63,27 @@ namespace ABRevival.Presentation
         public void Begin(TalkScript sequence)
         {
             if (sequence == null) throw new ArgumentNullException(nameof(sequence));
-            if (_document == null || _document.rootVisualElement == null)
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
             {
-                Debug.LogError("[TalkScreen] A UIDocument with a live root element is required.");
+                Debug.LogError("[TalkScreen] ScreenPanel with a PanelRenderer is required.");
                 return;
             }
 
             _started = true;
             SetVisible(true);
-
-            // Build the panel once; repeated missions must not stack subtrees or callbacks.
-            if (_view == null)
+            _screen.WhenReady(root =>
             {
-                _view = new TalkView(_document.rootVisualElement, _portraits);
-                _view.ClickArea.RegisterCallback<ClickEvent>(OnClick);
-            }
+                // Build the panel once; repeated missions must not stack subtrees or callbacks.
+                if (_view == null)
+                {
+                    _view = new TalkView(root, _portraits);
+                    _view.ClickArea.RegisterCallback<ClickEvent>(OnClick);
+                }
 
-            _presenter = new TalkPresenter(sequence, _view, Audio, OnCompleted);
-            _presenter.Advance();
+                _presenter = new TalkPresenter(sequence, _view, Audio, OnCompleted);
+                _presenter.Advance();
+            });
         }
 
         public void Advance()
@@ -90,11 +94,8 @@ namespace ABRevival.Presentation
         /// <summary>Shows or hides the talk overlay without starting a sequence.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-            {
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
-            }
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
         }
 
         private void OnClick(ClickEvent clickEvent)

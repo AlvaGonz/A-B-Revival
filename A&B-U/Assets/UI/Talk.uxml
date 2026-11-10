@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
+    <Style src="Talk.uss" />
+    <ui:VisualElement name="talk-root" class="talk-root">
+        <app:SpriteElement name="talk-frame" class="art-layer" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/Screens/UI_Talk.png" />
+        <ui:VisualElement name="talk-click-area" class="talk-click-area" />
+        <ui:VisualElement name="talk-panel" class="talk-panel" picking-mode="Ignore">
+            <ui:Image name="talk-portrait" class="talk-portrait" picking-mode="Ignore" />
+            <ui:Label name="talk-speaker" class="talk-speaker" picking-mode="Ignore" />
+            <ui:Label name="talk-text" class="talk-text" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -321,9 +321,9 @@ namespace ABRevival.Tests.PlayMode
             yield return OpenReady();
 
             ReadyController ready = Object.FindAnyObjectByType<ReadyController>();
-            var document = ready.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            PanelSettings settings = document.panelSettings;
+            var panel = ready.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             PanelScaleMode previousScaleMode = settings.scaleMode;
 
@@ -343,7 +343,7 @@ namespace ABRevival.Tests.PlayMode
 
                     for (int i = 0; i < 8; i++) yield return null;
 
-                    VisualElement root = document.rootVisualElement;
+                    VisualElement root = panel.Root;
                     VisualElement readyRoot = root.Q("ready-root");
                     VisualElement page = root.Q("ready-page");
                     VisualElement fill = root.Q("ready-window-fill");
@@ -425,10 +425,10 @@ namespace ABRevival.Tests.PlayMode
             yield return OpenReady();
 
             ReadyController ready = Object.FindAnyObjectByType<ReadyController>();
-            var document = ready.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            VisualElement root = document.rootVisualElement;
-            PanelSettings settings = document.panelSettings;
+            var panel = ready.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            VisualElement root = panel.Root;
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             var target = new RenderTexture(1920, 1080, 0, RenderTextureFormat.ARGB32);
             target.Create();
@@ -519,8 +519,7 @@ namespace ABRevival.Tests.PlayMode
 
         private static VisualElement ActiveRoot(Component component)
         {
-            var document = component != null ? component.GetComponent<UIDocument>() : null;
-            return document != null ? document.rootVisualElement : null;
+            return component != null ? component.GetComponent<ScreenPanel>()?.Root : null;
         }
 
         private static void AssertImageArt(VisualElement root, string name, string spriteName)

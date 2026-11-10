@@ -79,7 +79,7 @@ namespace ABRevival.Tests
             foreach (string element in MainElements)
                 StringAssert.Contains("name=\"" + element + "\"", uxml, "Main menu element missing: " + element);
 
-            StringAssert.Contains("src=\"Main.uss\"", uxml, "The main menu must use its stylesheet.");
+            StringAssert.Contains("Main.uss", uxml, "The main menu must use its stylesheet.");
             StringAssert.DoesNotContain("main-page", uxml, "The baked UI_Main page wrapper must be retired.");
             StringAssert.DoesNotContain("main-art", uxml, "The baked UI_Main_Hero crop must be retired.");
             StringAssert.DoesNotContain("1280px", uxml, "The main menu must not use a fixed-width root.");

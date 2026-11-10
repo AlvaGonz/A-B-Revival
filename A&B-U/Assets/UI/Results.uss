@@ -1,7 +1,7 @@
 /* Results (frozen UIWin / UIFail / UIAllWin): 1920x1080 full-bleed.
    The space backdrop is the original full-page render without its baked text.
-   The dialog and typography keep the 2011 composition; button plates are the
-   original widgets rendered through UiSpriteSkin Image children. */
+   The dialog and typography keep the 2011 composition; frozen button plates are
+   authored in Results.uxml as app:SpriteElement (ADR 0025). */
 
 .results-root {
     flex-grow: 1;
@@ -18,6 +18,14 @@
 }
 
 .results-background {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.button-art {
     position: absolute;
     left: 0;
     right: 0;

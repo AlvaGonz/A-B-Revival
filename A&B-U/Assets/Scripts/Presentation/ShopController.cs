@@ -15,29 +15,16 @@ namespace ABRevival.Presentation
     /// <see cref="GameFlowController"/>; Center reloads the shop slice on return.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class ShopController : MonoBehaviour
     {
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
 
         [Header("Shop sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite shopBackground;
-        [SerializeField] private Sprite shopHeader;
-        [SerializeField] private Sprite panel;
-        [SerializeField] private Sprite buttonAccept;
-        [SerializeField] private Sprite buttonReset;
-        [SerializeField] private Sprite buttonCenter;
-        [SerializeField] private Sprite buttonInvert;
+        // Only the NEW badge is drawn at runtime; the page, panels and button art live in Shop.uxml.
         [SerializeField] private Sprite newBadge;
-        [SerializeField] private Sprite helpOverlay;
-        [SerializeField] private Sprite helpButton;
-        [SerializeField] private Sprite categoryAll;
-        [SerializeField] private Sprite categoryBody;
-        [SerializeField] private Sprite categoryWing;
-        [SerializeField] private Sprite categoryEngine;
-        [SerializeField] private Sprite categoryGun;
 
-        private UIDocument _document;
+        private ScreenPanel _screen;
         private ShopCatalog _catalog;
         private ShopState _shop;
         private PartMountTable _mountTable;
@@ -60,9 +47,8 @@ namespace ABRevival.Presentation
         private void Awake()
         {
             // GameFlowController owns visibility and opens the screen from Center.
-            var document = GetComponent<UIDocument>();
-            if (document != null && document.rootVisualElement != null)
-                document.rootVisualElement.style.display = DisplayStyle.None;
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
         }
 
         /// <summary>
@@ -71,22 +57,25 @@ namespace ABRevival.Presentation
         /// </summary>
         public void Initialize(PlayerSaveData save)
         {
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
+            {
+                Debug.LogError("[Shop] ScreenPanel with a PanelRenderer is required.");
+                return;
+            }
+
+            _screen.WhenReady(root => Open(save, root));
+        }
+
+        private void Open(PlayerSaveData save, VisualElement root)
+        {
             if (!_initialized)
             {
-                _document = GetComponent<UIDocument>();
-                if (_document == null || _document.rootVisualElement == null)
-                {
-                    Debug.LogError("[Shop] UIDocument with a source UXML is required.");
-                    return;
-                }
-
                 _definitions = PartCatalogBootstrap.Collect(catalogParts, "Shop");
                 _catalog = PartCatalogBootstrap.BuildCatalog(_definitions);
                 _shop = new ShopState(_catalog);
                 _mountTable = PartCatalogBootstrap.LoadMountTable("Shop");
 
-                VisualElement root = _document.rootVisualElement;
-                ApplySkin(root);
                 Bind(root);
 
                 _presenter = new ShopPresenter(
@@ -121,9 +110,8 @@ namespace ABRevival.Presentation
         /// <summary>Shows or hides the whole Shop overlay.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
             if (visible) CloseHelp();
         }
 
@@ -161,46 +149,6 @@ namespace ABRevival.Presentation
         private void OnShopChanged()
         {
             Changed?.Invoke();
-        }
-
-        private void ApplySkin(VisualElement root)
-        {
-            SetPanelBackground(root, "shop-root", shopBackground);
-            SetPanelBackground(root, "shop-title-plate", shopHeader);
-            SetPanelBackground(root, "buy-panel", panel);
-            SetPanelBackground(root, "sell-panel", panel);
-            SetPanelBackground(root, "buy-detail", panel);
-            SetPanelBackground(root, "sell-detail", panel);
-
-            SetSpriteBackground(root, "accept-button", buttonAccept, ScaleMode.ScaleToFit);
-            SetSpriteBackground(root, "reset-button", buttonReset, ScaleMode.ScaleToFit);
-            SetSpriteBackground(root, "center-button", buttonCenter, ScaleMode.ScaleToFit);
-            SetSpriteBackground(root, "invert-button", buttonInvert, ScaleMode.ScaleToFit);
-            SetSpriteBackground(root, "help-button", helpButton, ScaleMode.ScaleToFit);
-            SetPanelBackground(root, "shop-help-page", helpOverlay);
-
-            Sprite[] categories = { categoryAll, categoryBody, categoryWing, categoryEngine, categoryGun };
-            string[] tables = { "buy", "sell" };
-            string[] suffixes = { "all", "body", "wing", "engine", "gun" };
-            for (int table = 0; table < tables.Length; table++)
-            {
-                for (int i = 0; i < suffixes.Length; i++)
-                    SetSpriteBackground(root, tables[table] + "-filter-" + suffixes[i], categories[i], ScaleMode.ScaleToFit);
-            }
-        }
-
-        private static void SetPanelBackground(VisualElement root, string name, Sprite sprite)
-        {
-            VisualElement element = root.Q(name);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, ScaleMode.StretchToFill, keepBackground: false);
-        }
-
-        private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
-        {
-            VisualElement element = root.Q(name);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }
 
         private void ReconcileShop(PlayerSaveData payload)

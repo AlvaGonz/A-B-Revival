@@ -16,7 +16,7 @@ namespace ABRevival.Presentation
     /// It never captures or mutates the payload; <see cref="GameFlowController"/> owns the save.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class InfoController : MonoBehaviour
     {
         private const int HelpPageCount = 2;
@@ -24,20 +24,16 @@ namespace ABRevival.Presentation
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
 
         [Header("Info sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite infoBackground;
-        [SerializeField] private Sprite infoHeader;
-        [SerializeField] private Sprite buttonPlate;
-        [SerializeField] private Sprite backButton;
         [SerializeField] private Sprite helpPageOne;
         [SerializeField] private Sprite helpPageTwo;
 
-        private UIDocument _document;
+        private ScreenPanel _screen;
         private Dictionary<int, PartDefinitionSO> _byId;
         private PlayerSaveData _payload = new PlayerSaveData();
 
         private VisualElement _helpPage;
         private VisualElement _recordsPage;
-        private VisualElement _helpArt;
+        private SpriteElement _helpArt;
         private ScrollView _partsList;
         private Label _moneyLabel;
         private Label _helpPageLabel;
@@ -70,9 +66,8 @@ namespace ABRevival.Presentation
         private void Awake()
         {
             // GameFlowController owns visibility and opens the screen from Center.
-            var document = GetComponent<UIDocument>();
-            if (document != null && document.rootVisualElement != null)
-                document.rootVisualElement.style.display = DisplayStyle.None;
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
         }
 
         /// <summary>
@@ -81,15 +76,20 @@ namespace ABRevival.Presentation
         /// </summary>
         public void Initialize(PlayerSaveData save)
         {
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
+            {
+                Debug.LogError("[Info] ScreenPanel with a PanelRenderer is required.");
+                return;
+            }
+
+            _screen.WhenReady(root => Open(save, root));
+        }
+
+        private void Open(PlayerSaveData save, VisualElement root)
+        {
             if (!_initialized)
             {
-                _document = GetComponent<UIDocument>();
-                if (_document == null || _document.rootVisualElement == null)
-                {
-                    Debug.LogError("[Info] UIDocument with a source UXML is required.");
-                    return;
-                }
-
                 _byId = new Dictionary<int, PartDefinitionSO>();
                 if (catalogParts != null)
                 {
@@ -100,8 +100,6 @@ namespace ABRevival.Presentation
                     }
                 }
 
-                VisualElement root = _document.rootVisualElement;
-                ApplySkin(root);
                 Bind(root);
                 _initialized = true;
             }
@@ -126,9 +124,8 @@ namespace ABRevival.Presentation
         /// <summary>Shows or hides the whole Info overlay.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
         }
 
         public void ShowHelp()
@@ -170,8 +167,7 @@ namespace ABRevival.Presentation
             if (_recordsPage != null) _recordsPage.style.display = DisplayStyle.None;
 
             Sprite page = _helpIndex == 0 ? helpPageOne : helpPageTwo;
-            if (_helpArt != null && page != null)
-                UiSpriteSkin.Apply(_helpArt, page, ScaleMode.ScaleToFit, keepBackground: false);
+            if (_helpArt != null && page != null) _helpArt.sprite = page;
 
             if (_helpPageLabel != null)
                 _helpPageLabel.text = (_helpIndex + 1) + " / " + HelpPageCount;
@@ -185,7 +181,7 @@ namespace ABRevival.Presentation
         {
             _helpPage = root.Q("help-page");
             _recordsPage = root.Q("records-page");
-            _helpArt = root.Q("help-art");
+            _helpArt = root.Q<SpriteElement>("help-page-art");
             _partsList = root.Q<ScrollView>("parts-list");
 
             _moneyLabel = root.Q<Label>("money-label");
@@ -219,23 +215,6 @@ namespace ABRevival.Presentation
         {
             if (_helpTab != null) _helpTab.EnableInClassList("tab-active", !_showingRecords);
             if (_recordsTab != null) _recordsTab.EnableInClassList("tab-active", _showingRecords);
-        }
-
-        private void ApplySkin(VisualElement root)
-        {
-            SetSprite(root, "info-root", infoBackground, ScaleMode.ScaleAndCrop);
-            SetSprite(root, "info-title-plate", infoHeader, ScaleMode.ScaleAndCrop);
-            SetSprite(root, "records-title-plate", infoHeader, ScaleMode.ScaleAndCrop);
-            SetSprite(root, "help-tab", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSprite(root, "records-tab", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSprite(root, "back-button", backButton, ScaleMode.ScaleToFit);
-        }
-
-        private static void SetSprite(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
-        {
-            VisualElement element = root.Q(name);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }
 
         // ---------------- Read-only refresh ----------------

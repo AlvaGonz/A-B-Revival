@@ -284,16 +284,17 @@ namespace ABRevival.Tests.PlayMode
         [UnityTest]
         public IEnumerator BootScene_HudDocumentBindsTheFrozenLayout()
         {
-            yield return SceneManager.LoadSceneAsync("Boot", LoadSceneMode.Single);
+            yield return PlayModeBoot.LoadBoot();
             yield return null;
             yield return null;
 
             CombatHudBehaviour hud = Object.FindAnyObjectByType<CombatHudBehaviour>();
             Assert.IsNotNull(hud, "Boot scene must host the combat HUD.");
 
-            UIDocument document = hud.GetComponent<UIDocument>();
-            Assert.IsNotNull(document, "The HUD behaviour needs its UIDocument.");
-            VisualElement root = document.rootVisualElement;
+            ScreenPanel panel = hud.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel, "The HUD behaviour needs its ScreenPanel.");
+            yield return PlayModeBoot.WaitForPanel(hud);
+            VisualElement root = panel.Root;
             Assert.IsNotNull(root, "The HUD document has no live root.");
 
             foreach (string element in new[]
@@ -320,6 +321,8 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(hud.Sprites, "The HUD must load Resources/UI/HudSpriteLibrary.");
             Assert.IsNotNull(root.Q<Image>(CombatHudPresenter.ReticleElement).sprite,
                 "The HUD images must receive the original sprites.");
+            foreach (SpriteElement plate in root.Query<SpriteElement>().Build())
+                Assert.IsNotNull(plate.sprite, "HUD plate '" + plate.name + "' lost its sprite.");
         }
 
         [Test]

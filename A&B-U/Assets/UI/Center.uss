@@ -1,5 +1,6 @@
 /* Center (frozen 2011 UIChooseFlyAI): 1920x1080 full-bleed dashboard.
-   Sprite backgrounds are assigned at runtime from CenterController serialized fields. */
+   Frozen art is authored in Center.uxml as app:SpriteElement (ADR 0025); only the
+   craft preview, table rows and selection state stay in CenterController. */
 
 .center-root {
     flex-grow: 1;
@@ -7,6 +8,24 @@
     height: 100%;
     background-color: rgb(2, 4, 8);
     -unity-background-scale-mode: stretch-to-fill;
+}
+
+.art-layer,
+.button-art {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.sprite-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -unity-text-align: middle-center;
 }
 
 .center-screen {
