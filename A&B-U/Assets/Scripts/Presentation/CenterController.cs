@@ -28,15 +28,7 @@ namespace ABRevival.Presentation
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
         [SerializeField] private int startingMoney = 2000;
 
-        [Header("Center sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite centerBackground;
-        [SerializeField] private Sprite centerHeader;
-        [SerializeField] private Sprite previewFrame;
-        [SerializeField] private Sprite panel;
-        [SerializeField] private Sprite buttonPlate;
-        [SerializeField] private Sprite buttonReady;
-        [SerializeField] private Sprite gradePlate;
-        [SerializeField] private Sprite helpButton;
+        [Header("Center preview mount art (2x PartMounts)")]
         [SerializeField] private MountArtEntry[] mountArt = Array.Empty<MountArtEntry>();
 
         private ScreenPanel _panel;
@@ -224,7 +216,6 @@ namespace ABRevival.Presentation
             _mountTable = PartCatalogBootstrap.LoadMountTable("Center");
             _mountArtLookup = new MountArtLookup(_mountTable, mountArt);
 
-            ApplySkin(root);
             Bind(root);
 
             _initialized = true;
@@ -416,7 +407,7 @@ namespace ABRevival.Presentation
             if (_placeholder != null) _placeholder.style.display = DisplayStyle.None;
         }
 
-        // ---------------- Binding / skin ----------------
+        // ---------------- Binding ----------------
 
         private void Bind(VisualElement root)
         {
@@ -485,47 +476,6 @@ namespace ABRevival.Presentation
 
             if (_craftList != null) _craftList.verticalScrollerVisibility = ScrollerVisibility.Hidden;
             if (_previewClip != null) _previewClip.RegisterCallback<GeometryChangedEvent>(OnPreviewGeometryChanged);
-        }
-
-        private void ApplySkin(VisualElement root)
-        {
-            SetPanelBackground(root, "center-root", centerBackground);
-            SetPanelBackground(root, "center-header", centerHeader);
-            SetPanelBackground(root, "preview-frame", previewFrame);
-            SetPanelBackground(root, "craft-table", panel);
-            SetPanelBackground(root, "center-placeholder", panel);
-            SetPanelBackground(root, "placeholder-panel", panel);
-
-            SetSpriteBackground(root, "help-button", helpButton, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "ready-button", buttonReady, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "info-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "shop-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "factory-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "back-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "reset-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "best-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "first-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "prev-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "next-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "last-button", buttonPlate, ScaleMode.ScaleAndCrop);
-            SetSpriteBackground(root, "placeholder-back", buttonPlate, ScaleMode.ScaleAndCrop);
-
-            for (int i = 0; i < CompanionSlotCount; i++)
-                SetSpriteBackground(root, "grade-" + i, gradePlate, ScaleMode.ScaleAndCrop);
-        }
-
-        private static void SetPanelBackground(VisualElement root, string name, Sprite sprite)
-        {
-            VisualElement element = root.Q(name);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, ScaleMode.StretchToFill, keepBackground: false);
-        }
-
-        private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
-        {
-            VisualElement element = root.Q(name);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }
 
         // ---------------- Refresh ----------------
