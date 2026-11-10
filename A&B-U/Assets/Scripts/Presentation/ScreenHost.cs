@@ -14,6 +14,9 @@ namespace ABRevival.Presentation
         [SerializeField] private ScreenCatalog catalog;
         [SerializeField] private Transform screensRoot;
 
+        /// <summary>The direct-reference catalog used to instantiate the sections.</summary>
+        public ScreenCatalog Catalog => catalog;
+
         private void Awake()
         {
             if (catalog == null)
