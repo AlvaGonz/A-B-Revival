@@ -7,13 +7,13 @@ namespace ABRevival.Presentation
 {
     /// <summary>
     /// Scene entry point for the frozen 2011 UIMain page: play, options, data, credits and
-    /// the player entry. The menu recomposes the frozen background, title lettering and ship
-    /// as separate responsive layers (ADR 0024); the starfield fills the screen.
-    /// Credits, player and the VARGAMES link have no revival screen yet and report that
-    /// explicitly instead of silently doing nothing.
+    /// the player entry. Backdrop, title and buttons are authored in Main.uxml/Main.uss
+    /// (ADR 0025); the ship band, bottom-row anchoring and safe area stay responsive in C#
+    /// (ADR 0024). Credits, player and the VARGAMES link have no revival screen yet and
+    /// report that explicitly instead of silently doing nothing.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class MainMenuController : MonoBehaviour
     {
         private const float PageWidth = 667f;
@@ -23,35 +23,15 @@ namespace ABRevival.Presentation
         private const float ShipBandMargin = 20f;
         private const float SafeAreaPadding = 8f;
 
-        [Header("Manual layout (tune in the Boot scene Inspector)")]
-        [Tooltip("Multiplier on the live button size.")]
-        [SerializeField] private float buttonScale = 1f;
+        [Header("Responsive layout (tune in the Boot scene Inspector)")]
         [Tooltip("Bottom margin in page pixels; used when Anchor Bottom Row is on.")]
         [SerializeField] private float bottomMargin = 20f;
-        [Tooltip("Keep the four bottom buttons bottom-anchored. Off uses each authored Y.")]
+        [Tooltip("Keep the four bottom buttons bottom-anchored. Off uses each authored USS top.")]
         [SerializeField] private bool anchorBottomRow = true;
-
-        [Header("Object layout (page pixels; zero backdrop size = full screen)")]
-        [SerializeField] private Vector2 titlePosition = new Vector2(0f, 0f);
-        [SerializeField] private Vector2 titleSize = new Vector2(460f, 99f);
         [Tooltip("Multiplier on the auto-fitted ship scale; 1 = fit the available band.")]
         [SerializeField] private float shipScale = 1f;
-        [SerializeField] private Vector2 buttonSize = new Vector2(153.7f, 42.2f);
-        [SerializeField] private Vector2 backdropOffset = Vector2.zero;
-        [SerializeField] private Vector2 backdropSize = Vector2.zero;
 
-        [Header("Button positions (page pixels)")]
-        [SerializeField] private Vector2 playButtonPosition = new Vector2(20.15f, 469.1f);
-        [SerializeField] private Vector2 dataButtonPosition = new Vector2(176.55f, 469.1f);
-        [SerializeField] private Vector2 optionsButtonPosition = new Vector2(335.75f, 470.1f);
-        [SerializeField] private Vector2 creditsButtonPosition = new Vector2(492.15f, 470.1f);
-        [SerializeField] private Vector2 linkButtonPosition = new Vector2(492.15f, 51.2f);
-        [SerializeField] private Vector2 playerButtonPosition = new Vector2(492.15f, 103.85f);
-
-        [Header("Main menu sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite backdrop;
-        [SerializeField] private Sprite titleArt;
-        [SerializeField] private Sprite shipArt;
+        [Header("Main menu button sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite playNormal;
         [SerializeField] private Sprite playHover;
         [SerializeField] private Sprite dataNormal;
@@ -66,8 +46,7 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite playerNormal;
         [SerializeField] private Sprite playerHover;
 
-        private UIDocument _document;
-        private VisualElement _backdrop;
+        private ScreenPanel _screen;
         private VisualElement _title;
         private VisualElement _ship;
         private VisualElement _deferred;
@@ -95,9 +74,8 @@ namespace ABRevival.Presentation
         private void Awake()
         {
             // GameFlowController owns visibility and opens the main menu at boot.
-            var document = GetComponent<UIDocument>();
-            if (document != null && document.rootVisualElement != null)
-                document.rootVisualElement.style.display = DisplayStyle.None;
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
         }
 
         /// <summary>Builds the screen once; the main menu is static and reads no save data.</summary>
@@ -109,27 +87,23 @@ namespace ABRevival.Presentation
                 return;
             }
 
-            _document = GetComponent<UIDocument>();
-            if (_document == null || _document.rootVisualElement == null)
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
             {
-                Debug.LogError("[MainMenu] UIDocument with a source UXML is required.");
+                Debug.LogError("[MainMenu] ScreenPanel with a PanelRenderer is required.");
                 return;
             }
 
-            VisualElement root = _document.rootVisualElement;
-            ApplySkin(root);
-            Bind(root);
-            root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
             _initialized = true;
+            _screen.WhenReady(Build);
             SetVisible(true);
         }
 
         /// <summary>Shows or hides the whole main menu overlay.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
             if (!visible) HideDeferred();
         }
 
@@ -147,9 +121,17 @@ namespace ABRevival.Presentation
             if (_deferred != null) _deferred.style.display = DisplayStyle.None;
         }
 
+        private void Build(VisualElement root)
+        {
+            Bind(root);
+            root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
+            // The panel may already be laid out; the geometry callback may not fire again.
+            if (_title != null && _title.resolvedStyle.height > 0f)
+                FitPage(root.resolvedStyle.width, root.resolvedStyle.height);
+        }
+
         private void Bind(VisualElement root)
         {
-            _backdrop = root.Q("main-backdrop");
             _title = root.Q("main-title");
             _ship = root.Q("main-ship");
             _deferred = root.Q("main-deferred");
@@ -193,6 +175,21 @@ namespace ABRevival.Presentation
         private static void BindHover(Button button, Sprite normal, Sprite hover)
         {
             if (button == null || normal == null) return;
+
+            SpriteElement art = button.Q<SpriteElement>("button-art");
+            if (art != null)
+            {
+                art.sprite = normal;
+                if (hover != null)
+                {
+                    button.RegisterCallback<PointerEnterEvent>(_ => art.sprite = hover);
+                    button.RegisterCallback<PointerLeaveEvent>(_ => art.sprite = normal);
+                }
+
+                return;
+            }
+
+            // Other screens still render through UiSpriteSkin until the #217 migration.
             UiSpriteSkin.Apply(button, normal, ScaleMode.StretchToFill, keepBackground: false);
             if (hover != null)
             {
@@ -203,22 +200,7 @@ namespace ABRevival.Presentation
             }
         }
 
-        private void ApplySkin(VisualElement root)
-        {
-            // One background: the frozen starfield. The title is a single legible composite image.
-            SetSprite(root, "main-backdrop", backdrop, ScaleMode.ScaleAndCrop);
-            SetSprite(root, "main-title", titleArt, ScaleMode.StretchToFill);
-            SetSprite(root, "main-ship", shipArt, ScaleMode.StretchToFill);
-        }
-
-        private static void SetSprite(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
-        {
-            VisualElement element = root.Q(name);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
-        }
-
-        /// <summary>Lays out the frozen layers at the current 667-wide page scale.</summary>
+        /// <summary>Lays out the responsive ship band and bottom-row anchor at the current page scale.</summary>
         private void OnRootGeometryChanged(GeometryChangedEvent evt)
         {
             FitPage(evt.newRect.width, evt.newRect.height);
@@ -226,7 +208,7 @@ namespace ABRevival.Presentation
 
         private void FitPage(float width, float height)
         {
-            if (_backdrop == null || _title == null || _ship == null || width <= 0f || height <= 0f) return;
+            if (_title == null || _ship == null || !(width > 0f) || !(height > 0f)) return;
             if (Mathf.Approximately(width, _lastRootSize.x) && Mathf.Approximately(height, _lastRootSize.y))
                 return;
 
@@ -242,58 +224,35 @@ namespace ABRevival.Presentation
                 safeBottom = safeArea.yMin / Screen.height * height;
             }
 
-            // Backdrop: full screen by default; a non-zero authored size opts into manual control.
-            if (backdropSize.x <= 0f || backdropSize.y <= 0f)
+            // The title position comes from USS; only a safe-area intrusion overrides it.
+            if (safeTop > 0.01f) _title.style.top = safeTop;
+
+            float scaledBottomMargin = Mathf.Max(bottomMargin * pageScale, safeBottom + SafeAreaPadding);
+            float buttonHeight = _playButton != null ? _playButton.resolvedStyle.height : 0f;
+            ApplyButtonHeight(buttonHeight);
+            AnchorBottomRow(buttonHeight, height, scaledBottomMargin);
+
+            float controlTop;
+            if (anchorBottomRow && _playButton != null)
             {
-                _backdrop.style.left = 0f;
-                _backdrop.style.top = 0f;
-                _backdrop.style.width = width;
-                _backdrop.style.height = height;
+                controlTop = height - buttonHeight - scaledBottomMargin;
             }
             else
             {
-                _backdrop.style.left = backdropOffset.x * pageScale;
-                _backdrop.style.top = backdropOffset.y * pageScale;
-                _backdrop.style.width = backdropSize.x * pageScale;
-                _backdrop.style.height = backdropSize.y * pageScale;
+                controlTop = MinTop(_playButton, _dataButton, _optionsButton, _creditsButton);
+                if (controlTop == float.MaxValue) controlTop = height;
             }
-
-            // Title: one legible composite image with page-space position and size.
-            float titleLeft = titlePosition.x * pageScale;
-            float titleTop = Mathf.Max(titlePosition.y * pageScale, safeTop);
-            float titleHeight = titleSize.y * pageScale;
-            _title.style.left = titleLeft;
-            _title.style.top = titleTop;
-            _title.style.width = titleSize.x * pageScale;
-            _title.style.height = titleHeight;
-
-            float scaledBottomMargin = Mathf.Max(bottomMargin * pageScale, safeBottom + SafeAreaPadding);
-            LayoutBottomButton(_playButton, playButtonPosition, height, pageScale, buttonScale,
-                scaledBottomMargin, anchorBottomRow, buttonSize);
-            LayoutBottomButton(_dataButton, dataButtonPosition, height, pageScale, buttonScale,
-                scaledBottomMargin, anchorBottomRow, buttonSize);
-            LayoutBottomButton(_optionsButton, optionsButtonPosition, height, pageScale, buttonScale,
-                scaledBottomMargin, anchorBottomRow, buttonSize);
-            LayoutBottomButton(_creditsButton, creditsButtonPosition, height, pageScale, buttonScale,
-                scaledBottomMargin, anchorBottomRow, buttonSize);
-            LayoutScreenButton(_linkButton, linkButtonPosition, pageScale, buttonScale, buttonSize);
-            LayoutScreenButton(_playerButton, playerButtonPosition, pageScale, buttonScale, buttonSize);
 
             // Automatic ship: centred band between the title bottom and the bottom control row.
-            float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
-            float controlTop = height - buttonSize.y * sizeScale - scaledBottomMargin;
-            float bandTop = titleTop + titleHeight + ShipBandMargin * pageScale;
+            float bandTop = _title.worldBound.yMax + ShipBandMargin * pageScale;
             float bandBottom = controlTop - ShipBandMargin * pageScale;
             float bandHeight = Mathf.Max(0f, bandBottom - bandTop);
-            float topControlLeft = linkButtonPosition.x * pageScale;
+            float topControlLeft = _linkButton != null ? _linkButton.worldBound.xMin : width;
             float maxShipWidth = width * ShipWidthFraction;
-            if (width > height)
-            {
-                // A centred landscape ship stops at the top-right control column instead of
-                // passing behind VARGAMES/MUSIC PLAYER (visible on 4:3 tablets).
-                maxShipWidth = Mathf.Min(maxShipWidth,
-                    Mathf.Max(0f, 2f * (topControlLeft - width * 0.5f)));
-            }
+            // A centred ship stops at the top-right control column instead of passing behind
+            // VARGAMES/MUSIC PLAYER. Apply whenever the control column is right of centre.
+            float controlCap = 2f * (topControlLeft - width * 0.5f) - 2f;
+            if (controlCap > 0f) maxShipWidth = Mathf.Min(maxShipWidth, controlCap);
 
             float fitScale = Mathf.Min(bandHeight / ShipHeight, maxShipWidth / ShipWidth);
             // Owner-authored multiplier: no clamp; the Inspector value is authoritative.
@@ -306,31 +265,51 @@ namespace ABRevival.Presentation
             _ship.style.height = shipHeight;
         }
 
-        private static void LayoutBottomButton(Button button, Vector2 position, float screenHeight,
-            float pageScale, float buttonScale, float scaledBottomMargin, bool anchorBottom,
-            Vector2 authoredSize)
+        /// <summary>Overrides only the shipped USS top; other authored layout stays untouched.</summary>
+        private void AnchorBottomRow(float buttonHeight, float height, float scaledBottomMargin)
         {
-            if (button == null) return;
-            float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
-            float buttonWidth = authoredSize.x * sizeScale;
-            float buttonHeight = authoredSize.y * sizeScale;
-            button.style.left = position.x * pageScale;
-            button.style.top = anchorBottom
-                ? screenHeight - buttonHeight - scaledBottomMargin
-                : position.y * pageScale;
-            button.style.width = buttonWidth;
-            button.style.height = buttonHeight;
+            // Off: leave the authored USS top so UI Builder edits survive at runtime.
+            if (!anchorBottomRow) return;
+
+            float top = height - buttonHeight - scaledBottomMargin;
+            SetTop(_playButton, top);
+            SetTop(_dataButton, top);
+            SetTop(_optionsButton, top);
+            SetTop(_creditsButton, top);
         }
 
-        private static void LayoutScreenButton(Button button, Vector2 position,
-            float pageScale, float buttonScale, Vector2 authoredSize)
+        /// <summary>
+        /// Locks all six frames to the same height. USS aspect-ratio rounds the top row
+        /// differently from the bottom row at portrait scales; the shared height is the
+        /// invariant the owner asked for.
+        /// </summary>
+        private void ApplyButtonHeight(float height)
         {
-            if (button == null) return;
-            float sizeScale = pageScale * Mathf.Max(0.1f, buttonScale);
-            button.style.left = position.x * pageScale;
-            button.style.top = position.y * pageScale;
-            button.style.width = authoredSize.x * sizeScale;
-            button.style.height = authoredSize.y * sizeScale;
+            if (height <= 0f) return;
+            SetHeight(_playButton, height);
+            SetHeight(_dataButton, height);
+            SetHeight(_optionsButton, height);
+            SetHeight(_creditsButton, height);
+            SetHeight(_linkButton, height);
+            SetHeight(_playerButton, height);
+        }
+
+        private static void SetHeight(Button button, float height)
+        {
+            if (button != null) button.style.height = height;
+        }
+
+        private static void SetTop(Button button, float top)
+        {
+            if (button != null) button.style.top = top;
+        }
+
+        private static float MinTop(params Button[] buttons)
+        {
+            float top = float.MaxValue;
+            foreach (Button button in buttons)
+                if (button != null) top = Mathf.Min(top, button.worldBound.yMin);
+            return top;
         }
 
         /// <summary>
@@ -339,8 +318,8 @@ namespace ABRevival.Presentation
         /// </summary>
         private void OnValidate()
         {
-            if (!Application.isPlaying || _document == null) return;
-            VisualElement root = _document.rootVisualElement;
+            if (!Application.isPlaying || _screen == null) return;
+            VisualElement root = _screen.Root;
             if (root == null) return;
 
             _lastRootSize = Vector2.zero;
@@ -350,12 +329,12 @@ namespace ABRevival.Presentation
         [ContextMenu("Reapply Main Menu Layout")]
         private void ReapplyLayout()
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document == null || _document.rootVisualElement == null) return;
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            VisualElement root = _screen != null ? _screen.Root : null;
+            if (root == null) return;
 
             _lastRootSize = Vector2.zero;
-            FitPage(_document.rootVisualElement.resolvedStyle.width,
-                _document.rootVisualElement.resolvedStyle.height);
+            FitPage(root.resolvedStyle.width, root.resolvedStyle.height);
         }
     }
 }

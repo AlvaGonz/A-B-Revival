@@ -177,7 +177,7 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual(GameFlowState.MainMenu, flow.State, "Center BACK must return to the main menu.");
             MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
             Assert.IsNotNull(menu);
-            Assert.AreEqual(DisplayStyle.Flex, menu.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, menu.GetComponent<ScreenPanel>().Root.resolvedStyle.display);
             Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
 
             PlayModeBoot.StartGame();

@@ -72,7 +72,7 @@ namespace ABRevival.Tests.PlayMode
             for (int i = 0; i < 8; i++) yield return null;
             MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
             Assert.IsNotNull(menu, "Boot must host the main menu for the font check.");
-            VisualElement menuRoot = menu.GetComponent<UIDocument>().rootVisualElement;
+            VisualElement menuRoot = menu.GetComponent<ScreenPanel>().Root;
             Assert.AreEqual(DisplayStyle.Flex, menuRoot.resolvedStyle.display,
                 "The main menu must be visible after Center BACK.");
             Click(menuRoot.Q<Button>("credits-button"));

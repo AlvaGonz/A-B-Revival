@@ -40,9 +40,8 @@ namespace ABRevival.Tests.PlayMode
                 MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
                 if (menu != null)
                 {
-                    var document = menu.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("main-root") != null)
+                    ScreenPanel panel = menu.GetComponent<ScreenPanel>();
+                    if (panel != null && panel.Root != null && panel.Root.Q("main-root") != null)
                     {
                         yield return null;
                         yield break;
@@ -82,7 +81,7 @@ namespace ABRevival.Tests.PlayMode
         {
             MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
             Assert.IsNotNull(menu, "Boot must host the main menu.");
-            VisualElement root = menu.GetComponent<UIDocument>().rootVisualElement;
+            VisualElement root = menu.GetComponent<ScreenPanel>().Root;
             Assert.IsNotNull(root, "The main menu has no root.");
             Click(root.Q<Button>("play-button"));
         }

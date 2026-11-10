@@ -2,7 +2,10 @@
    The menu recomposes the frozen layers: one starfield, the title lettering at
    the top, the ship centred between the title and the controls (ADR 0024). The
    six live buttons keep the frozen page proportions and carry the original widget
-   art. Original game IP: Vargames (2011). */
+   art. Positions and sizes are authored here (ADR 0025); MainMenuController only
+   anchors the bottom row, applies safe-area insets and fits the ship band.
+   Page values at the 1920x1080 reference: title 460x99, buttons 161x45.
+   Original game IP: Vargames (2011). */
 
 .main-root {
     flex-grow: 1;
@@ -20,11 +23,21 @@
     bottom: 0;
 }
 
-/* Left/top/width/height are set by MainMenuController.FitPage for the current
-   screen so the title and ship stay independent of each other. */
-.main-title,
+.main-title {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 68.97%; /* 460 / 667 page width */
+    aspect-ratio: 4.6465; /* 460 x 99 */
+}
+
+/* UI Builder default; MainMenuController fits the live ship band at runtime. */
 .main-ship {
     position: absolute;
+    left: 27.3%;
+    top: 22.4%;
+    width: 45.3%;
+    aspect-ratio: 1.2413; /* 427 x 344 */
 }
 
 .main-ui {
@@ -37,8 +50,8 @@
 
 .menu-button {
     position: absolute;
-    width: 153.7px;
-    height: 42.2px;
+    width: 24.14%; /* 161 / 667 page width */
+    aspect-ratio: 3.5778; /* 161 x 45 */
     padding: 0;
     margin: 0;
     border-width: 0;
@@ -50,34 +63,42 @@
     opacity: 0.86;
 }
 
+.button-art {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
 .play-button {
-    left: 20.15px;
-    top: 469.1px;
+    left: 3.02%; /* 20.15 / 667 */
+    top: 82.68%;
 }
 
 .data-button {
-    left: 176.55px;
-    top: 469.1px;
+    left: 26.47%; /* 176.55 / 667 */
+    top: 82.68%;
 }
 
 .options-button {
-    left: 335.75px;
-    top: 470.1px;
+    left: 50.34%; /* 335.75 / 667 */
+    top: 82.68%;
 }
 
 .credits-button {
-    left: 492.15px;
-    top: 470.1px;
+    left: 73.79%; /* 492.15 / 667 */
+    top: 82.68%;
 }
 
 .link-button {
-    left: 492.15px;
-    top: 51.2px;
+    left: 74.96%; /* 500 / 667 */
+    top: 1.6%; /* 6 / 375 page height at the live reference */
 }
 
 .player-button {
-    left: 492.15px;
-    top: 103.85px;
+    left: 74.96%; /* 500 / 667 */
+    top: 12.26%;
 }
 
 .main-deferred {

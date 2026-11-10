@@ -383,8 +383,8 @@ namespace ABRevival.Tests.PlayMode
                 if (expected == GameFlowState.Center && flow.State == GameFlowState.MainMenu)
                 {
                     MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
-                    UIDocument document = menu != null ? menu.GetComponent<UIDocument>() : null;
-                    Button play = document?.rootVisualElement?.Q<Button>("play-button");
+                    ScreenPanel panel = menu != null ? menu.GetComponent<ScreenPanel>() : null;
+                    Button play = panel?.Root?.Q<Button>("play-button");
                     if (play != null) PlayModeBoot.Click(play);
                 }
 

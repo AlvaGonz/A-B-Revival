@@ -71,10 +71,11 @@ namespace ABRevival.Editor
             eventSystemObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
 
             var mainMenuObject = new GameObject("MainMenu");
-            UIDocument mainMenuDocument = mainMenuObject.AddComponent<UIDocument>();
-            SetReference(mainMenuDocument, "m_PanelSettings", panelSettings);
-            SetReference(mainMenuDocument, "sourceAsset", mainMenuUxml);
-            mainMenuDocument.sortingOrder = 2;
+            var mainMenuRenderer = mainMenuObject.AddComponent<PanelRenderer>();
+            mainMenuRenderer.panelSettings = panelSettings;
+            mainMenuRenderer.visualTreeAsset = mainMenuUxml;
+            mainMenuRenderer.sortingOrder = 2;
+            AddPresentationComponent(mainMenuObject, "ABRevival.Presentation.ScreenPanel");
             Component mainMenu = AddPresentationComponent(mainMenuObject, "ABRevival.Presentation.MainMenuController");
 
             var optionsObject = new GameObject("Options");
@@ -336,13 +337,14 @@ namespace ABRevival.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        /// <summary>Wires the frozen UIMain layers and its six live button widgets.</summary>
+        /// <summary>Wires the frozen UIMain button frames and the responsive values; static art lives in Main.uxml.</summary>
         private static void SetMainMenuSprites(Component mainMenu)
         {
             var serialized = new SerializedObject(mainMenu);
-            SetSprite(serialized, "backdrop", UiSpriteFolder, "ui_0005.png");
-            SetSprite(serialized, "titleArt", UiSpriteFolder, "Screens/Title/UI_Main_TitleFull.png");
-            SetSprite(serialized, "shipArt", UiSpriteFolder, "Screens/UI_Main_Ship.png");
+            // Keep the owner-tuned responsive values when the scene is regenerated.
+            serialized.FindProperty("shipScale").floatValue = 1.4f;
+            serialized.FindProperty("bottomMargin").floatValue = 20f;
+            serialized.FindProperty("anchorBottomRow").boolValue = true;
             SetSprite(serialized, "playNormal", UiSpriteFolder, "UI_Main/447_widget_normal.png");
             SetSprite(serialized, "playHover", UiSpriteFolder, "UI_Main/447_widget_hover.png");
             SetSprite(serialized, "dataNormal", UiSpriteFolder, "UI_Main/450_widget_normal.png");
