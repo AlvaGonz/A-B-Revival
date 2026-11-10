@@ -1,18 +1,18 @@
 # Graph Report - A&B revival  (2026-11-10)
 
 ## Corpus Check
-- 491 files · ~523,587 words
+- 491 files · ~523,657 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 2079 file(s) not represented in the graph (top: .meta 1572, .asset 312, .xsd 65)
 - WARNING: 2079 of 3574 files seen (58%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
 
 ## Summary
-- 6252 nodes · 14133 edges · 434 communities (223 shown, 211 thin omitted)
+- 6260 nodes · 14134 edges · 433 communities (229 shown, 204 thin omitted)
 - Extraction: 87% EXTRACTED · 13% INFERRED · 0% AMBIGUOUS · INFERRED: 1787 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `99287ef8`
+- Built from commit: `6ed8836d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -53,7 +53,7 @@
 - CombatSimulation
 - VeryOutShitABC
 - LevelBase
-- GData
+- BatchSpriteRenderer
 - F4DataLinks
 - SoundCtrl2
 - Line
@@ -155,19 +155,20 @@
 - InfoController
 - MainMenuController
 - UiSpriteExportPipeline
-- Label
+- IEnumerator
 - PartMountTable
 - BulletSpriteTable
 - Button
-- CraftComposition.BuildPlayer
+- PartDefinitionSO
 - PartMountExtractor.Extract
 - ShopState
 - nunit_framework
 - Amf3Reader
-- PlayerSaveCodec.FromJson
+- ShopSaveData
 - HudSpriteLibrary
 - CompanionRoster
-- ProjectileVisualPlayModeTests.Families_RenderToTextureAndWriteAReviewCapture
+- UnityTest
+- system_io
 - RepairState
 - PartCatalogImporter
 - IMenuAudio
@@ -182,11 +183,11 @@
 - TalkView
 - IAudioService.cs
 - Extraction Manifest and Pipeline Report
-- FormChooseFlyAI
+- MissionState
 - test_validate_vendored_skills.py
 - CombatHudSnapshot
-- Multithreading (AVM2 Workers) and GPU Hardware Acceleration (Stage3D) Architecture Research
-- UiSpriteManifestTests
+- 1.2 Inter-Process Communication (IPC) Mechanisms
+- Test
 - 0022. Procedural Projectile Visuals and the Faction Palette
 - 10. Menu section → exact symbols
 - InfoLayoutTests
@@ -198,17 +199,17 @@
 - 0020. Original Fonts and Asset Fidelity
 - 3. UI screens and HUD
 - argparse
-- CenterLayoutTests
-- CombatHudLayoutTests
+- Domain Entity Mapping (AS3 -> Unity C# DoD)
+- TacticalAIJob
 - Game UI Component Breakdown
 - Stage order
-- UI Sprite Manifest
+- Research: 2D Unity Runtime E2E Testing Frameworks & Headless Automation
 - CinematicPlayer
 - ICombatWeaponSeams.cs
-- FactoryLayoutTests
+- Game AI: decisions, target selection and steering
 - Original Fonts (ADR 0020)
 - FactoryPlayModeTests.Factory_OpensEditsMountsPersistsAndReturnsToCenter
-- ScreenCatalog
+- MonoBehaviour
 - Game UI Specification
 - Game UI Sprite-Sheet Splitting and PNG Packaging
 - Game Design · PRD · UI Interaction (first generation step)
@@ -222,11 +223,11 @@
 - record_dev_session.py
 - validate_vendored_skills.py
 - Amf3Reader
-- TalkScriptParser
+- MissionResult
 - Unity ScriptableObject Architecture
 - Layout, scaling & flow — depth for `game-ui-ux`
 - Fixed timestep, interpolation, CCD, and stability
-- MainMenuLayoutTests
+- MissionScreenshotPlayModeTests.CaptainComposition_RendersExtractedMountArtAndSavesArtifact
 - Create game assets (owner-gated)
 - Game UI Single-Page Visual Generation
 - Profiling & budgets — depth for `performance-optimization`
@@ -235,8 +236,8 @@
 - TalkPresenter
 - Raster, sprite, tile, background, and UI pipeline
 - Game UI Atlas and Engine Handoff
-- Main-Menu Layers (`UI_Main`)
-- ReadyLayoutTests
+- AudioServicePlayModeTests.AudioService_RoutesMusicSfxAndUiThroughMixerGroups
+- Ballistics.EffectiveRange
 - Accessibility specialist (A&B Revival)
 - Art direction and consistency
 - 3D concept-to-runtime pipeline
@@ -251,8 +252,9 @@
 - ScriptableObject
 - Asset rights and provenance
 - Project-local skills
-- Read first
+- ShipInput
 - PlayerControlMode
+- WeaponReport
 - Upstream
 - Upstream
 - Upstream
@@ -273,13 +275,15 @@
 - ab-game-ui-sprite-sheet-splitter/UPSTREAM.md
 - ab-game-ui-workflow/UPSTREAM.md
 - ATTRIBUTION.md
+- FlightControlMath.FromCursor
+- MouseCombatFireInput
+- 0019. Combat Framing and In-Game Mount Art Density
 - 3. Hybrid Shop Stock Model, Purchase Stacking, and Retroactive Inventory Reconciliation
 - WeaponSystemPlayModeTests.HullDestruction_ReachesMissionResult_ExactlyOnce
 - UIMakePlayer
 - 8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam
 - CombatInput
 - export_all_assets.py
-- MissionScreenshotPlayModeTests.cs
 - re
 - MissionRunner
 - BMPD2D
@@ -290,12 +294,11 @@
 - com.unity.2d.common@15.0.0
 - Feasibility Matrix
 - GameFlowController
-- float2
+- ShipMovementJob
 - FireModeSpec
 - com.unity.modules.physics@1.0.0
 - render
-- MissionSummary
-- MusicTrack
+- PlayerSaveData
 - IAudioService
 - as3/scripts/Fly4UI.as
 - List
@@ -303,7 +306,7 @@
 - Stage3DQuadRenderer
 - 5. Configurable Combat Camera Distance and Dynamic FOV Scaling
 - ITalkAudio
-- MissionScreenshotPlayModeTests.CaptainComposition_RendersExtractedMountArtAndSavesArtifact
+- SpriteUvTable
 - CraftAssembly
 - packages-lock.json
 - com.unity.modules.imageconversion@1.0.0
@@ -314,7 +317,7 @@
 - com.unity.mathematics@1.2.6
 - PartCatalogParser
 - com.unity.render-pipelines.core
-- Test
+- ShipEntity
 - CraftBlueprintSO
 - com.unity.dt.app-ui@1.3.6
 - com.unity.settings-manager@1.0.3
@@ -329,7 +332,7 @@
 - com.unity.modules.terrain
 - AudioTrigger
 - SoundEffect
-- Research: 2D Unity Runtime E2E Testing Frameworks & Headless Automation
+- CaptainTacticalMode
 - 15. Sunsetting Flash AS3 Target in Favor of Unity 6.6 DOTS Runtime
 - Forcing Adobe Flash Player Standalone to use the NVIDIA GTX 1650
 - TalkScriptParser.ParseFile
@@ -392,13 +395,12 @@
 - export_audio.py
 - CombatHudState
 - CombatCameraRig
-- PresentationStateTests
 - PartSpriteMap.Build
 - SpriteUvTableTests
 - MenuItem
 - AssemblyPresenter
 - CinematicExporter
-- IEnumerator
+- MainMenuController
 - Audio Remastering for a Solo Developer
 - Evidence
 - VisualElement
@@ -409,58 +411,57 @@
 - BattleDamageCategory
 - GameFlowState
 - 18. Cinematics as Lossy H.264 Video Instead of Vector Animation
-- PickupKind
 - 16. Two-Tier Automated Testing Gate for Unity 6.6 (Fast CLI .NET + Headless Unity UTF)
 - 2. Allied Flagship (Captain's Ship) Lifecycle and Deployment Boundary
 
 ## God Nodes (most connected - your core abstractions)
-1. `GameFlowController` - 205 edges
-2. `CenterController` - 124 edges
-3. `ScreenPanel` - 109 edges
-4. `ABRevival.Core.Data` - 88 edges
-5. `ShopPresenter` - 87 edges
+1. `GameFlowController` - 204 edges
+2. `CenterController` - 123 edges
+3. `ScreenPanel` - 96 edges
+4. `ShopPresenter` - 87 edges
+5. `ABRevival.Core.Data` - 87 edges
 6. `MissionRunner` - 85 edges
 7. `FactoryController` - 84 edges
 8. `AssemblyPresenter` - 81 edges
-9. `PlayerSaveData` - 80 edges
+9. `PlayerSaveData` - 79 edges
 10. `AudioService` - 73 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Rules` --references--> `ScreenPanel`  [INFERRED]
-  .agents/agents/ab-unity-ui-specialist.md → A&B-U/Assets/Scripts/Presentation/ScreenPanel.cs
-- `PanelRenderer + ScreenPanel` --references--> `ScreenPanel`  [INFERRED]
-  docs/assets/main-menu-layers.md → A&B-U/Assets/Scripts/Presentation/ScreenPanel.cs
-- `Rules` --references--> `ScreenPanel`  [INFERRED]
-  .opencode/agents/ab-unity-ui-specialist.md → A&B-U/Assets/Scripts/Presentation/ScreenPanel.cs
+- `Unity Presentation Structure (ADR 0025)` --references--> `ScreenPanel`  [INFERRED]
+  GLOSSARY.md → A&B-U/Assets/Scripts/Presentation/ScreenPanel.cs
 - `Import contract` --references--> `SpriteElement`  [INFERRED]
   docs/assets/main-menu-layers.md → A&B-U/Assets/Scripts/Presentation/SpriteElement.cs
 - `Atlases` --references--> `UiSpriteSkin`  [INFERRED]
   docs/assets/extraction-report.md → A&B-U/Assets/Scripts/Presentation/UiSpriteSkin.cs
+- `9. Open questions for the adoption grilling` --references--> `UiSpriteManifestTests`  [INFERRED]
+  docs/research/game-dev-skills-inventory.md → A&B-U/Assets/Scripts/Tests/UiSpriteManifestTests.cs
+- `7.2 Text tags and strings` --references--> `TalkScriptParser`  [INFERRED]
+  docs/research/full-asset-inventory.md → A&B-U/Assets/Scripts/Data/TalkScript.cs
 
 ## Import Cycles
 - None detected.
 
-## Communities (434 total, 211 thin omitted)
+## Communities (433 total, 204 thin omitted)
 
 ### Community 0 - "as3/scripts/ui/pages/UIMakePlayer.as"
 Cohesion: 0.06
-Nodes (54): act(), addBtnL(), addDt(), addDtL(), addFlyYes(), addPart(), addToFly(), addToUndo() (+46 more)
+Nodes (55): uiName(), act(), addBtnL(), addDt(), addDtL(), addFlyYes(), addPart(), addToFly() (+47 more)
 
 ### Community 3 - "as3/scripts/ui/pages/UIRepair.as"
 Cohesion: 0.10
 Nodes (11): ADR-0009, addToView(), afterFadeIn(), alphaRunStart(), drawOneStart(), initArr(), removeAll(), removeBtnL() (+3 more)
 
 ### Community 5 - "UIChooseFlyAI.as"
-Cohesion: 0.15
-Nodes (29): Decision, act(), addAI(), addDtL(), afterFadeIn(), afterTalk(), changeAI2PlayerYes(), ckAIUse() (+21 more)
+Cohesion: 0.11
+Nodes (30): Decision, act(), addAI(), addDtL(), afterFadeIn(), afterTalk(), changeAI2PlayerYes(), ckAIUse() (+22 more)
 
 ### Community 6 - "as3/scripts/f4/unit/ai/AIUnity.as"
 Cohesion: 0.25
 Nodes (11): chooseAI(), ckPartsDead(), function(), linkUnityTarget(), makeFireAI(), public(), runAIMain(), runNoFly() (+3 more)
 
 ### Community 8 - "MochiAd.as"
-Cohesion: 0.20
-Nodes (4): function(), load(), MochiAd(), triggerFinished()
+Cohesion: 0.22
+Nodes (3): function(), load(), triggerFinished()
 
 ### Community 9 - "RGBHSLHSV.as"
 Cohesion: 0.15
@@ -471,23 +472,23 @@ Cohesion: 0.12
 Nodes (8): Decision, 5.3. Solution: Object Pooling & Geometry Reuse, SWave, Array1(), fastRemoveSelf1(), removeSelf1(), run1(), removeSelf()
 
 ### Community 11 - "CenterController"
-Cohesion: 0.07
-Nodes (16): CenterController, CanLaunch, Companions, FleetCount, Money, PageCount, PageIndex, PlaceholderTitle (+8 more)
+Cohesion: 0.06
+Nodes (16): CompanionRoster, AssignedCount, CenterController, CanLaunch, Companions, FleetCount, Money, PageCount (+8 more)
 
 ### Community 12 - "ConfigAndStory"
 Cohesion: 0.10
 Nodes (8): 1. Executive Summary, 2.1 Primary Save Engine: `SharedObject` (`ConfigAndStory.as`), 2.2 Manual Backup Engine: `.anb` ByteArrays (`UIData.as` / `SaveLoad.as`), 2. Persistence Architecture Analysis, 3. Verification & Restart Resilience Test Matrix, 4. Final Recommendation & Implementation Summary, Research: Save Persistence on Device (SharedObject and .anb Storage), ConfigAndStory
 
 ### Community 17 - "Multithreading (AVM2 Workers) and GPU Hardware Acceleration (Stage3D) Architecture Research"
-Cohesion: 0.25
-Nodes (8): 2.1 Why Flash Games Default to 0% GPU Utilization, 2.2 `flash.display3D` (Stage3D) Low-Level Architecture, 2.3 `renderMode` and `wmode` Disambiguation, 2.4 AGAL (Adobe Graphics Assembly Language) & 2D Quad Batching, 2. Flash GPU Hardware Acceleration & Stage3D Architecture, AGAL Shader Pipeline for 2D Batched Sprites, Performance Impact: Software Blitting vs Quad Batching, The Hardware Layering Hierarchy
+Cohesion: 0.13
+Nodes (14): 2.1 Why Flash Games Default to 0% GPU Utilization, 2.2 `flash.display3D` (Stage3D) Low-Level Architecture, 2.3 `renderMode` and `wmode` Disambiguation, 2.4 AGAL (Adobe Graphics Assembly Language) & 2D Quad Batching, 2. Flash GPU Hardware Acceleration & Stage3D Architecture, 3.1 Standalone Flash Player Projector 32 (`flashplayer_32_sa.exe`), 3.2 HARMAN Adobe AIR Desktop SDK (v33.x / v51.x+), 3. Evaluation of Target Environments (+6 more)
 
 ### Community 18 - "EPoint.as"
 Cohesion: 0.21
 Nodes (6): disTo(), EPoint(), get(), makeDis(), rotTo(), scale()
 
 ### Community 20 - "system"
-Cohesion: 0.12
+Cohesion: 0.14
 Nodes (3): ABRevival.Core.Shop, ABRevival.Core.Data, ABRevival.Core.Persistence
 
 ### Community 24 - "as3/scripts/ui/pages/UIOptions.as"
@@ -495,16 +496,16 @@ Cohesion: 0.16
 Nodes (18): act(), afterFadeIn(), buildModal(), changes(), configChange(), createButton(), createCard(), initControlsUI() (+10 more)
 
 ### Community 29 - "2. In-Depth Candidate Analysis"
-Cohesion: 0.08
-Nodes (23): 1. Executive Summary & Problem Context, 2. In-Depth Candidate Analysis, 3. Comparative Evaluation Matrix, 4. Architectural Recommendations for A&B Revival, 5. Primary Source Citations & References, Architectural Overview, Architectural Overview, Architectural Overview (+15 more)
+Cohesion: 0.10
+Nodes (20): 1. Executive Summary & Problem Context, 2. In-Depth Candidate Analysis, 3. Comparative Evaluation Matrix, 5. Primary Source Citations & References, Architectural Overview, Architectural Overview, Architectural Overview, Architectural Overview (+12 more)
 
 ### Community 31 - "UIWin.as"
 Cohesion: 0.24
 Nodes (5): act(), addBtnL(), nextGame(), removeBtnL(), toNext()
 
 ### Community 32 - "Core Entities"
-Cohesion: 0.06
-Nodes (13): Decision, Core Entities, FireLoop(), FireSingle(), FlyBase, FlyPart, MissionData(), MochiEvents() (+5 more)
+Cohesion: 0.08
+Nodes (12): Decision, Core Entities, FireLoop(), FireSingle(), MissionData(), MochiAd(), MochiEvents(), addDtLTempRun() (+4 more)
 
 ### Community 36 - "2. Root Cause Analysis: CPU Bottlenecks in `RenderData.render()`"
 Cohesion: 0.13
@@ -514,9 +515,9 @@ Nodes (13): 1. Executive Summary & Problem Context, 2. Root Cause Analysis: CPU 
 Cohesion: 0.07
 Nodes (21): CombatSimulation, Inputs, IsDisposed, IsInitialized, MaxProjectiles, MaxShips, ProjectileCount, Projectiles (+13 more)
 
-### Community 40 - "GData"
-Cohesion: 0.16
-Nodes (3): 5.2 Pickups, GData, Stage3DTextureAtlas()
+### Community 40 - "BatchSpriteRenderer"
+Cohesion: 0.08
+Nodes (9): PackedTransform, BatchSpriteRenderer, BatchCount, Capacity, DrawCommandCount, InstanceCount, IsInitialized, MountArtEntry (+1 more)
 
 ### Community 41 - "F4DataLinks"
 Cohesion: 0.07
@@ -543,8 +544,8 @@ Cohesion: 0.12
 Nodes (10): Decision, 5.1 Bullets, 5.3 Backgrounds and starfields, 5.4 Effects and particles, 5. Combat art, AIData(), FireTimer(), unFire() (+2 more)
 
 ### Community 51 - "as3/scripts/ui/pages/UIRepair.as"
-Cohesion: 0.19
-Nodes (14): uiName(), act(), acceptYes(), act(), addDt(), afterFadeIn(), afterTalk(), cleanDt() (+6 more)
+Cohesion: 0.21
+Nodes (12): acceptYes(), act(), addDt(), afterFadeIn(), afterTalk(), cleanDt(), flyYes(), overAct() (+4 more)
 
 ### Community 54 - "Research: Modern Resolution and Asset Rescaling Plan"
 Cohesion: 0.17
@@ -571,12 +572,12 @@ Cohesion: 0.17
 Nodes (8): Effects (22), Music (11), Original Sound Bank Inventory, Trigger Mapping, 6.1 Original sound bank, 6.2 Extra sounds hidden in the UI library, 6. Audio, SoundData
 
 ### Community 72 - "ScheduledCombatSimulation"
-Cohesion: 0.07
-Nodes (12): PlayerFlightInput, ScheduledCombatSimulation, IsDisposed, IsInitialized, MaxProjectiles, MaxShips, PlayerIndex, ProjectileCount (+4 more)
+Cohesion: 0.06
+Nodes (8): PlayerFlightController, ControlMode, CurrentAimPoint, CurrentInput, HasMission, PlayerFlightInput, PlayerFlightInputPlayModeTests, Pitfalls
 
 ### Community 74 - "BatchSpriteRenderer"
-Cohesion: 0.06
-Nodes (12): SpriteBatchCulling, SpriteBatchCullingState, PackedTransform, SpriteBatchPlan, SpriteInstance, BatchSpriteRenderer, BatchCount, Capacity (+4 more)
+Cohesion: 0.11
+Nodes (4): SpriteBatchCulling, SpriteBatchCullingState, SpriteBatchPlan, SpriteInstance
 
 ### Community 76 - "Research: iOS Packaging Constraints (IPA, Application Domains & Code Loading)"
 Cohesion: 0.18
@@ -604,7 +605,7 @@ Nodes (5): 6. Captain Ship Tactical AI Modes (E hotkey), Consequences, Context, 
 
 ### Community 97 - "ProjectileContactSolver"
 Cohesion: 0.10
-Nodes (13): ContactStepResult, HullDestroyedResult, HullPartDefinition, ProjectileContactSolver, DestroyedHullCount, DestroyedHulls, HitCount, Hits (+5 more)
+Nodes (16): ICraftDestroyedSink, ContactStepResult, HullDestroyedResult, HullPartDefinition, ProjectileContactSolver, DestroyedHullCount, DestroyedHulls, HitCount (+8 more)
 
 ### Community 100 - "as3/scripts/f4data/F4DataHole.as"
 Cohesion: 0.17
@@ -613,6 +614,10 @@ Nodes (6): 7. Hull Category Wing Capacity & Assembly HUD Counter, Consequences, 
 ### Community 101 - "FontPlayModeTests"
 Cohesion: 0.26
 Nodes (3): FontPlayModeTests, Menu Page References, Original font mapping (ADR 0020)
+
+### Community 105 - "CombatHudPresenter"
+Cohesion: 0.12
+Nodes (3): HudTextFormatter, CombatHudPresenter, PresentationPlayModeTests
 
 ### Community 106 - "4. Ships and parts"
 Cohesion: 0.17
@@ -639,16 +644,16 @@ Cohesion: 0.12
 Nodes (15): 10. `export_all_assets.py`, 11. `package_android_apk.bat`, 12. `validate_vendored_skills.py`, 13. `validate_skill_routing.py`, 1. `recompile.bat`, 2. `export-assets.bat`, 3. `export_audio.py`, 4. `install-hooks.bat` / `install-hooks.sh` (+7 more)
 
 ### Community 158 - "MissionSpriteView"
-Cohesion: 0.07
+Cohesion: 0.06
 Nodes (20): EffectParticle, MissionSpriteView, ActiveParticleCount, BatchCount, Capacity, EffectsEnabled, InstanceCount, IsActive (+12 more)
 
 ### Community 159 - "unityengine"
 Cohesion: 0.11
-Nodes (8): MenuPageFitter, BootSceneUiTests, ScreenCatalogPlayModeTests, ABRevival.Core.Story, ABRevival.Core.Camera, ABRevival.Presentation.Cinematics, ABRevival.Tests.PlayMode, ABRevival.Presentation
+Nodes (3): ABRevival.Presentation.Cinematics, ABRevival.Tests.PlayMode, ABRevival.Presentation
 
 ### Community 160 - "OptionsController"
-Cohesion: 0.05
-Nodes (18): CombatHudBehaviour, CurrentCameraPreset, Panel, Sprites, State, OptionsController, BackgroundEnabled, BloomEnabled (+10 more)
+Cohesion: 0.12
+Nodes (8): OptionsController, BackgroundEnabled, BloomEnabled, CandyEnabled, ControlMode, DisplayMode, MusicEnabled, SoundEnabled
 
 ### Community 161 - "InfoController"
 Cohesion: 0.11
@@ -656,111 +661,123 @@ Nodes (6): InfoController, HelpPageIndex, OwnedPartTypes, ShowingRecords, InfoPl
 
 ### Community 162 - "MainMenuController"
 Cohesion: 0.09
-Nodes (13): MainMenuController, SpriteElement, scaleMode, sprite, tint, StateBinding, UiSpriteSkin, 0025. Section Prefabs and UI Builder Authoring (+5 more)
+Nodes (11): SpriteElement, scaleMode, sprite, tint, StateBinding, UiSpriteSkin, UiArtPlayModeTests, 0025. Section Prefabs and UI Builder Authoring (+3 more)
 
-### Community 164 - "Label"
-Cohesion: 0.17
-Nodes (5): ReadyController, CanLaunch, Loadout, ReadyPlayModeTests, SavePath
+### Community 164 - "IEnumerator"
+Cohesion: 0.08
+Nodes (7): ReadyController, CanLaunch, Loadout, CenterPlayModeTests, SavePath, ReadyPlayModeTests, SavePath
 
 ### Community 165 - "PartMountTable"
-Cohesion: 0.08
-Nodes (15): CraftComposition, CraftPartPlacement, PartMountEntry, PartMountHole, PartMountSymbol, PartMountTable, ArtScale, PartCount (+7 more)
+Cohesion: 0.07
+Nodes (14): CraftComposition, CraftPartPlacement, PartMountEntry, PartMountHole, PartMountSymbol, PartMountTable, ArtScale, PartCount (+6 more)
 
 ### Community 166 - "BulletSpriteTable"
-Cohesion: 0.15
+Cohesion: 0.17
 Nodes (9): BulletArtRecord, BulletCatalog, BulletSprite, BulletSpriteTable, Count, ProjectileVisual, ProjectileVisualTable, Count (+1 more)
 
 ### Community 167 - "Button"
-Cohesion: 0.13
-Nodes (4): ResultsController, Summary, ResultsPlayModeTests, SavePath
+Cohesion: 0.10
+Nodes (15): ResultsController, Summary, MissionSummary, BattleLabel, BodyLabel, CauseLabel, IsFinalBattle, PartsLabel (+7 more)
 
-### Community 168 - "CraftComposition.BuildPlayer"
-Cohesion: 0.16
-Nodes (4): CraftPreviewFit, ScaledSize, CraftPreviewPainter, MountArtLookup
+### Community 168 - "PartDefinitionSO"
+Cohesion: 0.19
+Nodes (5): CraftPreviewFit, ScaledSize, CraftPreviewPainter, MountArtLookup, PartCatalogBootstrap
 
 ### Community 169 - "PartMountExtractor.Extract"
 Cohesion: 0.14
 Nodes (6): SpriteNaming, FirePoint, MarkerData, MarkerHole, PartMountExtractor, Result
 
 ### Community 170 - "ShopState"
-Cohesion: 0.12
-Nodes (12): ShopSaveData, ShopStockSave, ShopResult, Success, ShopState, Catalog, Money, OwnedParts (+4 more)
+Cohesion: 0.15
+Nodes (10): ShopResult, Success, ShopState, Catalog, Money, OwnedParts, PurchaseStack, Stock (+2 more)
+
+### Community 171 - "nunit_framework"
+Cohesion: 0.10
+Nodes (3): ABRevival.Tests, ABRevival.Core.Camera, ABRevival.Core.Simulation
 
 ### Community 172 - "Amf3Reader"
-Cohesion: 0.13
+Cohesion: 0.15
 Nodes (9): ZlibPayload, CraftCatalog, Count, Records, CraftCatalogParser, CraftPartRecord, CraftStatRecord, CraftWeaponMount (+1 more)
+
+### Community 173 - "ShopSaveData"
+Cohesion: 0.13
+Nodes (6): PlayerSaveCodec, ShopSaveData, ShopStockSave, ShopPart, IsBody, ShopSaveTests
 
 ### Community 174 - "HudSpriteLibrary"
 Cohesion: 0.10
 Nodes (20): HudSpriteLibrary, AiCount, BarFrame, CameraBadge, CaptainPortrait, DamageTelemetryRow, EnergyBar, HealthBar (+12 more)
 
 ### Community 175 - "CompanionRoster"
-Cohesion: 0.07
-Nodes (14): CompanionRoster, AssignedCount, InfoRecords, OwnedPartQuantity, MissionBriefing, MissionLoadout, CompanionCount, CompanionCraftIndices (+6 more)
+Cohesion: 0.11
+Nodes (7): InfoRecords, OwnedPartQuantity, MissionBriefing, CompanionSaveData, Empty, InfoRecordsTests, ReadyDomainTests
 
-### Community 176 - "ProjectileVisualPlayModeTests.Families_RenderToTextureAndWriteAReviewCapture"
-Cohesion: 0.15
-Nodes (7): ProjectileGeometry, ProjectilePalette, ProjectileRole, Captain, Hostile, Player, SpriteUserValue
+### Community 176 - "UnityTest"
+Cohesion: 0.11
+Nodes (11): CombatHudBehaviour, CurrentCameraPreset, Panel, Sprites, State, BootSceneUiTests, CombatHudResolutionPlayModeTests, GameFlowPlayModeTests (+3 more)
 
 ### Community 178 - "RepairState"
-Cohesion: 0.13
-Nodes (13): DamagedPart, RepairItem, RepairState, CanAfford, CanApply, HasDamage, Items, Money (+5 more)
+Cohesion: 0.09
+Nodes (14): DamagedPart, RepairItem, RepairPartInfo, RepairState, CanAfford, CanApply, HasDamage, Items (+6 more)
 
 ### Community 179 - "PartCatalogImporter"
 Cohesion: 0.11
-Nodes (14): PartCatalogImporter, ABRevival.Editor, Cinematics, Run it, Scale and import contract, Sprite export pipeline, 1. Problem Statement & Historical Context, 2.1 Two Testing Modalities: EditMode vs PlayMode (+6 more)
-
-### Community 180 - "IMenuAudio"
-Cohesion: 0.13
-Nodes (6): IMenuAudio, Assets, Audio, Fidelity notes, Regenerate, Runtime use
+Nodes (15): PartCatalogImporter, ABRevival.Editor, Cinematics, Inputs and outputs, Run it, Scale and import contract, Sprite export pipeline, 1. Problem Statement & Historical Context (+7 more)
 
 ### Community 181 - "MC2BMPD"
 Cohesion: 0.13
-Nodes (10): 4.1. Replacing Vector `draw()` with Pre-baked Spritesheets, 4.2. Offloading Buffer Upscaling to the Flash Display List Compositor, 4.3. Dirty Rectangles vs Full-Surface Operations, 4. Blitting & Compositing Optimizations, 13.1 What cannot be automated, 1.3 Feasibility Analysis: Can `Targets.bltHit()` Be Offloaded to a Worker?, Code Trace of `Targets.bltHit()`, The Multithreading Obstacle in `bltHit()` (+2 more)
+Nodes (10): 4.1. Replacing Vector `draw()` with Pre-baked Spritesheets, 4.2. Offloading Buffer Upscaling to the Flash Display List Compositor, 4.3. Dirty Rectangles vs Full-Surface Operations, 4. Blitting & Compositing Optimizations, 13.1 What cannot be automated, 4. Practical Modernization Roadmap for A&B Revival, Phase 1: Immediate CPU Pipeline Optimization (Zero Architectural Risk), Phase 2: SWF Header Upgrade & Concurrency Foundation (+2 more)
 
 ### Community 183 - "CraftShowData.Evaluate"
-Cohesion: 0.27
+Cohesion: 0.24
 Nodes (4): CraftPartStat, CraftShowData, CraftShowStats, CenterDomainTests
 
 ### Community 184 - "RepairController"
-Cohesion: 0.12
-Nodes (6): RepairController, FilteredCount, FilteredPageCount, PageIndex, Repair, VisibleRowCount
+Cohesion: 0.06
+Nodes (11): MenuPageFitter, RepairController, FilteredCount, FilteredPageCount, PageIndex, Repair, VisibleRowCount, TalkScreen (+3 more)
 
 ### Community 185 - "TalkScript"
-Cohesion: 0.24
-Nodes (8): TalkLine, TalkScript, Count, FirstIndex, LastIndex, Lines, SpeakerCount, Speakers
+Cohesion: 0.19
+Nodes (10): TalkLine, TalkScript, Count, FirstIndex, LastIndex, Lines, SpeakerCount, Speakers (+2 more)
 
 ### Community 186 - "Game-Dev Skills Inventory: External Repos vs A&B Revival"
 Cohesion: 0.07
-Nodes (29): 10. Sources, 1. Executive summary, 2.1 Verified project-local paths (checked 2026-11-09), 2. Method, sources and verified discovery paths, 3.1 `game-ui-design-workflow` — MIT, 415 stars, last push 2026-08-05, 3.2 `awesome-gamedev-agent-skills` — Apache-2.0, 7,945 stars, last push 2026-10-28, 3.3 `Claude-Code-Game-Studios` — MIT, 37,295 stars, last push 2026-10-19, 3. Repository profiles (+21 more)
+Nodes (28): 10. Sources, 1. Executive summary, 2.1 Verified project-local paths (checked 2026-11-09), 2. Method, sources and verified discovery paths, 3.1 `game-ui-design-workflow` — MIT, 415 stars, last push 2026-08-05, 3.2 `awesome-gamedev-agent-skills` — Apache-2.0, 7,945 stars, last push 2026-10-28, 3.3 `Claude-Code-Game-Studios` — MIT, 37,295 stars, last push 2026-10-19, 3. Repository profiles (+20 more)
 
 ### Community 187 - "AudioCatalogTests"
-Cohesion: 0.13
-Nodes (8): AudioBus, Music, Sfx, Ui, AudioTriggerDefinition, SoundCatalog, SoundDefinition, AudioCatalogTests
+Cohesion: 0.08
+Nodes (20): AudioBus, Music, Sfx, Ui, AudioTriggerDefinition, MusicTrack, M_Creidts, M_Game1 (+12 more)
 
 ### Community 188 - "SpriteUvTableBuilder.Build"
-Cohesion: 0.15
-Nodes (12): SpriteAtlasLayout, SpriteSymbolRect, SpriteSymbolSize, SpriteUvTableBuilder, PartSpriteMapping, UiSpriteCatalog, UiSpriteKind, ExistingPart (+4 more)
+Cohesion: 0.11
+Nodes (17): MissionLoadout, CompanionCount, CompanionCraftIndices, InvalidCompanionCount, PlayerCraftIndex, SpriteAtlasLayout, SpriteSymbolRect, SpriteSymbolSize (+9 more)
 
 ### Community 189 - "TalkView"
-Cohesion: 0.18
+Cohesion: 0.22
 Nodes (5): TalkView, ClickArea, Portrait, SpeakerName, Text
 
 ### Community 191 - "Extraction Manifest and Pipeline Report"
 Cohesion: 0.17
 Nodes (11): Ambiguities, Atlases, Button states, Contact sheets, Counts vs #173, Extraction Manifest and Pipeline Report, Fonts, Full-page reference renders (AGENTS.md) (+3 more)
 
+### Community 192 - "MissionState"
+Cohesion: 0.11
+Nodes (12): MissionEndCause, DelLoseAct, LoseAct, None, PlayerDestroyed, WindirAct, MissionSpawnRecord, MissionState (+4 more)
+
 ### Community 193 - "test_validate_vendored_skills.py"
 Cohesion: 0.29
 Nodes (21): lock_entry(), make_root(), set_lock(), test_correct_skill_passes(), test_duplicate_lock_id_fails(), test_empty_tree_passes(), test_folder_missing_from_lock_fails(), test_invalid_lock_json_fails() (+13 more)
 
 ### Community 194 - "CombatHudSnapshot"
-Cohesion: 0.25
+Cohesion: 0.33
 Nodes (5): CombatHudSnapshot, HasLostParts, TotalLostParts, TacticalModeCodes, Count
 
-### Community 195 - "Multithreading (AVM2 Workers) and GPU Hardware Acceleration (Stage3D) Architecture Research"
-Cohesion: 0.11
-Nodes (17): 1.1 Primary Architecture of AVM2 Concurrency, 1.2 Inter-Process Communication (IPC) Mechanisms, 1. ActionScript 3 Concurrency & Multithreading (AVM2 Workers), 3.1 Standalone Flash Player Projector 32 (`flashplayer_32_sa.exe`), 3.2 HARMAN Adobe AIR Desktop SDK (v33.x / v51.x+), 3. Evaluation of Target Environments, 4. Practical Modernization Roadmap for A&B Revival, 5. Primary Source References (+9 more)
+### Community 195 - "1.2 Inter-Process Communication (IPC) Mechanisms"
+Cohesion: 0.20
+Nodes (10): 1.1 Primary Architecture of AVM2 Concurrency, 1.2 Inter-Process Communication (IPC) Mechanisms, 1.3 Feasibility Analysis: Can `Targets.bltHit()` Be Offloaded to a Worker?, 1. ActionScript 3 Concurrency & Multithreading (AVM2 Workers), Code Trace of `Targets.bltHit()`, Mechanism A: `MessageChannel` (AMF3 Serialization), Mechanism B: `ByteArray.shareable = true` (Zero-Copy Shared Memory), Mechanism C: Synchronization Primitives (`Mutex` and `Condition`) (+2 more)
+
+### Community 196 - "Test"
+Cohesion: 0.10
+Nodes (7): CenterLayoutTests, CombatHudLayoutTests, FactoryLayoutTests, MainMenuLayoutTests, ReadyLayoutTests, ManifestRow, UiSpriteManifestTests
 
 ### Community 197 - "0022. Procedural Projectile Visuals and the Faction Palette"
 Cohesion: 0.22
@@ -779,8 +796,8 @@ Cohesion: 0.33
 Nodes (5): PartCategory, Body, Engine, Gun, Wing
 
 ### Community 202 - "StoryTalkCue"
-Cohesion: 0.38
-Nodes (5): StoryTalkCue, After, Before, StoryTalkCues, StoryTalkRange
+Cohesion: 0.28
+Nodes (6): StoryTalkCue, After, Before, StoryTalkCues, StoryTalkRange, ABRevival.Core.Story
 
 ### Community 204 - "ShopLayoutTests"
 Cohesion: 0.22
@@ -798,6 +815,14 @@ Nodes (6): 3.1 Pages and full-screen symbols (21), 3.2 Help pages (11 symbols + 
 Cohesion: 0.20
 Nodes (12): make_root(), test_agent_listed_once_when_both_harnesses_have_it(), test_current_shape_passes(), test_missing_agents_md_fails(), test_stale_routing_token_fails(), test_unrouted_agent_fails(), test_unrouted_skill_fails(), write() (+4 more)
 
+### Community 208 - "Domain Entity Mapping (AS3 -> Unity C# DoD)"
+Cohesion: 0.12
+Nodes (8): 0014. Unity 6.6 (6000.6.8f1) Migration: DOTS Job System, PhysicsCore2D, Burst, and BatchRendererGroup, Consequences, Context & Problem Statement, Decision, Domain Entity Mapping (AS3 -> Unity C# DoD), FlyBase, FlyPart, FlyData
+
+### Community 209 - "TacticalAIJob"
+Cohesion: 0.29
+Nodes (3): TacticalAIJob, Upstream, Why this copy exists
+
 ### Community 210 - "Game UI Component Breakdown"
 Cohesion: 0.11
 Nodes (17): Component Semantic Naming Conventions, Format, Rules, Acceptance, Background, Breakdown steps, Buttons and containers, Categories (+9 more)
@@ -806,9 +831,9 @@ Nodes (17): Component Semantic Naming Conventions, Format, Rules, Acceptance, Ba
 Cohesion: 0.11
 Nodes (18): 10. Validate, 1. Product Design (first generation step), 2. Specify, 3. Research, 4. Specification, 5. Extension, 6. Page generation, 7. Component breakdown (+10 more)
 
-### Community 212 - "UI Sprite Manifest"
-Cohesion: 0.25
-Nodes (4): Coverage notes, Regenerate, Symbols, UI Sprite Manifest
+### Community 212 - "Research: 2D Unity Runtime E2E Testing Frameworks & Headless Automation"
+Cohesion: 0.15
+Nodes (12): 2. Scope, Baseline & Method, 3.1 AltTester (formerly AltUnity Tester), 3.2 Unity Automated QA (`com.unity.automated-testing`), 3.3 Poco / Airtest Project (NetEase), 3.4 Unity Input System `InputTestFixture`, 3.5 Headless Unity UTF PlayMode with State Assertions, 3. Candidate Technical Survey, 4. Comparative Matrix (+4 more)
 
 ### Community 213 - "CinematicPlayer"
 Cohesion: 0.20
@@ -818,9 +843,13 @@ Nodes (5): CinematicPlayer, CurrentClip, IsPrepared, IsRunning, CinematicPlayerT
 Cohesion: 0.50
 Nodes (3): ICombatFireInput, Autofire, FireHeld
 
-### Community 219 - "ScreenCatalog"
-Cohesion: 0.14
-Nodes (12): ScreenCatalog, Sections, ScreenHost, Catalog, Read first, Rules, Unity UI specialist (A&B Revival), Verify (+4 more)
+### Community 215 - "Game AI: decisions, target selection and steering"
+Cohesion: 0.18
+Nodes (10): 1. Mode FSM as an enum switch (one mode, explicit transitions), 2. Target selection: nearest, squared, deterministic, 4. Utility scoring when modes compete, Core workflow, Game AI: decisions, target selection and steering, Patterns, Pitfalls, References (+2 more)
+
+### Community 219 - "MonoBehaviour"
+Cohesion: 0.07
+Nodes (26): ScreenCatalog, Sections, ScreenHost, Catalog, Read first, Rules, Unity UI specialist (A&B Revival), Verify (+18 more)
 
 ### Community 220 - "Game UI Specification"
 Cohesion: 0.12
@@ -835,8 +864,8 @@ Cohesion: 0.13
 Nodes (14): 1. Project directory, 2. `gdd.md` (game design document), 3. `prd.md` (product requirements), 4. `interaction.md` (UI interaction logic), 5. Cross-check, 6. Human gate (must stop), Approval actions, Definition of done (+6 more)
 
 ### Community 223 - "Unity Input System (new)"
-Cohesion: 0.15
-Nodes (11): 1. `PlayerInput` with "Send Messages" (handlers on the same GameObject), 2. Reading an action directly in code (polling a value), 3. Project-wide actions (no asset reference), 4. Event callbacks + switching action maps (gameplay ↔ UI), Core workflow, Patterns, Pitfalls, References (+3 more)
+Cohesion: 0.18
+Nodes (10): 1. `PlayerInput` with "Send Messages" (handlers on the same GameObject), 2. Reading an action directly in code (polling a value), 3. Project-wide actions (no asset reference), 4. Event callbacks + switching action maps (gameplay ↔ UI), Core workflow, Patterns, References, Related skills (+2 more)
 
 ### Community 224 - "Performance optimization"
 Cohesion: 0.14
@@ -851,8 +880,8 @@ Cohesion: 0.15
 Nodes (12): 1. Anchors + containers, not absolute coordinates, 2. Scale to a reference resolution (one UI, many screens), 3. Safe-area inset for notches / overscan, 4. Gamepad/keyboard focus (UI is unusable on a controller without it), 5. Event-driven HUD (decouple UI from game logic), Core workflow, Game UI/UX, Patterns (+4 more)
 
 ### Community 227 - "Patterns"
-Cohesion: 0.15
-Nodes (12): 1. Fixed-step accumulator, scripted world for tests, 2. Sweep instead of discrete contacts, 3. Speed cap, 4. Contact filters and factions, 5. Body and shape tuning, 6. Sleeping and teleports, Patterns, Physics tuning (PhysicsCore2D) (+4 more)
+Cohesion: 0.12
+Nodes (13): 1. Fixed-step accumulator, scripted world for tests, 2. Sweep instead of discrete contacts, 3. Speed cap, 4. Contact filters and factions, 5. Body and shape tuning, 6. Sleeping and teleports, Core workflow, Patterns (+5 more)
 
 ### Community 228 - "Unity build pipeline"
 Cohesion: 0.15
@@ -869,10 +898,6 @@ Nodes (8): clear_log(), compute_statistics(), extract_sessions_from_file(), main
 ### Community 231 - "validate_vendored_skills.py"
 Cohesion: 0.30
 Nodes (7): has_placeholder(), load_lock(), read_frontmatter(), read_upstream(), safe_read(), validate_lock(), validate_skill()
-
-### Community 233 - "TalkScriptParser"
-Cohesion: 0.22
-Nodes (5): TalkScriptParser, Text, Portrait extraction, Runtime data, Talk Dialogue and Portraits
 
 ### Community 234 - "Unity ScriptableObject Architecture"
 Cohesion: 0.18
@@ -899,8 +924,8 @@ Cohesion: 0.22
 Nodes (8): 1. CPU-vs-GPU triage (decide before you fix), 2. Per-engine profiler quick start, 3. Pooling manager (generic), 4. Batching & instancing rules, 5. Allocation / GC guidance, 6. Do-less techniques (algorithmic wins), 7. Asset budgets (prevent regressions at the source), Profiling & budgets — depth for `performance-optimization`
 
 ### Community 241 - "0024. Main-Menu Foreground Composition"
-Cohesion: 0.22
-Nodes (9): 0024. Main-Menu Foreground Composition, Consequences, Context, Decision, Enforcement, Implementation note (#206), Implementation note (#207), Implementation note (#210) (+1 more)
+Cohesion: 0.12
+Nodes (13): 0024. Main-Menu Foreground Composition, Consequences, Context, Decision, Enforcement, Implementation note (#206), Implementation note (#207), Implementation note (#210) (+5 more)
 
 ### Community 242 - "Vendored skills policy"
 Cohesion: 0.22
@@ -918,10 +943,6 @@ Nodes (7): Backgrounds and parallax, Import checkpoints, Primary documentation, 
 Cohesion: 0.25
 Nodes (7): Atlas, Definition of done, Engine JSON, Game UI Atlas and Engine Handoff, Manual acceptance, Preconditions, Slicing modes
 
-### Community 246 - "Main-Menu Layers (`UI_Main`)"
-Cohesion: 0.25
-Nodes (8): Background: no new file, Import contract, Layers, Main-Menu Layers (`UI_Main`), Revert point, Ship, Source, Title components (#210)
-
 ### Community 248 - "Accessibility specialist (A&B Revival)"
 Cohesion: 0.29
 Nodes (6): Accessibility specialist (A&B Revival), Findings format, Project-specific checks, Read first, Standards, Workflow
@@ -935,7 +956,7 @@ Cohesion: 0.29
 Nodes (6): 3D concept-to-runtime pipeline, Default pipeline, Generated 3D caution, Geometry gates, Material and texture gates, Primary documentation
 
 ### Community 251 - "Glossary: A&B Revival (Assembly & Battle Space)"
-Cohesion: 0.29
+Cohesion: 0.33
 Nodes (3): Glossary: A&B Revival (Assembly & Battle Space), Tooling & IP Vocabulary, Unity Presentation Structure (ADR 0025)
 
 ### Community 252 - "Accessibility specialist (A&B Revival)"
@@ -974,29 +995,45 @@ Nodes (4): Asset rights and provenance, Decision rules, Record per shipped asset
 Cohesion: 0.40
 Nodes (4): Adding a skill, Layout, Precedence, Project-local skills
 
-### Community 262 - "Read first"
-Cohesion: 0.40
-Nodes (4): Read first, Rules, Unity UI specialist (A&B Revival), Verify
+### Community 262 - "ShipInput"
+Cohesion: 0.44
+Nodes (3): ShipInput, ShipMovementTests, 3. Seek and arrive as `ShipInput` (throttle and turn, not force)
 
 ### Community 263 - "PlayerControlMode"
 Cohesion: 0.50
 Nodes (3): PlayerControlMode, Keyboard, Mouse
+
+### Community 264 - "WeaponReport"
+Cohesion: 0.29
+Nodes (6): WeaponReport, Autocannon, Heavy, Light, Medium, Rocket
+
+### Community 291 - "MouseCombatFireInput"
+Cohesion: 0.40
+Nodes (3): MouseCombatFireInput, Autofire, FireHeld
+
+### Community 292 - "0019. Combat Framing and In-Game Mount Art Density"
+Cohesion: 0.40
+Nodes (4): 0019. Combat Framing and In-Game Mount Art Density, Consequences, Context, Rejected Options
 
 ### Community 315 - "3. Hybrid Shop Stock Model, Purchase Stacking, and Retroactive Inventory Reconciliation"
 Cohesion: 0.33
 Nodes (5): 3. Hybrid Shop Stock Model, Purchase Stacking, and Retroactive Inventory Reconciliation, Consequences, Context, Decision, Status
 
 ### Community 316 - "WeaponSystemPlayModeTests.HullDestruction_ReachesMissionResult_ExactlyOnce"
-Cohesion: 0.07
-Nodes (20): MouseCombatFireInput, Autofire, FireHeld, ICraftDestroyedSink, ProjectileDamageHandoff, PlayerHull, CraftWeapons, WeaponMount (+12 more)
+Cohesion: 0.06
+Nodes (24): ScheduledCombatSimulation, IsDisposed, IsInitialized, MaxProjectiles, MaxShips, PlayerIndex, ProjectileCount, Projectiles (+16 more)
 
 ### Community 319 - "UIMakePlayer"
 Cohesion: 0.08
-Nodes (27): 9. Monolith Decomposition and Domain Seams under Flash/AS3 Constraints, Consequences, Context, Decision, Status, 0013. Unified 60 FPS Baseline, Native 1920×1080 Widescreen, and Stage3D GPU Architecture, Consequences, Context & Problem Statement (+19 more)
+Nodes (29): 9. Monolith Decomposition and Domain Seams under Flash/AS3 Constraints, Consequences, Context, Decision, Status, 0013. Unified 60 FPS Baseline, Native 1920×1080 Widescreen, and Stage3D GPU Architecture, Consequences, Context & Problem Statement (+21 more)
 
 ### Community 320 - "8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (8): 8. 60 FPS Frame Rate, Dynamic Resolution Scaling, and Leak-Fix Seam, Consequences, Context, Status, 10. Fixed-Timestep Simulation Loop, Runtime Performance Gate & Hallmark Resolution Selector, Consequences, Context, Status
+
+### Community 321 - "CombatInput"
+Cohesion: 0.14
+Nodes (3): 1. Executive Summary, CombatInput, OpOneCore
 
 ### Community 322 - "export_all_assets.py"
 Cohesion: 0.07
@@ -1007,16 +1044,16 @@ Cohesion: 0.22
 Nodes (7): class_synopsis(), find_as_files(), main(), print_help(), search_callers(), search_symbol(), test_core_null_safety()
 
 ### Community 326 - "MissionRunner"
-Cohesion: 0.07
-Nodes (16): MissionHookRecord, MissionPlaceRecord, MissionRunner, CurrentTick, Hooks, Level, PlaceTransitions, PlayerShipIndex (+8 more)
+Cohesion: 0.08
+Nodes (14): MissionHookRecord, MissionPlaceRecord, MissionRunner, CurrentTick, Hooks, Level, PlaceTransitions, PlayerShipIndex (+6 more)
 
 ### Community 327 - "BMPD2D"
-Cohesion: 0.33
-Nodes (3): 6. Modern Platform Pathways (Desktop AIR & Flash Player 32), Recommended Implementation Roadmap (Pathway A + C), BMPD2D
+Cohesion: 0.29
+Nodes (4): 6. Modern Platform Pathways (Desktop AIR & Flash Player 32), Recommended Implementation Roadmap (Pathway A + C), BMPD2D, loop()
 
 ### Community 338 - "as3/scripts/ui/pages/UIGame.as"
 Cohesion: 0.10
-Nodes (16): addBtnL(), afterFadeIn(), createTouchButton(), drawOneStart(), initTouchCombatControls(), missionLoop(), recordLostPart(), removeBtnL() (+8 more)
+Nodes (17): act(), addBtnL(), afterFadeIn(), createTouchButton(), drawOneStart(), initTouchCombatControls(), missionLoop(), recordLostPart() (+9 more)
 
 ### Community 340 - "4. Combat Damage Telemetry, Ally Health Alerts, Critical Distressing, and Autofire System"
 Cohesion: 0.33
@@ -1035,15 +1072,15 @@ Cohesion: 0.29
 Nodes (8): Architectural Overview, Candidate 3: In-Engine Headless Test Harness (Internal AS3 Driver), Feasibility Matrix, Primary Source Findings & Capabilities, countPartsByType(), onClearEnginesClick(), onClearWeaponsClick(), onClearWingsClick()
 
 ### Community 346 - "GameFlowController"
-Cohesion: 0.03
-Nodes (25): GameFlowController, ActiveLoadout, ContactSolver, CurrentRepair, DamagedParts, Flight, LastResult, LastSummary (+17 more)
+Cohesion: 0.04
+Nodes (20): GameFlowController, ActiveLoadout, ContactSolver, CurrentRepair, DamagedParts, Flight, LastResult, LastSummary (+12 more)
 
-### Community 347 - "float2"
-Cohesion: 0.05
-Nodes (26): BallisticHit, Ballistics, ProjectileData, ProjectileMoveJob, ShipMovementJob, TacticalAIJob, BallisticsTests, ProjectileTests (+18 more)
+### Community 347 - "ShipMovementJob"
+Cohesion: 0.14
+Nodes (12): ProjectileMoveJob, ShipMovementJob, Read first, Rules, Unity DOTS/Jobs specialist (A&B Revival), Verify, 1. Executive Summary, 5. Compatibility matrix: candidates vs this project's actual needs (+4 more)
 
 ### Community 348 - "FireModeSpec"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (10): IProjectileSpawner, MaxProjectiles, ProjectileCount, FireControlState, FireModeSpec, CycleTicks, EffectiveRange, ShotsPerVolley (+2 more)
 
 ### Community 349 - "com.unity.modules.physics@1.0.0"
@@ -1051,27 +1088,23 @@ Cohesion: 0.06
 Nodes (36): dependencies, depth, source, version, dependencies, depth, source, version (+28 more)
 
 ### Community 350 - "render"
-Cohesion: 0.16
-Nodes (16): Decision, 0011. Adobe AIR Mobile Target, True 60 FPS Rescaling, and Stage3D GPU Architecture, Consequences, Considered Options, Context & Problem Statement, Decision Drivers, Negative / Trade-Offs, Positive (+8 more)
+Cohesion: 0.18
+Nodes (15): 0011. Adobe AIR Mobile Target, True 60 FPS Rescaling, and Stage3D GPU Architecture, Consequences, Considered Options, Context & Problem Statement, Decision Drivers, Negative / Trade-Offs, Positive, camCtrl() (+7 more)
 
-### Community 351 - "MissionSummary"
-Cohesion: 0.07
-Nodes (26): MissionEndCause, DelLoseAct, LoseAct, None, PlayerDestroyed, WindirAct, MissionResult, MissionState (+18 more)
-
-### Community 352 - "MusicTrack"
-Cohesion: 0.11
-Nodes (13): MusicTrack, M_Creidts, M_Game1, M_Game2, M_Game3, M_Game4, M_Game5, M_Game6 (+5 more)
+### Community 351 - "PlayerSaveData"
+Cohesion: 0.23
+Nodes (4): PlayerSaveData, StoryDirector, StoryIndex, StoryDirectorTests
 
 ### Community 353 - "IAudioService"
-Cohesion: 0.12
-Nodes (3): IAudioService, MusicEnabled, SfxEnabled
+Cohesion: 0.15
+Nodes (8): IAudioService, MusicEnabled, SfxEnabled, Assets, Audio, Fidelity notes, Regenerate, Runtime use
 
 ### Community 354 - "as3/scripts/Fly4UI.as"
 Cohesion: 0.17
 Nodes (13): Feasibility Matrix, allLoaded(), dataCop(), defCop(), DevMetricsOverlay, lvCop(), soundCop(), soundLoad() (+5 more)
 
 ### Community 355 - "List"
-Cohesion: 0.18
+Cohesion: 0.16
 Nodes (3): BlueprintSaveData, BlueprintSaveMapper, MountedPartSaveData
 
 ### Community 356 - "LevelEvent"
@@ -1079,16 +1112,16 @@ Cohesion: 0.11
 Nodes (21): LevelAct, LevelDeathTrigger, LevelEvent, LevelFinishKind, None, Win, Win1, LevelFrameAct (+13 more)
 
 ### Community 358 - "5. Configurable Combat Camera Distance and Dynamic FOV Scaling"
-Cohesion: 0.40
-Nodes (4): 5. Configurable Combat Camera Distance and Dynamic FOV Scaling, Consequences, Context, Status
+Cohesion: 0.33
+Nodes (5): 5. Configurable Combat Camera Distance and Dynamic FOV Scaling, Consequences, Context, Decision, Status
 
 ### Community 359 - "ITalkAudio"
-Cohesion: 0.31
-Nodes (4): ITalkAudio, NoOpTalkAudio, CountingTalkAudio, Remaining integration
+Cohesion: 0.19
+Nodes (7): ITalkAudio, NoOpTalkAudio, CountingTalkAudio, Portrait extraction, Remaining integration, Runtime data, Talk Dialogue and Portraits
 
-### Community 360 - "MissionScreenshotPlayModeTests.CaptainComposition_RendersExtractedMountArtAndSavesArtifact"
+### Community 360 - "SpriteUvTable"
 Cohesion: 0.07
-Nodes (17): SpriteUvRect, IsValid, UvHeight, UvWidth, UvX, UvY, SpriteUvTable, AtlasHeight (+9 more)
+Nodes (22): ProjectileGeometry, ProjectilePalette, ProjectileRole, Captain, Hostile, Player, SpriteUserValue, SpriteUvRect (+14 more)
 
 ### Community 361 - "CraftAssembly"
 Cohesion: 0.11
@@ -1123,16 +1156,16 @@ Cohesion: 0.08
 Nodes (25): dependencies, depth, source, url, version, dependencies, depth, source (+17 more)
 
 ### Community 369 - "PartCatalogParser"
-Cohesion: 0.16
+Cohesion: 0.15
 Nodes (7): BulletDef, BulletPower, FireDef, FirePowerRate, PartCatalogParser, PartDefinitionRecord, PartCatalogImporterTests
 
 ### Community 370 - "com.unity.render-pipelines.core"
 Cohesion: 0.09
 Nodes (24): dependencies, depth, source, url, version, dependencies, depth, source (+16 more)
 
-### Community 371 - "Test"
-Cohesion: 0.10
-Nodes (18): FlightControlMath, ShipEntity, BoosterFraction, ShipInput, CombatControlTests, ShipMovementTests, TacticalAITests, 1. Mode FSM as an enum switch (one mode, explicit transitions) (+10 more)
+### Community 371 - "ShipEntity"
+Cohesion: 0.23
+Nodes (3): ShipEntity, BoosterFraction, TacticalAITests
 
 ### Community 372 - "CraftBlueprintSO"
 Cohesion: 0.15
@@ -1190,9 +1223,9 @@ Nodes (31): AudioTrigger, AssemblyActionRejected, AssemblyCraftCleared, Assembly
 Cohesion: 0.08
 Nodes (23): SoundEffect, S_Bomb, S_Cant, S_Check, S_Click, S_Eng, S_Fire100, S_FireGT (+15 more)
 
-### Community 388 - "Research: 2D Unity Runtime E2E Testing Frameworks & Headless Automation"
-Cohesion: 0.07
-Nodes (26): CaptainTacticalMode, Anchor, Escort, Evade, FireSupport, SeekAndDestroy, Shield, 1. Executive Summary (+18 more)
+### Community 388 - "CaptainTacticalMode"
+Cohesion: 0.14
+Nodes (13): CaptainTacticalMode, Anchor, Escort, Evade, FireSupport, SeekAndDestroy, Shield, 5.1 Decision (+5 more)
 
 ### Community 389 - "15. Sunsetting Flash AS3 Target in Favor of Unity 6.6 DOTS Runtime"
 Cohesion: 0.25
@@ -1215,8 +1248,8 @@ Cohesion: 0.08
 Nodes (26): LevelActKind, Add, AimPlayer, AimUnit, Camera, CleanEnemies, DelLose, Fire (+18 more)
 
 ### Community 395 - "AudioService"
-Cohesion: 0.12
-Nodes (8): AudioService, Instance, MusicEnabled, MusicOutputGroup, SfxEnabled, SfxOutputGroup, UiOutputGroup, AudioServicePlayModeTests
+Cohesion: 0.08
+Nodes (8): AudioService, Instance, MusicEnabled, MusicOutputGroup, SfxEnabled, SfxOutputGroup, UiOutputGroup, IMissionAudio
 
 ### Community 444 - "sys"
 Cohesion: 0.06
@@ -1227,19 +1260,19 @@ Cohesion: 0.14
 Nodes (8): ProjectConfigurationTests, 0017. Pixel-Based World Units, 60 Hz Timestep, and PhysicsCore2D Settings, Consequences, Context, Decision, Negative / Trade-offs, Positive, Rejected Options
 
 ### Community 453 - "AudioService.PlayTrigger"
-Cohesion: 0.07
-Nodes (8): IAssemblyAudio, ICombatAudio, WeaponReport, Autocannon, Heavy, Light, Medium, Rocket
+Cohesion: 0.08
+Nodes (7): IAssemblyAudio, ICombatAudio, PickupKind, Fuel, Health, Money, Part
 
 ### Community 455 - "CameraDistancePreset"
-Cohesion: 0.22
-Nodes (6): CameraDistancePreset, Far, Medium, Short, CameraDistancePresets, ViewportPoint
+Cohesion: 0.17
+Nodes (8): CameraDistancePreset, Far, Medium, Short, CameraDistancePresets, ViewportPoint, Upstream, Why this copy exists
 
 ### Community 456 - "TalkPlaybackTests.StoryZeroTalkBefore_PlaysToCompletion_WithTextPortraitAndClickPerLine"
 Cohesion: 0.35
 Nodes (3): TalkPortraitCatalog, Count, TalkPlaybackTests
 
 ### Community 457 - "FullAssetExtractionImporter"
-Cohesion: 0.12
+Cohesion: 0.13
 Nodes (7): ExtractionAtlas, ExtractionAudio, ExtractionFont, ExtractionManifest, ExtractionSprite, ExtractionUnityImport, FullAssetExtractionImporter
 
 ### Community 460 - "List"
@@ -1255,16 +1288,12 @@ Cohesion: 0.22
 Nodes (11): expected_names(), main(), normalized_clips(), repo_root(), run_ffdec(), verify(), write_inventory(), extract() (+3 more)
 
 ### Community 465 - "CombatHudState"
-Cohesion: 0.08
-Nodes (24): CombatHudState, AiCount, CameraBadgeAlpha, CameraBadgeVisible, CameraPreset, CaptainHealthFraction, CaptainMode, CaptainPresent (+16 more)
+Cohesion: 0.07
+Nodes (25): CombatHudState, AiCount, CameraBadgeAlpha, CameraBadgeVisible, CameraPreset, CaptainHealthFraction, CaptainMode, CaptainPresent (+17 more)
 
 ### Community 469 - "CombatCameraRig"
-Cohesion: 0.07
-Nodes (33): CombatCameraRig, Preset, ViewportHeight, ViewportWidth, ViewScale, WorldViewportHeight, WorldViewportWidth, 1. Why `1 - exp(-rate * dt)` (frame-rate-independent smoothing) (+25 more)
-
-### Community 472 - "PartSpriteMap.Build"
-Cohesion: 0.29
-Nodes (3): PartSpriteMap, Inputs and outputs, SpriteNamingTests
+Cohesion: 0.06
+Nodes (31): CombatCameraRig, Preset, ViewportHeight, ViewportWidth, ViewScale, WorldViewportHeight, WorldViewportWidth, 1. Why `1 - exp(-rate * dt)` (frame-rate-independent smoothing) (+23 more)
 
 ### Community 475 - "MenuItem"
 Cohesion: 0.17
@@ -1272,15 +1301,15 @@ Nodes (3): AudioAssetFactory, HudSpriteLibraryBuilder, PhysicsSettingsConfigurat
 
 ### Community 476 - "AssemblyPresenter"
 Cohesion: 0.06
-Nodes (11): PartDefinitionSO, AssemblyPresenter, PageCount, PageIndex, PreviewBoundsSize, PreviewFillFraction, PreviewUsesMountArt, PreviewZoom (+3 more)
+Nodes (10): PartDefinitionSO, AssemblyPresenter, PageCount, PageIndex, PreviewBoundsSize, PreviewFillFraction, PreviewUsesMountArt, PreviewZoom (+2 more)
 
 ### Community 477 - "CinematicExporter"
 Cohesion: 0.13
 Nodes (11): CinematicExporter, ClipSymbol, 13. Recommended one-command extraction pipeline, Step 1 — unpack the loader, Step 2 — make a marker-free render SWF per library, Step 3 — symbol table, Step 4 — render, Step 5 — data assets (+3 more)
 
-### Community 478 - "IEnumerator"
-Cohesion: 0.06
-Nodes (18): CombatHudResolutionPlayModeTests, GameFlowPlayModeTests, SavePath, HudCaptureTests, MainMenuPlayModeTests, SavePath, PlayModeBoot, UiArtPlayModeTests (+10 more)
+### Community 478 - "MainMenuController"
+Cohesion: 0.09
+Nodes (14): MainMenuController, MainMenuPlayModeTests, SavePath, PlayModeBoot, Deterministic 60 Hz time, PlayMode patterns, Rules, Scene loading (+6 more)
 
 ### Community 479 - "Audio Remastering for a Solo Developer"
 Cohesion: 0.15
@@ -1292,27 +1321,27 @@ Nodes (11): 1. Documented scale guidance and precision at large coordinates, 2. 
 
 ### Community 483 - "VisualElement"
 Cohesion: 0.05
-Nodes (17): PartCatalogBootstrap, ShopController, Money, Presenter, Shop, ShopPresenter, BuyFilter, BuyPageCount (+9 more)
+Nodes (16): ShopController, Money, Presenter, Shop, ShopPresenter, BuyFilter, BuyPageCount, BuyPageIndex (+8 more)
 
 ### Community 484 - "PurchaseStack"
-Cohesion: 0.18
-Nodes (8): PurchaseStack, IsEmpty, Lines, PurchaseStackLine, ShopCatalog, Parts, ShopPart, IsBody
+Cohesion: 0.20
+Nodes (6): PurchaseStack, IsEmpty, Lines, PurchaseStackLine, ShopCatalog, Parts
 
 ### Community 485 - "Research: Mobile Feasibility of the Two Original Play Modes"
-Cohesion: 0.17
-Nodes (11): 1. Executive Summary, 2.1 Mode 0: Pointer-Directed Flight (`playerCtrlMode == 0`), 2.2 Mode 1: Keyboard Direct-Thrust / Dogfight Mode (`playerCtrlMode == 1`), 2. Deep-Dive Architectural Assessment, 3. UI & Screen Layout Impact, 4. Final Recommendation, Implementation Mechanics (`OpOneCore.as` lines 152–188), Implementation Mechanics (`OpOneCore.as` lines 189–245) (+3 more)
+Cohesion: 0.18
+Nodes (10): 2.1 Mode 0: Pointer-Directed Flight (`playerCtrlMode == 0`), 2.2 Mode 1: Keyboard Direct-Thrust / Dogfight Mode (`playerCtrlMode == 1`), 2. Deep-Dive Architectural Assessment, 3. UI & Screen Layout Impact, 4. Final Recommendation, Implementation Mechanics (`OpOneCore.as` lines 152–188), Implementation Mechanics (`OpOneCore.as` lines 189–245), Mobile Touch Adaptation (+2 more)
 
 ### Community 486 - "MoveAs"
-Cohesion: 0.11
-Nodes (12): 1. Executive Summary, 2. Benchmark Methodology & Test Harness, 3.1 Runtime Telemetry Summary, 3.2 Analysis of Results, 3. Empirical Benchmark Results, 4. Adobe AIR Packaging & Descriptor Validation, 5. Domain Integrity & Code Quality Gates, 6. Conclusion & Next Steps (+4 more)
+Cohesion: 0.06
+Nodes (15): 5.2 Pickups, 1. Executive Summary, 2. Benchmark Methodology & Test Harness, 3.1 Runtime Telemetry Summary, 3.2 Analysis of Results, 3. Empirical Benchmark Results, 4. Adobe AIR Packaging & Descriptor Validation, 5. Domain Integrity & Code Quality Gates (+7 more)
 
 ### Community 488 - "ShopError"
 Cohesion: 0.25
 Nodes (8): ShopError, EmptyPurchase, InsufficientFunds, InvalidQuantity, None, NotOwned, OutOfStock, UnknownPart
 
 ### Community 489 - "BattleDamageCategory"
-Cohesion: 0.18
-Nodes (6): BattleDamageCategory, Engine, Gun, Module, Wing, ABRevival.Core.Hud
+Cohesion: 0.15
+Nodes (8): BattleDamageCategory, Engine, Gun, Module, Wing, ProjectileDamageHandoff, PlayerHull, ABRevival.Core.Hud
 
 ### Community 490 - "GameFlowState"
 Cohesion: 0.08
@@ -1321,10 +1350,6 @@ Nodes (25): GameFlowState, Boot, Briefing, Center, Factory, Fail, Info, MainMenu
 ### Community 491 - "18. Cinematics as Lossy H.264 Video Instead of Vector Animation"
 Cohesion: 0.29
 Nodes (6): 18. Cinematics as Lossy H.264 Video Instead of Vector Animation, Consequences, Context & Problem Statement, Decision, Negative / Trade-offs, Positive
-
-### Community 493 - "PickupKind"
-Cohesion: 0.33
-Nodes (5): PickupKind, Fuel, Health, Money, Part
 
 ### Community 494 - "16. Two-Tier Automated Testing Gate for Unity 6.6 (Fast CLI .NET + Headless Unity UTF)"
 Cohesion: 0.33
@@ -1335,24 +1360,24 @@ Cohesion: 0.40
 Nodes (4): 2. Allied Flagship (Captain's Ship) Lifecycle and Deployment Boundary, Consequences, Context, Status
 
 ## Knowledge Gaps
-- **511 isolated node(s):** `PlayerCraftIndex`, `CompanionCraftIndices`, `CompanionCount`, `InvalidCompanionCount`, `Money` (+506 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2330 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **211 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **511 isolated node(s):** `Audio`, `Presenter`, `IsComplete`, `CanLaunch`, `Companions` (+506 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2336 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **204 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Unity 6000.6 Data-Oriented Architecture & Entity Mappings` connect `float2` to `ProjectileContactSolver`, `PartMountTable`, `TalkPlaybackTests.StoryZeroTalkBefore_PlaysToCompletion_WithTextPortraitAndClickPerLine`, `CraftAssembly`, `TalkScriptParser`, `AudioService`, `AudioCatalogTests`, `ProjectileVisualPlayModeTests.Families_RenderToTextureAndWriteAReviewCapture`, `Test`, `CraftBlueprintSO`, `MenuItem`, `TalkScript`, `Glossary: A&B Revival (Assembly & Battle Space)`, `AssemblyPresenter`, `UIMakePlayer`?**
-  _High betweenness centrality (0.126) - this node is a cross-community bridge._
+- **Why does `Unity 6000.6 Data-Oriented Architecture & Entity Mappings` connect `PartMountTable` to `ProjectileContactSolver`, `SpriteUvTable`, `CraftAssembly`, `TalkPlaybackTests.StoryZeroTalkBefore_PlaysToCompletion_WithTextPortraitAndClickPerLine`, `AudioService`, `AudioCatalogTests`, `Domain Entity Mapping (AS3 -> Unity C# DoD)`, `TacticalAIJob`, `ShipMovementJob`, `ShipEntity`, `CraftBlueprintSO`, `MenuItem`, `Ballistics.EffectiveRange`, `TalkScript`, `Glossary: A&B Revival (Assembly & Battle Space)`, `AssemblyPresenter`, `UIMakePlayer`?**
+  _High betweenness centrality (0.121) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `GameFlowController` (e.g. with `2. Load project context` and `Screens and section prefabs (ADR 0025)`) actually correct?**
   _`GameFlowController` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `PlayerCraftIndex`, `CompanionCraftIndices`, `CompanionCount` to the rest of the system?**
+- **What connects `Audio`, `Presenter`, `IsComplete` to the rest of the system?**
   _511 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `as3/scripts/ui/pages/UIMakePlayer.as` be split into smaller, more focused modules?**
-  _Cohesion score 0.06351236146632566 - nodes in this community are weakly interconnected._
-- **Why does `UIMakePlayer()` connect `UIMakePlayer` to `Core Entities`, `as3/scripts/ui/pages/UIMakePlayer.as`, `as3/scripts/Fly4UI.as`, `UIChooseFlyAI.as`, `12. Weapon Firing Range Telemetry Across Inventory & Inspection Views`, `Research: Modern Resolution and Asset Rescaling Plan`, `Feasibility Matrix`, `float2`, `2. In-Depth Candidate Analysis`?**
-  _High betweenness centrality (0.123) - this node is a cross-community bridge._
+  _Cohesion score 0.0629399585921325 - nodes in this community are weakly interconnected._
+- **Why does `UIMakePlayer()` connect `UIMakePlayer` to `Core Entities`, `as3/scripts/ui/pages/UIMakePlayer.as`, `as3/scripts/Fly4UI.as`, `UIChooseFlyAI.as`, `PartMountTable`, `Domain Entity Mapping (AS3 -> Unity C# DoD)`, `12. Weapon Firing Range Telemetry Across Inventory & Inspection Views`, `Research: Modern Resolution and Asset Rescaling Plan`, `Feasibility Matrix`, `2. In-Depth Candidate Analysis`?**
+  _High betweenness centrality (0.120) - this node is a cross-community bridge._
 - **Should `EvtCtrl` be split into smaller, more focused modules?**
   _Cohesion score 0.13763440860215054 - nodes in this community are weakly interconnected._
-- **Why does `GameFlowController` connect `GameFlowController` to `CenterController`, `FactoryController`, `unityengine`, `OptionsController`, `InfoController`, `MainMenuController`, `Label`, `BulletSpriteTable`, `Button`, `CraftComposition.BuildPlayer`, `CompanionRoster`, `RepairState`, `RepairController`, `WeaponSystemPlayModeTests.HullDestruction_ReachesMissionResult_ExactlyOnce`, `SpriteUvTableBuilder.Build`, `LevelDataParser`, `MissionRunner`, `ScheduledCombatSimulation`, `PresentationPlayModeTests.HudPresenter_RendersLiveFrozenReadouts`, `List`, `CombatCameraRig`, `CinematicPlayer`, `FactoryPlayModeTests.Factory_OpensEditsMountsPersistsAndReturnsToCenter`, `float2`, `AssemblyPresenter`, `ScreenCatalog`, `IEnumerator`, `MissionSummary`, `ProjectileContactSolver`, `VisualElement`, `List`, `FontPlayModeTests`, `GameFlowState`?**
+- **Why does `GameFlowController` connect `GameFlowController` to `CenterController`, `FactoryController`, `MissionSpriteView`, `unityengine`, `OptionsController`, `InfoController`, `IEnumerator`, `PartMountTable`, `Button`, `PartDefinitionSO`, `UnityTest`, `RepairState`, `IMenuAudio`, `RepairController`, `WeaponSystemPlayModeTests.HullDestruction_ReachesMissionResult_ExactlyOnce`, `SpriteUvTableBuilder.Build`, `LevelDataParser`, `MissionRunner`, `ScheduledCombatSimulation`, `List`, `CombatCameraRig`, `CinematicPlayer`, `FactoryPlayModeTests.Factory_OpensEditsMountsPersistsAndReturnsToCenter`, `MonoBehaviour`, `MainMenuController`, `PlayerSaveData`, `ProjectileContactSolver`, `Patterns`, `VisualElement`, `List`, `LevelEvent`, `FontPlayModeTests`, `CombatHudPresenter`, `GameFlowState`, `MissionResult`?**
   _High betweenness centrality (0.078) - this node is a cross-community bridge._

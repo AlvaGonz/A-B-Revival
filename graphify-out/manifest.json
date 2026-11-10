@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "GLOSSARY.md": {
-    "mtime": 1794282944.2313719,
-    "seen": 1794323533.7199738,
-    "ast_hash": "3aa59954b1fd75613b48917f675a308d",
+    "mtime": 1794324011.4514775,
+    "seen": 1794324469.3518178,
+    "ast_hash": "945343255c531d2b2d35ee92284c4b94",
     "semantic_hash": ""
   },
   "docs/adr/0001-record-architecture-decisions.md": {
@@ -1842,9 +1842,9 @@
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Presentation/TalkScreen.cs": {
-    "mtime": 1794316328.7758365,
-    "seen": 1794323533.718102,
-    "ast_hash": "a7b14fa71240002df64c146399b12047",
+    "mtime": 1794324011.418412,
+    "seen": 1794324469.2851248,
+    "ast_hash": "8e3163f2c21279b8d26c5d41358836f9",
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Presentation/TalkView.cs": {
@@ -3930,9 +3930,9 @@
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Presentation/MainMenuController.cs": {
-    "mtime": 1794323202.9023745,
-    "seen": 1794323533.7179728,
-    "ast_hash": "ce0d199f8039b90ee5ad37841d5f7269",
+    "mtime": 1794324011.418412,
+    "seen": 1794324469.2777185,
+    "ast_hash": "5c6ff740c92d6a94e7bf4eedcdefd188",
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Presentation/OptionsController.cs": {
@@ -4038,9 +4038,9 @@
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Tests/PlayMode/BootSceneUiTests.cs": {
-    "mtime": 1794322639.8761425,
-    "seen": 1794323533.7183483,
-    "ast_hash": "752f1dd4d23932cb25ad34179592ff9d",
+    "mtime": 1794324042.8282008,
+    "seen": 1794324469.2936406,
+    "ast_hash": "dd67dd978899ae81425c7f66e6093854",
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Tests/PlayMode/CenterPlayModeTests.cs": {
@@ -4092,9 +4092,9 @@
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Tests/PlayMode/PlayModeBoot.cs": {
-    "mtime": 1794322610.40802,
-    "seen": 1794323533.718424,
-    "ast_hash": "25b21cbda51db2dccff6266d5458a551",
+    "mtime": 1794324011.419413,
+    "seen": 1794324469.2961423,
+    "ast_hash": "8536e5e9a72b076ce04302dabda07c71",
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Tests/PlayMode/ProjectileVisualPlayModeTests.cs": {
@@ -8460,9 +8460,9 @@
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Tests/PlayMode/ScreenCatalogPlayModeTests.cs": {
-    "mtime": 1794322610.4095254,
-    "seen": 1794323533.7184567,
-    "ast_hash": "6e7a2b901fd9ff2286acab1e24c1af51",
+    "mtime": 1794323981.5779786,
+    "seen": 1794324469.2971702,
+    "ast_hash": "352b33ae7613d6ab8d5b8587e2d02217",
     "semantic_hash": ""
   },
   "A&B-U/Assets/Scripts/Tests/RepairStateTests.cs": {
@@ -8922,9 +8922,9 @@
     "semantic_hash": ""
   },
   "docs/adr/0025-section-prefabs-and-ui-builder-authoring.md": {
-    "mtime": 1794321913.0360603,
-    "seen": 1794323533.720111,
-    "ast_hash": "316f7e8bb1f12070a4070e21358462ac",
+    "mtime": 1794324011.4731388,
+    "seen": 1794324469.3564837,
+    "ast_hash": "0342e3c92a08e97e941bf80f58bfa55b",
     "semantic_hash": ""
   },
   "docs/assets/main-menu-layers.md": {
