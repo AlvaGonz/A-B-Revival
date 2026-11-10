@@ -144,8 +144,34 @@ namespace ABRevival.Presentation
             return _weapons != null ? _weapons.ShotsFiredBy(shipIndex) : 0;
         }
 
+        /// <summary>
+        /// Resolves the section controllers after <see cref="ScreenHost"/> instantiates the
+        /// catalog (execution order -100). The serialized references remain the editor fast path.
+        /// </summary>
+        private void ResolveScreens()
+        {
+            if (_mainMenu == null) _mainMenu = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            if (_options == null) _options = UnityEngine.Object.FindAnyObjectByType<OptionsController>();
+            if (_center == null) _center = UnityEngine.Object.FindAnyObjectByType<CenterController>();
+            if (_factory == null) _factory = UnityEngine.Object.FindAnyObjectByType<FactoryController>();
+            if (_shop == null) _shop = UnityEngine.Object.FindAnyObjectByType<ShopController>();
+            if (_info == null) _info = UnityEngine.Object.FindAnyObjectByType<InfoController>();
+            if (_ready == null) _ready = UnityEngine.Object.FindAnyObjectByType<ReadyController>();
+            if (_results == null) _results = UnityEngine.Object.FindAnyObjectByType<ResultsController>();
+            if (_repairScreen == null) _repairScreen = UnityEngine.Object.FindAnyObjectByType<RepairController>();
+            if (_talkScreen == null) _talkScreen = UnityEngine.Object.FindAnyObjectByType<TalkScreen>();
+            if (_hud == null) _hud = UnityEngine.Object.FindAnyObjectByType<CombatHudBehaviour>();
+            if (_cameraRig == null) _cameraRig = UnityEngine.Object.FindAnyObjectByType<CombatCameraRig>();
+            if (_spriteView == null) _spriteView = UnityEngine.Object.FindAnyObjectByType<MissionSpriteView>();
+            if (_flight == null) _flight = UnityEngine.Object.FindAnyObjectByType<PlayerFlightController>();
+            if (_audio == null) _audio = UnityEngine.Object.FindAnyObjectByType<AudioService>();
+            if (_cinematicPlayer == null) _cinematicPlayer = UnityEngine.Object.FindAnyObjectByType<CinematicPlayer>();
+            if (_flowPanel == null && _hud != null) _flowPanel = _hud.Panel;
+        }
+
         private void Awake()
         {
+            ResolveScreens();
             _savePath = Path.Combine(Application.persistentDataPath, _saveFileName);
             LoadSave();
 

@@ -26,6 +26,9 @@ namespace ABRevival.Presentation
         public CameraDistancePreset CurrentCameraPreset => State.CameraPreset;
         public HudSpriteLibrary Sprites => _sprites;
 
+        /// <summary>The HUD panel, resolved by GameFlow after the section prefabs instantiate.</summary>
+        public ScreenPanel Panel => _screen;
+
         private void OnDisable()
         {
             _presenter = null;
