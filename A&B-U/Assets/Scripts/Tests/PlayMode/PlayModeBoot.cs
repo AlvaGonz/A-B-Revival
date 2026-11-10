@@ -32,6 +32,7 @@ namespace ABRevival.Tests.PlayMode
             }
 
             AsyncOperation load = SceneManager.LoadSceneAsync("Boot", LoadSceneMode.Single);
+            Assert.IsNotNull(load, "Boot is not in the build settings.");
             if (load != null) yield return load;
         }
 

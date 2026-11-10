@@ -18,7 +18,7 @@ namespace ABRevival.Presentation
         [SerializeField] private TextAsset _talkData;
         [SerializeField] private int _firstLineIndex = 0;
         [SerializeField] private int _lastLineIndex = -1;
-        [SerializeField] private bool _autoStart = true;
+        [SerializeField] private bool _autoStart = false;
 
         private TalkPresenter _presenter;
         private TalkView _view;

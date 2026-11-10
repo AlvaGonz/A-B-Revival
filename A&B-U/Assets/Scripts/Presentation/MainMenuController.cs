@@ -189,7 +189,7 @@ namespace ABRevival.Presentation
                 return;
             }
 
-            // Other screens still render through UiSpriteSkin until the #217 migration.
+            // Fallback for a button without authored art.
             UiSpriteSkin.Apply(button, normal, ScaleMode.StretchToFill, keepBackground: false);
             if (hover != null)
             {

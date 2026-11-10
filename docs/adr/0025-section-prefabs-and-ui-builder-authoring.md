@@ -42,7 +42,7 @@ Unity 6.6 facts that constrain the choice:
    `UIDocument` content is not cleared. No `Resources`, no Addressables.
 4. **UI Builder is the authoring surface.** A custom `SpriteElement` with a serialized
    `Sprite` UXML attribute renders an `Image` child, so atlased art is visible and movable in
-   UI Builder. `UiSpriteSkin` remains for hover/state changes until each screen is migrated.
+   UI Builder. `UiSpriteSkin` remains for hover/state changes and runtime-generated row/icon art.
 5. **Hybrid layout for the MainMenu pilot.** The title, backdrop and buttons are positioned in
    USS/UXML and the layout fields are removed from `MainMenuController`. `shipScale`,
    `bottomMargin`, `anchorBottomRow` and safe-area handling stay in C# (ADR 0024).
@@ -66,7 +66,7 @@ Unity 6.6 facts that constrain the choice:
 - Positive: build impact is negligible; prefabs are included by the catalog reference and
   their referenced art.
 - Negative: one-time migration cost; 11 prefabs to maintain; `SpriteElement` and USS layout
-  migration; Talk has no UXML and needs one during rollout.
+  migration; Talk has an authored UXML and keeps dialogue/portrait data in C#.
 - Negative: `PanelRenderer` has no `rootVisualElement`; every controller and test must obtain
   the root through `ScreenPanel` and the 3-arg reload callback. Prefab support is undocumented
   and must be validated in #216/#217.
@@ -77,8 +77,7 @@ Unity 6.6 facts that constrain the choice:
   `VersionedUIReloadCallback`, and `Renderer.sortingOrder` for per-renderer ordering.
   The C# property is `visualTreeAsset`; Unity serializes it in prefab YAML as `sourceAsset`.
   Do not rename the serialized field.
-- Constraint: Talk has no UXML; give it a blank `Talk.uxml` so `PanelRenderer` has a stable root
-  to build into.
+- Constraint: Talk keeps its static frame in `Talk.uxml`; dialogue, portraits and advance stay in C#.
 - Constraint: section siblings need unique `sortingOrder` values and share
   `HangarPanelSettings` for focus navigation.
 - Constraint: avoid `Resources` and Addressables for section prefabs; add `[Preserve]` or
