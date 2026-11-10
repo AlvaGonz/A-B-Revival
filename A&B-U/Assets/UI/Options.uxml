@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
     <Style src="Options.uss" />
     <ui:VisualElement name="options-root" class="options-root">
         <ui:VisualElement name="options-page" class="options-page">
-            <ui:VisualElement name="options-art" class="options-art" picking-mode="Ignore" />
+            <app:SpriteElement name="options-art" class="options-art" picking-mode="Ignore" scale-mode="ScaleToFit" sprite="project://database/Assets/Art/Sprites/UI/Screens/UI_Options.png" />
 
             <ui:Button name="bloom-row" class="option-row bloom-row" tooltip="Bloom">
                 <ui:Label name="bloom-label" text="Bloom" class="option-row-label font-sans" picking-mode="Ignore" />
@@ -36,8 +36,12 @@
 
             <ui:Label name="control-hint" text="Q switches controls in battle" class="control-hint font-sans" />
 
-            <ui:Button name="ok-button" class="page-button ok-button" tooltip="OK" />
-            <ui:Button name="cancel-button" class="page-button cancel-button" tooltip="Cancel" />
+            <ui:Button name="ok-button" class="page-button ok-button" tooltip="OK">
+                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/UI_Options/276_widget_normal.png" />
+            </ui:Button>
+            <ui:Button name="cancel-button" class="page-button cancel-button" tooltip="Cancel">
+                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/UI_Options/273_widget_normal.png" />
+            </ui:Button>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

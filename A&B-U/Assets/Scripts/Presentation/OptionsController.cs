@@ -29,11 +29,8 @@ namespace ABRevival.Presentation
             "Fullscreen"
         };
 
-        [Header("Options sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite pageArt;
-        [SerializeField] private Sprite okNormal;
+        [Header("Options hover sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite okHover;
-        [SerializeField] private Sprite cancelNormal;
         [SerializeField] private Sprite cancelHover;
 
         private ScreenPanel _screen;
@@ -123,7 +120,6 @@ namespace ABRevival.Presentation
         {
             if (!_initialized)
             {
-                ApplySkin(root);
                 Bind(root);
                 root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
                 if (root.resolvedStyle.width > 1f && root.resolvedStyle.height > 1f)
@@ -216,28 +212,19 @@ namespace ABRevival.Presentation
             if (_okButton != null) _okButton.clicked += Apply;
             if (_cancelButton != null) _cancelButton.clicked += Cancel;
 
-            BindHover(_okButton, okNormal, okHover);
-            BindHover(_cancelButton, cancelNormal, cancelHover);
+            BindHover(_okButton, okHover);
+            BindHover(_cancelButton, cancelHover);
         }
 
-        private static void BindHover(Button button, Sprite normal, Sprite hover)
+        private static void BindHover(Button button, Sprite hover)
         {
-            if (button == null || normal == null) return;
-            UiSpriteSkin.Apply(button, normal, ScaleMode.StretchToFill, keepBackground: false);
-            if (hover != null)
-            {
-                button.RegisterCallback<PointerEnterEvent>(
-                    _ => UiSpriteSkin.Apply(button, hover, ScaleMode.StretchToFill, keepBackground: false));
-                button.RegisterCallback<PointerLeaveEvent>(
-                    _ => UiSpriteSkin.Apply(button, normal, ScaleMode.StretchToFill, keepBackground: false));
-            }
-        }
+            if (button == null) return;
+            SpriteElement art = button.Q<SpriteElement>("button-art");
+            if (art == null || art.sprite == null || hover == null) return;
 
-        private void ApplySkin(VisualElement root)
-        {
-            VisualElement art = root.Q("options-art");
-            if (art != null && pageArt != null)
-                UiSpriteSkin.Apply(art, pageArt, ScaleMode.ScaleToFit, keepBackground: false);
+            Sprite normal = art.sprite;
+            button.RegisterCallback<PointerEnterEvent>(_ => art.sprite = hover);
+            button.RegisterCallback<PointerLeaveEvent>(_ => art.sprite = normal);
         }
 
         private void Toggle(ref bool value)
