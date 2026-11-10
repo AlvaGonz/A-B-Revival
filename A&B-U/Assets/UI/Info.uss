@@ -1,7 +1,7 @@
 /* Info / Records (frozen UI_HelpGame + UI_Data): 1920x1080 full-bleed reference.
    The two How-to-play sheets are the original full-page renders; the controls card
    carries the revival bindings the 2011 pages did not know about.
-   Sprite backgrounds are assigned at runtime from InfoController serialized fields. */
+   Frozen art is authored in Info.uxml as app:SpriteElement (ADR 0025). */
 
 .info-root {
     flex-grow: 1;
@@ -9,6 +9,24 @@
     height: 100%;
     background-color: rgb(2, 4, 8);
     -unity-background-scale-mode: scale-and-crop;
+}
+
+.button-art,
+.art-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.sprite-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -unity-text-align: middle-center;
 }
 
 .info-screen {

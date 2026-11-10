@@ -72,12 +72,16 @@ namespace ABRevival.Tests
         [Test]
         public void Ready_RendersSpritesThroughImageChildrenAndKeepsTheHandoffLoadout()
         {
+            string uxml = File.ReadAllText(Path.Combine(FindRepoRoot(), UxmlFile));
             string controller = File.ReadAllText(Path.Combine(FindRepoRoot(), ControllerFile));
             string flow = File.ReadAllText(Path.Combine(FindRepoRoot(), GameFlowFile));
             string center = File.ReadAllText(Path.Combine(FindRepoRoot(), CenterFile));
 
-            StringAssert.Contains("UiSpriteSkin.Apply", controller);
-            StringAssert.Contains("keepBackground: false", controller);
+            StringAssert.Contains("xmlns:app=\"ABRevival.Presentation\"", uxml,
+                "Ready must author its frozen art as app:SpriteElement for UI Builder (ADR 0025).");
+            StringAssert.Contains(
+                "sprite=\"project://database/Assets/Art/Sprites/UI/Screens/UI_MapBuilding.png\"", uxml,
+                "The unmodified 2011 page render must be the authored Ready art.");
             StringAssert.Contains("MissionLoadout.Capture", controller);
             StringAssert.Contains("CanLaunch", controller);
             StringAssert.Contains("PageWidth = 851f", controller);

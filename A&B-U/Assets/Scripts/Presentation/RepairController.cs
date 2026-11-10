@@ -27,26 +27,18 @@ namespace ABRevival.Presentation
 
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
 
-        [Header("Repair sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite repairBackground;        [SerializeField] private Sprite repairHeader;
-        [SerializeField] private Sprite helpButton;
-        [SerializeField] private Sprite exitButton;
+        [Header("Repair hover/pressed sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite exitButtonHover;
         [SerializeField] private Sprite exitButtonPressed;
-        [SerializeField] private Sprite resetButton;
         [SerializeField] private Sprite resetButtonHover;
         [SerializeField] private Sprite resetButtonPressed;
-        [SerializeField] private Sprite acceptButton;
         [SerializeField] private Sprite acceptButtonHover;
         [SerializeField] private Sprite acceptButtonPressed;
-        [SerializeField] private Sprite selectAllButton;
         [SerializeField] private Sprite selectAllButtonHover;
         [SerializeField] private Sprite selectAllButtonPressed;
-        [SerializeField] private Sprite helpPage;
 
         private ScreenPanel _screen;
         private VisualElement _page;
-        private VisualElement _background;
         private VisualElement _rows;
         private VisualElement _helpOverlay;
         private Label _money;
@@ -169,7 +161,6 @@ namespace ABRevival.Presentation
         private void Bind(VisualElement root)
         {
             _page = root.Q("repair-page");
-            _background = root.Q("repair-background");
             _rows = root.Q("repair-rows");
             _helpOverlay = root.Q("repair-help");
             _money = root.Q<Label>("repair-money");
@@ -211,31 +202,30 @@ namespace ABRevival.Presentation
             if (_filterEngine != null) _filterEngine.clicked += () => SetFilter(PartCategory.Engine);
             if (_filterGun != null) _filterGun.clicked += () => SetFilter(PartCategory.Gun);
 
-            if (help != null) UiSpriteSkin.ApplyStates(help, helpButton, helpButton, helpButton);
-            ApplyStates(exit, exitButton, exitButtonHover, exitButtonPressed);            ApplyStates(reset, resetButton, resetButtonHover, resetButtonPressed);
-            ApplyStates(_accept, acceptButton, acceptButtonHover, acceptButtonPressed);
-            ApplyStates(selectAll, selectAllButton, selectAllButtonHover, selectAllButtonPressed);
+            // Static normal plates live in Repair.uxml; only hover/pressed frames stay here.
+            BindStates(exit, exitButtonHover, exitButtonPressed);
+            BindStates(reset, resetButtonHover, resetButtonPressed);
+            BindStates(_accept, acceptButtonHover, acceptButtonPressed);
+            BindStates(selectAll, selectAllButtonHover, selectAllButtonPressed);
 
             if (_helpOverlay != null)
                 _helpOverlay.RegisterCallback<ClickEvent>(_ => HideHelp());
-
-            SetSprite("repair-background", repairBackground, ScaleMode.ScaleAndCrop);
-            SetSprite("repair-header-plate", repairHeader, ScaleMode.ScaleAndCrop);
-            SetSprite("repair-help-page", helpPage, ScaleMode.ScaleToFit);
         }
 
-        private void ApplyStates(Button button, Sprite normal, Sprite hover, Sprite pressed)
+        /// <summary>Swaps the UXML-authored plate for the frozen hover/pressed frames.</summary>
+        private static void BindStates(Button button, Sprite hover, Sprite pressed)
         {
-            if (button != null && normal != null) UiSpriteSkin.ApplyStates(button, normal, hover, pressed);
-        }
+            if (button == null) return;
+            SpriteElement art = button.Q<SpriteElement>("button-art");
+            if (art == null || art.sprite == null) return;
 
-        private void SetSprite(string elementName, Sprite sprite, ScaleMode scaleMode)
-        {
-            VisualElement element = _screen != null && _screen.Root != null
-                ? _screen.Root.Q(elementName)
-                : null;
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
+            Sprite normal = art.sprite;
+            Sprite hoverFrame = hover != null ? hover : normal;
+            Sprite pressedFrame = pressed != null ? pressed : normal;
+            button.RegisterCallback<PointerEnterEvent>(_ => art.sprite = hoverFrame);
+            button.RegisterCallback<PointerLeaveEvent>(_ => art.sprite = normal);
+            button.RegisterCallback<PointerDownEvent>(_ => art.sprite = pressedFrame);
+            button.RegisterCallback<PointerUpEvent>(_ => art.sprite = hoverFrame);
         }
 
         // ---------------- Table ----------------

@@ -20,7 +20,7 @@ namespace ABRevival.Presentation
         private const string VargamesUrl = "http://www.vargames.com";
         private const string FrozenTip = "Tip 9 : It's always cheaper to repair a part than re-buy it.";
 
-        [Header("Results sprites (frozen 2011 UI library)")]
+        [Header("Results state sprites (frozen 2011 UI library)")]
         [SerializeField] private Sprite winBackground;
         [SerializeField] private Sprite failBackground;
         [SerializeField] private Sprite nextButton;
@@ -29,7 +29,6 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite restartButton;
         [SerializeField] private Sprite restartButtonHover;
         [SerializeField] private Sprite restartButtonPressed;
-        [SerializeField] private Sprite repairButton;
         [SerializeField] private Sprite repairButtonHover;
         [SerializeField] private Sprite repairButtonPressed;
         [SerializeField] private Sprite retryButton;
@@ -38,7 +37,6 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite backButton;
         [SerializeField] private Sprite backButtonHover;
         [SerializeField] private Sprite backButtonPressed;
-        [SerializeField] private Sprite linkButton;
         [SerializeField] private Sprite linkButtonHover;
         [SerializeField] private Sprite endingButton;
         [SerializeField] private Sprite endingButtonHover;
@@ -49,7 +47,7 @@ namespace ABRevival.Presentation
 
         private ScreenPanel _screen;
         private VisualElement _page;
-        private VisualElement _background;
+        private SpriteElement _background;
         private VisualElement _panel;
         private Label _title;
         private Label _battle;
@@ -121,7 +119,7 @@ namespace ABRevival.Presentation
         private void Bind(VisualElement root)
         {
             _page = root.Q("results-page");
-            _background = root.Q("results-background");
+            _background = root.Q<SpriteElement>("results-background");
             _panel = root.Q("results-panel");
             _title = root.Q<Label>("results-title");
             _battle = root.Q<Label>("results-battle");
@@ -141,6 +139,10 @@ namespace ABRevival.Presentation
             if (_linkButton != null) _linkButton.clicked += OnLinkClicked;
             if (_rightButton != null) _rightButton.clicked += OnRightClicked;
             if (_repairButton != null) _repairButton.clicked += () => RepairRequested?.Invoke();
+
+            // Static normal frames live in Results.uxml; only the hover/pressed swaps stay here.
+            BindStates(_linkButton, linkButtonHover, null);
+            BindStates(_repairButton, repairButtonHover, repairButtonPressed);
         }
 
         private void Apply(MissionSummary summary)
@@ -169,11 +171,7 @@ namespace ABRevival.Presentation
             if (_title != null) _title.EnableInClassList("results-title-fail", !summary.Won);
 
             if (_background != null)
-            {
-                Sprite background = summary.Won ? winBackground : failBackground;
-                if (background != null)
-                    UiSpriteSkin.Apply(_background, background, ScaleMode.ScaleAndCrop, keepBackground: false);
-            }
+                _background.sprite = summary.Won ? winBackground : failBackground;
 
             if (summary.Won)
             {
@@ -193,8 +191,6 @@ namespace ABRevival.Presentation
                 ApplyStates(_rightButton, backButton, backButtonHover, backButtonPressed);
             }
 
-            ApplyStates(_linkButton, linkButton, linkButtonHover, linkButton);
-            ApplyStates(_repairButton, repairButton, repairButtonHover, repairButtonPressed);
             if (_repairButton != null)
             {
                 bool canRepair = summary.Won && summary.damagedParts > 0;
@@ -205,6 +201,22 @@ namespace ABRevival.Presentation
         private static void ApplyStates(Button button, Sprite normal, Sprite hover, Sprite pressed)
         {
             if (button != null && normal != null) UiSpriteSkin.ApplyStates(button, normal, hover, pressed);
+        }
+
+        /// <summary>Swaps the UXML-authored plate for the frozen hover/pressed frames.</summary>
+        private static void BindStates(Button button, Sprite hover, Sprite pressed)
+        {
+            if (button == null) return;
+            SpriteElement art = button.Q<SpriteElement>("button-art");
+            if (art == null || art.sprite == null) return;
+
+            Sprite normal = art.sprite;
+            Sprite hoverFrame = hover != null ? hover : normal;
+            Sprite pressedFrame = pressed != null ? pressed : normal;
+            button.RegisterCallback<PointerEnterEvent>(_ => art.sprite = hoverFrame);
+            button.RegisterCallback<PointerLeaveEvent>(_ => art.sprite = normal);
+            button.RegisterCallback<PointerDownEvent>(_ => art.sprite = pressedFrame);
+            button.RegisterCallback<PointerUpEvent>(_ => art.sprite = hoverFrame);
         }
 
         private void OnLeftClicked()

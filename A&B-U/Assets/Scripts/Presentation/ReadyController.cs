@@ -22,12 +22,6 @@ namespace ABRevival.Presentation
         private const float PageWidth = 851f;
         private const float PageHeight = 521f;
 
-        [Header("Ready sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite pageArt;
-        [SerializeField] private Sprite titlePlate;
-        [SerializeField] private Sprite launchButton;
-        [SerializeField] private Sprite backButton;
-
         private ScreenPanel _screen;
         private PlayerSaveData _payload = new PlayerSaveData();
         private CenterController _center;
@@ -75,7 +69,6 @@ namespace ABRevival.Presentation
         {
             if (!_initialized)
             {
-                ApplySkin(root);
                 Bind(root);
                 root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
                 if (root.resolvedStyle.width > 1f && root.resolvedStyle.height > 1f)
@@ -107,21 +100,6 @@ namespace ABRevival.Presentation
 
             if (_launch != null) _launch.clicked += OnLaunchClicked;
             if (back != null) back.clicked += () => Closed?.Invoke();
-        }
-
-        private void ApplySkin(VisualElement root)
-        {
-            SetSprite(root, "ready-page-art", pageArt, ScaleMode.ScaleToFit);
-            SetSprite(root, "ready-title-plate", titlePlate, ScaleMode.ScaleAndCrop);
-            SetSprite(root, "launch-button", launchButton, ScaleMode.ScaleToFit);
-            SetSprite(root, "back-button", backButton, ScaleMode.ScaleToFit);
-        }
-
-        private static void SetSprite(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
-        {
-            VisualElement element = root.Q(name);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }
 
         /// <summary>
