@@ -48,7 +48,7 @@ the full canvas.
 | Subtitle only | `Screens/Title/UI_Main_TitleSubtitle.png` | 402×21 | 16, 47 | `994b151d84604c0db0480b2b9971a554` |
 | Full (runtime) | `Screens/Title/UI_Main_TitleFull.png` | 460×108 | 0, 0 | `548dea93128743d5978f373d56082727` |
 
-- **Plate:** full shape 442 vector render, cool-tinted to match the page; includes the top bar
+- **Plate:** full shape 442 vector render in its original grey, no colour tint; includes the top bar
   and side decoration.
 - **Main title:** sprite 444 main lettering with a blue outer glow (12 px padding).
 - **Subtitle:** sprite 444 subtitle rebuilt as black fill with a white outline.
