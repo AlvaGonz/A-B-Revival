@@ -105,6 +105,7 @@ Ubiquitous language for the decompiled codebase, game mechanics, and modding arc
 - **Screen**: The UI page authored in UXML/USS and bound by a section controller. A screen is not a Unity scene.
 - **ScreenCatalog**: ScriptableObject holding direct references to the 11 section prefabs; Boot instantiates all of them at startup.
 - **SpriteElement**: Custom `VisualElement` with a serialized `Sprite` UXML attribute that renders an `Image` child. It keeps atlased art intact and visible in UI Builder.
+- **ScreenPanel**: Component that owns a `PanelRenderer`, registers the 3-arg reload callback, and exposes `Root`, `Reloaded`, `PanelSettings`, `SortingOrder` and `SetVisible`. Controllers and tests never touch `UIDocument` or `PanelRenderer` directly.
 - **USS-first layout**: Static layout lives in USS/UXML. C# keeps only the responsive rules that cannot be expressed in USS: ship centring, safe area and page scale.
 
 ## Tooling & IP Vocabulary

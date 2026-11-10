@@ -52,8 +52,11 @@ Unity 6.6 facts that constrain the choice:
 7. **Retire `BootSceneBuilder` after one migration.** A one-time editor migration extracts the
    11 roots into prefabs, creates the `ScreenCatalog`, saves Boot, and the builder is removed.
    After that, the scene and prefabs are the source of truth.
-8. **Keep `UIDocument` for now.** The `PanelRenderer` migration remains #190. New sections are
-   created by duplicating an existing section prefab until #190 lands.
+8. **Use `PanelRenderer` from the pilot onward.** #216 migrates MainMenu; #217 migrates the
+   remaining 10 screens and the section prefabs. A shared `ScreenPanel` wrapper owns the
+   `PanelRenderer`, exposes the root through the 3-arg reload callback, and provides
+   `SetVisible`/sorting order. `UIDocument` is removed from production by #217; #190 is
+   superseded by this decision.
 
 ## Consequences
 
@@ -64,10 +67,16 @@ Unity 6.6 facts that constrain the choice:
   their referenced art.
 - Negative: one-time migration cost; 11 prefabs to maintain; `SpriteElement` and USS layout
   migration; Talk has no UXML and needs one during rollout.
-- Negative: `UIDocument` is obsolete; the prefab structure will need a second pass when #190
-  migrates to `PanelRenderer`.
+- Negative: `PanelRenderer` has no `rootVisualElement`; every controller and test must obtain
+  the root through `ScreenPanel` and the 3-arg reload callback. Prefab support is undocumented
+  and must be validated in #216/#217.
 - Constraint: do not re-run `BootSceneBuilder` after migration; its deletion is the guard.
-- Constraint: use `display` toggling, not `SetActive`, while `UIDocument` is in use.
+- Constraint: use `display` toggling, not `SetActive` or component disable, while `PanelRenderer`
+  is in use. Disabling the component removes its visual elements.
+- Constraint: `PanelRenderer` has no `sourceAsset`; use `visualTreeAsset`, the 3-arg
+  `VersionedUIReloadCallback`, and `Renderer.sortingOrder` for per-renderer ordering.
+- Constraint: Talk has no UXML; give it a blank `Talk.uxml` so `PanelRenderer` has a stable root
+  to build into.
 - Constraint: section siblings need unique `sortingOrder` values and share
   `HangarPanelSettings` for focus navigation.
 - Constraint: avoid `Resources` and Addressables for section prefabs; add `[Preserve]` or
@@ -80,3 +89,5 @@ Unity 6.6 facts that constrain the choice:
 - ADR 0024 still governs the main-menu composition; ADR 0020 still governs art fidelity.
 - A section prefab is not accepted if its UI is invisible in UI Builder or if manual layout
   edits are overwritten at runtime.
+- The PanelRenderer migration is complete when `rg "UIDocument|rootVisualElement" A&B-U/Assets/Scripts`
+  returns no production references (tests may use `ScreenPanel.Root`).
