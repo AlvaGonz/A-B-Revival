@@ -389,14 +389,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 324e85ae802629c4895ab895e6530704, type: 2}
   - {fileID: 11400000, guid: f2463b86b44793045be69d0758e65528, type: 2}
   startingMoney: 2000
-  centerBackground: {fileID: 21300000, guid: 9d72cb7c59dbcde448556bd8ab41e3dd, type: 3}
-  centerHeader: {fileID: 21300000, guid: 4398966f6d3826143aa939fa413739f6, type: 3}
-  previewFrame: {fileID: 21300000, guid: e0de8c30ed39dda4d9cfc7ad41a465b3, type: 3}
-  panel: {fileID: 21300000, guid: 58a2c32e7280fe7489bedee2266ee7ed, type: 3}
-  buttonPlate: {fileID: 21300000, guid: 4398966f6d3826143aa939fa413739f6, type: 3}
-  buttonReady: {fileID: 21300000, guid: 4606fa356bb6bff41a96bce1a540082a, type: 3}
-  gradePlate: {fileID: 21300000, guid: 0589974a818868546b5c6d01f4a74628, type: 3}
-  helpButton: {fileID: 21300000, guid: bece3220e5468d44ab775e73af9ef982, type: 3}
   mountArt:
   - sprite: {fileID: 21300000, guid: ed2580f4dc28f334084d662b9c1f2025, type: 3}
     contentRect: {x: 24, y: 17, z: 24, w: 40}
