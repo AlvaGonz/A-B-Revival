@@ -1,8 +1,75 @@
-/* Talk has no frozen page render; TalkView builds the portrait panel at runtime (ADR 0025).
-   The blank root gives PanelRenderer a stable full-bleed surface. */
+/* Talk (frozen 2011 UI_Talk): 1920x1080 full-bleed dialogue frame.
+   The page render carries the background, the 618x169.65 dialogue plate, the portrait
+   well, the continue indicator and the SKIP plate, and is authored in Talk.uxml as an
+   app:SpriteElement (ADR 0025). Only the portrait sprite, speaker name and line text
+   are live; TalkView assigns them per advance. Original game IP: Vargames (2011). */
 
 .talk-root {
     flex-grow: 1;
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.72);
+    overflow: hidden;
+}
+
+.art-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.talk-click-area {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+/* Frozen UI_Talk plate: 18.2px side bleed and ~20px bottom on a 653.5x489.6 page. */
+.talk-panel {
+    position: absolute;
+    left: 2.8%;
+    right: 2.8%;
+    top: 61.1%;
+    bottom: 4.2%;
+}
+
+/* face sprite: the 120x120 SWF box, 16px inside the 618x169.65 plate. The box keeps the
+   page-art aspect so the live portrait lands exactly on the baked frame at any screen size. */
+.talk-portrait {
+    position: absolute;
+    left: 2.6%;
+    top: 5.9%;
+    width: 19.4%;
+    height: 70.7%;
+}
+
+/* txtName: 120x22.7 at the top of the plate, right of the portrait. */
+.talk-speaker {
+    position: absolute;
+    left: 22.6%;
+    right: 20%;
+    top: 5.9%;
+    height: 13.4%;
+    font-size: 26px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* txtWord: 436x115.95 under the name; normal wrap, upper-left like the 2011 field. */
+.talk-text {
+    position: absolute;
+    left: 22.6%;
+    right: 6.8%;
+    top: 24%;
+    bottom: 7%;
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+    white-space: normal;
+    -unity-text-align: upper-left;
 }
