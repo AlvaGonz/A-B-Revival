@@ -33,7 +33,7 @@ namespace ABRevival.Presentation
 
         [Header("Object layout (page pixels; zero backdrop size = full screen)")]
         [SerializeField] private Vector2 titlePosition = new Vector2(0f, 0f);
-        [SerializeField] private Vector2 titleSize = new Vector2(460f, 92f);
+        [SerializeField] private Vector2 titleSize = new Vector2(460f, 108f);
         [Tooltip("Multiplier on the auto-fitted ship scale; 1 = fit the available band.")]
         [SerializeField] private float shipScale = 1f;
         [SerializeField] private Vector2 buttonSize = new Vector2(153.7f, 42.2f);

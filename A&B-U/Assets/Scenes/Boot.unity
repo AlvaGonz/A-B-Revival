@@ -3616,7 +3616,7 @@ MonoBehaviour:
   bottomMargin: 20
   anchorBottomRow: 1
   titlePosition: {x: 0, y: 0}
-  titleSize: {x: 460, y: 92}
+  titleSize: {x: 460, y: 108}
   shipScale: 1.4
   buttonSize: {x: 161, y: 45}
   backdropOffset: {x: 0, y: 0}
