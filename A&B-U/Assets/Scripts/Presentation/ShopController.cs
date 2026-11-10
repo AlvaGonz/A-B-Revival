@@ -21,21 +21,8 @@ namespace ABRevival.Presentation
         [SerializeField] private PartDefinitionSO[] catalogParts = Array.Empty<PartDefinitionSO>();
 
         [Header("Shop sprites (frozen 2011 UI library)")]
-        [SerializeField] private Sprite shopBackground;
-        [SerializeField] private Sprite shopHeader;
-        [SerializeField] private Sprite panel;
-        [SerializeField] private Sprite buttonAccept;
-        [SerializeField] private Sprite buttonReset;
-        [SerializeField] private Sprite buttonCenter;
-        [SerializeField] private Sprite buttonInvert;
+        // Only the NEW badge is drawn at runtime; the page, panels and button art live in Shop.uxml.
         [SerializeField] private Sprite newBadge;
-        [SerializeField] private Sprite helpOverlay;
-        [SerializeField] private Sprite helpButton;
-        [SerializeField] private Sprite categoryAll;
-        [SerializeField] private Sprite categoryBody;
-        [SerializeField] private Sprite categoryWing;
-        [SerializeField] private Sprite categoryEngine;
-        [SerializeField] private Sprite categoryGun;
 
         private ScreenPanel _screen;
         private ShopCatalog _catalog;
@@ -89,7 +76,6 @@ namespace ABRevival.Presentation
                 _shop = new ShopState(_catalog);
                 _mountTable = PartCatalogBootstrap.LoadMountTable("Shop");
 
-                ApplySkin(root);
                 Bind(root);
 
                 _presenter = new ShopPresenter(
@@ -163,46 +149,6 @@ namespace ABRevival.Presentation
         private void OnShopChanged()
         {
             Changed?.Invoke();
-        }
-
-        private void ApplySkin(VisualElement root)
-        {
-            SetPanelBackground(root, "shop-root", shopBackground);
-            SetPanelBackground(root, "shop-title-plate", shopHeader);
-            SetPanelBackground(root, "buy-panel", panel);
-            SetPanelBackground(root, "sell-panel", panel);
-            SetPanelBackground(root, "buy-detail", panel);
-            SetPanelBackground(root, "sell-detail", panel);
-
-            SetSpriteBackground(root, "accept-button", buttonAccept, ScaleMode.ScaleToFit);
-            SetSpriteBackground(root, "reset-button", buttonReset, ScaleMode.ScaleToFit);
-            SetSpriteBackground(root, "center-button", buttonCenter, ScaleMode.ScaleToFit);
-            SetSpriteBackground(root, "invert-button", buttonInvert, ScaleMode.ScaleToFit);
-            SetSpriteBackground(root, "help-button", helpButton, ScaleMode.ScaleToFit);
-            SetPanelBackground(root, "shop-help-page", helpOverlay);
-
-            Sprite[] categories = { categoryAll, categoryBody, categoryWing, categoryEngine, categoryGun };
-            string[] tables = { "buy", "sell" };
-            string[] suffixes = { "all", "body", "wing", "engine", "gun" };
-            for (int table = 0; table < tables.Length; table++)
-            {
-                for (int i = 0; i < suffixes.Length; i++)
-                    SetSpriteBackground(root, tables[table] + "-filter-" + suffixes[i], categories[i], ScaleMode.ScaleToFit);
-            }
-        }
-
-        private static void SetPanelBackground(VisualElement root, string name, Sprite sprite)
-        {
-            VisualElement element = root.Q(name);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, ScaleMode.StretchToFill, keepBackground: false);
-        }
-
-        private static void SetSpriteBackground(VisualElement root, string name, Sprite sprite, ScaleMode scaleMode)
-        {
-            VisualElement element = root.Q(name);
-            if (element != null && sprite != null)
-                UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }
 
         private void ReconcileShop(PlayerSaveData payload)
