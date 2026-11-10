@@ -17,7 +17,7 @@ namespace ABRevival.Presentation
     /// <see cref="GameFlowController"/>.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class CenterController : MonoBehaviour
     {
         private const int PageSize = 8;
@@ -39,7 +39,7 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite helpButton;
         [SerializeField] private MountArtEntry[] mountArt = Array.Empty<MountArtEntry>();
 
-        private UIDocument _document;
+        private ScreenPanel _panel;
         private ShopCatalog _catalog;
         private ShopState _shop;
         private PartMountTable _mountTable;
@@ -174,6 +174,13 @@ namespace ABRevival.Presentation
             return null;
         }
 
+        private void Awake()
+        {
+            // GameFlowController owns visibility and opens Center from the main menu.
+            _panel = GetComponent<ScreenPanel>();
+            if (_panel != null) _panel.SetVisible(false);
+        }
+
         private void Start()
         {
             Initialize(null);
@@ -185,6 +192,18 @@ namespace ABRevival.Presentation
         /// </summary>
         public void Initialize(PlayerSaveData save)
         {
+            _panel = GetComponent<ScreenPanel>();
+            if (_panel == null)
+            {
+                Debug.LogError("[Center] ScreenPanel with a PanelRenderer is required.");
+                return;
+            }
+
+            _panel.WhenReady(root => Open(save, root));
+        }
+
+        private void Open(PlayerSaveData save, VisualElement root)
+        {
             if (_initialized)
             {
                 if (save != null)
@@ -192,13 +211,6 @@ namespace ABRevival.Presentation
                     ApplySave(save);
                     SeedStartingMoney(save);
                 }
-                return;
-            }
-
-            _document = GetComponent<UIDocument>();
-            if (_document == null || _document.rootVisualElement == null)
-            {
-                Debug.LogError("[Center] UIDocument with a source UXML is required.");
                 return;
             }
 
@@ -212,7 +224,6 @@ namespace ABRevival.Presentation
             _mountTable = PartCatalogBootstrap.LoadMountTable("Center");
             _mountArtLookup = new MountArtLookup(_mountTable, mountArt);
 
-            VisualElement root = _document.rootVisualElement;
             ApplySkin(root);
             Bind(root);
 
@@ -295,11 +306,8 @@ namespace ABRevival.Presentation
         /// <summary>Shows or hides the whole Center overlay.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-            {
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
-            }
+            if (_panel == null) _panel = GetComponent<ScreenPanel>();
+            _panel?.SetVisible(visible);
         }
 
         /// <summary>Updates the BATTLE-n label from the saved STORY index.</summary>

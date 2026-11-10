@@ -18,7 +18,7 @@ namespace ABRevival.Presentation
     /// The screen mutates only the shared save slice; it never captures Center's fleet.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class RepairController : MonoBehaviour
     {
         private const float PageWidth = 1920f;
@@ -44,7 +44,7 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite selectAllButtonPressed;
         [SerializeField] private Sprite helpPage;
 
-        private UIDocument _document;
+        private ScreenPanel _screen;
         private VisualElement _page;
         private VisualElement _background;
         private VisualElement _rows;
@@ -123,26 +123,31 @@ namespace ABRevival.Presentation
         private void Awake()
         {
             // GameFlowController owns visibility and opens the screen from the result.
-            var document = GetComponent<UIDocument>();
-            if (document != null && document.rootVisualElement != null)
-                document.rootVisualElement.style.display = DisplayStyle.None;
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
         }
 
         /// <summary>Binds the screen once and reloads the live damaged-part ledger.</summary>
         public void Initialize(PlayerSaveData save, RepairState repair)
         {
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
+            {
+                Debug.LogError("[Repair] ScreenPanel with a PanelRenderer is required.");
+                return;
+            }
+
+            _screen.WhenReady(root => Open(save, repair, root));
+        }
+
+        private void Open(PlayerSaveData save, RepairState repair, VisualElement root)
+        {
             if (!_initialized)
             {
-                _document = GetComponent<UIDocument>();
-                if (_document == null || _document.rootVisualElement == null)
-                {
-                    Debug.LogError("[Repair] UIDocument with a source UXML is required.");
-                    return;
-                }
-
-                VisualElement root = _document.rootVisualElement;
                 Bind(root);
                 root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
+                if (root.resolvedStyle.width > 1f && root.resolvedStyle.height > 1f)
+                    FitPage(root.resolvedStyle.width, root.resolvedStyle.height);
                 _initialized = true;
             }
 
@@ -157,9 +162,8 @@ namespace ABRevival.Presentation
         /// <summary>Shows or hides the whole Repair overlay.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
         }
 
         private void Bind(VisualElement root)
@@ -227,7 +231,9 @@ namespace ABRevival.Presentation
 
         private void SetSprite(string elementName, Sprite sprite, ScaleMode scaleMode)
         {
-            VisualElement element = _document.rootVisualElement.Q(elementName);
+            VisualElement element = _screen != null && _screen.Root != null
+                ? _screen.Root.Q(elementName)
+                : null;
             if (element != null && sprite != null)
                 UiSpriteSkin.Apply(element, sprite, scaleMode, keepBackground: false);
         }

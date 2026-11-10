@@ -166,10 +166,10 @@ namespace ABRevival.Tests.PlayMode
             Assert.IsNotNull(info);
             Assert.AreEqual(GameFlowState.Info, flow.State, "DATA must open the delivered Info/Records screen.");
             Assert.IsTrue(info.ShowingRecords, "DATA must open the records tab.");
-            Assert.AreEqual(DisplayStyle.Flex, info.GetComponent<UIDocument>().rootVisualElement
+            Assert.AreEqual(DisplayStyle.Flex, info.GetComponent<ScreenPanel>().Root
                 .Q("records-page").resolvedStyle.display);
 
-            PlayModeBoot.Click(info.GetComponent<UIDocument>().rootVisualElement.Q<Button>("back-button"));
+            PlayModeBoot.Click(info.GetComponent<ScreenPanel>().Root.Q<Button>("back-button"));
             for (int i = 0; i < 6; i++) yield return null;
             Assert.AreEqual(GameFlowState.MainMenu, flow.State, "Info BACK must return to the main menu when opened from it.");
             Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
@@ -428,10 +428,7 @@ namespace ABRevival.Tests.PlayMode
             if (component == null) return null;
 
             ScreenPanel panel = component.GetComponent<ScreenPanel>();
-            if (panel != null) return panel.Root;
-
-            var document = component.GetComponent<UIDocument>();
-            return document != null ? document.rootVisualElement : null;
+            return panel != null ? panel.Root : null;
         }
 
         private static void AssertMainMenuLayers(VisualElement root)

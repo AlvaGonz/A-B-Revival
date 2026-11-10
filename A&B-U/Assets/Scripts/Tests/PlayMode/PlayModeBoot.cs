@@ -62,9 +62,8 @@ namespace ABRevival.Tests.PlayMode
                 GameFlowController flow = Object.FindAnyObjectByType<GameFlowController>();
                 if (center != null && center.FleetCount > 0 && flow != null && flow.State == GameFlowState.Center)
                 {
-                    var document = center.GetComponent<UIDocument>();
-                    if (document != null && document.rootVisualElement != null &&
-                        document.rootVisualElement.Q("center-root") != null)
+                    ScreenPanel panel = center.GetComponent<ScreenPanel>();
+                    if (panel != null && panel.Root != null && panel.Root.Q("center-root") != null)
                     {
                         yield return null;
                         yield break;
@@ -75,6 +74,19 @@ namespace ABRevival.Tests.PlayMode
             }
 
             Assert.Fail("Boot did not reach the Center screen after PLAY.");
+        }
+
+        /// <summary>Waits until the controller's ScreenPanel has produced its UI root.</summary>
+        public static IEnumerator WaitForPanel(Component screen)
+        {
+            for (int i = 0; i < WaitFrames; i++)
+            {
+                ScreenPanel panel = screen != null ? screen.GetComponent<ScreenPanel>() : null;
+                if (panel != null && panel.Root != null) yield break;
+                yield return null;
+            }
+
+            Assert.Fail("The screen panel did not produce a UI root.");
         }
 
         public static void StartGame()

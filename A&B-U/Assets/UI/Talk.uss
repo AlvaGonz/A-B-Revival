@@ -1,0 +1,8 @@
+/* Talk has no frozen page render; TalkView builds the portrait panel at runtime (ADR 0025).
+   The blank root gives PanelRenderer a stable full-bleed surface. */
+
+.talk-root {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+}

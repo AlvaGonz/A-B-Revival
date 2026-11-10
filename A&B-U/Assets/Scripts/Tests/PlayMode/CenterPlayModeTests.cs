@@ -205,13 +205,13 @@ namespace ABRevival.Tests.PlayMode
             yield return null;
             Assert.AreEqual(GameFlowState.Ready, flow.State);
             Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
-            Assert.AreEqual(DisplayStyle.Flex, ready.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, ready.GetComponent<ScreenPanel>().Root.resolvedStyle.display);
 
-            Click(ready.GetComponent<UIDocument>().rootVisualElement.Q<Button>("back-button"));
+            Click(ready.GetComponent<ScreenPanel>().Root.Q<Button>("back-button"));
             yield return null;
             Assert.AreEqual(GameFlowState.Center, flow.State);
             Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
-            Assert.AreEqual(DisplayStyle.None, ready.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, ready.GetComponent<ScreenPanel>().Root.resolvedStyle.display);
 
             // INFO is a real read-only screen (#177), not a placeholder.
             InfoController info = Object.FindAnyObjectByType<InfoController>();
@@ -221,13 +221,13 @@ namespace ABRevival.Tests.PlayMode
             yield return null;
             Assert.AreEqual(GameFlowState.Info, flow.State);
             Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
-            Assert.AreEqual(DisplayStyle.Flex, info.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, info.GetComponent<ScreenPanel>().Root.resolvedStyle.display);
 
-            Click(info.GetComponent<UIDocument>().rootVisualElement.Q<Button>("back-button"));
+            Click(info.GetComponent<ScreenPanel>().Root.Q<Button>("back-button"));
             yield return null;
             Assert.AreEqual(GameFlowState.Center, flow.State);
             Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
-            Assert.AreEqual(DisplayStyle.None, info.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, info.GetComponent<ScreenPanel>().Root.resolvedStyle.display);
 
             // FACTORY is a real screen (#175), not a placeholder.
             FactoryController factory = Object.FindAnyObjectByType<FactoryController>();
@@ -237,13 +237,13 @@ namespace ABRevival.Tests.PlayMode
             yield return null;
             Assert.AreEqual(GameFlowState.Factory, flow.State);
             Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
-            Assert.AreEqual(DisplayStyle.Flex, factory.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, factory.GetComponent<ScreenPanel>().Root.resolvedStyle.display);
 
-            Click(factory.GetComponent<UIDocument>().rootVisualElement.Q<Button>("back-to-center-button"));
+            Click(factory.GetComponent<ScreenPanel>().Root.Q<Button>("back-to-center-button"));
             yield return null;
             Assert.AreEqual(GameFlowState.Center, flow.State);
             Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
-            Assert.AreEqual(DisplayStyle.None, factory.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, factory.GetComponent<ScreenPanel>().Root.resolvedStyle.display);
 
             // SHOP is a real screen (#176), not a placeholder.
             ShopController shop = Object.FindAnyObjectByType<ShopController>();
@@ -252,13 +252,13 @@ namespace ABRevival.Tests.PlayMode
             yield return null;
             Assert.AreEqual(GameFlowState.Shop, flow.State);
             Assert.AreEqual(DisplayStyle.None, root.resolvedStyle.display);
-            Assert.AreEqual(DisplayStyle.Flex, shop.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, shop.GetComponent<ScreenPanel>().Root.resolvedStyle.display);
 
-            Click(shop.GetComponent<UIDocument>().rootVisualElement.Q<Button>("center-button"));
+            Click(shop.GetComponent<ScreenPanel>().Root.Q<Button>("center-button"));
             yield return null;
             Assert.AreEqual(GameFlowState.Center, flow.State);
             Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
-            Assert.AreEqual(DisplayStyle.None, shop.GetComponent<UIDocument>().rootVisualElement.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.None, shop.GetComponent<ScreenPanel>().Root.resolvedStyle.display);
         }
 
         [UnityTest]
@@ -267,9 +267,9 @@ namespace ABRevival.Tests.PlayMode
             yield return LoadCenter();
 
             CenterController center = Object.FindAnyObjectByType<CenterController>();
-            var document = center.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            PanelSettings settings = document.panelSettings;
+            var panel = center.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
 
             try
@@ -287,7 +287,7 @@ namespace ABRevival.Tests.PlayMode
 
                     for (int i = 0; i < 8; i++) yield return null;
 
-                    VisualElement root = document.rootVisualElement;
+                    VisualElement root = panel.Root;
                     VisualElement centerRoot = root.Q("center-root");
                     VisualElement screen = root.Q("center-screen");
                     VisualElement header = root.Q("center-header");
@@ -336,8 +336,8 @@ namespace ABRevival.Tests.PlayMode
             yield return LoadCenter();
 
             CenterController center = Object.FindAnyObjectByType<CenterController>();
-            var document = center.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
+            var panel = center.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
 
             // Show the five companion grade buttons and a duplicate AI count in the review frame.
             Assert.IsTrue(center.AssignCompanion(2));
@@ -350,7 +350,7 @@ namespace ABRevival.Tests.PlayMode
             string path = Path.Combine(folder, "center-1920x1080.png");
             if (File.Exists(path)) File.Delete(path);
 
-            PanelSettings settings = document.panelSettings;
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             var target = new RenderTexture(1920, 1080, 0, RenderTextureFormat.ARGB32);
             target.Create();
@@ -360,7 +360,7 @@ namespace ABRevival.Tests.PlayMode
                 settings.targetTexture = target;
                 for (int i = 0; i < 12; i++) yield return null;
 
-                VisualElement root = document.rootVisualElement;
+                VisualElement root = panel.Root;
                 AssertSprite(root.Q("center-root"), "center-root");
                 AssertSprite(root.Q("center-header"), "center-header");
                 AssertSprite(root.Q("preview-frame"), "preview-frame");
@@ -421,8 +421,7 @@ namespace ABRevival.Tests.PlayMode
 
         private static VisualElement ActiveRoot(CenterController center)
         {
-            var document = center != null ? center.GetComponent<UIDocument>() : null;
-            return document != null ? document.rootVisualElement : null;
+            return center != null ? center.GetComponent<ScreenPanel>()?.Root : null;
         }
 
         private static int CountCompanionCopies(PlayerSaveData save, int craftIndex)

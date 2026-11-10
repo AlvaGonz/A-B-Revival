@@ -291,9 +291,10 @@ namespace ABRevival.Tests.PlayMode
             CombatHudBehaviour hud = Object.FindAnyObjectByType<CombatHudBehaviour>();
             Assert.IsNotNull(hud, "Boot scene must host the combat HUD.");
 
-            UIDocument document = hud.GetComponent<UIDocument>();
-            Assert.IsNotNull(document, "The HUD behaviour needs its UIDocument.");
-            VisualElement root = document.rootVisualElement;
+            ScreenPanel panel = hud.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel, "The HUD behaviour needs its ScreenPanel.");
+            yield return PlayModeBoot.WaitForPanel(hud);
+            VisualElement root = panel.Root;
             Assert.IsNotNull(root, "The HUD document has no live root.");
 
             foreach (string element in new[]

@@ -39,22 +39,22 @@ namespace ABRevival.Tests.PlayMode
             yield return LoadBoot();
 
             CenterController center = Object.FindAnyObjectByType<CenterController>();
-            UIDocument document = center.GetComponent<UIDocument>();
-            yield return BeginReferenceResolution(document);
+            ScreenPanel panel = center.GetComponent<ScreenPanel>();
+            yield return BeginReferenceResolution(panel);
 
-            AssertCenterFonts(document.rootVisualElement);
+            AssertCenterFonts(panel.Root);
 
             TalkScreen talk = Object.FindAnyObjectByType<TalkScreen>();
             Assert.IsNotNull(talk, "Boot scene must host the talk screen.");
-            UIDocument talkDocument = talk.GetComponent<UIDocument>();
-            StringAssert.Contains(Sf, ResolvedFont(talkDocument.rootVisualElement),
+            ScreenPanel talkPanel = talk.GetComponent<ScreenPanel>();
+            StringAssert.Contains(Sf, ResolvedFont(talkPanel.Root),
                 "Talk panel labels must inherit the original SF TransRobotics face.");
 
-            Click(document.rootVisualElement.Q<Button>("info-button"));
+            Click(panel.Root.Q<Button>("info-button"));
             for (int i = 0; i < 8; i++) yield return null;
             InfoController info = Object.FindAnyObjectByType<InfoController>();
             Assert.IsNotNull(info, "Boot must host the Info screen for the font check.");
-            VisualElement infoRoot = info.GetComponent<UIDocument>().rootVisualElement;
+            VisualElement infoRoot = info.GetComponent<ScreenPanel>().Root;
             Assert.AreEqual(DisplayStyle.Flex, infoRoot.resolvedStyle.display,
                 "The Info screen must be visible for the font check.");
             AssertFont(infoRoot, "info-title", Sf);
@@ -68,7 +68,7 @@ namespace ABRevival.Tests.PlayMode
             Click(infoRoot.Q<Button>("back-button"));
             for (int i = 0; i < 8; i++) yield return null;
 
-            Click(document.rootVisualElement.Q<Button>("back-button"));
+            Click(panel.Root.Q<Button>("back-button"));
             for (int i = 0; i < 8; i++) yield return null;
             MainMenuController menu = Object.FindAnyObjectByType<MainMenuController>();
             Assert.IsNotNull(menu, "Boot must host the main menu for the font check.");
@@ -85,10 +85,10 @@ namespace ABRevival.Tests.PlayMode
 
             PlayModeBoot.StartGame();
             yield return PlayModeBoot.WaitForCenter();
-            document = Object.FindAnyObjectByType<CenterController>().GetComponent<UIDocument>();
+            panel = Object.FindAnyObjectByType<CenterController>().GetComponent<ScreenPanel>();
 
-            yield return EndReferenceResolution(document);
-            yield return CaptureAtEveryResolution(document, "center", AssertCenterFonts);
+            yield return EndReferenceResolution(panel);
+            yield return CaptureAtEveryResolution(panel, "center", AssertCenterFonts);
         }
 
         [UnityTest]
@@ -97,28 +97,28 @@ namespace ABRevival.Tests.PlayMode
             yield return LoadBoot();
 
             Click(Object.FindAnyObjectByType<CenterController>()
-                .GetComponent<UIDocument>().rootVisualElement.Q<Button>("factory-button"));
+                .GetComponent<ScreenPanel>().Root.Q<Button>("factory-button"));
             for (int i = 0; i < 10; i++) yield return null;
 
             FactoryController factory = Object.FindAnyObjectByType<FactoryController>();
             Assert.IsNotNull(factory, "Boot did not open Factory.");
-            UIDocument document = factory.GetComponent<UIDocument>();
-            yield return BeginReferenceResolution(document);
+            ScreenPanel panel = factory.GetComponent<ScreenPanel>();
+            yield return BeginReferenceResolution(panel);
 
-            AssertFactoryFonts(document.rootVisualElement);
+            AssertFactoryFonts(panel.Root);
 
-            Click(document.rootVisualElement.Q<Button>("help-button"));
+            Click(panel.Root.Q<Button>("help-button"));
             for (int i = 0; i < 8; i++) yield return null;
-            Assert.AreEqual(DisplayStyle.Flex, document.rootVisualElement.Q("factory-help").resolvedStyle.display,
+            Assert.AreEqual(DisplayStyle.Flex, panel.Root.Q("factory-help").resolvedStyle.display,
                 "The Factory help panel must be visible for the font check.");
-            AssertFont(document.rootVisualElement, "help-title", Sf);
-            AssertFont(document.rootVisualElement, "help-body", Sf);
-            AssertFont(document.rootVisualElement, "help-close", Sf);
-            Click(document.rootVisualElement.Q<Button>("help-close"));
+            AssertFont(panel.Root, "help-title", Sf);
+            AssertFont(panel.Root, "help-body", Sf);
+            AssertFont(panel.Root, "help-close", Sf);
+            Click(panel.Root.Q<Button>("help-close"));
             for (int i = 0; i < 8; i++) yield return null;
 
-            yield return EndReferenceResolution(document);
-            yield return CaptureAtEveryResolution(document, "factory", AssertFactoryFonts);
+            yield return EndReferenceResolution(panel);
+            yield return CaptureAtEveryResolution(panel, "factory", AssertFactoryFonts);
         }
 
         [UnityTest]
@@ -127,18 +127,18 @@ namespace ABRevival.Tests.PlayMode
             yield return LoadBoot();
 
             Click(Object.FindAnyObjectByType<CenterController>()
-                .GetComponent<UIDocument>().rootVisualElement.Q<Button>("shop-button"));
+                .GetComponent<ScreenPanel>().Root.Q<Button>("shop-button"));
             for (int i = 0; i < 10; i++) yield return null;
 
             ShopController shop = Object.FindAnyObjectByType<ShopController>();
             Assert.IsNotNull(shop, "Boot did not open Shop.");
-            UIDocument document = shop.GetComponent<UIDocument>();
+            ScreenPanel panel = shop.GetComponent<ScreenPanel>();
             Assert.Greater(shop.Presenter.BuyRowCount, 0, "The Shop needs live rows for the font check.");
-            yield return BeginReferenceResolution(document);
+            yield return BeginReferenceResolution(panel);
 
-            AssertShopFonts(document.rootVisualElement);
-            yield return EndReferenceResolution(document);
-            yield return CaptureAtEveryResolution(document, "shop", AssertShopFonts);
+            AssertShopFonts(panel.Root);
+            yield return EndReferenceResolution(panel);
+            yield return CaptureAtEveryResolution(panel, "shop", AssertShopFonts);
         }
 
         [UnityTest]
@@ -162,11 +162,11 @@ namespace ABRevival.Tests.PlayMode
             hud.CycleCameraDistance();
             for (int i = 0; i < 4; i++) yield return null;
 
-            UIDocument document = hud.GetComponent<UIDocument>();
-            yield return BeginReferenceResolution(document);
-            AssertHudFonts(document.rootVisualElement);
-            yield return EndReferenceResolution(document);
-            yield return CaptureAtEveryResolution(document, "hud", AssertHudFonts);
+            ScreenPanel panel = hud.GetComponent<ScreenPanel>();
+            yield return BeginReferenceResolution(panel);
+            AssertHudFonts(panel.Root);
+            yield return EndReferenceResolution(panel);
+            yield return CaptureAtEveryResolution(panel, "hud", AssertHudFonts);
         }
 
         private static void AssertCenterFonts(VisualElement root)
@@ -245,21 +245,21 @@ namespace ABRevival.Tests.PlayMode
             if (root.layout.width >= 1900f) AssertTextMetrics(root, "HUD", true);
         }
 
-        private static IEnumerator BeginReferenceResolution(UIDocument document)
+        private static IEnumerator BeginReferenceResolution(ScreenPanel panel)
         {
             var target = new RenderTexture(1920, 1080, 0, RenderTextureFormat.ARGB32);
             target.Create();
-            document.panelSettings.targetTexture = target;
+            panel.PanelSettings.targetTexture = target;
             for (int i = 0; i < 10; i++) yield return null;
-            VisualElement root = document.rootVisualElement;
+            VisualElement root = panel.Root;
             Debug.Log("[Font Resolution] target=" + target.width + "x" + target.height +
                       " root=" + root.layout.width + "x" + root.layout.height +
-                      " panelScale=" + document.panelSettings.scale);
+                      " panelScale=" + panel.PanelSettings.scale);
         }
 
-        private static IEnumerator EndReferenceResolution(UIDocument document)
+        private static IEnumerator EndReferenceResolution(ScreenPanel panel)
         {
-            PanelSettings settings = document.panelSettings;
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture target = settings.targetTexture;
             settings.targetTexture = null;
             if (target != null)
@@ -272,9 +272,9 @@ namespace ABRevival.Tests.PlayMode
         }
 
         private static IEnumerator CaptureAtEveryResolution(
-            UIDocument document, string surface, System.Action<VisualElement> assertFonts)
+            ScreenPanel panel, string surface, System.Action<VisualElement> assertFonts)
         {
-            PanelSettings settings = document.panelSettings;
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             string folder = Path.Combine(Path.GetTempPath(), "opencode");
             Directory.CreateDirectory(folder);
@@ -294,7 +294,7 @@ namespace ABRevival.Tests.PlayMode
 
                     for (int i = 0; i < 10; i++) yield return null;
 
-                    VisualElement root = document.rootVisualElement;
+                    VisualElement root = panel.Root;
                     Assert.IsNotNull(root, surface + " lost its live root at " + size);
                     Debug.Log("[Font Resolution] " + surface + " target=" + size.x + "x" + size.y +
                               " root=" + root.layout.width + "x" + root.layout.height +

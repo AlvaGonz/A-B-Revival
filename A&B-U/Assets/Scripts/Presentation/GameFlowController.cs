@@ -56,7 +56,7 @@ namespace ABRevival.Presentation
         [SerializeField] private MissionSpriteView _spriteView;
         [SerializeField] private PlayerFlightController _flight;
         [SerializeField] private AudioService _audio;
-        [SerializeField] private UIDocument _flowDocument;
+        [SerializeField] private ScreenPanel _flowPanel;
         [SerializeField] private VideoClip[] _briefingClips = Array.Empty<VideoClip>();
         [SerializeField] private string _saveFileName = DefaultSaveFileName;
         [SerializeField] private string _levelResourcePath = "Levels/10_all.AllData_levels";
@@ -1964,9 +1964,9 @@ namespace ABRevival.Presentation
 
         private void EnsureOverlayReferences()
         {
-            if (_flowDocument != null && _flowDocument.rootVisualElement != null)
+            if (_flowPanel != null && _flowPanel.Root != null)
             {
-                _cinematicSurface ??= _flowDocument.rootVisualElement.Q<VisualElement>("flow-cinematic-surface");
+                _cinematicSurface ??= _flowPanel.Root.Q<VisualElement>("flow-cinematic-surface");
 
                 // The frozen UIMovie overlay skipped on click; the revival clip has no
                 // separate control, so the whole movie surface is the skip target.
@@ -1986,8 +1986,7 @@ namespace ABRevival.Presentation
         private void SetFlowVisible(bool visible)
         {
             EnsureOverlayReferences();
-            if (_flowDocument == null || _flowDocument.rootVisualElement == null) return;
-            _flowDocument.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            _flowPanel?.SetVisible(visible);
         }
 
         private void ShowCinematicSurface(bool visible)

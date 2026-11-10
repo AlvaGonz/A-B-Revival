@@ -12,7 +12,7 @@ namespace ABRevival.Presentation
     /// Next persists the story/reward, Retry returns without advancing, Repair opens UIRepair.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class ResultsController : MonoBehaviour
     {
         private const float PageWidth = 1920f;
@@ -47,7 +47,7 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite allWinRestartButtonHover;
         [SerializeField] private Sprite allWinRestartButtonPressed;
 
-        private UIDocument _document;
+        private ScreenPanel _screen;
         private VisualElement _page;
         private VisualElement _background;
         private VisualElement _panel;
@@ -79,26 +79,31 @@ namespace ABRevival.Presentation
         private void Awake()
         {
             // GameFlowController owns visibility and opens the screen from the mission end.
-            var document = GetComponent<UIDocument>();
-            if (document != null && document.rootVisualElement != null)
-                document.rootVisualElement.style.display = DisplayStyle.None;
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
         }
 
         /// <summary>Builds the screen once and applies one mission summary.</summary>
         public void Initialize(MissionSummary summary)
         {
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
+            {
+                Debug.LogError("[Results] ScreenPanel with a PanelRenderer is required.");
+                return;
+            }
+
+            _screen.WhenReady(root => Open(summary, root));
+        }
+
+        private void Open(MissionSummary summary, VisualElement root)
+        {
             if (!_initialized)
             {
-                _document = GetComponent<UIDocument>();
-                if (_document == null || _document.rootVisualElement == null)
-                {
-                    Debug.LogError("[Results] UIDocument with a source UXML is required.");
-                    return;
-                }
-
-                VisualElement root = _document.rootVisualElement;
                 Bind(root);
                 root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
+                if (root.resolvedStyle.width > 1f && root.resolvedStyle.height > 1f)
+                    FitPage(root.resolvedStyle.width, root.resolvedStyle.height);
                 _initialized = true;
             }
 
@@ -109,9 +114,8 @@ namespace ABRevival.Presentation
         /// <summary>Shows or hides the whole result overlay.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
         }
 
         private void Bind(VisualElement root)

@@ -81,11 +81,11 @@ namespace ABRevival.Tests.PlayMode
             Debug.Log("[HUD CAPTURE] ScreenCapture produced no usable pixels; trying the panel readback.");
 
             // Method 2: render the live panel into a RenderTexture and read it back.
-            UIDocument document = hud.GetComponent<UIDocument>();
-            Assert.IsNotNull(document, "The HUD behaviour needs its UIDocument.");
+            ScreenPanel panel = hud.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel, "The HUD behaviour needs its ScreenPanel.");
 
             string panelPath = Path.Combine(folder, "hud-capture-panel.png");
-            PanelSettings settings = document.panelSettings;
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previousTarget = settings.targetTexture;
             var target = new RenderTexture(CaptureWidth, CaptureHeight, 0, RenderTextureFormat.ARGB32);
             target.Create();

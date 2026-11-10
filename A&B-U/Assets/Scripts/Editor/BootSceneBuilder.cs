@@ -31,6 +31,7 @@ namespace ABRevival.Editor
         private const string ResultsUxmlPath = "Assets/UI/Results.uxml";
         private const string RepairUxmlPath = "Assets/UI/Repair.uxml";
         private const string HudUxmlPath = "Assets/UI/CombatHud.uxml";
+        private const string TalkUxmlPath = "Assets/UI/Talk.uxml";
         private const string PanelSettingsPath = "Assets/UI/HangarPanelSettings.asset";
         private const string PortraitPath = "Assets/Resources/Talk/TalkPortraitCatalog.asset";
         private const string TalkDataPath = "Assets/Resources/Talk/5_all.AllData_talk.xml";
@@ -57,6 +58,7 @@ namespace ABRevival.Editor
             VisualTreeAsset resultsUxml = LoadRequired<VisualTreeAsset>(ResultsUxmlPath);
             VisualTreeAsset repairUxml = LoadRequired<VisualTreeAsset>(RepairUxmlPath);
             VisualTreeAsset hudUxml = LoadRequired<VisualTreeAsset>(HudUxmlPath);
+            VisualTreeAsset talkUxml = LoadRequired<VisualTreeAsset>(TalkUxmlPath);
             UnityEngine.Object portraits = LoadRequired<UnityEngine.Object>(PortraitPath);
             TextAsset talkData = LoadRequired<TextAsset>(TalkDataPath);
             VideoClip openingClip = LoadRequired<VideoClip>(OpeningClipPath);
@@ -71,73 +73,43 @@ namespace ABRevival.Editor
             eventSystemObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
 
             var mainMenuObject = new GameObject("MainMenu");
-            var mainMenuRenderer = mainMenuObject.AddComponent<PanelRenderer>();
-            mainMenuRenderer.panelSettings = panelSettings;
-            mainMenuRenderer.visualTreeAsset = mainMenuUxml;
-            mainMenuRenderer.sortingOrder = 2;
-            AddPresentationComponent(mainMenuObject, "ABRevival.Presentation.ScreenPanel");
+            AddScreen(mainMenuObject, panelSettings, mainMenuUxml, 2);
             Component mainMenu = AddPresentationComponent(mainMenuObject, "ABRevival.Presentation.MainMenuController");
 
             var optionsObject = new GameObject("Options");
-            UIDocument optionsDocument = optionsObject.AddComponent<UIDocument>();
-            SetReference(optionsDocument, "m_PanelSettings", panelSettings);
-            SetReference(optionsDocument, "sourceAsset", optionsUxml);
-            optionsDocument.sortingOrder = 3;
+            AddScreen(optionsObject, panelSettings, optionsUxml, 3);
             Component options = AddPresentationComponent(optionsObject, "ABRevival.Presentation.OptionsController");
 
             var centerObject = new GameObject("Center");
-            UIDocument centerDocument = centerObject.AddComponent<UIDocument>();
-            SetReference(centerDocument, "m_PanelSettings", panelSettings);
-            SetReference(centerDocument, "sourceAsset", centerUxml);
-            centerDocument.sortingOrder = 0;
+            AddScreen(centerObject, panelSettings, centerUxml, 0);
             Component center = AddPresentationComponent(centerObject, "ABRevival.Presentation.CenterController");
 
             var factoryObject = new GameObject("Factory");
-            UIDocument factoryDocument = factoryObject.AddComponent<UIDocument>();
-            SetReference(factoryDocument, "m_PanelSettings", panelSettings);
-            SetReference(factoryDocument, "sourceAsset", factoryUxml);
-            factoryDocument.sortingOrder = 1;
+            AddScreen(factoryObject, panelSettings, factoryUxml, 1);
             Component factory = AddPresentationComponent(factoryObject, "ABRevival.Presentation.FactoryController");
 
             var shopObject = new GameObject("Shop");
-            UIDocument shopDocument = shopObject.AddComponent<UIDocument>();
-            SetReference(shopDocument, "m_PanelSettings", panelSettings);
-            SetReference(shopDocument, "sourceAsset", shopUxml);
-            shopDocument.sortingOrder = 1;
+            AddScreen(shopObject, panelSettings, shopUxml, 1);
             Component shop = AddPresentationComponent(shopObject, "ABRevival.Presentation.ShopController");
 
             var infoObject = new GameObject("Info");
-            UIDocument infoDocument = infoObject.AddComponent<UIDocument>();
-            SetReference(infoDocument, "m_PanelSettings", panelSettings);
-            SetReference(infoDocument, "sourceAsset", infoUxml);
-            infoDocument.sortingOrder = 1;
+            AddScreen(infoObject, panelSettings, infoUxml, 1);
             Component info = AddPresentationComponent(infoObject, "ABRevival.Presentation.InfoController");
 
             var readyObject = new GameObject("Ready");
-            UIDocument readyDocument = readyObject.AddComponent<UIDocument>();
-            SetReference(readyDocument, "m_PanelSettings", panelSettings);
-            SetReference(readyDocument, "sourceAsset", readyUxml);
-            readyDocument.sortingOrder = 1;
+            AddScreen(readyObject, panelSettings, readyUxml, 1);
             Component ready = AddPresentationComponent(readyObject, "ABRevival.Presentation.ReadyController");
 
             var resultsObject = new GameObject("Results");
-            UIDocument resultsDocument = resultsObject.AddComponent<UIDocument>();
-            SetReference(resultsDocument, "m_PanelSettings", panelSettings);
-            SetReference(resultsDocument, "sourceAsset", resultsUxml);
-            resultsDocument.sortingOrder = 6;
+            AddScreen(resultsObject, panelSettings, resultsUxml, 6);
             Component results = AddPresentationComponent(resultsObject, "ABRevival.Presentation.ResultsController");
 
             var repairObject = new GameObject("Repair");
-            UIDocument repairDocument = repairObject.AddComponent<UIDocument>();
-            SetReference(repairDocument, "m_PanelSettings", panelSettings);
-            SetReference(repairDocument, "sourceAsset", repairUxml);
-            repairDocument.sortingOrder = 6;
+            AddScreen(repairObject, panelSettings, repairUxml, 6);
             Component repair = AddPresentationComponent(repairObject, "ABRevival.Presentation.RepairController");
 
             var talkObject = new GameObject("Talk");
-            UIDocument talkDocument = talkObject.AddComponent<UIDocument>();
-            SetReference(talkDocument, "m_PanelSettings", panelSettings);
-            talkDocument.sortingOrder = 10;
+            Component talkPanel = AddScreen(talkObject, panelSettings, talkUxml, 10);
             Component talk = AddPresentationComponent(talkObject, "ABRevival.Presentation.TalkScreen");
 
             var combatObject = new GameObject("Combat");
@@ -151,10 +123,7 @@ namespace ABRevival.Editor
             Component cameraRig = AddPresentationComponent(combatObject, "ABRevival.Presentation.CombatCameraRig");
             Component batchRenderer = AddPresentationComponent(combatObject, "ABRevival.Presentation.BatchSpriteRenderer");
             Component spriteView = AddPresentationComponent(combatObject, "ABRevival.Presentation.MissionSpriteView");
-            UIDocument hudDocument = combatObject.AddComponent<UIDocument>();
-            SetReference(hudDocument, "m_PanelSettings", panelSettings);
-            SetReference(hudDocument, "sourceAsset", hudUxml);
-            hudDocument.sortingOrder = 5;
+            Component hudPanel = AddScreen(combatObject, panelSettings, hudUxml, 5);
             Component hud = AddPresentationComponent(combatObject, "ABRevival.Presentation.CombatHudBehaviour");
 
             var cinematicObject = new GameObject("Cinematics");
@@ -169,12 +138,12 @@ namespace ABRevival.Editor
             Component flight = AddPresentationComponent(
                 flightObject, "ABRevival.Presentation.PlayerFlightController");
 
-            SetReference(talk, "_document", talkDocument);
+            SetReference(talk, "_screen", talkPanel);
             SetReference(talk, "_portraits", portraits);
             SetReference(talk, "_talkData", talkData);
             SetBool(talk, "_autoStart", false);
 
-            SetReference(hud, "_document", hudDocument);
+            SetReference(hud, "_screen", hudPanel);
             SetReference(hud, "_cameraRig", cameraRig);
             SetMainMenuSprites(mainMenu);
             SetOptionsSprites(options);
@@ -217,7 +186,7 @@ namespace ABRevival.Editor
             SetReference(flowSerialized, "_spriteView", spriteView);
             SetReference(flowSerialized, "_flight", flight);
             SetReference(flowSerialized, "_audio", audio);
-            SetReference(flowSerialized, "_flowDocument", hudDocument);
+            SetReference(flowSerialized, "_flowPanel", hudPanel);
 
             SerializedProperty clips = flowSerialized.FindProperty("_briefingClips");
             clips.arraySize = 1;
@@ -240,6 +209,20 @@ namespace ABRevival.Editor
         public static void BuildBatch()
         {
             Build();
+        }
+
+        /// <summary>
+        /// Creates the shared section UI stack: PanelRenderer (settings, UXML, draw order)
+        /// plus the ScreenPanel that exposes the root to the controller (ADR 0025).
+        /// </summary>
+        private static Component AddScreen(
+            GameObject host, PanelSettings panelSettings, VisualTreeAsset uxml, int sortingOrder)
+        {
+            var renderer = host.AddComponent<PanelRenderer>();
+            renderer.panelSettings = panelSettings;
+            renderer.visualTreeAsset = uxml;
+            renderer.sortingOrder = sortingOrder;
+            return AddPresentationComponent(host, "ABRevival.Presentation.ScreenPanel");
         }
 
         private static Component AddPresentationComponent(GameObject host, string fullTypeName)

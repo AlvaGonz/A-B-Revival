@@ -1,41 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:app="ABRevival.Presentation" editor-extension-mode="False">
-    <Style src="Main.uss" />
+    <Style src="project://database/Assets/UI/Main.uss?fileID=7433441132597879392&amp;guid=7472392366f5810478de677ad9d152d8&amp;type=3#Main"/>
     <ui:VisualElement name="main-root" class="main-root">
-        <!-- One full-screen starfield; title and ship are separate frozen layers (ADR 0024).
-             Static art is a SpriteElement so UI Builder shows the real exported sprites. -->
-        <app:SpriteElement name="main-backdrop" class="main-backdrop" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0005.png" />
-        <app:SpriteElement name="main-title" class="main-title" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/Screens/Title/UI_Main_TitleFull.png" />
-        <app:SpriteElement name="main-ship" class="main-ship" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/Screens/UI_Main_Ship.png" />
-
-        <!-- Live controls sit on the screen edges at the page's true scale, never inside the art. -->
-        <ui:VisualElement name="main-ui" class="main-ui">
-            <ui:Button name="play-button" class="menu-button play-button" tooltip="Play">
-                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/447_widget_normal.png" />
-            </ui:Button>
-            <ui:Button name="data-button" class="menu-button data-button" tooltip="Data">
-                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/450_widget_normal.png" />
-            </ui:Button>
-            <ui:Button name="options-button" class="menu-button options-button" tooltip="Options">
-                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/Widgets/242_widget_normal.png" />
-            </ui:Button>
-            <ui:Button name="credits-button" class="menu-button credits-button" tooltip="Credits">
-                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/453_widget_normal.png" />
-            </ui:Button>
-            <ui:Button name="link-button" class="menu-button link-button" tooltip="Vargames">
-                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/20_widget_normal_160.png" />
-            </ui:Button>
-            <ui:Button name="player-button" class="menu-button player-button" tooltip="Player">
-                <app:SpriteElement name="button-art" class="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/458_widget_normal.png" />
-            </ui:Button>
-        </ui:VisualElement>
-
+        <app:SpriteElement name="main-backdrop" picking-mode="Ignore" scale-mode="ScaleAndCrop" sprite="project://database/Assets/Art/Sprites/UI/ui_0005.png" class="main-backdrop"/>
+        <app:SpriteElement name="main-ship" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/Screens/UI_Main_Ship.png" class="main-ship"/>
+        <app:SpriteElement name="main-title" picking-mode="Ignore" scale-mode="StretchToFill" sprite="project://database/Assets/Art/Sprites/UI/Screens/Title/UI_Main_TitleFull.png" class="main-title"/>
         <ui:VisualElement name="main-deferred" class="main-deferred">
             <ui:VisualElement name="deferred-panel" class="deferred-panel">
-                <ui:Label name="deferred-title" text="CREDITS" class="deferred-title font-ui" />
-                <ui:Label name="deferred-body" text="This section is delivered by its own ticket." class="deferred-body font-sans" />
-                <ui:Button name="deferred-back" text="BACK" class="deferred-back font-ui" tooltip="Back to the main menu" />
+                <ui:Label name="deferred-title" text="CREDITS" class="deferred-title font-ui"/>
+                <ui:Label name="deferred-body" text="This section is delivered by its own ticket." class="deferred-body font-sans"/>
+                <ui:Button name="deferred-back" text="BACK" tooltip="Back to the main menu" class="deferred-back font-ui"/>
             </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="main-ui" class="main-ui">
+            <ui:Button name="play-button" tooltip="Play" class="menu-button play-button">
+                <app:SpriteElement name="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/447_widget_normal.png" class="button-art" style="width: auto;"/>
+            </ui:Button>
+            <ui:Button name="data-button" tooltip="Data" class="menu-button data-button">
+                <app:SpriteElement name="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/450_widget_normal.png" class="button-art"/>
+            </ui:Button>
+            <ui:Button name="options-button" tooltip="Options" class="menu-button options-button">
+                <app:SpriteElement name="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/Widgets/242_widget_normal.png" class="button-art"/>
+            </ui:Button>
+            <ui:Button name="credits-button" tooltip="Credits" class="menu-button credits-button">
+                <app:SpriteElement name="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/453_widget_normal.png" class="button-art"/>
+            </ui:Button>
+            <ui:Button name="link-button" tooltip="Vargames" class="menu-button link-button">
+                <app:SpriteElement name="button-art" picking-mode="Ignore" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/20_widget_normal_160.png" class="button-art" style="align-items: flex-end;"/>
+            </ui:Button>
+            <ui:Button name="player-button" tooltip="Player" class="menu-button player-button">
+                <app:SpriteElement name="button-art" picking-mode="Position" sprite="project://database/Assets/Art/Sprites/UI/UI_Main/458_widget_normal.png" focusable="false" usage-hints="None" class="button-art" style="top: 8px; bottom: -8px; right: -1px; left: 2px; align-self: flex-end; align-items: auto; flex-direction: column; -unity-font-definition: url(&quot;project://database/Assets/Art/Fonts/font_0627_SF_TransRobotics.ttf?fileID=12800000&amp;guid=20151b14d3768a8458229c5b014fb545&amp;type=3#font_0627_SF_TransRobotics&quot;);"/>
+            </ui:Button>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

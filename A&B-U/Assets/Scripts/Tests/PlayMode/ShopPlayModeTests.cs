@@ -301,9 +301,9 @@ namespace ABRevival.Tests.PlayMode
             yield return OpenShop();
 
             ShopController shop = Object.FindAnyObjectByType<ShopController>();
-            var document = shop.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            PanelSettings settings = document.panelSettings;
+            var panel = shop.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
 
             try
@@ -321,7 +321,7 @@ namespace ABRevival.Tests.PlayMode
 
                     for (int i = 0; i < 8; i++) yield return null;
 
-                    VisualElement root = document.rootVisualElement;
+                    VisualElement root = panel.Root;
                     VisualElement shopRoot = root.Q("shop-root");
                     VisualElement screen = root.Q("shop-screen");
                     VisualElement header = root.Q("shop-header");
@@ -387,9 +387,9 @@ namespace ABRevival.Tests.PlayMode
             yield return OpenShop();
 
             ShopController shop = Object.FindAnyObjectByType<ShopController>();
-            var document = shop.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            VisualElement root = document.rootVisualElement;
+            var panel = shop.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            VisualElement root = panel.Root;
 
             // Show a completed purchase (INF row kept), a staged sell unit and the net cost.
             VisualElement buyRow = FindAffordableModule(root, shop.Presenter, shop.Money);
@@ -407,7 +407,7 @@ namespace ABRevival.Tests.PlayMode
             string path = Path.Combine(folder, "shop-1920x1080.png");
             if (File.Exists(path)) File.Delete(path);
 
-            PanelSettings settings = document.panelSettings;
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             var target = new RenderTexture(1920, 1080, 0, RenderTextureFormat.ARGB32);
             target.Create();
@@ -535,8 +535,7 @@ namespace ABRevival.Tests.PlayMode
 
         private static VisualElement ActiveRoot(Component component)
         {
-            var document = component != null ? component.GetComponent<UIDocument>() : null;
-            return document != null ? document.rootVisualElement : null;
+            return component != null ? component.GetComponent<ScreenPanel>()?.Root : null;
         }
 
         private static IEnumerable<VisualElement> RealRows(VisualElement root, string listName)

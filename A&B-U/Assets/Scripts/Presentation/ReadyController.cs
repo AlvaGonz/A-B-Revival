@@ -16,7 +16,7 @@ namespace ABRevival.Presentation
     /// It never writes the save; <see cref="GameFlowController"/> owns the payload.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class ReadyController : MonoBehaviour
     {
         private const float PageWidth = 851f;
@@ -28,7 +28,7 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite launchButton;
         [SerializeField] private Sprite backButton;
 
-        private UIDocument _document;
+        private ScreenPanel _screen;
         private PlayerSaveData _payload = new PlayerSaveData();
         private CenterController _center;
 
@@ -54,27 +54,32 @@ namespace ABRevival.Presentation
         private void Awake()
         {
             // GameFlowController owns visibility and opens the screen from Center.
-            var document = GetComponent<UIDocument>();
-            if (document != null && document.rootVisualElement != null)
-                document.rootVisualElement.style.display = DisplayStyle.None;
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
         }
 
         /// <summary>Builds the screen once and applies the live Center selection.</summary>
         public void Initialize(PlayerSaveData save, CenterController center)
         {
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
+            {
+                Debug.LogError("[Ready] ScreenPanel with a PanelRenderer is required.");
+                return;
+            }
+
+            _screen.WhenReady(root => Open(save, center, root));
+        }
+
+        private void Open(PlayerSaveData save, CenterController center, VisualElement root)
+        {
             if (!_initialized)
             {
-                _document = GetComponent<UIDocument>();
-                if (_document == null || _document.rootVisualElement == null)
-                {
-                    Debug.LogError("[Ready] UIDocument with a source UXML is required.");
-                    return;
-                }
-
-                VisualElement root = _document.rootVisualElement;
                 ApplySkin(root);
                 Bind(root);
                 root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
+                if (root.resolvedStyle.width > 1f && root.resolvedStyle.height > 1f)
+                    FitPage(root.resolvedStyle.width, root.resolvedStyle.height);
                 _initialized = true;
             }
 
@@ -87,9 +92,8 @@ namespace ABRevival.Presentation
         /// <summary>Shows or hides the whole Ready overlay.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
         }
 
         private void Bind(VisualElement root)

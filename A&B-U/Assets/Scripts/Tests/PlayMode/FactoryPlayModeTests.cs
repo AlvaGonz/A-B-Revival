@@ -182,9 +182,9 @@ namespace ABRevival.Tests.PlayMode
             yield return OpenFactory();
 
             FactoryController factory = Object.FindAnyObjectByType<FactoryController>();
-            var document = factory.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
-            PanelSettings settings = document.panelSettings;
+            var panel = factory.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
 
             try
@@ -202,7 +202,7 @@ namespace ABRevival.Tests.PlayMode
 
                     for (int i = 0; i < 8; i++) yield return null;
 
-                    VisualElement root = document.rootVisualElement;
+                    VisualElement root = panel.Root;
                     VisualElement factoryRoot = root.Q("factory-root");
                     VisualElement screen = root.Q("factory-screen");
                     VisualElement header = root.Q("factory-header");
@@ -261,21 +261,21 @@ namespace ABRevival.Tests.PlayMode
             yield return OpenFactory();
 
             FactoryController factory = Object.FindAnyObjectByType<FactoryController>();
-            var document = factory.GetComponent<UIDocument>();
-            Assert.IsNotNull(document);
+            var panel = factory.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel);
 
             // The 2011 page reference is the craft list (Index/Name/EDIT/BREAK); capture that view.
             factory.ShowCrafts(true);
             yield return null;
-            Assert.AreEqual(DisplayStyle.Flex, document.rootVisualElement.Q<ScrollView>("crafts-list").resolvedStyle.display);
-            Assert.Greater(RowCount(document.rootVisualElement, "crafts-list"), 0, "The craft list is empty.");
+            Assert.AreEqual(DisplayStyle.Flex, panel.Root.Q<ScrollView>("crafts-list").resolvedStyle.display);
+            Assert.Greater(RowCount(panel.Root, "crafts-list"), 0, "The craft list is empty.");
 
             string folder = Path.Combine(Path.GetTempPath(), "opencode");
             Directory.CreateDirectory(folder);
             string path = Path.Combine(folder, "factory-1920x1080.png");
             if (File.Exists(path)) File.Delete(path);
 
-            PanelSettings settings = document.panelSettings;
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             var target = new RenderTexture(1920, 1080, 0, RenderTextureFormat.ARGB32);
             target.Create();
@@ -285,7 +285,7 @@ namespace ABRevival.Tests.PlayMode
                 settings.targetTexture = target;
                 for (int i = 0; i < 12; i++) yield return null;
 
-                VisualElement root = document.rootVisualElement;
+                VisualElement root = panel.Root;
                 AssertSprite(root.Q("factory-root"), "factory-root");
                 AssertSprite(root.Q("factory-header"), "factory-header");
                 AssertSprite(root.Q("preview-frame"), "preview-frame");
@@ -359,8 +359,7 @@ namespace ABRevival.Tests.PlayMode
 
         private static VisualElement ActiveRoot(Component component)
         {
-            var document = component != null ? component.GetComponent<UIDocument>() : null;
-            return document != null ? document.rootVisualElement : null;
+            return component != null ? component.GetComponent<ScreenPanel>()?.Root : null;
         }
 
         private static IEnumerable<VisualElement> Rows(VisualElement root, string listName)

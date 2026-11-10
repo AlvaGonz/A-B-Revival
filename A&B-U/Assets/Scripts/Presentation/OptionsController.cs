@@ -15,7 +15,7 @@ namespace ABRevival.Presentation
     /// revival renderer to drive, so they are persisted fidelity settings only.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class OptionsController : MonoBehaviour
     {
         private const float PageWidth = 850f;
@@ -36,7 +36,7 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite cancelNormal;
         [SerializeField] private Sprite cancelHover;
 
-        private UIDocument _document;
+        private ScreenPanel _screen;
         private VisualElement _page;
         private Button _bloomRow;
         private Button _candyRow;
@@ -95,27 +95,39 @@ namespace ABRevival.Presentation
         private void Awake()
         {
             // GameFlowController owns visibility and opens Options from the main menu.
-            var document = GetComponent<UIDocument>();
-            if (document != null && document.rootVisualElement != null)
-                document.rootVisualElement.style.display = DisplayStyle.None;
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
         }
 
         /// <summary>Builds the screen once and opens it with the persisted settings.</summary>
         public void Initialize(PlayerSaveData save, PlayerFlightController flight, AudioService audio)
         {
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
+            {
+                Debug.LogError("[Options] ScreenPanel with a PanelRenderer is required.");
+                return;
+            }
+
+            _screen.WhenReady(root => Open(save, flight, audio, root));
+        }
+
+        /// <summary>Shows or hides the whole Options overlay.</summary>
+        public void SetVisible(bool visible)
+        {
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
+        }
+
+        private void Open(PlayerSaveData save, PlayerFlightController flight, AudioService audio, VisualElement root)
+        {
             if (!_initialized)
             {
-                _document = GetComponent<UIDocument>();
-                if (_document == null || _document.rootVisualElement == null)
-                {
-                    Debug.LogError("[Options] UIDocument with a source UXML is required.");
-                    return;
-                }
-
-                VisualElement root = _document.rootVisualElement;
                 ApplySkin(root);
                 Bind(root);
                 root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
+                if (root.resolvedStyle.width > 1f && root.resolvedStyle.height > 1f)
+                    FitPage(root.resolvedStyle.width, root.resolvedStyle.height);
                 _initialized = true;
             }
 
@@ -125,14 +137,6 @@ namespace ABRevival.Presentation
             LoadWorking();
             RefreshRows();
             SetVisible(true);
-        }
-
-        /// <summary>Shows or hides the whole Options overlay.</summary>
-        public void SetVisible(bool visible)
-        {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         /// <summary>

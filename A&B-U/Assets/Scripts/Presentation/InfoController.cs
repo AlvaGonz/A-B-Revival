@@ -16,7 +16,7 @@ namespace ABRevival.Presentation
     /// It never captures or mutates the payload; <see cref="GameFlowController"/> owns the save.
     /// Original game IP: Vargames (2011).
     /// </summary>
-    [RequireComponent(typeof(UIDocument))]
+    [RequireComponent(typeof(ScreenPanel))]
     public sealed class InfoController : MonoBehaviour
     {
         private const int HelpPageCount = 2;
@@ -31,7 +31,7 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite helpPageOne;
         [SerializeField] private Sprite helpPageTwo;
 
-        private UIDocument _document;
+        private ScreenPanel _screen;
         private Dictionary<int, PartDefinitionSO> _byId;
         private PlayerSaveData _payload = new PlayerSaveData();
 
@@ -70,9 +70,8 @@ namespace ABRevival.Presentation
         private void Awake()
         {
             // GameFlowController owns visibility and opens the screen from Center.
-            var document = GetComponent<UIDocument>();
-            if (document != null && document.rootVisualElement != null)
-                document.rootVisualElement.style.display = DisplayStyle.None;
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen != null) _screen.SetVisible(false);
         }
 
         /// <summary>
@@ -81,15 +80,20 @@ namespace ABRevival.Presentation
         /// </summary>
         public void Initialize(PlayerSaveData save)
         {
+            _screen = GetComponent<ScreenPanel>();
+            if (_screen == null)
+            {
+                Debug.LogError("[Info] ScreenPanel with a PanelRenderer is required.");
+                return;
+            }
+
+            _screen.WhenReady(root => Open(save, root));
+        }
+
+        private void Open(PlayerSaveData save, VisualElement root)
+        {
             if (!_initialized)
             {
-                _document = GetComponent<UIDocument>();
-                if (_document == null || _document.rootVisualElement == null)
-                {
-                    Debug.LogError("[Info] UIDocument with a source UXML is required.");
-                    return;
-                }
-
                 _byId = new Dictionary<int, PartDefinitionSO>();
                 if (catalogParts != null)
                 {
@@ -100,7 +104,6 @@ namespace ABRevival.Presentation
                     }
                 }
 
-                VisualElement root = _document.rootVisualElement;
                 ApplySkin(root);
                 Bind(root);
                 _initialized = true;
@@ -126,9 +129,8 @@ namespace ABRevival.Presentation
         /// <summary>Shows or hides the whole Info overlay.</summary>
         public void SetVisible(bool visible)
         {
-            if (_document == null) _document = GetComponent<UIDocument>();
-            if (_document != null && _document.rootVisualElement != null)
-                _document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_screen == null) _screen = GetComponent<ScreenPanel>();
+            _screen?.SetVisible(visible);
         }
 
         public void ShowHelp()

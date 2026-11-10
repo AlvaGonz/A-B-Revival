@@ -25,8 +25,8 @@ namespace ABRevival.Tests.PlayMode
         public IEnumerator Hud_FillsAndAnchorsAt1080p720pAnd16By10()
         {
             yield return LoadMission();
-            UIDocument document = FindHudDocument();
-            PanelSettings settings = document.panelSettings;
+            ScreenPanel panel = FindHudPanel();
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
 
             try
@@ -44,7 +44,7 @@ namespace ABRevival.Tests.PlayMode
 
                     for (int i = 0; i < 6; i++) yield return null;
 
-                    VisualElement root = document.rootVisualElement;
+                    VisualElement root = panel.Root;
                     VisualElement hud = root.Q("hud-root");
                     VisualElement bars = root.Q(CombatHudPresenter.BarsElement);
                     VisualElement minimap = root.Q(CombatHudPresenter.MinimapElement);
@@ -148,13 +148,13 @@ namespace ABRevival.Tests.PlayMode
             Assert.AreEqual(GameFlowState.Mission, flow.State, "The HUD gate needs the live mission HUD.");
         }
 
-        private static UIDocument FindHudDocument()
+        private static ScreenPanel FindHudPanel()
         {
             CombatHudBehaviour hud = Object.FindAnyObjectByType<CombatHudBehaviour>();
             Assert.IsNotNull(hud, "Boot scene must host the combat HUD.");
-            UIDocument document = hud.GetComponent<UIDocument>();
-            Assert.IsNotNull(document, "The HUD behaviour needs its UIDocument.");
-            return document;
+            ScreenPanel panel = hud.GetComponent<ScreenPanel>();
+            Assert.IsNotNull(panel, "The HUD behaviour needs its ScreenPanel.");
+            return panel;
         }
 
         /// <summary>
@@ -163,8 +163,8 @@ namespace ABRevival.Tests.PlayMode
         /// </summary>
         private static IEnumerator CaptureCombatFrame(string path)
         {
-            UIDocument document = FindHudDocument();
-            PanelSettings settings = document.panelSettings;
+            ScreenPanel panel = FindHudPanel();
+            PanelSettings settings = panel.PanelSettings;
             RenderTexture previous = settings.targetTexture;
             Camera camera = Camera.main;
             Assert.IsNotNull(camera, "The mission camera is required for the capture.");
@@ -189,7 +189,7 @@ namespace ABRevival.Tests.PlayMode
                 camera.targetTexture = previousCameraTarget;
 
                 settings.targetTexture = hudTarget;
-                CombatHudBehaviour hudBehaviour = document.GetComponent<CombatHudBehaviour>();
+                CombatHudBehaviour hudBehaviour = panel.GetComponent<CombatHudBehaviour>();
                 hudBehaviour.enabled = false;
                 hudBehaviour.enabled = true;
                 for (int i = 0; i < 6; i++) yield return null;
