@@ -17,12 +17,16 @@ You implement and review UI for this Unity 6000.6.8f1 project. Your output is a 
 ## Read first
 
 - `AGENTS.md`, `CODING_STANDARDS.md` (sections 1 and 2), `docs/adr/0020-original-fonts-and-asset-fidelity.md`.
-- `A&B-U/Assets/UI/` (UXML/USS), `A&B-U/Assets/Scripts/Presentation/`, `A&B-U/Assets/Scripts/Editor/BootSceneBuilder.cs`.
+- `A&B-U/Assets/UI/` (UXML/USS), `A&B-U/Assets/Prefabs/Screens/` (one prefab per section),
+  `A&B-U/Assets/Scripts/Presentation/` (`PanelRenderer`, `ScreenPanel`),
+  `A&B-U/Assets/Scripts/` (`ScreenCatalog`, `ScreenHost`).
+- Author screens in UI Builder. `BootSceneBuilder` is retired (ADR 0025): the Boot scene and the
+  section prefabs are the source of truth, so never rebuild the scene from code.
 - The relevant tests: `MainMenuLayoutTests`, `MainMenuPlayModeTests`.
 
 ## Rules
 
-- **UI Toolkit first.** Use `UIDocument` + `PanelSettings` + UXML/USS. UGUI only for world-space elements that UI Toolkit cannot do.
+- **UI Toolkit first.** Use `PanelRenderer` + `PanelSettings` + UXML/USS, wrapped in `ScreenPanel`. UGUI only for world-space elements that UI Toolkit cannot do.
 - **Original fonts only.** Never substitute a font. Sizes may scale; families may not change.
 - **Preserve the baseline.** Original Flash layout/art is the baseline (ADR 0020). Improvements need explicit owner approval recorded in the issue/PR.
 - **No absolute-pixel hand placement** unless the screen is deliberately reproducing the frozen page; anchor and scale instead.

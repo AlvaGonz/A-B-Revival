@@ -1,7 +1,9 @@
 # Main-Menu Layers (`UI_Main`)
 
 Provenance and import contract for the main-menu layers split out of the frozen UI library.
-Decision: [ADR 0024](../adr/0024-main-menu-foreground-composition.md). Follow-ups: #206, #207, #210, #216.
+Decisions: [ADR 0024](../adr/0024-main-menu-foreground-composition.md),
+[ADR 0025](../adr/0025-section-prefabs-and-ui-builder-authoring.md). Follow-ups: #206, #207, #210.
+**Last updated:** 2026-11-10.
 
 ## Source
 
@@ -104,12 +106,64 @@ of at most **1 % of the band height**. Page values at the 1920x1080 reference: t
 buttons 161×45. USS stores them as width percentages plus `aspect-ratio`, so the layout keeps
 the frozen proportions at 16:9, 16:10 and 4:3.
 
-## PanelRenderer note (#216)
+## Screens and section prefabs (ADR 0025)
 
-MainMenu uses `PanelRenderer` + `ScreenPanel`; the other ten screens still use `UIDocument`
-until #217. `PanelRenderer` has no `rootVisualElement`: `ScreenPanel.Root` is the only root and
-is delivered through the 3-arg `PanelRenderer.VersionedUIReloadCallback`. Never disable the
-`PanelRenderer` (that removes its visual elements); visibility is a `display` toggle.
+The UI ships as eleven section prefabs — not one scene per screen, and no code-built hierarchies.
+
+- `Boot.unity` keeps one `Screens` root with `ScreenHost`; GameFlow, Flight, Cinematics, Audio and
+  EventSystem stay as Boot roots.
+- `A&B-U/Assets/Data/Screens/ScreenCatalog.asset` lists the eleven prefabs by direct reference.
+  `ScreenHost` instantiates all of them in `Awake` at `[DefaultExecutionOrder(-100)]`, so
+  `GameFlowController` resolves the controllers in `Start`. No `Resources`, no Addressables.
+- Controllers hide with `display`, never `SetActive` or a disabled renderer, so the panel keeps
+  its visual tree while hidden.
+
+| Section | Prefab | UXML | Authoring state |
+|---|---|---|---|
+| Main menu | `MainMenu.prefab` | `Main.uxml` | Authored |
+| Options | `Options.prefab` | `Options.uxml` | Authored |
+| Ready / briefing | `Ready.prefab` | `Ready.uxml` | Authored |
+| Results | `Results.prefab` | `Results.uxml` | Authored |
+| Info / help | `Info.prefab` | `Info.uxml` | Authored |
+| Repair | `Repair.prefab` | `Repair.uxml` | Authored |
+| Shop | `Shop.prefab` | `Shop.uxml` | Authored |
+| Center (hangar) | `Center.prefab` | `Center.uxml` | Authored |
+| Factory | `Factory.prefab` | `Factory.uxml` | Authored |
+| Combat HUD | `Combat.prefab` | `CombatHud.uxml` | Authored |
+| Talk | `Talk.prefab` | `Talk.uxml` | Authored |
+
+All eleven screens are authored and committed (#216–#218): Factory `a97d19c`, Combat HUD
+`1d48ce2`, and Talk `3361bb3`, the last screen to land. Authored means the frozen art and static
+layout live in UXML/USS and are movable in UI Builder; the controller only binds by name, fits
+the page and writes live values.
+
+Live values stay in C# by design: the main-menu ship band, bottom row and safe area
+(`MainMenuController`), HUD bar fills and reticle (`CombatHudPresenter`), and the assembly/craft
+markers (`AssemblyPresenter`, `CraftPreviewPainter`).
+
+### PanelRenderer + ScreenPanel
+
+`UIDocument` and `rootVisualElement` are gone from production code. Each section prefab root
+carries `ScreenPanel`, which requires and owns a `PanelRenderer`, plus its controller.
+`PanelRenderer` exposes no root property: the root exists only inside the 3-arg reload callback
+and is reached through `ScreenPanel.Root` or `ScreenPanel.WhenReady(root => …)`. Visibility is
+`SetVisible` (a `display` toggle), ordering is `SortingOrder` (a proxy for
+`Renderer.sortingOrder`), and every section shares `HangarPanelSettings` for focus navigation.
+Never disable the `PanelRenderer` or the `ScreenPanel` — that removes the visual elements.
+
+### SpriteElement
+
+Static art is a `SpriteElement` in UXML, not a UI Toolkit `background-image`: the built-in path
+samples atlased sprites at their atlas rect and draws the wrong region. `SpriteElement` renders
+an `Image` child named `sprite-art` at absolute inset 0 with `PickingMode.Ignore` and exposes
+`sprite`, `scale-mode` and `tint` as UXML attributes; position and size stay in USS. Hover and
+state swaps remain in `UiSpriteSkin` / the controller.
+
+### BootSceneBuilder retired
+
+The one-time migration extracted the eleven roots, created the `ScreenCatalog` and saved Boot,
+then deleted `BootSceneBuilder`. Do not recreate a scene builder: the scene and the prefabs are
+the source of truth, and UI Builder edits persist.
 
 ## Revert point
 

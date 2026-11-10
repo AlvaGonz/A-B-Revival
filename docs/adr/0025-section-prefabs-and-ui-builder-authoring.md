@@ -73,8 +73,10 @@ Unity 6.6 facts that constrain the choice:
 - Constraint: do not re-run `BootSceneBuilder` after migration; its deletion is the guard.
 - Constraint: use `display` toggling, not `SetActive` or component disable, while `PanelRenderer`
   is in use. Disabling the component removes its visual elements.
-- Constraint: `PanelRenderer` has no `sourceAsset`; use `visualTreeAsset`, the 3-arg
+- Constraint: `PanelRenderer` exposes no `sourceAsset` property; use `visualTreeAsset`, the 3-arg
   `VersionedUIReloadCallback`, and `Renderer.sortingOrder` for per-renderer ordering.
+  The C# property is `visualTreeAsset`; Unity serializes it in prefab YAML as `sourceAsset`.
+  Do not rename the serialized field.
 - Constraint: Talk has no UXML; give it a blank `Talk.uxml` so `PanelRenderer` has a stable root
   to build into.
 - Constraint: section siblings need unique `sortingOrder` values and share
