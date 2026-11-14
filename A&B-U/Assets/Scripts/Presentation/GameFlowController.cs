@@ -438,11 +438,11 @@ namespace ABRevival.Presentation
             EnterCenter(firstBoot: !_centerStarted);
         }
 
+        /// <summary>OPTIONS draws its panel over the live main menu, matching the 2011 UIOptions overlay.</summary>
         private void OnMainMenuOptionsRequested()
         {
             if (State != GameFlowState.MainMenu || _options == null) return;
 
-            _mainMenu?.SetVisible(false);
             _options.Initialize(_save, _flight, _audio);
             State = GameFlowState.Options;
         }
@@ -470,7 +470,6 @@ namespace ABRevival.Presentation
         {
             if (State != GameFlowState.Options) return;
 
-            _mainMenu?.SetVisible(true);
             _audio?.PlayMainMenuMusic();
             State = GameFlowState.MainMenu;
         }

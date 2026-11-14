@@ -13,6 +13,8 @@ namespace ABRevival.Presentation
     /// switch. Values persist through the single player save; OK applies them, CANCEL
     /// restores the values the screen opened with. Bloom, Candy! and Background have no
     /// revival renderer to drive, so they are persisted fidelity settings only.
+    /// The page is an overlay over the live main menu; the tint and page height fraction
+    /// are serialized so the owner can tune the composition in the Boot scene Inspector.
     /// Original game IP: Vargames (2011).
     /// </summary>
     [RequireComponent(typeof(ScreenPanel))]
@@ -33,7 +35,15 @@ namespace ABRevival.Presentation
         [SerializeField] private Sprite okHover;
         [SerializeField] private Sprite cancelHover;
 
+        [Header("Overlay (tune in the Boot scene Inspector)")]
+        [Tooltip("Tint drawn over the live main menu behind the options page.")]
+        [SerializeField] private Color backdropTint = new Color(0f, 0f, 0f, 0.3f);
+        [Tooltip("Page height as a fraction of the output height; the output width caps it on narrow screens.")]
+        [Range(0.2f, 1f)]
+        [SerializeField] private float pageHeightFraction = 0.75f;
+
         private ScreenPanel _screen;
+        private VisualElement _root;
         private VisualElement _page;
         private Button _bloomRow;
         private Button _candyRow;
@@ -132,6 +142,7 @@ namespace ABRevival.Presentation
             _audio = audio;
             LoadWorking();
             RefreshRows();
+            ApplyBackdrop();
             SetVisible(true);
         }
 
@@ -184,6 +195,7 @@ namespace ABRevival.Presentation
 
         private void Bind(VisualElement root)
         {
+            _root = root;
             _page = root.Q("options-page");
             _bloomRow = root.Q<Button>("bloom-row");
             _candyRow = root.Q<Button>("candy-row");
@@ -326,7 +338,7 @@ namespace ABRevival.Presentation
             Closed?.Invoke();
         }
 
-        /// <summary>Centres the 850x490 page and scales it uniformly so the full page is visible.</summary>
+        /// <summary>Centres the 850x490 page at the Inspector height fraction, leaving the menu around it.</summary>
         private void OnRootGeometryChanged(GeometryChangedEvent evt)
         {
             FitPage(evt.newRect.width, evt.newRect.height);
@@ -334,8 +346,26 @@ namespace ABRevival.Presentation
 
         private void FitPage(float width, float height)
         {
-            MenuPageFitter.Fit(
-                _page, width, height, PageWidth, PageHeight, cover: true, ref _lastRootSize);
+            MenuPageFitter.FitOverlay(
+                _page, width, height, PageWidth, PageHeight, pageHeightFraction, ref _lastRootSize);
+        }
+
+        private void ApplyBackdrop()
+        {
+            if (_root != null) _root.style.backgroundColor = backdropTint;
+        }
+
+        /// <summary>Applies Inspector tuning immediately while playing, without reopening the screen.</summary>
+        private void OnValidate()
+        {
+            if (!Application.isPlaying) return;
+
+            ApplyBackdrop();
+            VisualElement root = _screen != null ? _screen.Root : null;
+            if (root == null) return;
+
+            _lastRootSize = Vector2.zero;
+            FitPage(root.resolvedStyle.width, root.resolvedStyle.height);
         }
     }
 }

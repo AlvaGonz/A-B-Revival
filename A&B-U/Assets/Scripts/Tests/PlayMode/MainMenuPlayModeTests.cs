@@ -100,7 +100,8 @@ namespace ABRevival.Tests.PlayMode
             OptionsController options = Object.FindAnyObjectByType<OptionsController>();
             Assert.IsNotNull(options, "Boot must host the dedicated Options screen.");
             Assert.AreEqual(GameFlowState.Options, flow.State, "OPTIONS must open the Options screen.");
-            Assert.AreEqual(DisplayStyle.None, mainRoot.resolvedStyle.display);
+            Assert.AreEqual(DisplayStyle.Flex, mainRoot.resolvedStyle.display,
+                "The main menu must stay visible behind the options overlay.");
 
             VisualElement root = ActiveRoot(options);
             Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display);
@@ -287,21 +288,31 @@ namespace ABRevival.Tests.PlayMode
                     VisualElement optionsPage = ActiveRoot(options).Q("options-page");
                     Rect optionsSurface = optionsRoot.worldBound;
                     Rect optionsPanel = ActiveRoot(options).worldBound;
+                    Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display,
+                        "The main menu must stay visible behind the options overlay at " + size);
                     Assert.AreEqual(optionsPanel.width, optionsSurface.width, 1f,
                         "Options must fill the panel width at " + size);
                     Assert.AreEqual(optionsPanel.height, optionsSurface.height, 1f,
                         "Options must fill the panel height at " + size);
-                    Assert.GreaterOrEqual(optionsPage.worldBound.height, optionsSurface.height - 2f,
-                        "The options page must cover the output height at " + size);
-                    Assert.GreaterOrEqual(optionsPage.worldBound.width, optionsSurface.width * 0.99f,
-                        "The options page must cover the output width at " + size);
-                    Assert.LessOrEqual(optionsPage.worldBound.xMin, optionsSurface.xMin + 2f,
-                        "Options must not letterbox horizontally at " + size);
-                    Assert.LessOrEqual(optionsPage.worldBound.yMin, optionsSurface.yMin + 2f,
-                        "Options must not letterbox vertically at " + size);
+                    Assert.Greater(optionsRoot.resolvedStyle.backgroundColor.a, 0f,
+                        "The options overlay must tint the main menu at " + size);
+                    Assert.Less(optionsRoot.resolvedStyle.backgroundColor.a, 0.9f,
+                        "The options overlay must not black out the main menu at " + size);
+                    Assert.Less(optionsPage.worldBound.height, optionsSurface.height - 2f,
+                        "The options page must leave the main menu visible above and below at " + size);
+                    Assert.LessOrEqual(optionsPage.worldBound.width, optionsSurface.width + 1f,
+                        "The options page must stay inside the output width at " + size);
+                    Assert.GreaterOrEqual(optionsPage.worldBound.xMin, optionsSurface.xMin - 1f,
+                        "The options page must not crop horizontally at " + size);
+                    Assert.GreaterOrEqual(optionsPage.worldBound.yMin, optionsSurface.yMin - 1f,
+                        "The options page must not crop vertically at " + size);
 
                     PlayModeBoot.Click(ActiveRoot(options).Q<Button>("cancel-button"));
                     for (int i = 0; i < 8; i++) yield return null;
+                    Assert.AreEqual(DisplayStyle.None, ActiveRoot(options).resolvedStyle.display,
+                        "CANCEL must hide the options overlay at " + size);
+                    Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display,
+                        "CANCEL must return to the visible main menu at " + size);
 
                     target.Release();
                     Object.Destroy(target);

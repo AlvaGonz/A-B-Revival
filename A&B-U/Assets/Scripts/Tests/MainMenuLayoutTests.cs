@@ -109,6 +109,10 @@ namespace ABRevival.Tests
             StringAssert.Contains("SetMusicEnabled", options, "The Music row must drive the music bus.");
             StringAssert.Contains("ApplyDisplayMode", options, "Resolution must reach the platform player.");
             StringAssert.Contains("Applied?.Invoke()", options, "OK must let GameFlowController persist the settings.");
+            StringAssert.Contains("backdropTint", options,
+                "The overlay tint must be serialized for Inspector tuning.");
+            StringAssert.Contains("pageHeightFraction", options,
+                "The overlay page height must be serialized for Inspector tuning.");
 
             string flow = File.ReadAllText(
                 Path.Combine(FindRepoRoot(), "A&B-U/Assets/Scripts/Presentation/GameFlowController.cs"));
@@ -139,6 +143,8 @@ namespace ABRevival.Tests
             StringAssert.Contains("height: 490px;", options);
             StringAssert.Contains(".option-row", options);
             StringAssert.Contains(".option-row-state", options);
+            StringAssert.DoesNotContain("rgb(0, 0, 0)", options,
+                "The overlay tint is serialized on OptionsController, not painted opaque in USS.");
             StringAssert.DoesNotContain("1280", options, "The retired fixed hangar root must not survive.");
         }
 
