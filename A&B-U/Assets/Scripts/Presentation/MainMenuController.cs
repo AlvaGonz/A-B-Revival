@@ -60,6 +60,7 @@ namespace ABRevival.Presentation
         private Button _playerButton;
 
         private bool _initialized;
+        private bool _inputEnabled = true;
         private Vector2 _lastRootSize;
 
         /// <summary>Raised by the START GAME button; GameFlowController opens Center.</summary>
@@ -107,9 +108,17 @@ namespace ABRevival.Presentation
             if (!visible) HideDeferred();
         }
 
+        /// <summary>Blocks the menu's own actions while a modal overlay (Options) is open.</summary>
+        public void SetInputEnabled(bool enabled)
+        {
+            _inputEnabled = enabled;
+            if (!enabled) HideDeferred();
+        }
+
         /// <summary>Opens the dated-entry panel (credits, player, external link).</summary>
         public void ShowDeferred(string title, string reason)
         {
+            if (!_inputEnabled) return;
             if (_deferred == null) return;
             if (_deferredTitle != null) _deferredTitle.text = title;
             if (_deferredBody != null) _deferredBody.text = reason;
