@@ -290,6 +290,8 @@ namespace ABRevival.Tests.PlayMode
                     Rect optionsPanel = ActiveRoot(options).worldBound;
                     Assert.AreEqual(DisplayStyle.Flex, root.resolvedStyle.display,
                         "The main menu must stay visible behind the options overlay at " + size);
+                    Assert.Greater(options.GetComponent<ScreenPanel>().SortingOrder, panel.SortingOrder,
+                        "The options overlay must draw above the main menu at " + size);
                     Assert.AreEqual(optionsPanel.width, optionsSurface.width, 1f,
                         "Options must fill the panel width at " + size);
                     Assert.AreEqual(optionsPanel.height, optionsSurface.height, 1f,

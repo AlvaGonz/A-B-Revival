@@ -119,6 +119,8 @@ namespace ABRevival.Tests
             StringAssert.Contains("GameFlowState.MainMenu", flow, "Boot must enter the frozen main menu.");
             StringAssert.Contains("EnterMainMenu()", flow, "The flow must own the main-menu transition.");
             StringAssert.Contains("OnOptionsApplied", flow, "Options changes must persist through the flow.");
+            StringAssert.Contains("SetInputEnabled", flow,
+                "The main menu must be inert while the options overlay is open.");
         }
 
         [Test]

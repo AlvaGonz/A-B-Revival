@@ -443,6 +443,7 @@ namespace ABRevival.Presentation
         {
             if (State != GameFlowState.MainMenu || _options == null) return;
 
+            _mainMenu?.SetInputEnabled(false);
             _options.Initialize(_save, _flight, _audio);
             State = GameFlowState.Options;
         }
@@ -470,6 +471,7 @@ namespace ABRevival.Presentation
         {
             if (State != GameFlowState.Options) return;
 
+            _mainMenu?.SetInputEnabled(true);
             _audio?.PlayMainMenuMusic();
             State = GameFlowState.MainMenu;
         }

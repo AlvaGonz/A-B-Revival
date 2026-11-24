@@ -43,7 +43,7 @@ namespace ABRevival.Presentation
         [SerializeField] private float pageHeightFraction = 0.75f;
 
         private ScreenPanel _screen;
-        private VisualElement _root;
+        private VisualElement _backdrop;
         private VisualElement _page;
         private Button _bloomRow;
         private Button _candyRow;
@@ -195,7 +195,7 @@ namespace ABRevival.Presentation
 
         private void Bind(VisualElement root)
         {
-            _root = root;
+            _backdrop = root.Q("options-root");
             _page = root.Q("options-page");
             _bloomRow = root.Q<Button>("bloom-row");
             _candyRow = root.Q<Button>("candy-row");
@@ -352,7 +352,7 @@ namespace ABRevival.Presentation
 
         private void ApplyBackdrop()
         {
-            if (_root != null) _root.style.backgroundColor = backdropTint;
+            if (_backdrop != null) _backdrop.style.backgroundColor = backdropTint;
         }
 
         /// <summary>Applies Inspector tuning immediately while playing, without reopening the screen.</summary>
